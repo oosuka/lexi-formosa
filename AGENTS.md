@@ -177,6 +177,7 @@ npm run lint:fix
 ```bash
 npm run test
 npm run test:unit
+npm run test:unit:coverage
 npm run test:watch
 npm run test:e2e
 ```

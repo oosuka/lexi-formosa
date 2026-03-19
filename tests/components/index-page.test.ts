@@ -224,4 +224,98 @@ describe('index page', () => {
 
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
   });
+
+  it('自動再生が始まらない場合は案内ボタンから手動で開始できる', async () => {
+    vi.useFakeTimers();
+
+    let speakCount = 0;
+    const speechSynthesisMock: {
+      speaking: boolean;
+      getVoices: ReturnType<typeof vi.fn>;
+      addEventListener: ReturnType<typeof vi.fn>;
+      removeEventListener: ReturnType<typeof vi.fn>;
+      cancel: ReturnType<typeof vi.fn>;
+      speak: ReturnType<typeof vi.fn>;
+    } = {
+      speaking: false,
+      getVoices: vi.fn(() => [{ lang: 'zh-TW', name: 'Mock Taiwanese' }] as SpeechSynthesisVoice[]),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      cancel: vi.fn(() => {
+        speechSynthesisMock.speaking = false;
+      }),
+      speak: vi.fn((utterance: SpeechSynthesisUtterance) => {
+        speakCount += 1;
+
+        if (speakCount === 1) {
+          return;
+        }
+
+        speechSynthesisMock.speaking = true;
+        utterance.onstart?.({} as SpeechSynthesisEvent);
+        speechSynthesisMock.speaking = false;
+        utterance.onend?.({} as SpeechSynthesisEvent);
+      }),
+    };
+
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: speechSynthesisMock,
+    });
+
+    const wrapper = await mountSuspended(IndexPage);
+
+    await vi.advanceTimersByTimeAsync(400);
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('音声を開始');
+
+    await wrapper.get('button.audio-start-button').trigger('click');
+    await flushPromises();
+
+    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(2);
+    expect(wrapper.text()).not.toContain('音声を開始');
+  });
+
+  it('再生中に音声ボタンを押すと停止する', async () => {
+    const speechSynthesisMock: {
+      speaking: boolean;
+      getVoices: ReturnType<typeof vi.fn>;
+      addEventListener: ReturnType<typeof vi.fn>;
+      removeEventListener: ReturnType<typeof vi.fn>;
+      cancel: ReturnType<typeof vi.fn>;
+      speak: ReturnType<typeof vi.fn>;
+    } = {
+      speaking: false,
+      getVoices: vi.fn(() => [{ lang: 'zh-TW', name: 'Mock Taiwanese' }] as SpeechSynthesisVoice[]),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      cancel: vi.fn(() => {
+        speechSynthesisMock.speaking = false;
+      }),
+      speak: vi.fn((utterance: SpeechSynthesisUtterance) => {
+        speechSynthesisMock.speaking = true;
+        utterance.onstart?.({} as SpeechSynthesisEvent);
+      }),
+    };
+
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: speechSynthesisMock,
+    });
+
+    const wrapper = await mountSuspended(IndexPage);
+    await flushPromises();
+
+    const audioButton = wrapper.get('button.audio-button');
+    const cancelCallsBeforeStop = speechSynthesisMock.cancel.mock.calls.length;
+
+    expect(audioButton.text()).toContain('停止');
+
+    await audioButton.trigger('click');
+    await flushPromises();
+
+    expect(speechSynthesisMock.cancel).toHaveBeenCalledTimes(cancelCallsBeforeStop + 1);
+    expect(wrapper.get('button.audio-button').text()).toContain('音声');
+  });
 });

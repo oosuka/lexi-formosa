@@ -62,6 +62,7 @@ npm run typecheck
 npm run lint
 npm run test
 npm run test:unit
+npm run test:unit:coverage
 npm run test:watch
 npm run test:e2e
 npm run setup:data
@@ -104,5 +105,6 @@ npm run audit:data
 ## Testing
 
 - unit / UI: `Vitest + @nuxt/test-utils + Vue Test Utils`
+- coverage: `npm run test:unit:coverage`
 - E2E: `Playwright`
 - 現在は、出題ロジック、状態遷移、主要画面表示、最小限のゲームフローをテストしています

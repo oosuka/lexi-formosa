@@ -156,6 +156,51 @@ describe('useTraditionalTrainer', () => {
     expect(trainer.game.value.lastCorrect).toBe(false);
   });
 
+  it('未初期化のまま回答しようとすると失敗する', async () => {
+    let trainer!: ReturnType<typeof useTraditionalTrainer>;
+
+    const Harness = defineComponent({
+      setup() {
+        trainer = useTraditionalTrainer();
+        return () => h('div');
+      },
+    });
+
+    await mountSuspended(Harness);
+    resetTrainerState();
+
+    expect(() => trainer.submitAnswer('choice-1')).toThrow('Question is not ready yet.');
+  });
+
+  it('回答済みの問題に再回答しても状態を進めない', async () => {
+    let trainer!: ReturnType<typeof useTraditionalTrainer>;
+
+    const Harness = defineComponent({
+      setup() {
+        trainer = useTraditionalTrainer();
+        return () => h('div');
+      },
+    });
+
+    await mountSuspended(Harness);
+    resetTrainerState();
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    await trainer.initialize(1);
+    const correctChoiceId = trainer.correctChoice.value?.id as string;
+
+    const first = trainer.submitAnswer(correctChoiceId);
+    const scoreAfterFirst = trainer.game.value.score;
+    const roundsAfterFirst = trainer.game.value.rounds;
+    const streakAfterFirst = trainer.game.value.streak;
+    const second = trainer.submitAnswer('different-choice');
+
+    expect(second).toEqual(first);
+    expect(trainer.game.value.score).toBe(scoreAfterFirst);
+    expect(trainer.game.value.rounds).toBe(roundsAfterFirst);
+    expect(trainer.game.value.streak).toBe(streakAfterFirst);
+  });
+
   it('連続した初期化では最後のリクエストだけが状態を確定する', async () => {
     let trainer!: ReturnType<typeof useTraditionalTrainer>;
     const level2Deferred = createDeferred<VocabEntry[]>();

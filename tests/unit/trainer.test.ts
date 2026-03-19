@@ -64,4 +64,19 @@ describe('trainer utilities', () => {
 
     expect(new Set(labels).size).toBe(labels.length);
   });
+
+  it('重複排除後に誤答候補が足りないときは失敗する', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    const insufficientVocabulary = [
+      createEntry('l2-1', '機車', 'バイク', 2, 'transport'),
+      createEntry('l2-2', '自行車', 'バイク', 2, 'transport'),
+      createEntry('l2-3', '腳踏車', 'バイク', 2, 'transport'),
+      createEntry('l2-4', '百貨公司', 'デパート', 2, 'place'),
+    ];
+
+    expect(() => buildQuestion(insufficientVocabulary, 2, [])).toThrow(
+      'Could not build distractors'
+    );
+  });
 });
