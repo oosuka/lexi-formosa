@@ -27,6 +27,7 @@ const vocabularyMetadata = ref<VocabularyMetadata | null>(null);
 
 const reducedMotion = computed(() => reducedMotionPreference.value === 'reduce');
 const currentQuestion = computed(() => trainer.game.value.currentQuestion);
+const hasFatalLoadError = computed(() => Boolean(loadError.value && !currentQuestion.value));
 const isLoading = computed(
   () => !loadError.value && (trainer.isLoading.value || !currentQuestion.value)
 );
@@ -127,9 +128,15 @@ const feedbackBadge = computed(() => {
 });
 
 const selectLevel = async (level: Level) => {
-  await trainer.setLevel(level);
-  await nextTick();
-  requestCurrentQuestionAudio();
+  loadError.value = null;
+
+  try {
+    await trainer.setLevel(level);
+    await nextTick();
+    requestCurrentQuestionAudio();
+  } catch (error) {
+    applyLoadError(error, 'レベル切替に失敗しました。');
+  }
 };
 
 const getAudioContext = async () => {
@@ -216,6 +223,25 @@ const clearPendingAudioRetry = () => {
   }
 };
 
+const clearPendingQuestionAudio = () => {
+  pendingQuestionAudioId.value = null;
+  audioStartRequired.value = false;
+  isSpeaking.value = false;
+  clearPendingAudioRetry();
+
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+};
+
+const getLoadErrorMessage = (error: unknown, fallback: string) =>
+  error instanceof Error ? error.message : fallback;
+
+const applyLoadError = (error: unknown, fallback: string) => {
+  loadError.value = getLoadErrorMessage(error, fallback);
+  clearPendingQuestionAudio();
+};
+
 const playCurrentQuestionAudio = () => {
   if (typeof window === 'undefined' || !currentQuestion.value || !speechSupported.value) {
     return;
@@ -250,7 +276,8 @@ const playCurrentQuestionAudio = () => {
 };
 
 const requestCurrentQuestionAudio = (userInitiated = false) => {
-  if (!currentQuestionId.value) {
+  if (typeof window === 'undefined' || !speechSupported.value || !currentQuestionId.value) {
+    clearPendingQuestionAudio();
     return;
   }
 
@@ -287,7 +314,12 @@ const syncPreferredVoice = () => {
 
 const handleVoicesChanged = () => {
   syncPreferredVoice();
-  if (pendingQuestionAudioId.value === currentQuestionId.value && !audioStartRequired.value) {
+  if (
+    pendingQuestionAudioId.value === currentQuestionId.value &&
+    !audioStartRequired.value &&
+    !isSpeaking.value &&
+    !window.speechSynthesis.speaking
+  ) {
     requestCurrentQuestionAudio();
   }
 };
@@ -315,9 +347,15 @@ const moveToNextQuestion = async () => {
 };
 
 const resetSession = async () => {
-  await trainer.resetSession();
-  await nextTick();
-  requestCurrentQuestionAudio(true);
+  loadError.value = null;
+
+  try {
+    await trainer.resetSession();
+    await nextTick();
+    requestCurrentQuestionAudio(true);
+  } catch (error) {
+    applyLoadError(error, 'セッションの初期化に失敗しました。');
+  }
 };
 
 onMounted(async () => {
@@ -348,10 +386,7 @@ onMounted(async () => {
   }
 
   if (initializeResult.status === 'rejected') {
-    loadError.value =
-      initializeResult.reason instanceof Error
-        ? initializeResult.reason.message
-        : '語彙データの初期化に失敗しました。';
+    applyLoadError(initializeResult.reason, '語彙データの初期化に失敗しました。');
     return;
   }
 
@@ -468,7 +503,7 @@ useSeoMeta({
         </div>
 
         <article class="word-card">
-          <template v-if="loadError">
+          <template v-if="hasFatalLoadError">
             <div class="word-card-top">
               <span class="word-chip">Setup</span>
               <button class="audio-button" type="button" disabled>音声</button>
@@ -551,7 +586,7 @@ useSeoMeta({
             <button
               class="ghost-button"
               type="button"
-              :disabled="trainer.isLoading.value || Boolean(loadError)"
+              :disabled="trainer.isLoading.value || hasFatalLoadError"
               @click="resetSession()"
             >
               リセット

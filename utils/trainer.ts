@@ -67,15 +67,17 @@ const pickWeightedEntry = (items: VocabEntry[]): VocabEntry => {
   return items[items.length - 1] as VocabEntry;
 };
 
-const uniqueById = (items: VocabEntry[]): VocabEntry[] => {
-  const seen = new Set<string>();
+const uniqueByIdAndLabel = (items: VocabEntry[]): VocabEntry[] => {
+  const seenIds = new Set<string>();
+  const seenLabels = new Set<string>();
 
   return items.filter((item) => {
-    if (seen.has(item.id)) {
+    if (seenIds.has(item.id) || seenLabels.has(item.ja)) {
       return false;
     }
 
-    seen.add(item.id);
+    seenIds.add(item.id);
+    seenLabels.add(item.ja);
     return true;
   });
 };
@@ -110,7 +112,7 @@ export const buildQuestion = (
     )
   );
 
-  const distractors = uniqueById([...sameCategory, ...sameLength, ...fallback]).slice(0, 3);
+  const distractors = uniqueByIdAndLabel([...sameCategory, ...sameLength, ...fallback]).slice(0, 3);
 
   if (distractors.length < 3) {
     throw new Error(`Could not build distractors for ${correctEntry.id}.`);

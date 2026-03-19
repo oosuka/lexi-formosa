@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime';
 import { flushPromises } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed, ref } from 'vue';
 
 import IndexPage from '~/pages/index.vue';
@@ -82,6 +82,10 @@ const createTrainerStub = () => {
 };
 
 describe('index page', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   beforeEach(() => {
     useTraditionalTrainerMock.mockReset();
     useTraditionalTrainerMock.mockReturnValue(createTrainerStub());
@@ -132,5 +136,92 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('你好');
     expect(wrapper.text()).toContain('この単語の意味は？');
     expect(wrapper.text()).not.toContain('辞書データ未生成');
+  });
+
+  it('レベル変更失敗時は UI にエラーを表示する', async () => {
+    const trainer = createTrainerStub();
+    trainer.setLevel.mockRejectedValue(new Error('level 2 missing'));
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    const levelButton = wrapper
+      .findAll('.level-card')
+      .find((candidate) => candidate.text().includes('Level 2'));
+
+    await levelButton?.trigger('click');
+    await flushPromises();
+
+    expect(trainer.setLevel).toHaveBeenCalledWith(2);
+    expect(wrapper.text()).toContain('level 2 missing');
+    expect(wrapper.text()).toContain('你好');
+    expect(wrapper.text()).not.toContain('辞書データ未生成');
+    expect(wrapper.get('button.ghost-button').attributes('disabled')).toBeUndefined();
+  });
+
+  it('リセット失敗時は UI にエラーを表示する', async () => {
+    const trainer = createTrainerStub();
+    trainer.resetSession.mockRejectedValue(new Error('session reset failed'));
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    const resetButton = wrapper
+      .findAll('button')
+      .find((candidate) => candidate.text().includes('リセット'));
+
+    await resetButton?.trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalled();
+    expect(wrapper.text()).toContain('session reset failed');
+  });
+
+  it('音声未対応環境では音声開始案内を表示しない', async () => {
+    vi.useFakeTimers();
+    Reflect.deleteProperty(window as unknown as Record<string, unknown>, 'speechSynthesis');
+    Reflect.deleteProperty(
+      window as unknown as Record<string, unknown>,
+      'SpeechSynthesisUtterance'
+    );
+    Reflect.deleteProperty(globalThis as Record<string, unknown>, 'SpeechSynthesisUtterance');
+
+    const wrapper = await mountSuspended(IndexPage);
+
+    await vi.advanceTimersByTimeAsync(400);
+    await flushPromises();
+
+    expect(wrapper.text()).not.toContain('音声を開始');
+    expect(wrapper.find('.audio-start-notice').exists()).toBe(false);
+  });
+
+  it('voiceschanged で再読み上げ中の音声を再キューしない', async () => {
+    let voicesChangedHandler: (() => void) | undefined;
+
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: {
+        speaking: true,
+        getVoices: vi.fn(
+          () => [{ lang: 'zh-TW', name: 'Mock Taiwanese' }] as SpeechSynthesisVoice[]
+        ),
+        addEventListener: vi.fn((eventName: string, handler: () => void) => {
+          if (eventName === 'voiceschanged') {
+            voicesChangedHandler = handler;
+          }
+        }),
+        removeEventListener: vi.fn(),
+        cancel: vi.fn(),
+        speak: vi.fn(),
+      } satisfies Partial<SpeechSynthesis>,
+    });
+
+    await mountSuspended(IndexPage);
+    await flushPromises();
+
+    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
+
+    voicesChangedHandler?.();
+    await flushPromises();
+
+    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
   });
 });

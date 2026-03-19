@@ -1,6 +1,6 @@
 import type { Level, QuestionRound, VocabEntry } from '~/types/vocabulary';
 
-const createEntry = (
+export const createEntry = (
   id: string,
   trad: string,
   ja: string,

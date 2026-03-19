@@ -41,10 +41,6 @@ export const useTraditionalTrainer = () => {
     const requestId = latestInitializeRequestId.value + 1;
     latestInitializeRequestId.value = requestId;
     isLoading.value = true;
-    game.value = {
-      ...game.value,
-      level,
-    };
 
     try {
       const pool = await ensureLevelLoaded(level);

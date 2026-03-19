@@ -290,7 +290,13 @@ const normalizeTocflPronunciation = (pinyin, zhuyin, validSyllables) => {
 };
 
 const normalizeMjdicPronunciation = (pronunciation) => {
-  return pronunciation.toLowerCase().replace(/u:/g, 'v').trim().replace(/\s+/g, ' ');
+  if (typeof pronunciation !== 'string') {
+    return null;
+  }
+
+  const normalized = pronunciation.toLowerCase().replace(/u:/g, 'v').trim().replace(/\s+/g, ' ');
+
+  return normalized || null;
 };
 
 const collapseRepeatedSegments = (candidate) => {
@@ -348,6 +354,10 @@ const isRejectedGlossCandidate = (candidate) => {
   }
 
   if (candidate.length > 24) {
+    return true;
+  }
+
+  if (explanatoryGlossPattern.test(candidate)) {
     return true;
   }
 
@@ -502,18 +512,22 @@ for (const row of mjdicRows) {
     continue;
   }
 
-  const exactKey = `${trad}\t${normalizeMjdicPronunciation(pronunciation)}`;
-  const exactEntries = dictionary.get(exactKey) ?? [];
-  exactEntries.push([meansJa, means]);
-  dictionary.set(exactKey, exactEntries);
+  const normalizedPronunciation = normalizeMjdicPronunciation(pronunciation);
+
+  if (normalizedPronunciation) {
+    const exactKey = `${trad}\t${normalizedPronunciation}`;
+    const exactEntries = dictionary.get(exactKey) ?? [];
+    exactEntries.push([meansJa, means]);
+    dictionary.set(exactKey, exactEntries);
+  }
 
   const fallbackKey = `${trad}\t`;
   const fallbackEntries = dictionary.get(fallbackKey) ?? [];
   fallbackEntries.push([meansJa, means]);
   dictionary.set(fallbackKey, fallbackEntries);
 
-  if (!mjdicPronunciationByTrad.has(trad)) {
-    mjdicPronunciationByTrad.set(trad, normalizeMjdicPronunciation(pronunciation));
+  if (!mjdicPronunciationByTrad.has(trad) && normalizedPronunciation) {
+    mjdicPronunciationByTrad.set(trad, normalizedPronunciation);
   }
 }
 
@@ -623,7 +637,7 @@ for (let index = 0; index < mjdicRows.length; index += 1) {
     category: buildLevelThreeCategory(trad),
     taiwanPriority: true,
     sources: ['mjdic'],
-    pronunciation: normalizeMjdicPronunciation(pronunciation),
+    pronunciation: normalizeMjdicPronunciation(pronunciation) ?? undefined,
   });
 }
 

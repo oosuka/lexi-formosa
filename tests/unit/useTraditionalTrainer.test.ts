@@ -199,4 +199,31 @@ describe('useTraditionalTrainer', () => {
     );
     expect(trainer.isLoading.value).toBe(false);
   });
+
+  it('レベル切替の初期化に失敗したときは直前の状態を維持する', async () => {
+    let trainer!: ReturnType<typeof useTraditionalTrainer>;
+
+    const Harness = defineComponent({
+      setup() {
+        trainer = useTraditionalTrainer();
+        return () => h('div');
+      },
+    });
+
+    await mountSuspended(Harness);
+    resetTrainerState();
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    await trainer.initialize(1);
+    const previousQuestionId = trainer.game.value.currentQuestion?.questionId;
+
+    loadVocabularyLevelMock.mockRejectedValueOnce(new Error('level 2 missing'));
+
+    await expect(trainer.setLevel(2)).rejects.toThrow('level 2 missing');
+
+    expect(trainer.game.value.level).toBe(1);
+    expect(trainer.game.value.currentQuestion?.level).toBe(1);
+    expect(trainer.game.value.currentQuestion?.questionId).toBe(previousQuestionId);
+    expect(trainer.isLoading.value).toBe(false);
+  });
 });
