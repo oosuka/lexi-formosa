@@ -1,1 +1,108 @@
-# traditional-chinese-training
+# LexiFormosa
+
+`LexiFormosa` は、臺灣で使われる繁體字の単語を日本語4択で学ぶローカル向けの Nuxt 4 ゲームです。
+読み方の補助表示と音声再生を備え、短い単語から少し長めの複合語まで 3 レベルで練習できます。
+GitHub の公開リポジトリ名と npm package 名は `lexi-formosa` を前提にしています。
+
+台湾華語寄りの語彙だけを対象にし、簡体字は表示しません。4択でテンポよく反復しながら、繁體字の形、意味、読みをまとめて確認できます。
+
+## Features
+
+- 繁體字の単語を 1 問 1 語で出題
+- 日本語 4 択で意味を答える学習ゲーム
+- Level 1 から Level 3 までの段階的な難易度
+- Level 1 では 1-2文字語を扱い、TOCFL 由来の 1文字語も対象に含む
+- ピンインとカタカナ補助の読み表示
+- ブラウザ音声による単語再生
+- リセット、次の問題、レベル切替での自動読み上げ
+- 初回アクセス時は、ブラウザ制限により `音声を開始` が必要な場合あり
+- 正解音と不正解音による即時フィードバック
+- レベルごとの登録語数の可視化
+- `metadata.json` が欠けていても、語彙本体があればゲームは継続可能
+
+開発運用ルールは `AGENTS.md` を参照してください。
+コードのライセンスと辞書データの扱いは `LICENSE` と `NOTICE.md` を参照してください。
+
+## Stack
+
+- Nuxt 4
+- Vue 3
+- Node.js 24 LTS
+- npm
+- Volta
+- Biome 2
+- TypeScript
+- Zod
+- Vitest
+- Playwright
+
+## Setup
+
+```bash
+npm install
+npm run setup:data
+npm run dev
+```
+
+`npm run setup:data` は、辞書ソースをローカルへ取得して語彙データを生成し、基本整合性チェックとカード品質監査まで行う初回セットアップ用コマンドです。インターネット接続が必要です。監査は警告用途で、説明的すぎる訳候補が残っていても自動では失敗しません。
+
+E2E テストを初回実行する場合は、必要に応じて次を一度実行してください。
+
+```bash
+npx playwright install chromium
+```
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run typecheck
+npm run lint
+npm run test
+npm run test:unit
+npm run test:watch
+npm run test:e2e
+npm run setup:data
+npm run generate:data
+npm run check:data
+npm run audit:data
+```
+
+## Current Scope
+
+- 3 levels
+  - Level 1: 1-2文字
+  - Level 2: 3-4文字
+  - Level 3: 5-6文字
+- 繁體字の単語のみ出題
+- 日本語4択
+- 正解ごとに10ポイント
+- カタカナ補助とピンイン表示
+- ブラウザ音声による単語再生
+- リセット時、レベル切替時、次の問題で自動読み上げ
+- 初回アクセス時はブラウザ制限により手動で音声開始が必要な場合あり
+- 正解音と不正解音
+- ローカル起動前提
+- 学習履歴の永続保存なし
+
+## Data
+
+- Public リポジトリには、生成済み辞書データを同梱しません
+- 語彙は `TOCFL + MJdic + data/manual-vocabulary.json` からローカル生成します
+- 初回は `npm run setup:data` で外部ソース取得と生成をまとめて実行できます
+- 生成済み全語彙は `data/vocabulary.json` に出力されます
+- レベル別件数を含むメタデータは `data/vocabulary-metadata.json` に出力されます
+- 実行時は `public/wordlists/vocabulary-level-*.json` をレベル単位で遅延読み込みします
+- `public/wordlists/metadata.json` が欠けていても、件数表示だけを省略してゲーム本体は動作します
+- 手修正の重要語、訳、発音補完は `data/manual-vocabulary.json` で管理します
+- `npm run generate:data` で語彙を再生成し、`npm run check:data` で基本整合性を確認します
+- `npm run audit:data` で、不自然な日本語カード候補を監査できます
+- 生成された辞書データはコードとは別の権利関係を持つため、再配布時は `NOTICE.md` を確認してください
+
+## Testing
+
+- unit / UI: `Vitest + @nuxt/test-utils + Vue Test Utils`
+- E2E: `Playwright`
+- 現在は、出題ロジック、状態遷移、主要画面表示、最小限のゲームフローをテストしています
