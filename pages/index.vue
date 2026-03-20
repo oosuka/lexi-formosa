@@ -316,7 +316,7 @@ const answerMessage = computed(() => {
 
   return lastCorrect.value
     ? `正解です。+${getScoreForCorrectAnswer(streak.value)}点`
-    : `不正解です。正解は「${trainer.correctChoice.value.label}」です。あと${remainingMisses.value}回で終了`;
+    : `不正解です。正解は「${trainer.correctChoice.value?.label ?? '不明'}」です。あと${remainingMisses.value}回で終了`;
 });
 
 const feedbackBadge = computed(() => {

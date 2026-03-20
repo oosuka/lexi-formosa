@@ -140,6 +140,16 @@ const FINAL_PARTS: Record<string, { group: string; suffix: string }> = {
   vn: { group: 'ü', suffix: 'ン' },
 };
 
+const findLastMarkedVowelIndex = (normalizedSyllable: string): number => {
+  for (let index = normalizedSyllable.length - 1; index >= 0; index -= 1) {
+    if ('ioüu'.includes(normalizedSyllable[index] ?? '')) {
+      return index;
+    }
+  }
+
+  return -1;
+};
+
 const markTone = (plainSyllable: string, tone: number): string => {
   if (tone <= 0 || tone >= 5) {
     return plainSyllable.replace(/v/g, 'ü');
@@ -153,7 +163,7 @@ const markTone = (plainSyllable: string, tone: number): string => {
         ? normalized.indexOf('e')
         : normalized.includes('ou')
           ? normalized.indexOf('o')
-          : [...normalized].findLastIndex((char) => 'ioüu'.includes(char));
+          : findLastMarkedVowelIndex(normalized);
 
   if (markIndex < 0) {
     return normalized;
