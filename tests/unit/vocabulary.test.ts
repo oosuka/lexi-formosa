@@ -79,7 +79,7 @@ describe('vocabulary utilities', () => {
 
     const { loadVocabularyLevel } = await import('~/utils/vocabulary');
 
-    await expect(loadVocabularyLevel(2)).rejects.toThrow('does not fit level 2');
+    await expect(loadVocabularyLevel(2)).rejects.toThrow('Length out of range');
   });
 
   it('metadata を読み込み、同じ結果はキャッシュを再利用する', async () => {

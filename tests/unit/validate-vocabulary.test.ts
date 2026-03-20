@@ -145,4 +145,42 @@ describe('validate vocabulary script', () => {
       ])
     ).toThrow('Classifier-like Japanese gloss detected');
   });
+
+  it('レベル範囲外の文字数は原因が分かる文言で拒否する', () => {
+    expect(() =>
+      validateVocabularyEntries([
+        createEntry({
+          trad: '國際電話卡',
+          ja: '国際電話カード',
+          level: 2,
+          length: 5,
+          category: 'object',
+        }),
+        createEntry({
+          id: 'seed-2',
+          trad: '便利商店',
+          ja: 'コンビニ',
+          level: 2,
+          length: 4,
+          category: 'place',
+        }),
+        createEntry({
+          id: 'seed-3',
+          trad: '百貨公司',
+          ja: 'デパート',
+          level: 2,
+          length: 4,
+          category: 'place',
+        }),
+        createEntry({
+          id: 'seed-4',
+          trad: '公車站牌',
+          ja: 'バス停',
+          level: 2,
+          length: 4,
+          category: 'place',
+        }),
+      ])
+    ).toThrow('Length out of range');
+  });
 });

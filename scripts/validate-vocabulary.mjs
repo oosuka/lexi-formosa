@@ -64,7 +64,7 @@ export const validateVocabularyEntries = (rawEntries) => {
 
     if (actualLength < minLength || actualLength > maxLength) {
       throw new Error(
-        `Level mismatch for ${entry.id}: ${entry.trad} does not fit level ${entry.level}.`
+        `Length out of range for ${entry.id}: ${entry.trad} (length ${actualLength}) is outside the allowed range [${minLength}, ${maxLength}] for level ${entry.level}.`
       );
     }
 
