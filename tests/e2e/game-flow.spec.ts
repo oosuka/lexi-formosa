@@ -72,6 +72,7 @@ test('ゲームを1問進められる', async ({ page }) => {
   await installMockWordlists(page);
 
   await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
   await expect(page.getByRole('heading', { name: 'この単語の意味は？' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
@@ -94,6 +95,7 @@ test('開始前の案内カードは高さが揃う', async ({ page }) => {
   await installMockWordlists(page);
 
   await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
   const detailCards = page.locator('.session-start-detail');
 
@@ -112,6 +114,7 @@ test('モバイル幅でも横にはみ出さない', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
 
   await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
   const overflowBeforeStart = await page.evaluate(() => ({
     clientWidth: document.documentElement.clientWidth,

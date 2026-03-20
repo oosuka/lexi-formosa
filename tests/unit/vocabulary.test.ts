@@ -45,6 +45,7 @@ describe('vocabulary utilities', () => {
     const second = await loadVocabularyLevel(1);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith('/wordlists/vocabulary-level-1.json');
     expect(first).toEqual([createEntry()]);
     expect(second).toBe(first);
   });
@@ -90,8 +91,43 @@ describe('vocabulary utilities', () => {
     const second = await loadVocabularyMetadata();
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith('/wordlists/metadata.json');
     expect(first).toEqual(validMetadata);
     expect(second).toBe(first);
+  });
+
+  it('app.baseURL 配下の wordlists を読む', async () => {
+    fetchMock.mockResolvedValue([createEntry()]);
+    vi.stubGlobal('__NUXT__', {
+      config: {
+        app: {
+          baseURL: '/lexi-formosa/',
+        },
+      },
+    });
+
+    const { loadVocabularyLevel } = await import('~/utils/vocabulary');
+
+    await loadVocabularyLevel(1);
+
+    expect(fetchMock).toHaveBeenCalledWith('/lexi-formosa/wordlists/vocabulary-level-1.json');
+  });
+
+  it('metadata も app.baseURL 配下の wordlists を読む', async () => {
+    fetchMock.mockResolvedValue(validMetadata);
+    vi.stubGlobal('__NUXT__', {
+      config: {
+        app: {
+          baseURL: '/lexi-formosa/',
+        },
+      },
+    });
+
+    const { loadVocabularyMetadata } = await import('~/utils/vocabulary');
+
+    await loadVocabularyMetadata();
+
+    expect(fetchMock).toHaveBeenCalledWith('/lexi-formosa/wordlists/metadata.json');
   });
 
   it('metadata の取得失敗時はセットアップ案内付きで失敗する', async () => {

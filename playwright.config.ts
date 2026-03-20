@@ -6,12 +6,12 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   use: {
-    baseURL: 'http://127.0.0.1:4173',
+    baseURL: 'http://127.0.0.1:4173/lexi-formosa/',
     trace: 'retain-on-failure',
   },
   webServer: {
     command: 'node scripts/start-e2e-server.mjs',
-    url: 'http://127.0.0.1:4173',
+    url: 'http://127.0.0.1:4173/lexi-formosa/',
     reuseExistingServer: !process.env.CI,
     timeout: 180000,
   },

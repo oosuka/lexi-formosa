@@ -108,9 +108,11 @@ npm run audit:data
 - Public リポジトリには、生成済み辞書データを同梱しません
 - 語彙は `TOCFL + MJdic + data/manual-vocabulary.json` からローカル生成します
 - 初回は `npm run setup:data` で外部ソース取得と生成をまとめて実行できます
+- TOCFL ソースは JSON 配列形式と JSONL 形式の両方を受け付けます
 - 生成済み全語彙は `data/vocabulary.json` に出力されます
 - レベル別件数を含むメタデータは `data/vocabulary-metadata.json` に出力されます
 - 実行時は `public/wordlists/vocabulary-level-*.json` をレベル単位で遅延読み込みします
+- 実行時の `wordlists` 読み込みは Nuxt の `app.baseURL` を考慮するため、サブパス配信でも動作します
 - `public/wordlists/metadata.json` が欠けていても、件数表示だけを省略してゲーム本体は動作します
 - 手修正の重要語、訳、発音補完は `data/manual-vocabulary.json` で管理します
 - `npm run generate:data` で語彙を再生成し、`npm run check:data` で基本整合性を確認します
@@ -123,5 +125,6 @@ npm run audit:data
 - coverage: `npm run test:unit:coverage`
 - E2E: `Playwright`
 - `npm run test:e2e` はビルド済みアプリを使って順次実行し、Nuxt の初回起動競合を避けています
+- `npm run test:e2e` は `app.baseURL=/lexi-formosa/` のサブパス配信でも主要導線が崩れないことを確認します
 - E2E 実行は Node ラッパースクリプト経由にしており、`NO_COLOR` や `HOST/PORT` の扱いで POSIX シェルに依存しません
-- 現在は、出題ロジック、状態遷移、主要画面表示、最小限のゲームフローをテストしています
+- 現在は、出題ロジック、状態遷移、主要画面表示、最小限のゲームフロー、辞書ソース解析、`app.baseURL` 配下での語彙ロードをテストしています

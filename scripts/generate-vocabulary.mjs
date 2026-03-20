@@ -534,6 +534,29 @@ const buildLevelThreeCategory = (word) => {
   return `extended:${word[0]}`;
 };
 
+export const parseTocflSource = (sourceText) => {
+  const trimmed = sourceText.trim().replace(/^\uFEFF/, '');
+
+  if (!trimmed) {
+    return [];
+  }
+
+  if (trimmed.startsWith('[')) {
+    const parsed = JSON.parse(trimmed);
+
+    if (!Array.isArray(parsed)) {
+      throw new Error('TOCFL source must be a JSON array or JSONL.');
+    }
+
+    return parsed;
+  }
+
+  return trimmed
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+};
+
 export const generateVocabulary = () => {
   const manualVocabulary = JSON.parse(fs.readFileSync(manualVocabularyPath, 'utf8'));
 
@@ -541,11 +564,7 @@ export const generateVocabulary = () => {
   ensureFileExists(mjdicSourcePath, 'MJdic source');
   fs.mkdirSync(publicWordlistDir, { recursive: true });
 
-  const tocflRows = fs
-    .readFileSync(tocflSourcePath, 'utf8')
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => JSON.parse(line));
+  const tocflRows = parseTocflSource(fs.readFileSync(tocflSourcePath, 'utf8'));
   const mjdicRows = fs
     .readFileSync(mjdicSourcePath, 'utf8')
     .split(/\r?\n/)

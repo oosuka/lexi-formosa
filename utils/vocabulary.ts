@@ -1,3 +1,4 @@
+import { joinURL } from 'ufo';
 import { z } from 'zod';
 
 import type { Level, VocabEntry, VocabularyMetadata } from '~/types/vocabulary';
@@ -63,10 +64,40 @@ const validateVocabulary = (entries: unknown, level: Level): VocabEntry[] => {
   return parsedVocabulary;
 };
 
+const getNuxtPayloadBaseURL = (): string | null => {
+  const nuxtPayload = (globalThis as { __NUXT__?: { config?: { app?: { baseURL?: string } } } })
+    .__NUXT__;
+  const baseURL = nuxtPayload?.config?.app?.baseURL;
+
+  return typeof baseURL === 'string' && baseURL.length > 0 ? baseURL : null;
+};
+
+const getAppBaseURL = (): string => {
+  const payloadBaseURL = getNuxtPayloadBaseURL();
+
+  if (payloadBaseURL) {
+    return payloadBaseURL;
+  }
+
+  if (import.meta.env.BASE_URL) {
+    return import.meta.env.BASE_URL;
+  }
+
+  try {
+    return useRuntimeConfig().app.baseURL || '/';
+  } catch {
+    return '/';
+  }
+};
+
+const getWordlistPath = (filename: string): string => {
+  return joinURL(getAppBaseURL(), 'wordlists', filename);
+};
+
 const levelLoaders: Record<Level, () => Promise<unknown>> = {
-  1: async () => $fetch('/wordlists/vocabulary-level-1.json'),
-  2: async () => $fetch('/wordlists/vocabulary-level-2.json'),
-  3: async () => $fetch('/wordlists/vocabulary-level-3.json'),
+  1: async () => $fetch(getWordlistPath('vocabulary-level-1.json')),
+  2: async () => $fetch(getWordlistPath('vocabulary-level-2.json')),
+  3: async () => $fetch(getWordlistPath('vocabulary-level-3.json')),
 };
 
 const setupDataHint =
@@ -100,7 +131,7 @@ export const loadVocabularyMetadata = async (): Promise<VocabularyMetadata> => {
   let payload: unknown;
 
   try {
-    payload = await $fetch('/wordlists/metadata.json');
+    payload = await $fetch(getWordlistPath('metadata.json'));
   } catch (error) {
     throw new Error(setupDataHint, {
       cause: error,

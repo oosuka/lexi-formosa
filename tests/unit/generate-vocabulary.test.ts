@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   isRejectedJapaneseGlossCandidate,
+  parseTocflSource,
   pickBestGloss,
 } from '../../scripts/generate-vocabulary.mjs';
 
@@ -35,5 +36,26 @@ describe('generate vocabulary script', () => {
         ],
       ])
     ).toBeNull();
+  });
+
+  it('TOCFL ソースの JSON 配列を読み込める', () => {
+    expect(
+      parseTocflSource(
+        JSON.stringify([
+          { id: 1, text: '八' },
+          { id: 2, text: '爸爸' },
+        ])
+      )
+    ).toEqual([
+      { id: 1, text: '八' },
+      { id: 2, text: '爸爸' },
+    ]);
+  });
+
+  it('TOCFL ソースの JSONL も引き続き読み込める', () => {
+    expect(parseTocflSource('{"id":1,"text":"八"}\n{"id":2,"text":"爸爸"}\n')).toEqual([
+      { id: 1, text: '八' },
+      { id: 2, text: '爸爸' },
+    ]);
   });
 });

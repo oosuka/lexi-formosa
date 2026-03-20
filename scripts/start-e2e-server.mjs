@@ -1,5 +1,7 @@
 import { spawn } from 'node:child_process';
 
+process.env.NUXT_APP_BASE_URL ??= '/lexi-formosa/';
+
 const run = (args) =>
   new Promise((resolve, reject) => {
     const child = spawn(process.execPath, args, {

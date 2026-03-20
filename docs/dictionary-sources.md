@@ -20,6 +20,7 @@ Public リポジトリには生成済み辞書データを同梱しません。
 
 - `npm run setup:data` は、外部ソース取得、語彙生成、基本整合性チェック、カード品質監査までをまとめて行う Public リポジトリ向け初回セットアップです。
 - `setup:data` では validation エラーは失敗扱いですが、`audit:data` の出力は品質改善候補の警告として扱います。
+- TOCFL ソースは通常の JSON 配列形式と JSONL 形式の両方を受け付けます。
 - 自動生成データは品質優先でフィルタし、簡体字や記号混じりの見出しは除外します。
 - TOCFL 由来データは 1-4文字を取り込み対象にし、Level 1 の 1文字語も含めます。
 - 日本語訳は機械翻訳起源のため、完全ではありません。
@@ -29,6 +30,7 @@ Public リポジトリには生成済み辞書データを同梱しません。
 - `data/vocabulary*.json` と `public/wordlists/*.json` は生成物なので、直接編集しないでください。
 - `data/vocabulary*.json` と `public/wordlists/*.json` は Git 管理対象にせず、各環境で生成してください。
 - `metadata.json` はレベルごとの登録語数表示に使います。
+- 実行時の `public/wordlists/*.json` 取得は Nuxt の `app.baseURL` を考慮します。
 - `metadata.json` が欠けている場合でも、語彙ファイルがあればゲーム本体は動く設計です。
 - 日本語カード品質の粗い候補は `npm run audit:data` で確認できます。
 - データ再配布の扱いは [NOTICE.md](../NOTICE.md) を確認してください。
