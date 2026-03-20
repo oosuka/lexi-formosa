@@ -79,10 +79,6 @@ const getAppBaseURL = (): string => {
     return payloadBaseURL;
   }
 
-  if (import.meta.env.BASE_URL) {
-    return import.meta.env.BASE_URL;
-  }
-
   try {
     return useRuntimeConfig().app.baseURL || '/';
   } catch {
