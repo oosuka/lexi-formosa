@@ -92,6 +92,15 @@ const INITIAL_ROWS: Record<string, Record<string, string>> = {
   s: { a: 'サ', e: 'セ', i: 'シ', o: 'ソ', u: 'ス', ü: 'シュ' },
 };
 
+const VOWEL_INITIAL_HEADS: Record<string, string> = {
+  a: 'ア',
+  e: 'エ',
+  i: 'イ',
+  o: 'オ',
+  u: 'ウ',
+  ü: 'ユ',
+};
+
 const FINAL_PARTS: Record<string, { group: string; suffix: string }> = {
   a: { group: 'a', suffix: '' },
   ai: { group: 'a', suffix: 'イ' },
@@ -192,12 +201,12 @@ const kanaForSyllable = (syllable: string): string => {
   const { initial, final } = splitInitialAndFinal(plain);
   const finalParts = FINAL_PARTS[final];
 
-  if (!initial || !finalParts) {
+  if (!finalParts) {
     return markTone(plain, 5);
   }
 
   const row = INITIAL_ROWS[initial];
-  const head = row?.[finalParts.group];
+  const head = initial ? row?.[finalParts.group] : VOWEL_INITIAL_HEADS[finalParts.group];
 
   if (!head) {
     return markTone(plain, 5);

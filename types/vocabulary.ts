@@ -39,8 +39,10 @@ export interface GameState {
   level: Level;
   score: number;
   streak: number;
+  bestStreak: number;
+  missesInRow: number;
   rounds: number;
-  status: 'ready' | 'answered';
+  status: 'ready' | 'answered' | 'finished';
   currentQuestion: QuestionRound | null;
   selectedChoiceId: string | null;
   lastCorrect: boolean | null;

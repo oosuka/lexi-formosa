@@ -3,7 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
 import { useState } from '#app';
 
-import { useTraditionalTrainer } from '~/composables/useTraditionalTrainer';
+import {
+  getScoreForCorrectAnswer,
+  useTraditionalTrainer,
+} from '~/composables/useTraditionalTrainer';
 import type { GameState, Level, VocabEntry } from '~/types/vocabulary';
 
 import { level1Vocabulary } from '../fixtures/vocabulary';
@@ -61,6 +64,8 @@ const resetTrainerState = () => {
     level: 1,
     score: 0,
     streak: 0,
+    bestStreak: 0,
+    missesInRow: 0,
     rounds: 0,
     status: 'ready',
     currentQuestion: null,
@@ -120,6 +125,8 @@ describe('useTraditionalTrainer', () => {
     expect(result.correct).toBe(true);
     expect(trainer.game.value.score).toBe(10);
     expect(trainer.game.value.streak).toBe(1);
+    expect(trainer.game.value.bestStreak).toBe(1);
+    expect(trainer.game.value.missesInRow).toBe(0);
     expect(trainer.game.value.status).toBe('answered');
 
     trainer.nextQuestion();
@@ -153,7 +160,85 @@ describe('useTraditionalTrainer', () => {
     expect(result.correct).toBe(false);
     expect(trainer.game.value.score).toBe(0);
     expect(trainer.game.value.streak).toBe(0);
+    expect(trainer.game.value.missesInRow).toBe(1);
     expect(trainer.game.value.lastCorrect).toBe(false);
+  });
+
+  it('正解すると連続ミス回数をリセットする', async () => {
+    let trainer!: ReturnType<typeof useTraditionalTrainer>;
+
+    const Harness = defineComponent({
+      setup() {
+        trainer = useTraditionalTrainer();
+        return () => h('div');
+      },
+    });
+
+    await mountSuspended(Harness);
+    resetTrainerState();
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    await trainer.initialize(1);
+    const wrongChoiceId = trainer.game.value.currentQuestion?.choices.find(
+      (choice) => !choice.correct
+    )?.id as string;
+
+    trainer.submitAnswer(wrongChoiceId);
+    expect(trainer.game.value.missesInRow).toBe(1);
+
+    trainer.nextQuestion();
+    trainer.submitAnswer(trainer.correctChoice.value?.id as string);
+
+    expect(trainer.game.value.missesInRow).toBe(0);
+    expect(trainer.game.value.bestStreak).toBe(1);
+  });
+
+  it('3回連続で不正解になるとゲーム終了になる', async () => {
+    let trainer!: ReturnType<typeof useTraditionalTrainer>;
+
+    const Harness = defineComponent({
+      setup() {
+        trainer = useTraditionalTrainer();
+        return () => h('div');
+      },
+    });
+
+    await mountSuspended(Harness);
+    resetTrainerState();
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    await trainer.initialize(1);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoiceId = trainer.game.value.currentQuestion?.choices.find(
+        (choice) => !choice.correct
+      )?.id as string;
+
+      trainer.submitAnswer(wrongChoiceId);
+
+      if (attempt < 2) {
+        trainer.nextQuestion();
+      }
+    }
+
+    expect(trainer.game.value.status).toBe('finished');
+    expect(trainer.game.value.missesInRow).toBe(3);
+    expect(trainer.game.value.score).toBe(0);
+
+    const finishedQuestionId = trainer.game.value.currentQuestion?.questionId;
+    trainer.nextQuestion();
+    expect(trainer.game.value.currentQuestion?.questionId).toBe(finishedQuestionId);
+  });
+
+  it('連続正解ボーナスは段階的に増える', () => {
+    expect(getScoreForCorrectAnswer(1)).toBe(10);
+    expect(getScoreForCorrectAnswer(2)).toBe(10);
+    expect(getScoreForCorrectAnswer(3)).toBe(15);
+    expect(getScoreForCorrectAnswer(4)).toBe(15);
+    expect(getScoreForCorrectAnswer(5)).toBe(20);
+    expect(getScoreForCorrectAnswer(6)).toBe(20);
+    expect(getScoreForCorrectAnswer(7)).toBe(25);
+    expect(getScoreForCorrectAnswer(10)).toBe(25);
   });
 
   it('未初期化のまま回答しようとすると失敗する', async () => {
@@ -236,6 +321,50 @@ describe('useTraditionalTrainer', () => {
 
     level2Deferred.resolve(level2Vocabulary);
     await level2Task;
+
+    expect(trainer.game.value.level).toBe(3);
+    expect(trainer.game.value.currentQuestion?.level).toBe(3);
+    expect(level3Vocabulary.map((entry) => entry.trad)).toContain(
+      trainer.game.value.currentQuestion?.trad as string
+    );
+    expect(trainer.isLoading.value).toBe(false);
+  });
+
+  it('古い初期化リクエストの失敗は最新状態をエラー化しない', async () => {
+    let trainer!: ReturnType<typeof useTraditionalTrainer>;
+    const level2Deferred = createDeferred<VocabEntry[]>();
+    const level3Deferred = createDeferred<VocabEntry[]>();
+
+    loadVocabularyLevelMock.mockImplementation((level) => {
+      if (level === 2) {
+        return level2Deferred.promise;
+      }
+
+      if (level === 3) {
+        return level3Deferred.promise;
+      }
+
+      return Promise.resolve(level1Vocabulary);
+    });
+
+    const Harness = defineComponent({
+      setup() {
+        trainer = useTraditionalTrainer();
+        return () => h('div');
+      },
+    });
+
+    await mountSuspended(Harness);
+    resetTrainerState();
+
+    const level2Task = trainer.initialize(2);
+    const level3Task = trainer.initialize(3);
+
+    level3Deferred.resolve(level3Vocabulary);
+    await level3Task;
+
+    level2Deferred.reject(new Error('level 2 missing'));
+    await expect(level2Task).resolves.toBeUndefined();
 
     expect(trainer.game.value.level).toBe(3);
     expect(trainer.game.value.currentQuestion?.level).toBe(3);

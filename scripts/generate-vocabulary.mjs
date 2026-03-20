@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const repoRoot = process.cwd();
 const defaultTocflPath = path.join(repoRoot, 'data', 'source-snapshots', 'tocfl_words.json');
@@ -97,6 +98,10 @@ const rejectionPatterns = [
   /台湾のpr\./i,
   /^\(/,
 ];
+const allHanGlossPattern = /^[\p{Script=Han}々]+$/u;
+const simplifiedChineseGlossPattern =
+  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样/u;
+const untranslatedChineseGlossPattern = /什麼|甚麼|東南亞|山東|^[\p{Script=Han}々]+と同じ$/u;
 
 const toneMap = new Map([
   ['ā', ['a', 1]],
@@ -353,7 +358,7 @@ const isRejectedGlossCandidate = (candidate) => {
     return true;
   }
 
-  if (candidate.length > 24) {
+  if (candidate.length > 18) {
     return true;
   }
 
@@ -406,8 +411,32 @@ const extractCandidates = (...glosses) => {
   return candidates;
 };
 
-const scoreCandidate = (candidate) => {
+export const isRejectedJapaneseGlossCandidate = (candidate, source = 'ja') => {
+  if (!candidate) {
+    return true;
+  }
+
+  if (simplifiedChineseGlossPattern.test(candidate)) {
+    return true;
+  }
+
+  if (untranslatedChineseGlossPattern.test(candidate)) {
+    return true;
+  }
+
+  if (source !== 'ja' && allHanGlossPattern.test(candidate)) {
+    return true;
+  }
+
+  return false;
+};
+
+export const scoreCandidate = (candidate, source = 'ja') => {
   let score = 0;
+
+  if (isRejectedJapaneseGlossCandidate(candidate, source)) {
+    return Number.NEGATIVE_INFINITY;
+  }
 
   if (/[ぁ-んァ-ヶ]/.test(candidate)) {
     score += 6;
@@ -437,12 +466,8 @@ const scoreCandidate = (candidate) => {
     score += 2;
   }
 
-  if (candidate.length > 28) {
-    score -= 3;
-  }
-
   if (candidate.length > 18) {
-    score -= 2;
+    score -= 6;
   }
 
   if (rejectionPatterns.some((pattern) => pattern.test(candidate))) {
@@ -452,17 +477,30 @@ const scoreCandidate = (candidate) => {
   return score;
 };
 
-const pickBestGloss = (glossPairs) => {
+export const pickBestGloss = (glossPairs) => {
   const candidates = [];
 
   for (const [meansJa, means] of glossPairs) {
-    candidates.push(...extractCandidates(meansJa, means));
+    candidates.push(
+      ...extractCandidates(meansJa).map((candidate) => ({ candidate, source: 'ja' }))
+    );
+    candidates.push(
+      ...extractCandidates(means).map((candidate) => ({ candidate, source: 'fallback' }))
+    );
   }
 
-  const uniqueCandidates = [...new Set(candidates)]
-    .map((candidate) => ({
-      candidate,
-      score: scoreCandidate(candidate),
+  const candidateMap = new Map();
+
+  for (const entry of candidates) {
+    if (!candidateMap.has(entry.candidate) || entry.source === 'ja') {
+      candidateMap.set(entry.candidate, entry);
+    }
+  }
+
+  const uniqueCandidates = [...candidateMap.values()]
+    .map((entry) => ({
+      candidate: entry.candidate,
+      score: scoreCandidate(entry.candidate, entry.source),
     }))
     .filter((entry) => entry.score >= 1)
     .sort(
@@ -488,192 +526,202 @@ const buildLevelThreeCategory = (word) => {
   return `extended:${word[0]}`;
 };
 
-const manualVocabulary = JSON.parse(fs.readFileSync(manualVocabularyPath, 'utf8'));
+export const generateVocabulary = () => {
+  const manualVocabulary = JSON.parse(fs.readFileSync(manualVocabularyPath, 'utf8'));
 
-ensureFileExists(tocflSourcePath, 'TOCFL source');
-ensureFileExists(mjdicSourcePath, 'MJdic source');
-fs.mkdirSync(publicWordlistDir, { recursive: true });
+  ensureFileExists(tocflSourcePath, 'TOCFL source');
+  ensureFileExists(mjdicSourcePath, 'MJdic source');
+  fs.mkdirSync(publicWordlistDir, { recursive: true });
 
-const tocflRows = fs
-  .readFileSync(tocflSourcePath, 'utf8')
-  .split(/\r?\n/)
-  .filter(Boolean)
-  .map((line) => JSON.parse(line));
-const mjdicRows = fs.readFileSync(mjdicSourcePath, 'utf8').split(/\r?\n/).filter(Boolean).slice(1);
-const validSyllables = buildValidSyllables(mjdicRows);
-const dictionary = new Map();
-const tocflByTrad = new Map(tocflRows.map((item) => [String(item.text).trim(), item]));
-const mjdicPronunciationByTrad = new Map();
+  const tocflRows = fs
+    .readFileSync(tocflSourcePath, 'utf8')
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+  const mjdicRows = fs
+    .readFileSync(mjdicSourcePath, 'utf8')
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .slice(1);
+  const validSyllables = buildValidSyllables(mjdicRows);
+  const dictionary = new Map();
+  const tocflByTrad = new Map(tocflRows.map((item) => [String(item.text).trim(), item]));
+  const mjdicPronunciationByTrad = new Map();
 
-for (const row of mjdicRows) {
-  const [trad, , pronunciation, means, meansJa] = parseCsvLine(row.replace(/^\uFEFF/, ''));
+  for (const row of mjdicRows) {
+    const [trad, , pronunciation, means, meansJa] = parseCsvLine(row.replace(/^\uFEFF/, ''));
 
-  if (!trad) {
-    continue;
+    if (!trad) {
+      continue;
+    }
+
+    const normalizedPronunciation = normalizeMjdicPronunciation(pronunciation);
+
+    if (normalizedPronunciation) {
+      const exactKey = `${trad}\t${normalizedPronunciation}`;
+      const exactEntries = dictionary.get(exactKey) ?? [];
+      exactEntries.push([meansJa, means]);
+      dictionary.set(exactKey, exactEntries);
+    }
+
+    const fallbackKey = `${trad}\t`;
+    const fallbackEntries = dictionary.get(fallbackKey) ?? [];
+    fallbackEntries.push([meansJa, means]);
+    dictionary.set(fallbackKey, fallbackEntries);
+
+    if (!mjdicPronunciationByTrad.has(trad) && normalizedPronunciation) {
+      mjdicPronunciationByTrad.set(trad, normalizedPronunciation);
+    }
   }
 
-  const normalizedPronunciation = normalizeMjdicPronunciation(pronunciation);
+  const mergedVocabulary = [];
+  const seenTrad = new Set();
 
-  if (normalizedPronunciation) {
-    const exactKey = `${trad}\t${normalizedPronunciation}`;
-    const exactEntries = dictionary.get(exactKey) ?? [];
-    exactEntries.push([meansJa, means]);
-    dictionary.set(exactKey, exactEntries);
+  for (const entry of manualVocabulary) {
+    if (seenTrad.has(entry.trad)) {
+      continue;
+    }
+
+    const tocflItem = tocflByTrad.get(entry.trad);
+    const normalizedPronunciation =
+      entry.pronunciation ||
+      (tocflItem
+        ? (normalizeTocflPronunciation(tocflItem.pinyin, tocflItem.zhuyin, validSyllables) ??
+          undefined)
+        : mjdicPronunciationByTrad.get(entry.trad));
+
+    seenTrad.add(entry.trad);
+    mergedVocabulary.push({
+      ...entry,
+      tocflLevel: entry.tocflLevel ?? tocflItem?.tocfl_level,
+      pronunciation: normalizedPronunciation,
+    });
   }
 
-  const fallbackKey = `${trad}\t`;
-  const fallbackEntries = dictionary.get(fallbackKey) ?? [];
-  fallbackEntries.push([meansJa, means]);
-  dictionary.set(fallbackKey, fallbackEntries);
+  let tocflImported = 0;
 
-  if (!mjdicPronunciationByTrad.has(trad) && normalizedPronunciation) {
-    mjdicPronunciationByTrad.set(trad, normalizedPronunciation);
+  for (const item of tocflRows) {
+    const trad = String(item.text).trim();
+
+    if (seenTrad.has(trad) || !/^[\p{Script=Han}]+$/u.test(trad)) {
+      continue;
+    }
+
+    const length = [...trad].length;
+
+    if (length < 1 || length > 4) {
+      continue;
+    }
+
+    const normalizedPronunciation = normalizeTocflPronunciation(
+      item.pinyin,
+      item.zhuyin,
+      validSyllables
+    );
+    const exactMatches = normalizedPronunciation
+      ? (dictionary.get(`${trad}\t${normalizedPronunciation}`) ?? [])
+      : [];
+    const fallbackMatches = dictionary.get(`${trad}\t`) ?? [];
+    const bestGloss =
+      importOverrides.get(trad) ??
+      pickBestGloss(exactMatches.length > 0 ? exactMatches : fallbackMatches);
+
+    if (!bestGloss) {
+      continue;
+    }
+
+    seenTrad.add(trad);
+    tocflImported += 1;
+    mergedVocabulary.push({
+      id: `tocfl-${String(item.id).padStart(5, '0')}`,
+      trad,
+      ja: bestGloss,
+      level: determineLevel(length),
+      length,
+      category: `tocfl:${item.category}`,
+      taiwanPriority: true,
+      sources: ['tocfl', 'mjdic'],
+      tocflLevel: item.tocfl_level,
+      pronunciation: normalizedPronunciation ?? undefined,
+    });
   }
-}
 
-const mergedVocabulary = [];
-const seenTrad = new Set();
+  let levelThreeImported = 0;
 
-for (const entry of manualVocabulary) {
-  if (seenTrad.has(entry.trad)) {
-    continue;
+  for (let index = 0; index < mjdicRows.length; index += 1) {
+    const [trad, , pronunciation, means, meansJa] = parseCsvLine(
+      mjdicRows[index].replace(/^\uFEFF/, '')
+    );
+
+    if (!trad || seenTrad.has(trad) || !/^[\p{Script=Han}]+$/u.test(trad)) {
+      continue;
+    }
+
+    const length = [...trad].length;
+
+    if (length < 5 || length > 6) {
+      continue;
+    }
+
+    const bestGloss = pickBestGloss([[meansJa, means]]);
+
+    if (!bestGloss) {
+      continue;
+    }
+
+    seenTrad.add(trad);
+    levelThreeImported += 1;
+    mergedVocabulary.push({
+      id: `mjdic-${String(index + 1).padStart(6, '0')}`,
+      trad,
+      ja: bestGloss,
+      level: 3,
+      length,
+      category: buildLevelThreeCategory(trad),
+      taiwanPriority: true,
+      sources: ['mjdic'],
+      pronunciation: normalizeMjdicPronunciation(pronunciation) ?? undefined,
+    });
   }
 
-  const tocflItem = tocflByTrad.get(entry.trad);
-  const normalizedPronunciation =
-    entry.pronunciation ||
-    (tocflItem
-      ? (normalizeTocflPronunciation(tocflItem.pinyin, tocflItem.zhuyin, validSyllables) ??
-        undefined)
-      : mjdicPronunciationByTrad.get(entry.trad));
+  const sortedVocabulary = mergedVocabulary.sort((left, right) => {
+    if (left.level !== right.level) {
+      return left.level - right.level;
+    }
 
-  seenTrad.add(entry.trad);
-  mergedVocabulary.push({
-    ...entry,
-    tocflLevel: entry.tocflLevel ?? tocflItem?.tocfl_level,
-    pronunciation: normalizedPronunciation,
+    if (left.length !== right.length) {
+      return left.length - right.length;
+    }
+
+    return left.trad.localeCompare(right.trad, 'zh-Hant');
   });
-}
 
-let tocflImported = 0;
+  fs.writeFileSync(outputPath, `${JSON.stringify(sortedVocabulary, null, 2)}\n`);
 
-for (const item of tocflRows) {
-  const trad = String(item.text).trim();
+  const metadata = {
+    total: sortedVocabulary.length,
+    counts: {
+      1: 0,
+      2: 0,
+      3: 0,
+    },
+  };
 
-  if (seenTrad.has(trad) || !/^[\p{Script=Han}]+$/u.test(trad)) {
-    continue;
+  for (const level of [1, 2, 3]) {
+    const levelEntries = sortedVocabulary.filter((entry) => entry.level === level);
+    metadata.counts[level] = levelEntries.length;
+    fs.writeFileSync(splitOutputPaths[level], `${JSON.stringify(levelEntries, null, 2)}\n`);
+    fs.writeFileSync(publicWordlistPaths[level], `${JSON.stringify(levelEntries, null, 2)}\n`);
   }
 
-  const length = [...trad].length;
+  fs.writeFileSync(metadataOutputPath, `${JSON.stringify(metadata, null, 2)}\n`);
+  fs.writeFileSync(publicMetadataOutputPath, `${JSON.stringify(metadata, null, 2)}\n`);
 
-  if (length < 1 || length > 4) {
-    continue;
-  }
-
-  const normalizedPronunciation = normalizeTocflPronunciation(
-    item.pinyin,
-    item.zhuyin,
-    validSyllables
+  console.log(
+    `Generated ${sortedVocabulary.length} entries (${manualVocabulary.length} manual, ${tocflImported} TOCFL, ${levelThreeImported} MJdic level-3).`
   );
-  const exactMatches = normalizedPronunciation
-    ? (dictionary.get(`${trad}\t${normalizedPronunciation}`) ?? [])
-    : [];
-  const fallbackMatches = dictionary.get(`${trad}\t`) ?? [];
-  const bestGloss =
-    importOverrides.get(trad) ??
-    pickBestGloss(exactMatches.length > 0 ? exactMatches : fallbackMatches);
-
-  if (!bestGloss) {
-    continue;
-  }
-
-  seenTrad.add(trad);
-  tocflImported += 1;
-  mergedVocabulary.push({
-    id: `tocfl-${String(item.id).padStart(5, '0')}`,
-    trad,
-    ja: bestGloss,
-    level: determineLevel(length),
-    length,
-    category: `tocfl:${item.category}`,
-    taiwanPriority: true,
-    sources: ['tocfl', 'mjdic'],
-    tocflLevel: item.tocfl_level,
-    pronunciation: normalizedPronunciation ?? undefined,
-  });
-}
-
-let levelThreeImported = 0;
-
-for (let index = 0; index < mjdicRows.length; index += 1) {
-  const [trad, , pronunciation, means, meansJa] = parseCsvLine(
-    mjdicRows[index].replace(/^\uFEFF/, '')
-  );
-
-  if (!trad || seenTrad.has(trad) || !/^[\p{Script=Han}]+$/u.test(trad)) {
-    continue;
-  }
-
-  const length = [...trad].length;
-
-  if (length < 5 || length > 6) {
-    continue;
-  }
-
-  const bestGloss = pickBestGloss([[meansJa, means]]);
-
-  if (!bestGloss) {
-    continue;
-  }
-
-  seenTrad.add(trad);
-  levelThreeImported += 1;
-  mergedVocabulary.push({
-    id: `mjdic-${String(index + 1).padStart(6, '0')}`,
-    trad,
-    ja: bestGloss,
-    level: 3,
-    length,
-    category: buildLevelThreeCategory(trad),
-    taiwanPriority: true,
-    sources: ['mjdic'],
-    pronunciation: normalizeMjdicPronunciation(pronunciation) ?? undefined,
-  });
-}
-
-const sortedVocabulary = mergedVocabulary.sort((left, right) => {
-  if (left.level !== right.level) {
-    return left.level - right.level;
-  }
-
-  if (left.length !== right.length) {
-    return left.length - right.length;
-  }
-
-  return left.trad.localeCompare(right.trad, 'zh-Hant');
-});
-
-fs.writeFileSync(outputPath, `${JSON.stringify(sortedVocabulary, null, 2)}\n`);
-
-const metadata = {
-  total: sortedVocabulary.length,
-  counts: {
-    1: 0,
-    2: 0,
-    3: 0,
-  },
 };
 
-for (const level of [1, 2, 3]) {
-  const levelEntries = sortedVocabulary.filter((entry) => entry.level === level);
-  metadata.counts[level] = levelEntries.length;
-  fs.writeFileSync(splitOutputPaths[level], `${JSON.stringify(levelEntries, null, 2)}\n`);
-  fs.writeFileSync(publicWordlistPaths[level], `${JSON.stringify(levelEntries, null, 2)}\n`);
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  generateVocabulary();
 }
-
-fs.writeFileSync(metadataOutputPath, `${JSON.stringify(metadata, null, 2)}\n`);
-fs.writeFileSync(publicMetadataOutputPath, `${JSON.stringify(metadata, null, 2)}\n`);
-
-console.log(
-  `Generated ${sortedVocabulary.length} entries (${manualVocabulary.length} manual, ${tocflImported} TOCFL, ${levelThreeImported} MJdic level-3).`
-);

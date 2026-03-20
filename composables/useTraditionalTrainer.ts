@@ -2,10 +2,29 @@ import type { AnswerResult, GameState, Level } from '~/types/vocabulary';
 import { buildQuestion, getCorrectChoice, RECENT_WINDOW_SIZE } from '~/utils/trainer';
 import { loadVocabularyLevel } from '~/utils/vocabulary';
 
+export const MAX_MISSES_IN_ROW = 3;
+export const getScoreForCorrectAnswer = (nextStreak: number) => {
+  if (nextStreak >= 7) {
+    return 25;
+  }
+
+  if (nextStreak >= 5) {
+    return 20;
+  }
+
+  if (nextStreak >= 3) {
+    return 15;
+  }
+
+  return 10;
+};
+
 const createGameState = (level: Level): GameState => ({
   level,
   score: 0,
   streak: 0,
+  bestStreak: 0,
+  missesInRow: 0,
   rounds: 0,
   status: 'ready',
   currentQuestion: null,
@@ -53,6 +72,12 @@ export const useTraditionalTrainer = () => {
         ...createGameState(level),
         currentQuestion: buildQuestion(pool, level, []),
       };
+    } catch (error) {
+      if (latestInitializeRequestId.value !== requestId) {
+        return;
+      }
+
+      throw error;
     } finally {
       if (latestInitializeRequestId.value === requestId) {
         isLoading.value = false;
@@ -65,7 +90,7 @@ export const useTraditionalTrainer = () => {
       throw new Error('Question is not ready yet.');
     }
 
-    if (game.value.status === 'answered') {
+    if (game.value.status === 'answered' || game.value.status === 'finished') {
       return {
         correct: game.value.lastCorrect ?? false,
         correctChoiceId: correctChoice.value.id,
@@ -73,13 +98,19 @@ export const useTraditionalTrainer = () => {
     }
 
     const correct = choiceId === correctChoice.value.id;
+    const nextStreak = correct ? game.value.streak + 1 : 0;
+    const nextMissesInRow = correct ? 0 : game.value.missesInRow + 1;
+    const nextStatus = nextMissesInRow >= MAX_MISSES_IN_ROW ? 'finished' : 'answered';
+    const scoreGain = correct ? getScoreForCorrectAnswer(nextStreak) : 0;
 
     game.value.selectedChoiceId = choiceId;
     game.value.lastCorrect = correct;
-    game.value.status = 'answered';
+    game.value.status = nextStatus;
     game.value.rounds += 1;
-    game.value.streak = correct ? game.value.streak + 1 : 0;
-    game.value.score += correct ? 10 : 0;
+    game.value.streak = nextStreak;
+    game.value.bestStreak = Math.max(game.value.bestStreak, nextStreak);
+    game.value.missesInRow = nextMissesInRow;
+    game.value.score += scoreGain;
     game.value.recentQuestionIds = [
       ...game.value.recentQuestionIds,
       game.value.currentQuestion.questionId,
@@ -92,6 +123,10 @@ export const useTraditionalTrainer = () => {
   };
 
   const nextQuestion = () => {
+    if (game.value.status === 'finished') {
+      return;
+    }
+
     const pool = loadedLevels.value[game.value.level] ?? [];
     game.value.currentQuestion = buildQuestion(
       pool,

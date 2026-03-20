@@ -65,6 +65,22 @@ describe('vocabulary utilities', () => {
     await expect(loadVocabularyLevel(1)).rejects.toThrow('expected level 1, got 2');
   });
 
+  it('文字数が実データと合わない語彙データを拒否する', async () => {
+    fetchMock.mockResolvedValue([createEntry({ trad: '早安', length: 3 })]);
+
+    const { loadVocabularyLevel } = await import('~/utils/vocabulary');
+
+    await expect(loadVocabularyLevel(1)).rejects.toThrow('expected 3, got 2');
+  });
+
+  it('レベルの長さ範囲に合わない語彙データを拒否する', async () => {
+    fetchMock.mockResolvedValue([createEntry({ trad: '國際電話卡', level: 2, length: 5 })]);
+
+    const { loadVocabularyLevel } = await import('~/utils/vocabulary');
+
+    await expect(loadVocabularyLevel(2)).rejects.toThrow('does not fit level 2');
+  });
+
   it('metadata を読み込み、同じ結果はキャッシュを再利用する', async () => {
     fetchMock.mockResolvedValue(validMetadata);
 
@@ -76,5 +92,27 @@ describe('vocabulary utilities', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(first).toEqual(validMetadata);
     expect(second).toBe(first);
+  });
+
+  it('metadata の取得失敗時はセットアップ案内付きで失敗する', async () => {
+    fetchMock.mockRejectedValue(new Error('metadata missing'));
+
+    const { loadVocabularyMetadata } = await import('~/utils/vocabulary');
+
+    await expect(loadVocabularyMetadata()).rejects.toThrow('npm run setup:data');
+  });
+
+  it('metadata の不正な構造を拒否する', async () => {
+    fetchMock.mockResolvedValue({
+      total: 3,
+      counts: {
+        1: 1,
+        2: 1,
+      },
+    });
+
+    const { loadVocabularyMetadata } = await import('~/utils/vocabulary');
+
+    await expect(loadVocabularyMetadata()).rejects.toThrow();
   });
 });

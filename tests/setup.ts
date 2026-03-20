@@ -44,6 +44,10 @@ class MockAudioContext {
 }
 
 beforeEach(() => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   const speechSynthesisMock = {
     speaking: false,
     getVoices: vi.fn(() => [{ lang: 'zh-TW', name: 'Mock Taiwanese' }] as SpeechSynthesisVoice[]),

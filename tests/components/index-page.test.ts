@@ -1,8 +1,9 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime';
-import { flushPromises } from '@vue/test-utils';
+import { flushPromises, type VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed, ref } from 'vue';
 
+import { getScoreForCorrectAnswer } from '~/composables/useTraditionalTrainer';
 import IndexPage from '~/pages/index.vue';
 import type { GameState } from '~/types/vocabulary';
 
@@ -14,6 +15,7 @@ vi.mock('@vueuse/core', () => ({
 
 const useTraditionalTrainerMock = vi.hoisted(() => vi.fn());
 const loadVocabularyMetadataMock = vi.hoisted(() => vi.fn());
+const HIGH_SCORE_STORAGE_KEY = 'lexi-formosa-high-scores-v2';
 
 mockNuxtImport('useTraditionalTrainer', () => useTraditionalTrainerMock);
 
@@ -30,6 +32,8 @@ const createGameState = (): GameState => ({
   level: 1,
   score: 0,
   streak: 0,
+  bestStreak: 0,
+  missesInRow: 0,
   rounds: 0,
   status: 'ready',
   currentQuestion: questionOne,
@@ -51,14 +55,20 @@ const createTrainerStub = () => {
     initialize: vi.fn(async () => undefined),
     submitAnswer: vi.fn((choiceId: string) => {
       const correct = choiceId === questionOne.questionId;
+      const nextStreak = correct ? game.value.streak + 1 : 0;
+      const nextMissesInRow = correct ? 0 : game.value.missesInRow + 1;
+      const nextStatus = nextMissesInRow >= 3 ? 'finished' : 'answered';
+      const scoreGain = correct ? getScoreForCorrectAnswer(nextStreak) : 0;
       game.value = {
         ...game.value,
-        status: 'answered',
+        status: nextStatus,
         selectedChoiceId: choiceId,
         lastCorrect: correct,
         rounds: game.value.rounds + 1,
-        score: correct ? game.value.score + 10 : game.value.score,
-        streak: correct ? game.value.streak + 1 : 0,
+        score: game.value.score + scoreGain,
+        streak: nextStreak,
+        bestStreak: Math.max(game.value.bestStreak, nextStreak),
+        missesInRow: nextMissesInRow,
       };
 
       return {
@@ -67,6 +77,10 @@ const createTrainerStub = () => {
       };
     }),
     nextQuestion: vi.fn(() => {
+      if (game.value.status === 'finished') {
+        return;
+      }
+
       game.value = {
         ...game.value,
         status: 'ready',
@@ -76,17 +90,40 @@ const createTrainerStub = () => {
         recentQuestionIds: [questionOne.questionId],
       };
     }),
-    resetSession: vi.fn(async () => undefined),
+    resetSession: vi.fn(async () => {
+      game.value = {
+        ...createGameState(),
+        level: game.value.level,
+      };
+    }),
     setLevel: vi.fn(async () => undefined),
   };
+};
+
+const createDeferred = <T>() => {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+
+  return { promise, resolve, reject };
+};
+
+const startGame = async (wrapper: VueWrapper) => {
+  await wrapper.get('button.session-start-button').trigger('click');
+  await flushPromises();
 };
 
 describe('index page', () => {
   afterEach(() => {
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   beforeEach(() => {
+    window.localStorage.clear();
     useTraditionalTrainerMock.mockReset();
     useTraditionalTrainerMock.mockReturnValue(createTrainerStub());
     loadVocabularyMetadataMock.mockReset();
@@ -100,17 +137,62 @@ describe('index page', () => {
     });
   });
 
-  it('読み方を表示する', async () => {
+  it('初回表示では開始パネルを表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
+    expect(wrapper.text()).toContain('v1.0.0');
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).toContain('このレベルで始める');
+    expect(wrapper.text()).toContain('45語');
+    expect(wrapper.text()).not.toContain('你好');
+  });
+
+  it('開始画面ではレベルごとの最高記録を表示する', async () => {
+    window.localStorage.setItem(
+      HIGH_SCORE_STORAGE_KEY,
+      JSON.stringify({
+        1: { score: 80, streak: 5 },
+        2: { score: 140, streak: 9 },
+        3: { score: 60, streak: 3 },
+      })
+    );
+
+    const wrapper = await mountSuspended(IndexPage);
+    const recordGridText = wrapper.get('.record-grid').text();
+
+    expect(wrapper.text()).toContain('レベルごとの最高記録');
+    expect(recordGridText).toContain('Level 1');
+    expect(recordGridText).toContain('Best Score');
+    expect(recordGridText).toContain('80');
+    expect(recordGridText).toContain('Best Streak');
+    expect(recordGridText).toContain('5');
+    expect(recordGridText).toContain('Level 2');
+    expect(recordGridText).toContain('140');
+    expect(recordGridText).toContain('9');
+    expect(recordGridText).toContain('Level 3');
+    expect(recordGridText).toContain('60');
+    expect(recordGridText).toContain('3');
+    expect(recordGridText).not.toContain('45語');
+  });
+
+  it('開始後に読み方を表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    expect(wrapper.text()).toContain('今回の記録');
+    expect(wrapper.text()).toContain('Score');
+    expect(wrapper.find('.level-panel').exists()).toBe(false);
     expect(wrapper.text()).toContain('你好');
     expect(wrapper.text()).toContain('ニ ハオ');
     expect(wrapper.text()).toContain('nǐ hǎo');
-    expect(wrapper.text()).toContain('45語');
   });
 
-  it('回答後に正誤表示を更新し、次の問題で音声を自動再生する', async () => {
+  it('正解時にそのレベルの最高記録を保存する', async () => {
     const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
     const answerButton = wrapper
       .findAll('.choice-card')
       .find((candidate) => candidate.text().includes('こんにちは'));
@@ -118,7 +200,195 @@ describe('index page', () => {
     await answerButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('Correct');
+    expect(window.localStorage.getItem(HIGH_SCORE_STORAGE_KEY)).toBe(
+      '{"1":{"score":10,"streak":1},"2":{"score":0,"streak":0},"3":{"score":0,"streak":0}}'
+    );
+  });
+
+  it('3連続で不正解になるとゲーム終了と記録更新表示を出す', async () => {
+    window.localStorage.setItem(
+      HIGH_SCORE_STORAGE_KEY,
+      JSON.stringify({
+        1: { score: 0, streak: 0 },
+        2: { score: 0, streak: 0 },
+        3: { score: 0, streak: 0 },
+      })
+    );
+
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    const correctChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await correctChoice?.trigger('click');
+    await flushPromises();
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    expect(wrapper.text()).toContain('Game Over');
+    expect(wrapper.text()).toContain('新記録達成');
+    expect(wrapper.text()).toContain('今回のプレイで自己ベストを更新しました');
+    expect(wrapper.text()).toContain('NEW BEST');
+    expect(wrapper.text()).toContain('この回の得点');
+    expect(wrapper.text()).toContain('この回の最高連続');
+    expect(wrapper.text()).toContain('このレベルの最高得点');
+    expect(wrapper.text()).toContain('このレベルの最高連続');
+    expect(wrapper.text()).toContain('10');
+    expect(wrapper.text()).toContain('1');
+    expect(wrapper.text()).toContain('自己ベストを更新');
+    expect(wrapper.text()).toContain('もう一度始める');
+    expect(wrapper.text()).toContain('トップへ戻る');
+  });
+
+  it('ゲームオーバー後にもう一度始めると同じレベルで即再開する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('你好');
+    expect(wrapper.text()).not.toContain('ゲームを始める');
+    expect(wrapper.find('.level-panel').exists()).toBe(false);
+  });
+
+  it('ゲームオーバー後にトップへ戻ると開始画面へ戻る', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    const topButton = wrapper
+      .findAll('button')
+      .find((candidate) => candidate.text().includes('トップへ戻る'));
+
+    await topButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.find('.level-panel').exists()).toBe(true);
+  });
+
+  it('不正解時は正解と終了までの残り回数を表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const wrongChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('牛乳'));
+
+    await wrongChoice?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('不正解です。正解は「こんにちは」です。あと2回で終了');
+  });
+
+  it('旧形式の最高記録も読み込める', async () => {
+    window.localStorage.setItem(
+      HIGH_SCORE_STORAGE_KEY,
+      JSON.stringify({
+        1: 50,
+        2: 90,
+        3: 30,
+      })
+    );
+
+    const wrapper = await mountSuspended(IndexPage);
+
+    expect(wrapper.text()).toContain('50');
+    expect(wrapper.text()).toContain('90');
+    expect(wrapper.text()).toContain('30');
+  });
+
+  it('外部確認リンクは回答後に別タブで表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    expect(wrapper.findAll('a.lookup-link')).toHaveLength(0);
+
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('.lookup-panel').exists()).toBe(true);
+    const lookupLinks = wrapper.findAll('a.lookup-link');
+
+    expect(lookupLinks).toHaveLength(2);
+    expect(lookupLinks[0]?.text()).toContain('Google 翻訳で調べる');
+    expect(lookupLinks[0]?.attributes('href')).toBe(
+      'https://translate.google.com/?sl=zh-TW&tl=ja&text=%E4%BD%A0%E5%A5%BD&op=translate'
+    );
+    expect(lookupLinks[1]?.text()).toContain('Weblio で調べる');
+    expect(lookupLinks[1]?.attributes('href')).toBe(
+      'https://cjjc.weblio.jp/content/%E4%BD%A0%E5%A5%BD'
+    );
+
+    for (const link of lookupLinks) {
+      expect(link.attributes('target')).toBe('_blank');
+      expect(link.attributes('rel')).toBe('noopener noreferrer');
+    }
+  });
+
+  it('回答後に正誤表示を更新し、次の問題で音声を自動再生する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('正解');
 
     const nextButton = wrapper.get('button.primary-button');
     await nextButton.trigger('click');
@@ -133,9 +403,60 @@ describe('index page', () => {
 
     const wrapper = await mountSuspended(IndexPage);
 
-    expect(wrapper.text()).toContain('你好');
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).toContain('語数未取得');
+    expect(wrapper.text()).not.toContain('語数を読み込み中');
     expect(wrapper.text()).toContain('この単語の意味は？');
     expect(wrapper.text()).not.toContain('辞書データ未生成');
+  });
+
+  it('metadata が応答しなくても初期化失敗はすぐに表示する', async () => {
+    const trainer = createTrainerStub();
+    const deferred = createDeferred<never>();
+    trainer.game.value = {
+      ...trainer.game.value,
+      currentQuestion: null,
+    };
+    trainer.initialize.mockRejectedValue(new Error('wordlist missing'));
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+    loadVocabularyMetadataMock.mockReturnValue(deferred.promise);
+
+    const wrapper = await mountSuspended(IndexPage);
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('辞書データがありません');
+    expect(wrapper.text()).toContain('wordlist missing');
+    expect(wrapper.text()).toContain('npm run setup:data');
+  });
+
+  it('localStorage の読み込みに失敗しても開始画面は表示できる', async () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('blocked', 'SecurityError');
+    });
+
+    const wrapper = await mountSuspended(IndexPage);
+
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).toContain('レベルごとの最高記録');
+  });
+
+  it('localStorage の保存に失敗してもゲーム本体は継続できる', async () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota exceeded', 'QuotaExceededError');
+    });
+
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('正解');
+    expect(wrapper.text()).toContain('Score');
   });
 
   it('レベル変更失敗時は UI にエラーを表示する', async () => {
@@ -153,9 +474,67 @@ describe('index page', () => {
 
     expect(trainer.setLevel).toHaveBeenCalledWith(2);
     expect(wrapper.text()).toContain('level 2 missing');
-    expect(wrapper.text()).toContain('你好');
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
+    expect(wrapper.text()).not.toContain('你好');
     expect(wrapper.text()).not.toContain('辞書データ未生成');
-    expect(wrapper.get('button.ghost-button').attributes('disabled')).toBeUndefined();
+    expect(levelButton?.attributes('disabled')).toBeUndefined();
+  });
+
+  it('開始前のレベル変更失敗後にゲームを始めると古いエラーを残さない', async () => {
+    const trainer = createTrainerStub();
+    trainer.setLevel.mockRejectedValueOnce(new Error('level 2 missing'));
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    const levelButton = wrapper
+      .findAll('.level-card')
+      .find((candidate) => candidate.text().includes('Level 2'));
+
+    await levelButton?.trigger('click');
+    await flushPromises();
+    expect(wrapper.text()).toContain('level 2 missing');
+
+    await wrapper.get('button.session-start-button').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).not.toContain('level 2 missing');
+    expect(wrapper.text()).toContain('4つの選択肢から、意味に合うものを1つ選んでください。');
+  });
+
+  it('レベル切替中はゲーム開始を受け付けない', async () => {
+    const trainer = createTrainerStub();
+    const deferred = createDeferred<void>();
+
+    trainer.setLevel.mockImplementation(async () => {
+      trainer.isLoading.value = true;
+      await deferred.promise;
+      trainer.isLoading.value = false;
+    });
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    const levelButton = wrapper
+      .findAll('.level-card')
+      .find((candidate) => candidate.text().includes('Level 2'));
+
+    await levelButton?.trigger('click');
+    await flushPromises();
+
+    const startButton = wrapper.get('button.session-start-button');
+    expect(startButton.attributes('disabled')).toBeDefined();
+
+    await startButton.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).not.toContain('4つの選択肢から、意味に合うものを1つ選んでください。');
+    expect(trainer.game.value.level).toBe(1);
+
+    deferred.resolve();
+    await flushPromises();
+
+    expect(wrapper.get('button.session-start-button').attributes('disabled')).toBeUndefined();
   });
 
   it('リセット失敗時は UI にエラーを表示する', async () => {
@@ -164,9 +543,10 @@ describe('index page', () => {
     useTraditionalTrainerMock.mockReturnValue(trainer);
 
     const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
     const resetButton = wrapper
       .findAll('button')
-      .find((candidate) => candidate.text().includes('リセット'));
+      .find((candidate) => candidate.text().includes('最初からやり直す'));
 
     await resetButton?.trigger('click');
     await flushPromises();
@@ -175,8 +555,37 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('session reset failed');
   });
 
+  it('ゲームオーバー後の再開失敗時も UI にエラーを表示する', async () => {
+    const trainer = createTrainerStub();
+    trainer.resetSession.mockRejectedValue(new Error('restart failed'));
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalled();
+    expect(wrapper.text()).toContain('restart failed');
+    expect(wrapper.text()).toContain('Game Over');
+  });
+
   it('音声未対応環境では音声開始案内を表示しない', async () => {
-    vi.useFakeTimers();
     Reflect.deleteProperty(window as unknown as Record<string, unknown>, 'speechSynthesis');
     Reflect.deleteProperty(
       window as unknown as Record<string, unknown>,
@@ -186,11 +595,8 @@ describe('index page', () => {
 
     const wrapper = await mountSuspended(IndexPage);
 
-    await vi.advanceTimersByTimeAsync(400);
-    await flushPromises();
-
-    expect(wrapper.text()).not.toContain('音声を開始');
-    expect(wrapper.find('.audio-start-notice').exists()).toBe(false);
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).not.toContain('音声開始が必要');
   });
 
   it('voiceschanged で再読み上げ中の音声を再キューしない', async () => {
@@ -214,7 +620,8 @@ describe('index page', () => {
       } satisfies Partial<SpeechSynthesis>,
     });
 
-    await mountSuspended(IndexPage);
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
     await flushPromises();
 
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
@@ -225,10 +632,7 @@ describe('index page', () => {
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
   });
 
-  it('自動再生が始まらない場合は案内ボタンから手動で開始できる', async () => {
-    vi.useFakeTimers();
-
-    let speakCount = 0;
+  it('回答時は進行中の読み上げを停止する', async () => {
     const speechSynthesisMock: {
       speaking: boolean;
       getVoices: ReturnType<typeof vi.fn>;
@@ -245,16 +649,8 @@ describe('index page', () => {
         speechSynthesisMock.speaking = false;
       }),
       speak: vi.fn((utterance: SpeechSynthesisUtterance) => {
-        speakCount += 1;
-
-        if (speakCount === 1) {
-          return;
-        }
-
         speechSynthesisMock.speaking = true;
         utterance.onstart?.({} as SpeechSynthesisEvent);
-        speechSynthesisMock.speaking = false;
-        utterance.onend?.({} as SpeechSynthesisEvent);
       }),
     };
 
@@ -264,17 +660,72 @@ describe('index page', () => {
     });
 
     const wrapper = await mountSuspended(IndexPage);
-
-    await vi.advanceTimersByTimeAsync(400);
+    await startGame(wrapper);
     await flushPromises();
 
-    expect(wrapper.text()).toContain('音声を開始');
+    const cancelCallsBeforeAnswer = speechSynthesisMock.cancel.mock.calls.length;
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
 
-    await wrapper.get('button.audio-start-button').trigger('click');
+    await answerButton?.trigger('click');
     await flushPromises();
 
-    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(2);
-    expect(wrapper.text()).not.toContain('音声を開始');
+    expect(speechSynthesisMock.cancel).toHaveBeenCalledTimes(cancelCallsBeforeAnswer + 1);
+    expect(speechSynthesisMock.speaking).toBe(false);
+  });
+
+  it('リセット後は開始パネルに戻る', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    const resetButton = wrapper
+      .findAll('button')
+      .find((candidate) => candidate.text().includes('最初からやり直す'));
+
+    await resetButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('このレベルで始める');
+    expect(wrapper.text()).not.toContain('你好');
+  });
+
+  it('リセット中は先に開始パネルへ切り替える', async () => {
+    const trainer = createTrainerStub();
+    const deferred = createDeferred<void>();
+    trainer.resetSession.mockImplementation(() => {
+      trainer.game.value = {
+        ...createGameState(),
+        level: trainer.game.value.level,
+        currentQuestion: questionTwo,
+      };
+
+      return deferred.promise;
+    });
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    const resetButton = wrapper
+      .findAll('button')
+      .find((candidate) => candidate.text().includes('最初からやり直す'));
+
+    await resetButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('このレベルで始める');
+    expect(wrapper.text()).not.toContain('再見');
+
+    deferred.resolve();
+    await flushPromises();
   });
 
   it('再生中に音声ボタンを押すと停止する', async () => {
@@ -305,6 +756,7 @@ describe('index page', () => {
     });
 
     const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
     await flushPromises();
 
     const audioButton = wrapper.get('button.audio-button');
@@ -316,6 +768,6 @@ describe('index page', () => {
     await flushPromises();
 
     expect(speechSynthesisMock.cancel).toHaveBeenCalledTimes(cancelCallsBeforeStop + 1);
-    expect(wrapper.get('button.audio-button').text()).toContain('音声');
+    expect(wrapper.get('button.audio-button').text()).toContain('読み上げ');
   });
 });

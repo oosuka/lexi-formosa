@@ -1,6 +1,6 @@
+import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
-
-import vocabulary from '../data/vocabulary.json' with { type: 'json' };
 
 const levelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
 
@@ -25,54 +25,87 @@ const levelLengthMap = {
 };
 
 const simplifiedOnlyPattern = /汉|观|气|馆|铁|听|习|国|图|车|广|务/;
+const invalidChineseGlossPattern =
+  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样|什麼|甚麼|^[\p{Script=Han}々]+と同じ$/u;
 const invalidJapaneseGlossPattern = /^[\p{P}\p{S}\s]+$/u;
-const entries = z.array(entrySchema).parse(vocabulary);
-const ids = new Set();
-const trads = new Set();
+export const validateVocabularyEntries = (rawEntries) => {
+  const entries = z.array(entrySchema).parse(rawEntries);
+  const ids = new Set();
+  const trads = new Set();
+  const labelsByLevel = new Map([
+    [1, new Set()],
+    [2, new Set()],
+    [3, new Set()],
+  ]);
 
-for (const entry of entries) {
-  if (ids.has(entry.id)) {
-    throw new Error(`Duplicate id detected: ${entry.id}`);
+  for (const entry of entries) {
+    if (ids.has(entry.id)) {
+      throw new Error(`Duplicate id detected: ${entry.id}`);
+    }
+
+    ids.add(entry.id);
+
+    if (trads.has(entry.trad)) {
+      throw new Error(`Duplicate trad detected: ${entry.trad}`);
+    }
+
+    trads.add(entry.trad);
+
+    const actualLength = [...entry.trad].length;
+    const [minLength, maxLength] = levelLengthMap[entry.level];
+
+    if (actualLength !== entry.length) {
+      throw new Error(
+        `Length mismatch for ${entry.id}: expected ${entry.length}, got ${actualLength}.`
+      );
+    }
+
+    if (actualLength < minLength || actualLength > maxLength) {
+      throw new Error(
+        `Level mismatch for ${entry.id}: ${entry.trad} does not fit level ${entry.level}.`
+      );
+    }
+
+    if (simplifiedOnlyPattern.test(entry.trad)) {
+      throw new Error(`Possible simplified character detected in ${entry.id}: ${entry.trad}`);
+    }
+
+    if (invalidJapaneseGlossPattern.test(entry.ja)) {
+      throw new Error(`Invalid Japanese gloss detected in ${entry.id}: ${entry.ja}`);
+    }
+
+    if (invalidChineseGlossPattern.test(entry.ja)) {
+      throw new Error(
+        `Untranslated or simplified Chinese gloss detected in ${entry.id}: ${entry.ja}`
+      );
+    }
+
+    if (/[。？！…]|\.{3,}/.test(entry.ja)) {
+      throw new Error(`Sentence-like Japanese gloss detected in ${entry.id}: ${entry.ja}`);
+    }
+
+    if (/[()（）]/.test(entry.ja)) {
+      throw new Error(`Parenthetical Japanese gloss detected in ${entry.id}: ${entry.ja}`);
+    }
+
+    labelsByLevel.get(entry.level)?.add(entry.ja);
   }
 
-  ids.add(entry.id);
-
-  if (trads.has(entry.trad)) {
-    throw new Error(`Duplicate trad detected: ${entry.trad}`);
+  for (const [level, labels] of labelsByLevel) {
+    if (labels.size < 4) {
+      throw new Error(
+        `Level ${level} does not have enough distinct Japanese labels to build 4-choice questions.`
+      );
+    }
   }
 
-  trads.add(entry.trad);
+  return entries;
+};
 
-  const actualLength = [...entry.trad].length;
-  const [minLength, maxLength] = levelLengthMap[entry.level];
-
-  if (actualLength !== entry.length) {
-    throw new Error(
-      `Length mismatch for ${entry.id}: expected ${entry.length}, got ${actualLength}.`
-    );
-  }
-
-  if (actualLength < minLength || actualLength > maxLength) {
-    throw new Error(
-      `Level mismatch for ${entry.id}: ${entry.trad} does not fit level ${entry.level}.`
-    );
-  }
-
-  if (simplifiedOnlyPattern.test(entry.trad)) {
-    throw new Error(`Possible simplified character detected in ${entry.id}: ${entry.trad}`);
-  }
-
-  if (invalidJapaneseGlossPattern.test(entry.ja)) {
-    throw new Error(`Invalid Japanese gloss detected in ${entry.id}: ${entry.ja}`);
-  }
-
-  if (/[。？！…]|\.{3,}/.test(entry.ja)) {
-    throw new Error(`Sentence-like Japanese gloss detected in ${entry.id}: ${entry.ja}`);
-  }
-
-  if (/[()（）]/.test(entry.ja)) {
-    throw new Error(`Parenthetical Japanese gloss detected in ${entry.id}: ${entry.ja}`);
-  }
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  const vocabulary = JSON.parse(
+    fs.readFileSync(new URL('../data/vocabulary.json', import.meta.url), 'utf8')
+  );
+  const entries = validateVocabularyEntries(vocabulary);
+  console.log(`Validated ${entries.length} vocabulary entries across 3 levels.`);
 }
-
-console.log(`Validated ${entries.length} vocabulary entries across 3 levels.`);

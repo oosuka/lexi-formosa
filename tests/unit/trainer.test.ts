@@ -30,6 +30,19 @@ describe('trainer utilities', () => {
     expect(question.questionId).toBe('l1-2');
   });
 
+  it('直近出題ですべて埋まっていてもプール全体から出題できる', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    const question = buildQuestion(
+      level1Vocabulary,
+      1,
+      level1Vocabulary.map((entry) => entry.id)
+    );
+
+    expect(level1Vocabulary.map((entry) => entry.id)).toContain(question.questionId);
+    expect(question.choices).toHaveLength(4);
+  });
+
   it('同カテゴリの誤答を優先する', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0);
 
@@ -78,5 +91,22 @@ describe('trainer utilities', () => {
     expect(() => buildQuestion(insufficientVocabulary, 2, [])).toThrow(
       'Could not build distractors'
     );
+  });
+
+  it('正解が欠けた問題は取得時に失敗する', () => {
+    expect(() =>
+      getCorrectChoice({
+        questionId: 'broken-1',
+        trad: '故障',
+        level: 1,
+        pronunciation: 'gu4 zhang4',
+        choices: [
+          { id: 'a', label: 'A', correct: false },
+          { id: 'b', label: 'B', correct: false },
+          { id: 'c', label: 'C', correct: false },
+          { id: 'd', label: 'D', correct: false },
+        ],
+      })
+    ).toThrow('missing a correct choice');
   });
 });

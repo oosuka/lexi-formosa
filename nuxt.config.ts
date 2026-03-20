@@ -1,3 +1,5 @@
+import packageJson from './package.json' with { type: 'json' };
+
 export default defineNuxtConfig({
   compatibilityDate: '2026-03-20',
   devtools: {
@@ -18,5 +20,10 @@ export default defineNuxtConfig({
   },
   typescript: {
     strict: true,
+  },
+  runtimeConfig: {
+    public: {
+      appVersion: packageJson.version,
+    },
   },
 });

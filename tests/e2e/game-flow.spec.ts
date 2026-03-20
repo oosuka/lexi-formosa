@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
-test('ゲームを1問進められる', async ({ page }) => {
+const installMockWordlists = async (page: Page) => {
   await page.route('**/wordlists/metadata.json', async (route) => {
     await route.fulfill({
       contentType: 'application/json',
@@ -66,10 +66,16 @@ test('ゲームを1問進められる', async ({ page }) => {
       ]),
     });
   });
+};
+
+test('ゲームを1問進められる', async ({ page }) => {
+  await installMockWordlists(page);
 
   await page.goto('/');
 
   await expect(page.getByRole('heading', { name: 'この単語の意味は？' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
   await expect(page.locator('.choice-card')).toHaveCount(4);
 
   const wordBefore = await page.locator('.trad-word').first().textContent();
@@ -82,4 +88,45 @@ test('ゲームを1問進められる', async ({ page }) => {
   await nextButton.click();
 
   await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
+});
+
+test('開始前の案内カードは高さが揃う', async ({ page }) => {
+  await installMockWordlists(page);
+
+  await page.goto('/');
+
+  const detailCards = page.locator('.session-start-detail');
+
+  await expect(detailCards).toHaveCount(2);
+
+  const firstCard = await detailCards.nth(0).boundingBox();
+  const secondCard = await detailCards.nth(1).boundingBox();
+
+  expect(firstCard).not.toBeNull();
+  expect(secondCard).not.toBeNull();
+  expect(Math.abs((firstCard?.height ?? 0) - (secondCard?.height ?? 0))).toBeLessThanOrEqual(1);
+});
+
+test('モバイル幅でも横にはみ出さない', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  await page.goto('/');
+
+  const overflowBeforeStart = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+
+  expect(overflowBeforeStart.scrollWidth).toBeLessThanOrEqual(overflowBeforeStart.clientWidth);
+
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  await page.locator('.choice-card').first().click();
+
+  const overflowAfterAnswer = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+
+  expect(overflowAfterAnswer.scrollWidth).toBeLessThanOrEqual(overflowAfterAnswer.clientWidth);
 });

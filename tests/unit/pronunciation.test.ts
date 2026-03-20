@@ -16,7 +16,15 @@ describe('pronunciation utilities', () => {
     expect(formatKatakanaReading('zhi1 xue2')).toBe('ジー シュエ');
   });
 
+  it('母音始まりの音節もカタカナ補助へ変換する', () => {
+    expect(formatKatakanaReading('ao1 an1 quan2')).toBe('アオ アン チュァン');
+  });
+
+  it('声調数字なしの母音始まりも自然に補助表示する', () => {
+    expect(formatKatakanaReading('ou')).toBe('オウ');
+  });
+
   it('未対応の音節でもそのまま劣化表示する', () => {
-    expect(formatKatakanaReading('ang2 yo1')).toBe('ang yo');
+    expect(formatKatakanaReading('hm2 yo1')).toBe('hm yo');
   });
 });
