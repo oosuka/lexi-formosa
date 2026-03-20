@@ -102,6 +102,8 @@ const allHanGlossPattern = /^[\p{Script=Han}々]+$/u;
 const simplifiedChineseGlossPattern =
   /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样/u;
 const untranslatedChineseGlossPattern = /什麼|甚麼|東南亞|山東|^[\p{Script=Han}々]+と同じ$/u;
+const classifierLikeGlossPattern =
+  /^(部|個|件|台|輛|名|位|條|張|本|家|把|面|隻|口|頭|瓶|杯|雙|份|粒|棵|艘|支|枚|匹)$/u;
 
 const toneMap = new Map([
   ['ā', ['a', 1]],
@@ -337,6 +339,11 @@ const normalizeGlossCandidate = (candidate) => {
     .trim();
 };
 
+const stripClassifierNotes = (gloss) =>
+  gloss
+    .replace(/\bCL:[^/／;；。]+/gi, '')
+    .replace(/\b(?:classifier|measure words?|count(?:er| word)s?)\s*:[^/／;；。]+/gi, '');
+
 const repeatedGlossPattern = /^(.{1,16}?)(?:[、，,]\1){1,}$/u;
 const explanatoryGlossPattern =
   /に相当|を表す|の一種|の段階|仏教|旧暦|分類子|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために/;
@@ -377,10 +384,8 @@ const extractCandidates = (...glosses) => {
       continue;
     }
 
-    const parts = gloss
-      .replace(/\uFEFF/g, '')
+    const parts = stripClassifierNotes(gloss.replace(/\uFEFF/g, ''))
       .replace(/\[[^\]]*\]/g, '')
-      .replace(/CL:[^/／;,，。]+/gi, '')
       .replace(/\{[^{}]*\}/g, '')
       .split(/[／/]/)
       .flatMap((part) => part.split(/[;；]/))
@@ -430,6 +435,9 @@ export const isRejectedJapaneseGlossCandidate = (candidate, source = 'ja') => {
 
   return false;
 };
+
+const isClassifierLikeGloss = (trad, candidate) =>
+  [...trad].length > 1 && classifierLikeGlossPattern.test(candidate);
 
 export const scoreCandidate = (candidate, source = 'ja') => {
   let score = 0;
@@ -626,7 +634,7 @@ export const generateVocabulary = () => {
       importOverrides.get(trad) ??
       pickBestGloss(exactMatches.length > 0 ? exactMatches : fallbackMatches);
 
-    if (!bestGloss) {
+    if (!bestGloss || isClassifierLikeGloss(trad, bestGloss)) {
       continue;
     }
 
@@ -665,7 +673,7 @@ export const generateVocabulary = () => {
 
     const bestGloss = pickBestGloss([[meansJa, means]]);
 
-    if (!bestGloss) {
+    if (!bestGloss || isClassifierLikeGloss(trad, bestGloss)) {
       continue;
     }
 

@@ -113,4 +113,36 @@ describe('validate vocabulary script', () => {
       ])
     ).toThrow('Untranslated or simplified Chinese gloss detected');
   });
+
+  it('複数字の語に分類詞だけの訳語が入っていたら拒否する', () => {
+    expect(() =>
+      validateVocabularyEntries([
+        createEntry({ trad: '摩托車', ja: '部', level: 2, length: 3, category: 'transit' }),
+        createEntry({
+          id: 'seed-2',
+          trad: '便利商店',
+          ja: 'コンビニ',
+          level: 2,
+          length: 4,
+          category: 'place',
+        }),
+        createEntry({
+          id: 'seed-3',
+          trad: '百貨公司',
+          ja: 'デパート',
+          level: 2,
+          length: 4,
+          category: 'place',
+        }),
+        createEntry({
+          id: 'seed-4',
+          trad: '公車站牌',
+          ja: 'バス停',
+          level: 2,
+          length: 4,
+          category: 'place',
+        }),
+      ])
+    ).toThrow('Classifier-like Japanese gloss detected');
+  });
 });

@@ -1373,5 +1373,16 @@
     "taiwanPriority": true,
     "sources": ["seed"],
     "pronunciation": "deng1 ji1 shi2 jian1"
+  },
+  {
+    "id": "l2-045",
+    "trad": "摩托車",
+    "ja": "オートバイ",
+    "level": 2,
+    "length": 3,
+    "category": "transit",
+    "taiwanPriority": true,
+    "sources": ["seed"],
+    "pronunciation": "mo2 tuo1 che1"
   }
 ]

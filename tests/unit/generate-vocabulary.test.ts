@@ -25,4 +25,15 @@ describe('generate vocabulary script', () => {
     expect(pickBestGloss([['ありがとう', 'thanks']])).toBe('ありがとう');
     expect(pickBestGloss([['国境', 'border']])).toBe('国境');
   });
+
+  it('分類詞の断片を訳語として採用しない', () => {
+    expect(
+      pickBestGloss([
+        [
+          '(借用語) motorbike; motorcycle/CL:輛|辆[liang4],部[bu4]。',
+          '(loanword) motorbike; motorcycle/CL:輛|辆[liang4],部[bu4]',
+        ],
+      ])
+    ).toBeNull();
+  });
 });
