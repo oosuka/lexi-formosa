@@ -20,12 +20,88 @@ type LevelHighScore = {
   score: number;
   streak: number;
 };
+type MetadataStatus = 'loading' | 'ready' | 'failed';
+type GameOverAchievement = {
+  key: 'score' | 'streak';
+  badge: string;
+  label: string;
+  value: number;
+  note: string;
+  tone: 'new' | 'tie';
+};
 
 const createEmptyHighScores = (): Record<Level, LevelHighScore> => ({
   1: { score: 0, streak: 0 },
   2: { score: 0, streak: 0 },
   3: { score: 0, streak: 0 },
 });
+
+const toFiniteNumber = (value: unknown): number =>
+  typeof value === 'number' && Number.isFinite(value) ? value : 0;
+
+const parseLevelHighScore = (value: unknown): LevelHighScore => {
+  if (typeof value === 'number') {
+    return {
+      score: toFiniteNumber(value),
+      streak: 0,
+    };
+  }
+
+  if (value && typeof value === 'object') {
+    return {
+      score: toFiniteNumber((value as { score?: unknown }).score),
+      streak: toFiniteNumber((value as { streak?: unknown }).streak),
+    };
+  }
+
+  return { score: 0, streak: 0 };
+};
+
+const formatVocabularyCountLabel = (
+  count: number | null | undefined,
+  status: MetadataStatus
+): string => {
+  if (status === 'failed') {
+    return '語数未取得';
+  }
+
+  if (count === null || count === undefined) {
+    return '読み込み中';
+  }
+
+  return `${count.toLocaleString()}語`;
+};
+
+const appendGameOverAchievement = (
+  achievements: GameOverAchievement[],
+  key: GameOverAchievement['key'],
+  label: string,
+  value: number,
+  baselineValue: number
+) => {
+  if (value > baselineValue) {
+    achievements.push({
+      key,
+      badge: 'NEW BEST',
+      label,
+      value,
+      note: '自己ベストを更新',
+      tone: 'new',
+    });
+    return;
+  }
+
+  if (value > 0 && value === baselineValue) {
+    achievements.push({
+      key,
+      badge: 'RECORD TIED',
+      label,
+      value,
+      note: '自己ベストと同記録',
+      tone: 'tie',
+    });
+  }
+};
 
 const speechSupported = ref(false);
 const isSpeaking = ref(false);
@@ -37,7 +113,7 @@ const loadError = ref<string | null>(null);
 let utterance: SpeechSynthesisUtterance | null = null;
 let audioContext: AudioContext | null = null;
 const vocabularyMetadata = ref<VocabularyMetadata | null>(null);
-const metadataStatus = ref<'loading' | 'ready' | 'failed'>('loading');
+const metadataStatus = ref<MetadataStatus>('loading');
 const highScores = ref<Record<Level, LevelHighScore>>(createEmptyHighScores());
 const sessionRecordBaseline = ref<Record<Level, LevelHighScore>>(createEmptyHighScores());
 
@@ -74,17 +150,9 @@ const currentLevelCard = computed(() => LEVEL_COPY[trainer.game.value.level]);
 const currentLevelCount = computed(
   () => vocabularyMetadata.value?.counts[trainer.game.value.level] ?? null
 );
-const currentLevelCountLabel = computed(() => {
-  if (metadataStatus.value === 'failed') {
-    return '語数未取得';
-  }
-
-  if (currentLevelCount.value === null) {
-    return '読み込み中';
-  }
-
-  return `${currentLevelCount.value.toLocaleString()}語`;
-});
+const currentLevelCountLabel = computed(() =>
+  formatVocabularyCountLabel(currentLevelCount.value, metadataStatus.value)
+);
 const canStartSession = computed(
   () => showSessionStart.value && !trainer.isLoading.value && Boolean(currentQuestion.value)
 );
@@ -139,54 +207,10 @@ const gameOverAchievements = computed(() => {
   }
 
   const baseline = sessionRecordBaseline.value[trainer.game.value.level];
-  const achievements: Array<{
-    key: 'score' | 'streak';
-    badge: string;
-    label: string;
-    value: number;
-    note: string;
-    tone: 'new' | 'tie';
-  }> = [];
+  const achievements: GameOverAchievement[] = [];
 
-  if (score.value > baseline.score) {
-    achievements.push({
-      key: 'score',
-      badge: 'NEW BEST',
-      label: 'Score',
-      value: score.value,
-      note: '自己ベストを更新',
-      tone: 'new',
-    });
-  } else if (score.value > 0 && score.value === baseline.score) {
-    achievements.push({
-      key: 'score',
-      badge: 'RECORD TIED',
-      label: 'Score',
-      value: score.value,
-      note: '自己ベストと同記録',
-      tone: 'tie',
-    });
-  }
-
-  if (bestRunStreak.value > baseline.streak) {
-    achievements.push({
-      key: 'streak',
-      badge: 'NEW BEST',
-      label: 'Streak',
-      value: bestRunStreak.value,
-      note: '自己ベストを更新',
-      tone: 'new',
-    });
-  } else if (bestRunStreak.value > 0 && bestRunStreak.value === baseline.streak) {
-    achievements.push({
-      key: 'streak',
-      badge: 'RECORD TIED',
-      label: 'Streak',
-      value: bestRunStreak.value,
-      note: '自己ベストと同記録',
-      tone: 'tie',
-    });
-  }
+  appendGameOverAchievement(achievements, 'score', 'Score', score.value, baseline.score);
+  appendGameOverAchievement(achievements, 'streak', 'Streak', bestRunStreak.value, baseline.streak);
 
   return achievements;
 });
@@ -251,13 +275,10 @@ const levelCards = computed(() =>
     level,
     ...LEVEL_COPY[level],
     count: vocabularyMetadata.value?.counts[level] ?? null,
-    countLabel:
-      metadataStatus.value === 'failed'
-        ? '語数未取得'
-        : vocabularyMetadata.value?.counts[level] === null ||
-            vocabularyMetadata.value?.counts[level] === undefined
-          ? '読み込み中'
-          : `${vocabularyMetadata.value.counts[level].toLocaleString()}語`,
+    countLabel: formatVocabularyCountLabel(
+      vocabularyMetadata.value?.counts[level],
+      metadataStatus.value
+    ),
   }))
 );
 
@@ -359,25 +380,7 @@ const loadHighScores = () => {
     const next = createEmptyHighScores();
 
     for (const level of LEVELS) {
-      const levelValue = parsed[level];
-
-      if (typeof levelValue === 'number') {
-        next[level] = {
-          score: Number.isFinite(levelValue) ? levelValue : 0,
-          streak: 0,
-        };
-        continue;
-      }
-
-      if (levelValue && typeof levelValue === 'object') {
-        const scoreValue = (levelValue as { score?: unknown }).score;
-        const streakValue = (levelValue as { streak?: unknown }).streak;
-
-        next[level] = {
-          score: Number.isFinite(scoreValue) ? Number(scoreValue) : 0,
-          streak: Number.isFinite(streakValue) ? Number(streakValue) : 0,
-        };
-      }
+      next[level] = parseLevelHighScore(parsed[level]);
     }
 
     highScores.value = next;
