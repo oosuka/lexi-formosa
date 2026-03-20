@@ -53,18 +53,22 @@ const shuffle = <T>(items: T[]): T[] => {
 };
 
 const pickWeightedEntry = (items: VocabEntry[]): VocabEntry => {
-  const totalWeight = items.reduce((sum, item) => sum + getEntryWeight(item), 0);
+  const weightedItems = items.map((item) => ({
+    item,
+    weight: getEntryWeight(item),
+  }));
+  const totalWeight = weightedItems.reduce((sum, entry) => sum + entry.weight, 0);
   let cursor = Math.random() * totalWeight;
 
-  for (const item of items) {
-    cursor -= getEntryWeight(item);
+  for (const entry of weightedItems) {
+    cursor -= entry.weight;
 
     if (cursor <= 0) {
-      return item;
+      return entry.item;
     }
   }
 
-  return items[items.length - 1] as VocabEntry;
+  return weightedItems[weightedItems.length - 1]?.item as VocabEntry;
 };
 
 const uniqueByIdAndLabel = (items: VocabEntry[]): VocabEntry[] => {
@@ -91,28 +95,25 @@ export const buildQuestion = (
     throw new Error(`Level ${level} requires at least 4 entries.`);
   }
 
-  const availablePool = pool.filter((entry) => !recentQuestionIds.includes(entry.id));
+  const recentQuestionIdSet = new Set(recentQuestionIds);
+  const availablePool = pool.filter((entry) => !recentQuestionIdSet.has(entry.id));
   const correctEntry = pickWeightedEntry(availablePool.length > 0 ? availablePool : pool);
 
   const allDistractors = pool.filter(
     (entry) => entry.id !== correctEntry.id && entry.ja !== correctEntry.ja
   );
 
-  const sameCategory = shuffle(
-    allDistractors.filter((entry) => entry.category === correctEntry.category)
-  );
-  const sameLength = shuffle(
+  const prioritizedDistractors = [
+    allDistractors.filter((entry) => entry.category === correctEntry.category),
     allDistractors.filter(
       (entry) => entry.category !== correctEntry.category && entry.length === correctEntry.length
-    )
-  );
-  const fallback = shuffle(
+    ),
     allDistractors.filter(
       (entry) => entry.category !== correctEntry.category && entry.length !== correctEntry.length
-    )
-  );
+    ),
+  ].flatMap((entries) => shuffle(entries));
 
-  const distractors = uniqueByIdAndLabel([...sameCategory, ...sameLength, ...fallback]).slice(0, 3);
+  const distractors = uniqueByIdAndLabel(prioritizedDistractors).slice(0, 3);
 
   if (distractors.length < 3) {
     throw new Error(`Could not build distractors for ${correctEntry.id}.`);

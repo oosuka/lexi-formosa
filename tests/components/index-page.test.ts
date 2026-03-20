@@ -6,6 +6,7 @@ import { computed, ref } from 'vue';
 import { getScoreForCorrectAnswer } from '~/composables/useTraditionalTrainer';
 import IndexPage from '~/pages/index.vue';
 import type { GameState } from '~/types/vocabulary';
+import packageJson from '../../package.json' with { type: 'json' };
 
 import { questionOne, questionTwo } from '../fixtures/vocabulary';
 
@@ -16,6 +17,7 @@ vi.mock('@vueuse/core', () => ({
 const useTraditionalTrainerMock = vi.hoisted(() => vi.fn());
 const loadVocabularyMetadataMock = vi.hoisted(() => vi.fn());
 const HIGH_SCORE_STORAGE_KEY = 'lexi-formosa-high-scores-v2';
+const APP_VERSION_LABEL = `v${packageJson.version}`;
 
 mockNuxtImport('useTraditionalTrainer', () => useTraditionalTrainerMock);
 
@@ -140,7 +142,7 @@ describe('index page', () => {
   it('初回表示では開始パネルを表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
-    expect(wrapper.text()).toContain('v1.0.0');
+    expect(wrapper.text()).toContain(APP_VERSION_LABEL);
     expect(wrapper.text()).toContain('ゲームを始める');
     expect(wrapper.text()).toContain('このレベルで始める');
     expect(wrapper.text()).toContain('45語');

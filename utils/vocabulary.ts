@@ -90,30 +90,25 @@ const getWordlistPath = (filename: string): string => {
   return joinURL(getAppBaseURL(), 'wordlists', filename);
 };
 
-const levelLoaders: Record<Level, () => Promise<unknown>> = {
-  1: async () => $fetch(getWordlistPath('vocabulary-level-1.json')),
-  2: async () => $fetch(getWordlistPath('vocabulary-level-2.json')),
-  3: async () => $fetch(getWordlistPath('vocabulary-level-3.json')),
-};
-
 const setupDataHint =
   '語彙データを読み込めませんでした。初回セットアップとして `npm run setup:data` を実行してください。';
+
+const fetchWordlist = async (filename: string): Promise<unknown> => {
+  try {
+    return await $fetch(getWordlistPath(filename));
+  } catch (error) {
+    throw new Error(setupDataHint, {
+      cause: error,
+    });
+  }
+};
 
 export const loadVocabularyLevel = async (level: Level): Promise<VocabEntry[]> => {
   if (vocabularyCache.has(level)) {
     return vocabularyCache.get(level) as VocabEntry[];
   }
 
-  let entries: unknown;
-
-  try {
-    entries = await levelLoaders[level]();
-  } catch (error) {
-    throw new Error(setupDataHint, {
-      cause: error,
-    });
-  }
-
+  const entries = await fetchWordlist(`vocabulary-level-${level}.json`);
   const parsed = validateVocabulary(entries, level);
   vocabularyCache.set(level, parsed);
   return parsed;
@@ -124,16 +119,7 @@ export const loadVocabularyMetadata = async (): Promise<VocabularyMetadata> => {
     return metadataCache;
   }
 
-  let payload: unknown;
-
-  try {
-    payload = await $fetch(getWordlistPath('metadata.json'));
-  } catch (error) {
-    throw new Error(setupDataHint, {
-      cause: error,
-    });
-  }
-
+  const payload = await fetchWordlist('metadata.json');
   const metadata = vocabularyMetadataSchema.parse(payload);
   metadataCache = metadata;
   return metadata;
