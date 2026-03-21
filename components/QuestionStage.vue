@@ -32,7 +32,7 @@ const audioButtonLabel = computed(() => (props.isSpeaking ? '停止' : '読み�
       </button>
     </div>
 
-    <strong class="question-stage__trad">{{ props.trad }}</strong>
+    <strong class="question-stage__trad trad-word">{{ props.trad }}</strong>
 
     <div v-if="props.katakanaReading || props.pinyinReading" class="question-stage__readings">
       <p v-if="props.katakanaReading" class="question-stage__reading question-stage__reading--kana">

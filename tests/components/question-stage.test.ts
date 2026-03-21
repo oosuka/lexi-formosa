@@ -20,6 +20,7 @@ describe('QuestionStage', () => {
     expect(wrapper.text()).toContain('捷運站');
     expect(wrapper.text()).toContain('ジエ ユン ヂャン');
     expect(wrapper.text()).toContain('jié yùn zhàn');
+    expect(wrapper.get('.question-stage__trad').classes()).toContain('trad-word');
     expect(wrapper.get('button').text()).toContain('読み上げ');
     expect(wrapper.get('button').attributes('type')).toBe('button');
     expect(wrapper.emitted('toggle-audio')).toBeUndefined();
