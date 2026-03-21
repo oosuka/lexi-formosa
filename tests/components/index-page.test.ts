@@ -10,9 +10,9 @@ import packageJson from '../../package.json' with { type: 'json' };
 
 import { questionOne, questionTwo } from '../fixtures/vocabulary';
 
-const preferredReducedMotion = vi.hoisted(
-  () => ({ value: 'no-preference' as 'no-preference' | 'reduce' })
-);
+const preferredReducedMotion = vi.hoisted(() => ({
+  value: 'no-preference' as 'no-preference' | 'reduce',
+}));
 
 vi.mock('@vueuse/core', () => ({
   usePreferredReducedMotion: () => preferredReducedMotion,
@@ -238,7 +238,7 @@ describe('index page', () => {
     );
 
     expect(resultBanner.classes()).toContain('result-banner--correct');
-    expect(resultBanner.text()).toContain('正解です');
+    expect(resultBanner.text()).toContain('正解。+10点獲得');
     expect(answeredCorrectChoice?.classes()).toContain('choice-card--correct');
     expect(answeredCorrectChoice?.classes()).toContain('choice-card--correct-impact');
     expect(answeredWrongChoice?.classes()).toContain('choice-card--muted');
@@ -274,7 +274,7 @@ describe('index page', () => {
     expect(secondFeedbackRow.classes()).toContain('feedback-row--embedded');
     expect(secondFeedbackRow.classes()).toContain('feedback-row--stacked');
     expect(secondFeedbackActions.element.previousElementSibling).toBe(secondResultBanner.element);
-    expect(secondResultBanner.text()).toContain('あと2回で終了します');
+    expect(secondResultBanner.text()).toContain('残り2回で終了します');
     expect(answeredWrongSelectedChoice?.classes()).toContain('choice-card--incorrect');
     expect(answeredWrongSelectedChoice?.classes()).toContain('choice-card--incorrect-impact');
     expect(answeredWrongCorrectChoice?.classes()).toContain('choice-card--correct');
@@ -290,35 +290,35 @@ describe('index page', () => {
 
     await startGame(wrapper);
 
-    const correctChoice = wrapper.findAll('.choice-card').find((candidate) =>
-      candidate.text().includes('こんにちは')
-    );
+    const correctChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
 
     await correctChoice?.trigger('click');
     await flushPromises();
 
-    const answeredCorrectChoice = wrapper.findAll('.choice-card').find((candidate) =>
-      candidate.text().includes('こんにちは')
-    );
+    const answeredCorrectChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
 
     expect(answeredCorrectChoice?.text()).toContain('CORRECT');
 
     await wrapper.get('button.primary-button').trigger('click');
     await flushPromises();
 
-    const wrongChoice = wrapper.findAll('.choice-card').find((candidate) =>
-      candidate.text().includes('牛乳')
-    );
+    const wrongChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('牛乳'));
 
     await wrongChoice?.trigger('click');
     await flushPromises();
 
-    const answeredWrongSelectedChoice = wrapper.findAll('.choice-card').find((candidate) =>
-      candidate.text().includes('牛乳')
-    );
-    const answeredWrongCorrectChoice = wrapper.findAll('.choice-card').find((candidate) =>
-      candidate.text().includes('ありがとう')
-    );
+    const answeredWrongSelectedChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('牛乳'));
+    const answeredWrongCorrectChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('ありがとう'));
 
     expect(answeredWrongSelectedChoice?.text()).toContain('YOUR PICK');
     expect(answeredWrongCorrectChoice?.text()).toContain('CORRECT');
@@ -493,7 +493,7 @@ describe('index page', () => {
     await wrongChoice?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('不正解です。正解は「こんにちは」です。あと2回で終了します。');
+    expect(wrapper.text()).toContain('不正解。正解は「こんにちは」。残り2回で終了します。');
   });
 
   it('旧形式の最高記録も読み込める', async () => {

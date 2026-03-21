@@ -66,44 +66,6 @@ button {
   animation: rise-up 480ms ease both;
 }
 
-.reduce-motion .hero-panel,
-.reduce-motion .workspace-grid,
-.reduce-motion .surface-card,
-.reduce-motion .metric-card,
-.reduce-motion .question-stage,
-.reduce-motion .word-card,
-.reduce-motion .level-card,
-.reduce-motion .choice-card {
-  animation: none;
-}
-
-.reduce-motion .choice-card--correct,
-.reduce-motion .choice-card--incorrect,
-.reduce-motion .choice-card--correct-impact,
-.reduce-motion .choice-card--incorrect-impact,
-.reduce-motion .choice-card--correct-reveal,
-.reduce-motion .quiz-panel--correct-impact,
-.reduce-motion .quiz-panel--incorrect-impact {
-  animation: none;
-  transform: none;
-}
-
-.reduce-motion .choice-card,
-.reduce-motion .quiz-panel--correct-impact::after,
-.reduce-motion .quiz-panel--incorrect-impact::after {
-  transition: none;
-}
-
-.reduce-motion .choice-card:hover:enabled {
-  transform: none;
-}
-
-.reduce-motion .quiz-panel--correct-impact::after,
-.reduce-motion .quiz-panel--incorrect-impact::after {
-  animation: none;
-  opacity: 0;
-}
-
 .hero-panel {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) 320px;
@@ -518,7 +480,7 @@ button {
 
 .quiz-panel--correct-impact::after,
 .quiz-panel--incorrect-impact::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -1037,6 +999,44 @@ button {
     linear-gradient(180deg, rgba(253, 243, 239, 0.98), rgba(251, 244, 240, 0.96)),
     rgba(255, 255, 255, 0.94);
   animation: result-banner-incorrect-impact 460ms ease both;
+}
+
+.reduce-motion .hero-panel,
+.reduce-motion .workspace-grid,
+.reduce-motion .surface-card,
+.reduce-motion .metric-card,
+.reduce-motion .question-stage,
+.reduce-motion .word-card,
+.reduce-motion .level-card,
+.reduce-motion .choice-card {
+  animation: none;
+}
+
+.reduce-motion .choice-card--correct,
+.reduce-motion .choice-card--incorrect,
+.reduce-motion .choice-card--correct-impact,
+.reduce-motion .choice-card--incorrect-impact,
+.reduce-motion .choice-card--correct-reveal,
+.reduce-motion .quiz-panel--correct-impact,
+.reduce-motion .quiz-panel--incorrect-impact {
+  animation: none;
+  transform: none;
+}
+
+.reduce-motion .choice-card,
+.reduce-motion .quiz-panel--correct-impact::after,
+.reduce-motion .quiz-panel--incorrect-impact::after {
+  transition: none;
+}
+
+.reduce-motion .choice-card:hover:enabled {
+  transform: none;
+}
+
+.reduce-motion .quiz-panel--correct-impact::after,
+.reduce-motion .quiz-panel--incorrect-impact::after {
+  animation: none;
+  opacity: 0;
 }
 
 .feedback-copy {
