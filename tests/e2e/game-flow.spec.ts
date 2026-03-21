@@ -119,7 +119,7 @@ test('ゲームを1問進められる', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
-  await expect(page.getByRole('heading', { name: '学習デスクに着く' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '学習を始める' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
   await expect(page.getByRole('heading', { name: 'この単語の意味は？' })).toBeVisible();
@@ -211,9 +211,7 @@ test('モバイル幅でも横にはみ出さない', async ({ page }) => {
     scrollWidth: document.documentElement.scrollWidth,
   }));
 
-  expect(overflowAfterGameOver.scrollWidth).toBeLessThanOrEqual(
-    overflowAfterGameOver.clientWidth
-  );
+  expect(overflowAfterGameOver.scrollWidth).toBeLessThanOrEqual(overflowAfterGameOver.clientWidth);
 });
 
 test('game over 後に restart と reset の導線を使える', async ({ page }) => {

@@ -55,7 +55,7 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.showSessionStart.value).toBe(true);
     expect(sessionUi.showLevelPanel.value).toBe(true);
-    expect(sessionUi.startPanelTitle.value).toBe('このレベルで始める');
+    expect(sessionUi.startPanelTitle.value).toBe('このレベルから始める');
     expect(sessionUi.startPanelCopy.value).toContain('読み上げも始まります');
     expect(sessionUi.feedbackBadge.value).toBe('Start');
   });
@@ -114,14 +114,14 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.feedbackTone.value).toBe('incorrect');
     expect(sessionUi.answerMessage.value).toContain(
-      '不正解です。正解は「こんにちは」です。終了まであと2回'
+      '不正解です。正解は「こんにちは」です。あと2回で終了します。'
     );
     expect(sessionUi.feedbackBadge.value).toBe('Miss');
     expect(sessionUi.feedbackView.value).toEqual({
       variant: 'banner',
       tone: 'incorrect',
       badge: 'Miss',
-      message: '不正解です。正解は「こんにちは」です。終了まであと2回',
+      message: '不正解です。正解は「こんにちは」です。あと2回で終了します。',
       uiError: null,
     });
   });
