@@ -129,7 +129,6 @@ test('ゲームを1問進められる', async ({ page }) => {
 
   await page.locator('.choice-card').first().click();
   await expect(page.locator('.feedback-pill')).toHaveText(/Correct|Miss/);
-  await expect(page.locator('.choice-card--correct-impact')).toBeVisible();
 
   const nextButton = page.getByRole('button', { name: '次の問題' });
   await expect(nextButton).toBeEnabled();

@@ -316,8 +316,12 @@ describe('index page', () => {
     const answeredWrongSelectedChoice = wrapper.findAll('.choice-card').find((candidate) =>
       candidate.text().includes('牛乳')
     );
+    const answeredWrongCorrectChoice = wrapper.findAll('.choice-card').find((candidate) =>
+      candidate.text().includes('ありがとう')
+    );
 
     expect(answeredWrongSelectedChoice?.text()).toContain('YOUR PICK');
+    expect(answeredWrongCorrectChoice?.text()).toContain('CORRECT');
   });
 
   it('正解時にそのレベルの最高記録を保存する', async () => {
