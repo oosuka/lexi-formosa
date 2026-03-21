@@ -180,11 +180,13 @@ const choiceClass = (choice: QuestionChoice) => {
   }
 
   if (choice.correct) {
-    return 'choice-card--correct';
+    return feedbackTone.value === 'correct'
+      ? 'choice-card--correct choice-card--correct-impact'
+      : 'choice-card--correct choice-card--correct-reveal';
   }
 
   if (choice.id === selectedChoiceId.value) {
-    return 'choice-card--incorrect';
+    return 'choice-card--incorrect choice-card--incorrect-impact';
   }
 
   return 'choice-card--muted';
@@ -196,11 +198,11 @@ const choiceStateLabel = (choice: QuestionChoice) => {
   }
 
   if (choice.correct) {
-    return 'Correct';
+    return 'CORRECT';
   }
 
   if (choice.id === selectedChoiceId.value) {
-    return 'Your Pick';
+    return 'YOUR PICK';
   }
 
   return '';
@@ -521,7 +523,9 @@ useSeoMeta({
         :class="{
           'quiz-panel--lobby': showSessionStart,
           'quiz-panel--correct': feedbackTone === 'correct',
+          'quiz-panel--correct-impact': feedbackTone === 'correct',
           'quiz-panel--incorrect': feedbackTone === 'incorrect',
+          'quiz-panel--incorrect-impact': feedbackTone === 'incorrect',
           'quiz-panel--game-over': isGameOver,
         }"
       >
