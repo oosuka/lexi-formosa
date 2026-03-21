@@ -876,6 +876,26 @@ button {
   font-size: 0.92rem;
 }
 
+.feedback-copy {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  align-self: center;
+}
+
+.feedback-copy__message {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.feedback-error {
+  margin: 0;
+  color: #b42318;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 .feedback-pill {
   display: inline-flex;
   align-self: flex-start;

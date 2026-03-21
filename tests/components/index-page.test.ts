@@ -185,6 +185,7 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('今回の記録');
     expect(wrapper.text()).toContain('Score');
     expect(wrapper.find('.level-panel').exists()).toBe(false);
+    expect(wrapper.find('.result-banner').exists()).toBe(false);
     expect(wrapper.text()).toContain('你好');
     expect(wrapper.text()).toContain('ニ ハオ');
     expect(wrapper.text()).toContain('nǐ hǎo');

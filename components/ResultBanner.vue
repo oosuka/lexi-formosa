@@ -2,10 +2,10 @@
 import { computed } from 'vue';
 
 const props = defineProps<{
-  tone: 'correct' | 'incorrect' | 'loading' | 'idle';
+  tone: 'correct' | 'incorrect' | 'loading';
   badge: string;
   message: string;
-  uiError: string | null;
+  uiError?: string | null;
 }>();
 
 const toneClass = computed(() => `result-banner--${props.tone}`);

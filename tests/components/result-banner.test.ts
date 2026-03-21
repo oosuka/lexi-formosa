@@ -42,7 +42,6 @@ describe('ResultBanner', () => {
         tone: 'loading',
         badge: 'Loading',
         message: '問題データを読み込んでいます。',
-        uiError: null,
       },
     });
 

@@ -606,11 +606,16 @@ useSeoMeta({
             }"
           >
             <ResultBanner
+              v-if="feedbackTone !== 'idle'"
               :tone="feedbackTone"
               :badge="feedbackBadge"
               :message="answerMessage"
               :ui-error="uiError"
             />
+            <div v-else class="feedback-copy feedback-copy--idle" aria-live="polite">
+              <p class="feedback-copy__message">{{ answerMessage }}</p>
+              <p v-if="uiError" class="feedback-error">{{ uiError }}</p>
+            </div>
             <div class="feedback-actions">
               <button
                 class="ghost-button"
