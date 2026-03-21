@@ -88,6 +88,22 @@ button {
   transform: none;
 }
 
+.reduce-motion .choice-card,
+.reduce-motion .quiz-panel--correct-impact::after,
+.reduce-motion .quiz-panel--incorrect-impact::after {
+  transition: none;
+}
+
+.reduce-motion .choice-card:hover:enabled {
+  transform: none;
+}
+
+.reduce-motion .quiz-panel--correct-impact::after,
+.reduce-motion .quiz-panel--incorrect-impact::after {
+  animation: none;
+  opacity: 0;
+}
+
 .hero-panel {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) 320px;
@@ -1092,6 +1108,22 @@ button {
   .quiz-panel--incorrect-impact {
     animation: none;
     transform: none;
+  }
+
+  .choice-card,
+  .quiz-panel--correct-impact::after,
+  .quiz-panel--incorrect-impact::after {
+    transition: none;
+  }
+
+  .choice-card:hover:enabled {
+    transform: none;
+  }
+
+  .quiz-panel--correct-impact::after,
+  .quiz-panel--incorrect-impact::after {
+    animation: none;
+    opacity: 0;
   }
 }
 
