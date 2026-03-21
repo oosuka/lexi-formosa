@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import SessionStartPanel from '~/components/SessionStartPanel.vue';
 
 describe('SessionStartPanel', () => {
-  it('開始前情報を表示して start を emit する', async () => {
+  it('学習デスクの開始案内として level / count / sound をまとめて表示する', async () => {
     const wrapper = mount(SessionStartPanel, {
       props: {
         currentLevelLabel: 'Level 1',
@@ -19,17 +19,19 @@ describe('SessionStartPanel', () => {
       },
     });
 
-    expect(wrapper.text()).toContain('Ready to Launch');
+    expect(wrapper.text()).toContain('Focused Learning Desk');
     expect(wrapper.text()).toContain('このレベルで始める');
     expect(wrapper.text()).toContain('45語');
     expect(wrapper.text()).toContain('ブラウザ音声あり');
+    expect(wrapper.text()).toContain('Session');
+    expect(wrapper.text()).toContain('Records');
 
     await wrapper.get('button.session-start-button').trigger('click');
 
     expect(wrapper.emitted('start')).toHaveLength(1);
   });
 
-  it('開始不可時はボタンを disabled にしてエラーを表示する', () => {
+  it('開始不可時は CTA を無効化して補足エラーを見せる', () => {
     const wrapper = mount(SessionStartPanel, {
       props: {
         currentLevelLabel: 'Level 2',
@@ -48,5 +50,6 @@ describe('SessionStartPanel', () => {
     expect(wrapper.text()).toContain('音声なしで開始');
     expect(wrapper.text()).toContain('同じレベルで最初からやり直す');
     expect(wrapper.text()).toContain('level 2 missing');
+    expect(wrapper.text()).toContain('Focused Learning Desk');
   });
 });

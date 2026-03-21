@@ -144,6 +144,7 @@ describe('index page', () => {
 
     expect(wrapper.text()).toContain(APP_VERSION_LABEL);
     expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).toContain('Focused Learning Desk');
     expect(wrapper.text()).toContain('このレベルで始める');
     expect(wrapper.text()).toContain('45語');
     expect(wrapper.text()).not.toContain('你好');
@@ -319,10 +320,9 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('新記録達成');
     expect(wrapper.text()).toContain('今回のプレイで自己ベストを更新しました');
     expect(wrapper.text()).toContain('NEW BEST');
-    expect(wrapper.text()).toContain('この回の得点');
-    expect(wrapper.text()).toContain('この回の最高連続');
-    expect(wrapper.text()).toContain('このレベルの最高得点');
-    expect(wrapper.text()).toContain('このレベルの最高連続');
+    expect(wrapper.text()).toContain('Score');
+    expect(wrapper.text()).toContain('Best Streak');
+    expect(wrapper.text()).toContain('Level Best');
     expect(wrapper.text()).toContain('10');
     expect(wrapper.text()).toContain('1');
     expect(wrapper.text()).toContain('自己ベストを更新');
@@ -531,7 +531,8 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('ゲームを始める');
     expect(wrapper.text()).toContain('語数未取得');
     expect(wrapper.text()).not.toContain('語数を読み込み中');
-    expect(wrapper.text()).toContain('この単語の意味は？');
+    expect(wrapper.text()).toContain('Lobby');
+    expect(wrapper.text()).toContain('学習デスクに着く');
     expect(wrapper.text()).not.toContain('辞書データ未生成');
   });
 

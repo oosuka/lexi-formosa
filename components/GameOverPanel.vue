@@ -28,31 +28,39 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="game-over-panel">
+  <section class="game-over-panel">
     <div class="game-over-copy">
       <span class="feedback-pill feedback-pill--game-over">{{ props.feedbackBadge }}</span>
       <strong class="game-over-title">{{ props.gameOverTitle }}</strong>
-      <p>{{ props.gameOverSummary }}</p>
+      <p class="game-over-summary">{{ props.gameOverSummary }}</p>
       <p v-if="props.loadError" class="game-over-error">{{ props.loadError }}</p>
     </div>
-    <div class="game-over-stats">
-      <div class="game-over-stat">
-        <span>この回の得点</span>
+
+    <div class="game-over-summary-grid">
+      <article class="game-over-stat game-over-stat--primary">
+        <span>Score</span>
         <strong>{{ props.score }}</strong>
-      </div>
-      <div class="game-over-stat">
-        <span>この回の最高連続</span>
+      </article>
+      <article class="game-over-stat game-over-stat--primary">
+        <span>Best Streak</span>
         <strong>{{ props.bestRunStreak }}</strong>
-      </div>
-      <div class="game-over-stat game-over-stat--subtle">
-        <span>このレベルの最高得点</span>
-        <strong>{{ props.currentLevelHighScore.score }}</strong>
-      </div>
-      <div class="game-over-stat game-over-stat--subtle">
-        <span>このレベルの最高連続</span>
-        <strong>{{ props.currentLevelHighScore.streak }}</strong>
+      </article>
+    </div>
+
+    <div class="game-over-level-best">
+      <p class="game-over-section-label">Level Best</p>
+      <div class="game-over-stats">
+        <div class="game-over-stat game-over-stat--subtle">
+          <span>Score</span>
+          <strong>{{ props.currentLevelHighScore.score }}</strong>
+        </div>
+        <div class="game-over-stat game-over-stat--subtle">
+          <span>Streak</span>
+          <strong>{{ props.currentLevelHighScore.streak }}</strong>
+        </div>
       </div>
     </div>
+
     <div v-if="props.gameOverAchievements.length > 0" class="game-over-achievement-grid">
       <article
         v-for="item in props.gameOverAchievements"
@@ -66,9 +74,10 @@ const emit = defineEmits<{
         <span class="achievement-note">{{ item.note }}</span>
       </article>
     </div>
-    <div class="feedback-actions">
+
+    <div class="game-over-actions">
       <button class="primary-button" type="button" @click="emit('restart')">もう一度始める</button>
       <button class="ghost-button" type="button" @click="emit('reset')">トップへ戻る</button>
     </div>
-  </div>
+  </section>
 </template>

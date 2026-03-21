@@ -118,6 +118,28 @@ const {
   feedbackView,
   feedbackBadge,
 } = sessionUi;
+const quizPanelKicker = computed(() => {
+  if (showSessionStart.value) {
+    return 'Lobby';
+  }
+
+  if (isGameOver.value) {
+    return 'Summary';
+  }
+
+  return 'Question';
+});
+const quizPanelTitle = computed(() => {
+  if (showSessionStart.value) {
+    return '学習デスクに着く';
+  }
+
+  if (isGameOver.value) {
+    return '結果サマリー';
+  }
+
+  return 'この単語の意味は？';
+});
 const externalLookupLinks = computed(() => {
   const trad = currentQuestion.value?.trad;
 
@@ -497,14 +519,15 @@ useSeoMeta({
       <section
         class="quiz-panel surface-card"
         :class="{
+          'quiz-panel--lobby': showSessionStart,
           'quiz-panel--correct': feedbackTone === 'correct',
           'quiz-panel--incorrect': feedbackTone === 'incorrect',
           'quiz-panel--game-over': isGameOver,
         }"
       >
         <div class="panel-heading">
-          <p class="panel-kicker">Question</p>
-          <h2>この単語の意味は？</h2>
+          <p class="panel-kicker">{{ quizPanelKicker }}</p>
+          <h2>{{ quizPanelTitle }}</h2>
         </div>
 
         <template v-if="hasFatalLoadError">

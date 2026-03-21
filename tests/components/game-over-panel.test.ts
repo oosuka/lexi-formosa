@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import GameOverPanel from '~/components/GameOverPanel.vue';
 
 describe('GameOverPanel', () => {
-  it('ゲームオーバー情報と実績を表示して restart/reset を emit する', async () => {
+  it('結果サマリーとして Score / Best Streak / level best を整理して表示する', async () => {
     const wrapper = mount(GameOverPanel, {
       props: {
         feedbackBadge: 'Game Over',
@@ -28,9 +28,13 @@ describe('GameOverPanel', () => {
     });
 
     expect(wrapper.text()).toContain('新記録達成');
-    expect(wrapper.text()).toContain('この回の得点');
+    expect(wrapper.text()).toContain('Score');
+    expect(wrapper.text()).toContain('Best Streak');
+    expect(wrapper.text()).toContain('Level Best');
     expect(wrapper.text()).toContain('45');
     expect(wrapper.text()).toContain('NEW BEST');
+    expect(wrapper.text()).toContain('もう一度始める');
+    expect(wrapper.text()).toContain('トップへ戻る');
 
     await wrapper.get('button.primary-button').trigger('click');
     await wrapper.get('button.ghost-button').trigger('click');
@@ -39,7 +43,7 @@ describe('GameOverPanel', () => {
     expect(wrapper.emitted('reset')).toHaveLength(1);
   });
 
-  it('loadError があるときは補足表示する', () => {
+  it('loadError があるときは結果サマリー内で補足表示する', () => {
     const wrapper = mount(GameOverPanel, {
       props: {
         feedbackBadge: 'Game Over',
@@ -55,5 +59,6 @@ describe('GameOverPanel', () => {
 
     expect(wrapper.text()).toContain('restart failed');
     expect(wrapper.text()).not.toContain('NEW BEST');
+    expect(wrapper.text()).toContain('Score');
   });
 });

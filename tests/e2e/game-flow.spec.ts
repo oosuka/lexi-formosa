@@ -123,9 +123,7 @@ test('ゲームを1問進められる', async ({ page }) => {
   await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
 });
 
-test('PC 幅ではプレイ中に Score / Streak / Miss がプレイエリアで見える', async ({
-  page,
-}) => {
+test('PC 幅ではプレイ中に Score / Streak / Miss がプレイエリアで見える', async ({ page }) => {
   await installMockWordlists(page);
   await page.setViewportSize({ width: 1440, height: 900 });
 
