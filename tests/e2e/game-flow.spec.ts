@@ -137,6 +137,32 @@ test('ゲームを1問進められる', async ({ page }) => {
   await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
 });
 
+test('reduced motion でも不正解フィードバックと次の問題導線が残る', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
+  await expect(
+    page.evaluate(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  ).resolves.toBe(true);
+
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  const wordBefore = await page.locator('.trad-word').first().textContent();
+
+  await answerWrongChoice(page);
+
+  await expect(page.locator('.choice-card--incorrect .choice-state')).toHaveText(/YOUR PICK/i);
+  await expect(page.locator('.choice-card--correct .choice-state')).toHaveText(/CORRECT/i);
+  await expect(page.locator('.quiz-panel')).toHaveClass(/quiz-panel--incorrect/);
+
+  const nextButton = page.getByRole('button', { name: '次の問題' });
+  await expect(nextButton).toBeEnabled();
+  await nextButton.click();
+
+  await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
+});
+
 test('PC 幅ではプレイ中に Score / Streak / Miss がプレイエリアで見える', async ({ page }) => {
   await installMockWordlists(page);
   await page.setViewportSize({ width: 1440, height: 900 });
