@@ -266,7 +266,7 @@
   {
     "id": "l2-005",
     "trad": "早餐店",
-    "ja": "朝食店",
+    "ja": "朝食屋",
     "level": 2,
     "length": 3,
     "category": "food",
@@ -409,7 +409,7 @@
   {
     "id": "l2-018",
     "trad": "公車站牌",
-    "ja": "バス停表示",
+    "ja": "バス停",
     "level": 2,
     "length": 4,
     "category": "transit",
@@ -431,7 +431,7 @@
   {
     "id": "l2-020",
     "trad": "在地小吃",
-    "ja": "ご当地軽食",
+    "ja": "ご当地グルメ",
     "level": 2,
     "length": 4,
     "category": "food",
@@ -519,7 +519,7 @@
   {
     "id": "l3-008",
     "trad": "颱風停班停課",
-    "ja": "台風休業休校",
+    "ja": "台風で休校・休業",
     "level": 3,
     "length": 6,
     "category": "weather",
@@ -541,7 +541,7 @@
   {
     "id": "l3-010",
     "trad": "臺灣在地文化",
-    "ja": "台湾ローカル文化",
+    "ja": "台湾ならではの文化",
     "level": 3,
     "length": 6,
     "category": "culture",
@@ -948,7 +948,7 @@
   {
     "id": "l2-025",
     "trad": "提款機",
-    "ja": "現金自動預払機",
+    "ja": "ATM",
     "level": 2,
     "length": 3,
     "category": "money",

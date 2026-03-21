@@ -131,7 +131,7 @@ const quizPanelKicker = computed(() => {
 });
 const quizPanelTitle = computed(() => {
   if (showSessionStart.value) {
-    return '学習デスクに着く';
+    return '学習を始める';
   }
 
   if (isGameOver.value) {
@@ -430,7 +430,7 @@ useSeoMeta({
         </div>
         <h1>LexiFormosa</h1>
         <p class="hero-text">
-          台湾で使われる繁体字の単語を、日本語の4択で学べるローカル用ゲームです。<br />
+          台湾で使われる繁体字の単語を、日本語の4択で学べるローカル完結のゲームです。<br />
           文字の形、意味、読み方を、落ち着いたテンポで繰り返し確認できます。
         </p>
         <div class="hero-meta">
@@ -511,7 +511,7 @@ useSeoMeta({
             <li>すべて繁体字の単語</li>
             <li>正解は4択のうち1つだけ</li>
             <li>3回続けて間違えると終了</li>
-            <li>正解で10点<br />3連続正解からボーナス</li>
+            <li>正解で10点<br />3問連続で正解するとボーナス</li>
           </ul>
         </div>
       </aside>

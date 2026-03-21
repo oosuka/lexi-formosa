@@ -107,11 +107,11 @@ export const useTrainerSessionUi = ({
     () => showSessionStart.value && !isLoading.value && Boolean(currentQuestion.value)
   );
   const startPanelTitle = computed(() =>
-    rounds.value > 0 ? '同じレベルでもう一度始める' : 'このレベルで始める'
+    rounds.value > 0 ? '同じレベルでもう一度始める' : 'このレベルから始める'
   );
   const startPanelCopy = computed(() =>
     speechSupported.value
-      ? '始めると、最初の問題を表示して読み上げも始まります。'
+      ? '始めると、最初の問題が表示され、読み上げも始まります。'
       : '始めると、最初の問題を表示します。'
   );
   const startPanelModeLabel = computed(() =>
@@ -190,7 +190,7 @@ export const useTrainerSessionUi = ({
       return '今回のプレイで自己ベストに並びました。';
     }
 
-    return '3回続けて不正解になったため、ここで終了です。';
+    return '3回続けて不正解になったため、今回はここで終了です。';
   });
   const feedbackTone = computed(() => {
     if (isLoading.value) {
@@ -229,7 +229,7 @@ export const useTrainerSessionUi = ({
         variant: 'banner',
         tone: 'incorrect',
         badge: 'Miss',
-        message: `不正解です。正解は「${correctChoiceLabel.value ?? '不明'}」です。終了まであと${remainingMisses.value}回`,
+        message: `不正解です。正解は「${correctChoiceLabel.value ?? '不明'}」です。あと${remainingMisses.value}回で終了します。`,
         uiError: uiError.value,
       };
     }

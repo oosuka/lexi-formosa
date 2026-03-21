@@ -145,7 +145,7 @@ describe('index page', () => {
     expect(wrapper.text()).toContain(APP_VERSION_LABEL);
     expect(wrapper.text()).toContain('ゲームを始める');
     expect(wrapper.text()).toContain('Focused Learning Desk');
-    expect(wrapper.text()).toContain('このレベルで始める');
+    expect(wrapper.text()).toContain('このレベルから始める');
     expect(wrapper.text()).toContain('45語');
     expect(wrapper.text()).not.toContain('你好');
   });
@@ -257,7 +257,7 @@ describe('index page', () => {
     );
 
     expect(secondResultBanner.classes()).toContain('result-banner--incorrect');
-    expect(secondResultBanner.text()).toContain('終了まであと');
+    expect(secondResultBanner.text()).toContain('あと2回で終了します');
     expect(answeredWrongSelectedChoice?.classes()).toContain('choice-card--incorrect');
     expect(answeredWrongCorrectChoice?.classes()).toContain('choice-card--correct');
     expect(secondCorrectChoice?.text()).toContain('ありがとう');
@@ -432,7 +432,7 @@ describe('index page', () => {
     await wrongChoice?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('不正解です。正解は「こんにちは」です。終了まであと2回');
+    expect(wrapper.text()).toContain('不正解です。正解は「こんにちは」です。あと2回で終了します。');
   });
 
   it('旧形式の最高記録も読み込める', async () => {
@@ -532,7 +532,7 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('語数未取得');
     expect(wrapper.text()).not.toContain('語数を読み込み中');
     expect(wrapper.text()).toContain('Lobby');
-    expect(wrapper.text()).toContain('学習デスクに着く');
+    expect(wrapper.text()).toContain('学習を始める');
     expect(wrapper.text()).not.toContain('辞書データ未生成');
   });
 
@@ -819,7 +819,7 @@ describe('index page', () => {
     await resetButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('このレベルで始める');
+    expect(wrapper.text()).toContain('このレベルから始める');
     expect(wrapper.text()).not.toContain('你好');
   });
 
@@ -847,7 +847,7 @@ describe('index page', () => {
     await resetButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('このレベルで始める');
+    expect(wrapper.text()).toContain('このレベルから始める');
     expect(wrapper.text()).not.toContain('再見');
 
     deferred.resolve();
