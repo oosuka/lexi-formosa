@@ -119,9 +119,10 @@ test('ゲームを1問進められる', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
-  await expect(page.getByRole('heading', { name: '学習を始める' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
-  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  await expect(page.getByRole('heading', { name: 'Ready to Launch' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Start Session' })).toBeVisible();
+  await expect(page.getByText('Lobby')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Start Session' }).click();
   await expect(page.getByRole('heading', { name: 'この単語の意味は？' })).toBeVisible();
   await expect(page.locator('.choice-card')).toHaveCount(4);
 
@@ -135,6 +136,19 @@ test('ゲームを1問進められる', async ({ page }) => {
   await nextButton.click();
 
   await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
+});
+
+test('開始画面でレベル選択後も Start Session 導線が崩れない', async ({ page }) => {
+  await installMockWordlists(page);
+
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
+
+  await page.getByTestId('level-selector-2').click();
+  await expect(page.getByRole('button', { name: 'Start Session' })).toBeVisible();
+  await page.getByRole('button', { name: 'Start Session' }).click();
+
+  await expect(page.getByRole('heading', { name: 'この単語の意味は？' })).toBeVisible();
 });
 
 test('回答後の impact state が最低限見える', async ({ page }) => {
