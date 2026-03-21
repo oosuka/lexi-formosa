@@ -22,7 +22,7 @@ Date: 2026-03-21
 - 通常時は落ち着いた学習 UI
 - 回答直後だけ強い視覚反応
 - 主役は `choice-card`
-- 補助として `result banner`
+- `ResultBanner` は二次情報だが、正誤要約として必須表示
 - 全体把握用に `quiz-panel` に短い stage reaction
 
 ## Feedback Layers
@@ -48,7 +48,7 @@ Date: 2026-03-21
 
 ### 2. Feedback Layer
 
-`ResultBanner` は補助ではなく、回答結果の明確な要約として扱う。
+`ResultBanner` は choice-card より強くしない。ただし、回答結果の要約として常に視認しやすく保つ。
 
 - `Correct / Miss` badge を今より強くする
 - 色差を拡大する
@@ -101,6 +101,7 @@ Primary files:
 - `assets/css/main.css`
 - `pages/index.vue`
 - `components/ResultBanner.vue`
+- `composables/useTrainerSessionUi.ts`
 
 Secondary files:
 
@@ -109,6 +110,24 @@ Secondary files:
 - `tests/e2e/game-flow.spec.ts` if visible-state assertions need updates
 
 今回はゲームロジックや scoring を変更しない。状態の増設も最小限に留め、既存の `feedbackTone` と `choiceClass` をベースに演出を強化する。
+
+`useTrainerSessionUi.ts` は次の責務だけを持つ。
+
+- `Correct / Miss / Loading / Ready` の表示文言生成
+- `ResultBanner` に渡す tone, badge, message, uiError の生成
+- reduced motion 判定や CSS animation の詳細は持たない
+
+`pages/index.vue` は次を担当する。
+
+- `feedbackTone` と回答状態に応じた class 付与
+- `quiz-panel` と `choice-card` の状態クラス接続
+- `ResultBanner` と action row の配置
+
+`ResultBanner.vue` は次を担当する。
+
+- 受け取った `tone / badge / message / uiError` を表示
+- banner 自体の強調表現
+- 正解/不正解の主役にはならず、要約として振る舞う
 
 ## Testing Strategy
 
@@ -122,6 +141,15 @@ Secondary files:
   - 回答 -> 次の問題 の導線維持
   - 正解 / 不正解 state の表示崩れがない
 
+モーションそのものの秒数や easing は unit test では直接検証しない。CSS animation に閉じる。
+代わりに次を検証する。
+
+- 正解時に `correct` 系 class / label が即時付与される
+- 不正解時に `incorrect` 系 class と `correct` 系 class が同一画面で識別できる
+- `quiz-panel` に正誤対応の stage class が付く
+- reduced motion 時にも色以外の badge / label 差が残る
+- `次の問題` の出現条件と進行タイミングは現状維持
+
 ## Out of Scope
 
 - 新しい scoring 演出
@@ -129,9 +157,19 @@ Secondary files:
 - 新しいゲームモード
 - 効果音の変更
 
+## Acceptance Criteria
+
+- 回答後 1 フレーム目で、selected card と correct card を class または label で同時に識別できる
+- 不正解時に `YOUR PICK` と `CORRECT` が同時に見える
+- `quiz-panel` に `correct` または `incorrect` の stage class が付き、短い全体反応を持つ
+- `ResultBanner` は表示されるが、choice-card より主役化しない
+- reduced motion でも、正解カードと誤選択カードを色以外の badge / label で区別できる
+- `次の問題` ボタンの有効化条件と表示タイミングは現状維持
+- scoring、miss count、game over 条件は変わらない
+
 ## Success Criteria
 
-- 音なしでも正誤が一瞬で分かる
+- 音なしでも正誤がすぐ分かる
 - 不正解時に `自分の選択` と `正解` を見失わない
 - 既存の PC 向け上質感は保つ
 - 次の問題へのテンポを落とさない
