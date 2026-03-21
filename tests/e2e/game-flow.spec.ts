@@ -137,6 +137,30 @@ test('ゲームを1問進められる', async ({ page }) => {
   await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
 });
 
+test('回答後の impact state が最低限見える', async ({ page }) => {
+  await installMockWordlists(page);
+
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
+
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+
+  await answerCorrectChoice(page);
+  await expect(page.locator('.choice-card--correct-impact')).toBeVisible();
+
+  await page.getByRole('button', { name: '次の問題' }).click();
+  await answerWrongChoice(page);
+
+  await expect(page.locator('.quiz-panel--incorrect-impact')).toBeVisible();
+  await expect(page.locator('.choice-card--incorrect-impact')).toBeVisible();
+  await expect(page.locator('.choice-card--correct-reveal')).toBeVisible();
+
+  const wordBeforeNext = await page.locator('.trad-word').first().textContent();
+  const nextButton = page.getByRole('button', { name: '次の問題' });
+  await expect(nextButton).toBeEnabled();
+  await nextButton.click();
+  await expect(page.locator('.trad-word').first()).not.toHaveText(wordBeforeNext ?? '');
+});
 test('reduced motion でも不正解フィードバックと次の問題導線が残る', async ({ page }) => {
   await installMockWordlists(page);
   await page.emulateMedia({ reducedMotion: 'reduce' });

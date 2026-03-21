@@ -219,7 +219,7 @@ export const useTrainerSessionUi = ({
         variant: 'banner',
         tone: 'correct',
         badge: 'Correct',
-        message: `正解です。+${getScoreForCorrectAnswer(streak.value)}点`,
+        message: `正解。+${getScoreForCorrectAnswer(streak.value)}点獲得`,
         uiError: uiError.value,
       };
     }
@@ -229,7 +229,7 @@ export const useTrainerSessionUi = ({
         variant: 'banner',
         tone: 'incorrect',
         badge: 'Miss',
-        message: `不正解です。正解は「${correctChoiceLabel.value ?? '不明'}」です。あと${remainingMisses.value}回で終了します。`,
+        message: `不正解。正解は「${correctChoiceLabel.value ?? '不明'}」。残り${remainingMisses.value}回で終了します。`,
         uiError: uiError.value,
       };
     }
