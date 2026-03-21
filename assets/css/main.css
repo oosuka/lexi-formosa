@@ -44,6 +44,11 @@ button {
   font: inherit;
 }
 
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .page-shell {
   width: min(1120px, calc(100vw - 32px));
   margin: 0 auto;
@@ -993,6 +998,18 @@ button {
 .primary-button:hover:enabled,
 .ghost-button:hover {
   transform: translateY(-1px);
+}
+
+.audio-button:focus-visible,
+.choice-card:focus-visible,
+.ghost-button:focus-visible,
+.level-card:focus-visible,
+.lookup-link:focus-visible,
+.primary-button:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.94),
+    0 0 0 6px rgba(15, 118, 110, 0.24);
 }
 
 @media (max-width: 960px) {

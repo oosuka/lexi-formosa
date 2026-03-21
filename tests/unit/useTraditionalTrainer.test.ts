@@ -44,6 +44,13 @@ const level3Vocabulary: VocabEntry[] = [
   createEntry('l3-4', '觀光夜市地圖', '観光夜市地図', 3, 'object'),
 ];
 
+const invalidNextQuestionVocabulary: VocabEntry[] = [
+  createEntry('bad-1', '甲', 'こんにちは', 1, 'greeting'),
+  createEntry('bad-2', '乙', 'こんにちは', 1, 'greeting'),
+  createEntry('bad-3', '丙', 'ありがとう', 1, 'greeting'),
+  createEntry('bad-4', '丁', 'ありがとう', 1, 'greeting'),
+];
+
 const createDeferred = <T>() => {
   let resolve!: (value: T) => void;
   let reject!: (reason?: unknown) => void;
@@ -284,6 +291,37 @@ describe('useTraditionalTrainer', () => {
     expect(trainer.game.value.score).toBe(scoreAfterFirst);
     expect(trainer.game.value.rounds).toBe(roundsAfterFirst);
     expect(trainer.game.value.streak).toBe(streakAfterFirst);
+  });
+
+  it('次の問題生成に失敗しても回答済みの状態を保持する', async () => {
+    let trainer!: ReturnType<typeof useTraditionalTrainer>;
+
+    const Harness = defineComponent({
+      setup() {
+        trainer = useTraditionalTrainer();
+        return () => h('div');
+      },
+    });
+
+    await mountSuspended(Harness);
+    resetTrainerState();
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    await trainer.initialize(1);
+    const currentQuestionId = trainer.game.value.currentQuestion?.questionId;
+    const correctChoiceId = trainer.correctChoice.value?.id as string;
+
+    trainer.submitAnswer(correctChoiceId);
+    useState<Partial<Record<Level, VocabEntry[]>>>('traditional-trainer-levels').value = {
+      1: invalidNextQuestionVocabulary,
+    };
+
+    expect(() => trainer.nextQuestion()).toThrow();
+    expect(trainer.game.value.status).toBe('answered');
+    expect(trainer.game.value.selectedChoiceId).toBe(correctChoiceId);
+    expect(trainer.game.value.currentQuestion?.questionId).toBe(currentQuestionId);
+    expect(trainer.game.value.lastCorrect).toBe(true);
+    expect(trainer.game.value.rounds).toBe(1);
   });
 
   it('連続した初期化では最後のリクエストだけが状態を確定する', async () => {

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { usePreferredReducedMotion } from '@vueuse/core';
 
-import { getScoreForCorrectAnswer, MAX_MISSES_IN_ROW } from '~/composables/useTraditionalTrainer';
+import { useFeedbackAudio } from '~/composables/useFeedbackAudio';
+import { type LevelHighScore, useHighScores } from '~/composables/useHighScores';
+import { useTrainerAudio } from '~/composables/useTrainerAudio';
+import { useTrainerSessionUi } from '~/composables/useTrainerSessionUi';
 import {
   LEVELS,
   type Level,
@@ -15,47 +18,7 @@ import { loadVocabularyMetadata } from '~/utils/vocabulary';
 const trainer = useTraditionalTrainer();
 const appVersion = useRuntimeConfig().public.appVersion;
 const reducedMotionPreference = usePreferredReducedMotion();
-const HIGH_SCORE_STORAGE_KEY = 'lexi-formosa-high-scores-v2';
-type LevelHighScore = {
-  score: number;
-  streak: number;
-};
 type MetadataStatus = 'loading' | 'ready' | 'failed';
-type GameOverAchievement = {
-  key: 'score' | 'streak';
-  badge: string;
-  label: string;
-  value: number;
-  note: string;
-  tone: 'new' | 'tie';
-};
-
-const createEmptyHighScores = (): Record<Level, LevelHighScore> => ({
-  1: { score: 0, streak: 0 },
-  2: { score: 0, streak: 0 },
-  3: { score: 0, streak: 0 },
-});
-
-const toFiniteNumber = (value: unknown): number =>
-  typeof value === 'number' && Number.isFinite(value) ? value : 0;
-
-const parseLevelHighScore = (value: unknown): LevelHighScore => {
-  if (typeof value === 'number') {
-    return {
-      score: toFiniteNumber(value),
-      streak: 0,
-    };
-  }
-
-  if (value && typeof value === 'object') {
-    return {
-      score: toFiniteNumber((value as { score?: unknown }).score),
-      streak: toFiniteNumber((value as { streak?: unknown }).streak),
-    };
-  }
-
-  return { score: 0, streak: 0 };
-};
 
 const formatVocabularyCountLabel = (
   count: number | null | undefined,
@@ -72,80 +35,39 @@ const formatVocabularyCountLabel = (
   return `${count.toLocaleString()}語`;
 };
 
-const appendGameOverAchievement = (
-  achievements: GameOverAchievement[],
-  key: GameOverAchievement['key'],
-  label: string,
-  value: number,
-  baselineValue: number
-) => {
-  if (value > baselineValue) {
-    achievements.push({
-      key,
-      badge: 'NEW BEST',
-      label,
-      value,
-      note: '自己ベストを更新',
-      tone: 'new',
-    });
-    return;
-  }
-
-  if (value > 0 && value === baselineValue) {
-    achievements.push({
-      key,
-      badge: 'RECORD TIED',
-      label,
-      value,
-      note: '自己ベストと同記録',
-      tone: 'tie',
-    });
-  }
-};
-
-const speechSupported = ref(false);
-const isSpeaking = ref(false);
-const preferredVoice = ref<SpeechSynthesisVoice | null>(null);
-const audioEffectsSupported = ref(false);
-const pendingQuestionAudioId = ref<string | null>(null);
 const sessionStartPending = ref(true);
-const loadError = ref<string | null>(null);
-let utterance: SpeechSynthesisUtterance | null = null;
-let audioContext: AudioContext | null = null;
+const fatalError = ref<string | null>(null);
+const uiError = ref<string | null>(null);
+const { highScores, loadHighScores, updateLevelRecord } = useHighScores();
 const vocabularyMetadata = ref<VocabularyMetadata | null>(null);
 const metadataStatus = ref<MetadataStatus>('loading');
-const highScores = ref<Record<Level, LevelHighScore>>(createEmptyHighScores());
-const sessionRecordBaseline = ref<Record<Level, LevelHighScore>>(createEmptyHighScores());
+const sessionRecordBaseline = ref<Record<Level, LevelHighScore>>({
+  1: { score: 0, streak: 0 },
+  2: { score: 0, streak: 0 },
+  3: { score: 0, streak: 0 },
+});
 
 const reducedMotion = computed(() => reducedMotionPreference.value === 'reduce');
 const currentQuestion = computed(() => trainer.game.value.currentQuestion);
-const hasFatalLoadError = computed(() => Boolean(loadError.value && !currentQuestion.value));
-const showSessionStart = computed(
-  () => sessionStartPending.value && Boolean(currentQuestion.value)
-);
-const showLevelPanel = computed(
-  () => showSessionStart.value || hasFatalLoadError.value || isLoading.value
-);
-const isGameOver = computed(() => trainer.game.value.status === 'finished');
-const isLoading = computed(
-  () => !loadError.value && (trainer.isLoading.value || !currentQuestion.value)
-);
-const score = computed(() => trainer.game.value.score);
-const streak = computed(() => trainer.game.value.streak);
-const bestRunStreak = computed(() => trainer.game.value.bestStreak);
-const missesInRow = computed(() => trainer.game.value.missesInRow);
-const remainingMisses = computed(() => Math.max(0, MAX_MISSES_IN_ROW - missesInRow.value));
-const rounds = computed(() => trainer.game.value.rounds);
-const answered = computed(() => trainer.game.value.status === 'answered');
-const revealAnswer = computed(
-  () => trainer.game.value.status === 'answered' || trainer.game.value.status === 'finished'
+const currentQuestionTrad = computed(() => currentQuestion.value?.trad ?? null);
+const pageLoading = computed(
+  () => !fatalError.value && (trainer.isLoading.value || !currentQuestion.value)
 );
 const selectedChoiceId = computed(() => trainer.game.value.selectedChoiceId);
-const lastCorrect = computed(() => trainer.game.value.lastCorrect);
 const currentQuestionId = computed(() => currentQuestion.value?.questionId ?? null);
 const pinyinReading = computed(() => formatPinyinReading(currentQuestion.value?.pronunciation));
 const katakanaReading = computed(() => formatKatakanaReading(currentQuestion.value?.pronunciation));
-const canPlayAudio = computed(() => speechSupported.value && Boolean(currentQuestion.value?.trad));
+const trainerAudio = useTrainerAudio({
+  getQuestionId: () => currentQuestionId.value,
+  getQuestionText: () => currentQuestionTrad.value,
+  shouldReplayPending: () => !sessionStartPending.value,
+});
+const feedbackAudio = useFeedbackAudio();
+const speechSupported = trainerAudio.speechSupported;
+const isSpeaking = trainerAudio.isSpeaking;
+const canPlayAudio = computed(
+  () => trainerAudio.speechSupported.value && Boolean(currentQuestionTrad.value)
+);
 const currentLevelCard = computed(() => LEVEL_COPY[trainer.game.value.level]);
 const currentLevelCount = computed(
   () => vocabularyMetadata.value?.counts[trainer.game.value.level] ?? null
@@ -153,89 +75,45 @@ const currentLevelCount = computed(
 const currentLevelCountLabel = computed(() =>
   formatVocabularyCountLabel(currentLevelCount.value, metadataStatus.value)
 );
-const canStartSession = computed(
-  () => showSessionStart.value && !trainer.isLoading.value && Boolean(currentQuestion.value)
-);
-const startPanelTitle = computed(() =>
-  rounds.value > 0 ? '同じレベルでもう一度始める' : 'このレベルで始める'
-);
-const startPanelCopy = computed(() =>
-  speechSupported.value
-    ? '始めると、最初の問題を表示して読み上げも始まります。'
-    : '始めると、最初の問題を表示します。'
-);
-const startPanelModeLabel = computed(() =>
-  speechSupported.value ? 'Sound Ready' : 'Visual Ready'
-);
-const sessionPanelKicker = computed(() => (showSessionStart.value ? 'Records' : 'Session'));
-const sessionPanelTitle = computed(() =>
-  showSessionStart.value ? 'レベルごとの最高記録' : '今回の記録'
-);
-const sessionMetricCards = computed(() => [
-  {
-    id: 'score',
-    label: 'Score',
-    value: score.value,
-    help: '現在の合計',
-  },
-  {
-    id: 'streak',
-    label: 'Streak',
-    value: streak.value,
-    help: '現在の連続数',
-  },
-  {
-    id: 'rounds',
-    label: 'Rounds',
-    value: rounds.value,
-    help: 'ここまでの問題数',
-  },
-]);
-const highScoreCards = computed(() =>
-  LEVELS.map((level) => ({
-    level,
-    label: LEVEL_COPY[level].label,
-    score: highScores.value[level].score,
-    streak: highScores.value[level].streak,
-    active: trainer.game.value.level === level,
-  }))
-);
-const currentLevelHighScore = computed(() => highScores.value[trainer.game.value.level]);
-const gameOverAchievements = computed(() => {
-  if (!isGameOver.value) {
-    return [];
-  }
-
-  const baseline = sessionRecordBaseline.value[trainer.game.value.level];
-  const achievements: GameOverAchievement[] = [];
-
-  appendGameOverAchievement(achievements, 'score', 'Score', score.value, baseline.score);
-  appendGameOverAchievement(achievements, 'streak', 'Streak', bestRunStreak.value, baseline.streak);
-
-  return achievements;
+const sessionUi = useTrainerSessionUi({
+  game: trainer.game,
+  sessionStartPending,
+  fatalError,
+  isLoading: pageLoading,
+  speechSupported: trainerAudio.speechSupported,
+  highScores,
+  sessionRecordBaseline,
+  correctChoiceLabel: computed(() => trainer.correctChoice.value?.label ?? null),
 });
-const gameOverTitle = computed(() => {
-  if (gameOverAchievements.value.some((achievement) => achievement.tone === 'new')) {
-    return '新記録達成';
-  }
-
-  if (gameOverAchievements.value.some((achievement) => achievement.tone === 'tie')) {
-    return '自己ベストタイ';
-  }
-
-  return '今回の結果';
-});
-const gameOverSummary = computed(() => {
-  if (gameOverAchievements.value.some((achievement) => achievement.tone === 'new')) {
-    return '今回のプレイで自己ベストを更新しました。';
-  }
-
-  if (gameOverAchievements.value.some((achievement) => achievement.tone === 'tie')) {
-    return '今回のプレイで自己ベストに並びました。';
-  }
-
-  return '3回続けて不正解になったため、ここで終了です。';
-});
+const {
+  hasFatalLoadError,
+  isLoading,
+  showSessionStart,
+  showLevelPanel,
+  isGameOver,
+  score,
+  streak,
+  bestRunStreak,
+  remainingMisses,
+  rounds,
+  answered,
+  revealAnswer,
+  canStartSession,
+  startPanelTitle,
+  startPanelCopy,
+  startPanelModeLabel,
+  sessionPanelKicker,
+  sessionPanelTitle,
+  sessionMetricCards,
+  highScoreCards,
+  currentLevelHighScore,
+  gameOverAchievements,
+  gameOverTitle,
+  gameOverSummary,
+  feedbackTone,
+  answerMessage,
+  feedbackBadge,
+} = sessionUi;
 const externalLookupLinks = computed(() => {
   const trad = currentQuestion.value?.trad;
 
@@ -258,18 +136,6 @@ const externalLookupLinks = computed(() => {
     },
   ];
 });
-const feedbackTone = computed(() => {
-  if (isLoading.value) {
-    return 'loading';
-  }
-
-  if (!answered.value) {
-    return 'idle';
-  }
-
-  return lastCorrect.value ? 'correct' : 'incorrect';
-});
-
 const levelCards = computed(() =>
   LEVELS.map((level) => ({
     level,
@@ -314,93 +180,6 @@ const choiceStateLabel = (choice: QuestionChoice) => {
   return '';
 };
 
-const answerMessage = computed(() => {
-  if (isLoading.value) {
-    return '問題データを読み込んでいます。';
-  }
-
-  if (showSessionStart.value) {
-    return startPanelCopy.value;
-  }
-
-  if (loadError.value) {
-    return loadError.value;
-  }
-
-  if (isGameOver.value) {
-    return '3回続けて不正解でした。';
-  }
-
-  if (!answered.value) {
-    return '4つの選択肢から、意味に合うものを1つ選んでください。';
-  }
-
-  return lastCorrect.value
-    ? `正解です。+${getScoreForCorrectAnswer(streak.value)}点`
-    : `不正解です。正解は「${trainer.correctChoice.value?.label ?? '不明'}」です。あと${remainingMisses.value}回で終了`;
-});
-
-const feedbackBadge = computed(() => {
-  if (feedbackTone.value === 'loading') {
-    return 'Loading';
-  }
-
-  if (showSessionStart.value) {
-    return 'Start';
-  }
-
-  if (isGameOver.value) {
-    return 'Game Over';
-  }
-
-  if (feedbackTone.value === 'correct') {
-    return 'Correct';
-  }
-
-  if (feedbackTone.value === 'incorrect') {
-    return 'Miss';
-  }
-
-  return 'Ready';
-});
-
-const loadHighScores = () => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  try {
-    const stored = window.localStorage.getItem(HIGH_SCORE_STORAGE_KEY);
-
-    if (!stored) {
-      return;
-    }
-
-    const parsed = JSON.parse(stored) as Partial<Record<Level, unknown>>;
-    const next = createEmptyHighScores();
-
-    for (const level of LEVELS) {
-      next[level] = parseLevelHighScore(parsed[level]);
-    }
-
-    highScores.value = next;
-  } catch {
-    highScores.value = createEmptyHighScores();
-  }
-};
-
-const saveHighScores = () => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  try {
-    window.localStorage.setItem(HIGH_SCORE_STORAGE_KEY, JSON.stringify(highScores.value));
-  } catch {
-    // Keep the game playable even when storage is unavailable.
-  }
-};
-
 const syncSessionRecordBaseline = () => {
   sessionRecordBaseline.value = {
     ...sessionRecordBaseline.value,
@@ -410,202 +189,59 @@ const syncSessionRecordBaseline = () => {
   };
 };
 
+const getErrorMessage = (error: unknown, fallback: string) =>
+  error instanceof Error ? error.message : fallback;
+
+const clearUiError = () => {
+  uiError.value = null;
+};
+
+const applyFatalError = (error: unknown, fallback: string) => {
+  fatalError.value = getErrorMessage(error, fallback);
+  uiError.value = null;
+  trainerAudio.clearPendingQuestionAudio();
+};
+
+const applyUiError = (error: unknown, fallback: string) => {
+  uiError.value = getErrorMessage(error, fallback);
+  trainerAudio.clearPendingQuestionAudio();
+};
+
 const selectLevel = async (level: Level) => {
-  loadError.value = null;
+  fatalError.value = null;
+  clearUiError();
 
   try {
     await trainer.setLevel(level);
     await nextTick();
-    clearPendingQuestionAudio();
+    trainerAudio.clearPendingQuestionAudio();
     if (!sessionStartPending.value) {
-      requestCurrentQuestionAudio();
+      trainerAudio.requestCurrentQuestionAudio();
     }
   } catch (error) {
-    applyLoadError(error, 'レベルの切り替えに失敗しました。');
+    applyUiError(error, 'レベルの切り替えに失敗しました。');
   }
-};
-
-const getAudioContext = async () => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
-  const BrowserAudioContext =
-    window.AudioContext ??
-    (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-
-  if (!BrowserAudioContext) {
-    return null;
-  }
-
-  audioContext ??= new BrowserAudioContext();
-
-  if (audioContext.state === 'suspended') {
-    await audioContext.resume();
-  }
-
-  return audioContext;
-};
-
-const playToneSequence = async (
-  tones: Array<{
-    frequency: number;
-    duration: number;
-    gain: number;
-    type?: OscillatorType;
-  }>
-) => {
-  const context = await getAudioContext();
-
-  if (!context) {
-    return;
-  }
-
-  const startAt = context.currentTime + 0.02;
-
-  tones.forEach((tone, index) => {
-    const oscillator = context.createOscillator();
-    const gainNode = context.createGain();
-    const offset = tones.slice(0, index).reduce((sum, item) => sum + item.duration, 0);
-    const toneStart = startAt + offset;
-    const toneEnd = toneStart + tone.duration;
-
-    oscillator.type = tone.type ?? 'sine';
-    oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
-    gainNode.gain.setValueAtTime(0.0001, toneStart);
-    gainNode.gain.exponentialRampToValueAtTime(tone.gain, toneStart + 0.01);
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, toneEnd);
-
-    oscillator.connect(gainNode);
-    gainNode.connect(context.destination);
-    oscillator.start(toneStart);
-    oscillator.stop(toneEnd + 0.02);
-  });
-};
-
-const playFeedbackSound = async (correct: boolean) => {
-  if (!audioEffectsSupported.value) {
-    return;
-  }
-
-  await playToneSequence(
-    correct
-      ? [
-          { frequency: 660, duration: 0.08, gain: 0.04, type: 'triangle' },
-          { frequency: 880, duration: 0.12, gain: 0.05, type: 'triangle' },
-          { frequency: 1108, duration: 0.18, gain: 0.04, type: 'sine' },
-        ]
-      : [
-          { frequency: 320, duration: 0.11, gain: 0.045, type: 'sawtooth' },
-          { frequency: 240, duration: 0.16, gain: 0.04, type: 'sawtooth' },
-        ]
-  );
-};
-
-const clearPendingQuestionAudio = () => {
-  pendingQuestionAudioId.value = null;
-  isSpeaking.value = false;
-
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-  }
-};
-
-const getLoadErrorMessage = (error: unknown, fallback: string) =>
-  error instanceof Error ? error.message : fallback;
-
-const applyLoadError = (error: unknown, fallback: string) => {
-  loadError.value = getLoadErrorMessage(error, fallback);
-  clearPendingQuestionAudio();
-};
-
-const playCurrentQuestionAudio = () => {
-  if (typeof window === 'undefined' || !currentQuestion.value || !speechSupported.value) {
-    return;
-  }
-
-  syncPreferredVoice();
-
-  utterance = new SpeechSynthesisUtterance(currentQuestion.value.trad);
-  utterance.lang = preferredVoice.value?.lang ?? 'zh-TW';
-  utterance.rate = 0.82;
-  utterance.pitch = 1;
-
-  if (preferredVoice.value) {
-    utterance.voice = preferredVoice.value;
-  }
-
-  utterance.onstart = () => {
-    isSpeaking.value = true;
-    pendingQuestionAudioId.value = null;
-  };
-  utterance.onend = () => {
-    isSpeaking.value = false;
-  };
-  utterance.onerror = () => {
-    isSpeaking.value = false;
-  };
-
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(utterance);
-};
-
-const requestCurrentQuestionAudio = () => {
-  if (typeof window === 'undefined' || !speechSupported.value || !currentQuestionId.value) {
-    clearPendingQuestionAudio();
-    return;
-  }
-
-  pendingQuestionAudioId.value = currentQuestionId.value;
-  playCurrentQuestionAudio();
 };
 
 const answer = (choiceId: string) => {
-  clearPendingQuestionAudio();
+  clearUiError();
+  trainerAudio.clearPendingQuestionAudio();
   const result = trainer.submitAnswer(choiceId);
-  void playFeedbackSound(result.correct);
-};
-
-const syncPreferredVoice = () => {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-    preferredVoice.value = null;
-    return;
-  }
-
-  const voices = window.speechSynthesis.getVoices();
-  preferredVoice.value =
-    voices.find((voice) => voice.lang.toLowerCase().startsWith('zh-tw')) ??
-    voices.find((voice) => voice.lang.toLowerCase().startsWith('zh-hk')) ??
-    voices.find((voice) => voice.lang.toLowerCase().startsWith('zh')) ??
-    null;
-};
-
-const handleVoicesChanged = () => {
-  syncPreferredVoice();
-  if (
-    pendingQuestionAudioId.value === currentQuestionId.value &&
-    !sessionStartPending.value &&
-    !isSpeaking.value &&
-    !window.speechSynthesis.speaking
-  ) {
-    requestCurrentQuestionAudio();
-  }
+  void feedbackAudio.playFeedbackSound(result.correct);
 };
 
 const togglePronunciationAudio = () => {
-  if (typeof window === 'undefined' || !speechSupported.value) {
+  if (typeof window === 'undefined' || !trainerAudio.speechSupported.value) {
     return;
   }
 
-  if (window.speechSynthesis.speaking) {
-    window.speechSynthesis.cancel();
-    isSpeaking.value = false;
-    pendingQuestionAudioId.value = null;
+  if (window.speechSynthesis.speaking || trainerAudio.isSpeaking.value) {
+    trainerAudio.clearPendingQuestionAudio();
     return;
   }
 
   sessionStartPending.value = false;
-  requestCurrentQuestionAudio();
+  trainerAudio.requestCurrentQuestionAudio();
 };
 
 const startSession = () => {
@@ -613,66 +249,111 @@ const startSession = () => {
     return;
   }
 
-  loadError.value = null;
+  fatalError.value = null;
+  clearUiError();
   syncSessionRecordBaseline();
   sessionStartPending.value = false;
-  requestCurrentQuestionAudio();
+  trainerAudio.requestCurrentQuestionAudio();
 };
 
 const moveToNextQuestion = async () => {
-  trainer.nextQuestion();
-  await nextTick();
-  requestCurrentQuestionAudio();
+  clearUiError();
+
+  try {
+    trainer.nextQuestion();
+    await nextTick();
+    trainerAudio.requestCurrentQuestionAudio();
+  } catch (error) {
+    applyUiError(error, '次の問題への切り替えに失敗しました。');
+  }
+};
+
+const isInteractiveShortcutTarget = (target: EventTarget | null) =>
+  target instanceof HTMLElement &&
+  (target.isContentEditable ||
+    ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName));
+
+const handleGlobalKeydown = (event: KeyboardEvent) => {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+    return;
+  }
+
+  if (isInteractiveShortcutTarget(event.target)) {
+    return;
+  }
+
+  if (event.key === 'Enter') {
+    if (showSessionStart.value && canStartSession.value) {
+      event.preventDefault();
+      startSession();
+      return;
+    }
+
+    if (answered.value && !isLoading.value && !hasFatalLoadError.value) {
+      event.preventDefault();
+      void moveToNextQuestion();
+    }
+
+    return;
+  }
+
+  if (showSessionStart.value || revealAnswer.value || isLoading.value || hasFatalLoadError.value) {
+    return;
+  }
+
+  const shortcutIndex = Number.parseInt(event.key, 10) - 1;
+
+  if (!Number.isInteger(shortcutIndex) || shortcutIndex < 0) {
+    return;
+  }
+
+  const choice = currentQuestion.value?.choices[shortcutIndex];
+
+  if (!choice) {
+    return;
+  }
+
+  event.preventDefault();
+  answer(choice.id);
 };
 
 const resetSession = async () => {
-  loadError.value = null;
+  fatalError.value = null;
+  clearUiError();
   const previousSessionStartPending = sessionStartPending.value;
   sessionStartPending.value = true;
-  clearPendingQuestionAudio();
+  trainerAudio.clearPendingQuestionAudio();
 
   try {
     await trainer.resetSession();
     await nextTick();
   } catch (error) {
     sessionStartPending.value = previousSessionStartPending;
-    applyLoadError(error, '最初からのやり直しに失敗しました。');
+    applyUiError(error, '最初からのやり直しに失敗しました。');
   }
 };
 
 const restartSession = async () => {
-  loadError.value = null;
+  fatalError.value = null;
+  clearUiError();
 
   try {
     await trainer.resetSession();
     await nextTick();
     syncSessionRecordBaseline();
     sessionStartPending.value = false;
-    requestCurrentQuestionAudio();
+    trainerAudio.requestCurrentQuestionAudio();
   } catch (error) {
-    applyLoadError(error, 'ゲームの再開に失敗しました。');
+    applyUiError(error, 'ゲームの再開に失敗しました。');
   }
 };
 
 onMounted(async () => {
   loadHighScores();
 
-  audioEffectsSupported.value =
-    typeof window !== 'undefined' &&
-    Boolean(
-      window.AudioContext ||
-        (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
-    );
-
-  if (
-    typeof window !== 'undefined' &&
-    'speechSynthesis' in window &&
-    'SpeechSynthesisUtterance' in window
-  ) {
-    speechSupported.value = true;
-    syncPreferredVoice();
-    window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
-  }
+  trainerAudio.setup();
+  feedbackAudio.setup();
+  window.addEventListener('keydown', handleGlobalKeydown);
 
   void loadVocabularyMetadata()
     .then((metadata) => {
@@ -686,7 +367,7 @@ onMounted(async () => {
   try {
     await trainer.initialize();
   } catch (error) {
-    applyLoadError(error, '語彙データの初期化に失敗しました。');
+    applyFatalError(error, '語彙データの初期化に失敗しました。');
     return;
   }
 
@@ -696,36 +377,15 @@ onMounted(async () => {
 watch(
   [score, bestRunStreak, () => trainer.game.value.level] as const,
   ([currentScore, currentBestStreak, currentLevel]) => {
-    const currentRecord = highScores.value[currentLevel];
-    const nextScore = Math.max(currentRecord.score, currentScore);
-    const nextStreak = Math.max(currentRecord.streak, currentBestStreak);
-
-    if (nextScore === currentRecord.score && nextStreak === currentRecord.streak) {
-      return;
-    }
-
-    highScores.value = {
-      ...highScores.value,
-      [currentLevel]: {
-        score: nextScore,
-        streak: nextStreak,
-      },
-    };
-    saveHighScores();
+    updateLevelRecord(currentLevel, currentScore, currentBestStreak);
   },
   { flush: 'post' }
 );
 
 onBeforeUnmount(() => {
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
-  }
-
-  if (audioContext && audioContext.state !== 'closed') {
-    void audioContext.close();
-    audioContext = null;
-  }
+  window.removeEventListener('keydown', handleGlobalKeydown);
+  trainerAudio.cleanup();
+  feedbackAudio.cleanup();
 });
 
 useSeoMeta({
@@ -850,42 +510,25 @@ useSeoMeta({
               <button class="audio-button" type="button" disabled>読み上げ</button>
             </div>
             <strong class="trad-word trad-word--loading">辞書データがありません</strong>
-            <p class="word-help">{{ loadError }}</p>
+            <p class="word-help">{{ fatalError }}</p>
             <div class="audio-start-notice">
               <p>初回は辞書データを同梱していません。</p>
               <code>npm run setup:data</code>
             </div>
           </template>
           <template v-else-if="showSessionStart">
-            <div class="session-start-panel">
-              <div class="session-start-topline">
-                <span class="word-chip">{{ currentLevelCard.label }}</span>
-                <span class="session-start-mode">{{ startPanelModeLabel }}</span>
-              </div>
-              <div class="session-start-copy">
-                <p class="session-start-kicker">Ready to Launch</p>
-                <strong class="session-start-title">{{ startPanelTitle }}</strong>
-                <p class="session-start-text">
-                  {{ startPanelCopy }}
-                </p>
-              </div>
-              <div class="session-start-meta">
-                <span>{{ currentLevelCard.label }}</span>
-                <span>
-                  {{ currentLevelCountLabel }}
-                </span>
-                <span>{{ speechSupported ? 'ブラウザ音声あり' : '音声なしで開始' }}</span>
-              </div>
-              <button
-                class="primary-button session-start-button"
-                type="button"
-                :disabled="!canStartSession"
-                @click="startSession()"
-              >
-                ゲームを始める
-              </button>
-              <p v-if="loadError" class="session-start-error">{{ loadError }}</p>
-            </div>
+            <SessionStartPanel
+              :current-level-label="currentLevelCard.label"
+              :start-panel-mode-label="startPanelModeLabel"
+              :start-panel-title="startPanelTitle"
+              :start-panel-copy="startPanelCopy"
+              :current-level-count-label="currentLevelCountLabel"
+              :speech-supported="speechSupported"
+              :can-start-session="canStartSession"
+              :load-error="uiError"
+              :has-previous-rounds="rounds > 0"
+              @start="startSession()"
+            />
           </template>
           <template v-else-if="currentQuestion">
             <div class="word-card-top">
@@ -916,33 +559,17 @@ useSeoMeta({
           </template>
         </article>
 
-        <template v-if="showSessionStart">
-          <div class="session-start-grid">
-            <article class="session-start-detail">
-              <p class="session-start-detail-label">Session</p>
-              <strong>{{ rounds > 0 ? '同じレベルで最初からやり直す' : '最初の1問から始める' }}</strong>
-              <p>
-                選んだレベルの最初の問題から始まります。3連続正解からスコアにボーナスが付きます。
-              </p>
-            </article>
-            <article class="session-start-detail">
-              <p class="session-start-detail-label">Dictionary</p>
-              <strong>意味に迷ったら外部辞書で確認できます</strong>
-              <p>
-                回答後は Google 翻訳と Weblio の確認リンクを下部に表示します。
-              </p>
-            </article>
-          </div>
-        </template>
-        <template v-else>
+        <template v-if="currentQuestion && !showSessionStart && !hasFatalLoadError">
           <div class="choice-grid">
             <button
-              v-for="choice in currentQuestion?.choices ?? []"
+              v-for="(choice, index) in currentQuestion?.choices ?? []"
               :key="choice.id"
               class="choice-card"
               :class="choiceClass(choice)"
               type="button"
               :disabled="revealAnswer || isLoading"
+              :aria-label="`${index + 1}. ${choice.label}`"
+              :aria-keyshortcuts="String(index + 1)"
               @click="answer(choice.id)"
             >
               <span class="choice-label">{{ choice.label }}</span>
@@ -952,53 +579,19 @@ useSeoMeta({
             </button>
           </div>
 
-          <div v-if="isGameOver" class="game-over-panel">
-            <div class="game-over-copy">
-              <span class="feedback-pill feedback-pill--game-over">{{ feedbackBadge }}</span>
-              <strong class="game-over-title">{{ gameOverTitle }}</strong>
-              <p>{{ gameOverSummary }}</p>
-              <p v-if="loadError" class="game-over-error">{{ loadError }}</p>
-            </div>
-            <div class="game-over-stats">
-              <div class="game-over-stat">
-                <span>この回の得点</span>
-                <strong>{{ score }}</strong>
-              </div>
-              <div class="game-over-stat">
-                <span>この回の最高連続</span>
-                <strong>{{ bestRunStreak }}</strong>
-              </div>
-              <div class="game-over-stat game-over-stat--subtle">
-                <span>このレベルの最高得点</span>
-                <strong>{{ currentLevelHighScore.score }}</strong>
-              </div>
-              <div class="game-over-stat game-over-stat--subtle">
-                <span>このレベルの最高連続</span>
-                <strong>{{ currentLevelHighScore.streak }}</strong>
-              </div>
-            </div>
-            <div v-if="gameOverAchievements.length > 0" class="game-over-achievement-grid">
-              <article
-                v-for="item in gameOverAchievements"
-                :key="item.key"
-                class="game-over-achievement"
-                :class="`game-over-achievement--${item.tone}`"
-              >
-                <span class="achievement-badge">{{ item.badge }}</span>
-                <span class="achievement-label">{{ item.label }}</span>
-                <strong class="achievement-value">{{ item.value }}</strong>
-                <span class="achievement-note">{{ item.note }}</span>
-              </article>
-            </div>
-            <div class="feedback-actions">
-              <button class="primary-button" type="button" @click="restartSession()">
-                もう一度始める
-              </button>
-              <button class="ghost-button" type="button" @click="resetSession()">
-                トップへ戻る
-              </button>
-            </div>
-          </div>
+          <GameOverPanel
+            v-if="isGameOver"
+            :feedback-badge="feedbackBadge"
+            :game-over-title="gameOverTitle"
+            :game-over-summary="gameOverSummary"
+            :load-error="uiError"
+            :score="score"
+            :best-run-streak="bestRunStreak"
+            :current-level-high-score="currentLevelHighScore"
+            :game-over-achievements="gameOverAchievements"
+            @restart="restartSession()"
+            @reset="resetSession()"
+          />
           <div
             v-else
             class="feedback-row"
@@ -1008,10 +601,11 @@ useSeoMeta({
               'feedback-row--loading': feedbackTone === 'loading',
             }"
           >
-            <div class="feedback-copy">
+            <div class="feedback-copy" aria-live="polite">
               <span class="feedback-pill" :class="`feedback-pill--${feedbackTone}`">
                 {{ feedbackBadge }}
               </span>
+              <p v-if="uiError" class="feedback-error">{{ uiError }}</p>
               <p>{{ answerMessage }}</p>
             </div>
             <div class="feedback-actions">
@@ -1027,6 +621,7 @@ useSeoMeta({
                 class="primary-button"
                 type="button"
                 :disabled="!answered || isLoading"
+                aria-keyshortcuts="Enter"
                 @click="moveToNextQuestion()"
               >
                 次の問題

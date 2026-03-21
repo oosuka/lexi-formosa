@@ -68,6 +68,39 @@ const installMockWordlists = async (page: Page) => {
   });
 };
 
+const correctLabelByTrad: Record<string, string> = {
+  你好: 'こんにちは',
+  謝謝: 'ありがとう',
+  老師: '先生',
+  學生: '学生',
+};
+
+const answerWrongChoice = async (page: Page) => {
+  const trad = (await page.locator('.trad-word').first().textContent())?.trim() ?? '';
+  const correctLabel = correctLabelByTrad[trad];
+
+  expect(correctLabel, `missing correct label for ${trad}`).toBeTruthy();
+
+  if (!correctLabel) {
+    throw new Error(`missing correct label for ${trad}`);
+  }
+
+  const choices = page.locator('.choice-card');
+  const count = await choices.count();
+
+  for (let index = 0; index < count; index += 1) {
+    const choice = choices.nth(index);
+    const label = (await choice.textContent())?.trim() ?? '';
+
+    if (!label.includes(correctLabel)) {
+      await choice.click();
+      return;
+    }
+  }
+
+  throw new Error(`Could not find a wrong choice for ${trad}`);
+};
+
 test('ゲームを1問進められる', async ({ page }) => {
   await installMockWordlists(page);
 
@@ -132,4 +165,39 @@ test('モバイル幅でも横にはみ出さない', async ({ page }) => {
   }));
 
   expect(overflowAfterAnswer.scrollWidth).toBeLessThanOrEqual(overflowAfterAnswer.clientWidth);
+});
+
+test('game over 後に restart と reset の導線を使える', async ({ page }) => {
+  await installMockWordlists(page);
+
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
+
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await answerWrongChoice(page);
+
+    if (attempt < 2) {
+      await page.getByRole('button', { name: '次の問題' }).click();
+    }
+  }
+
+  await expect(page.locator('.game-over-panel')).toBeVisible();
+  await page.getByRole('button', { name: 'もう一度始める' }).click();
+  await expect(page.locator('.choice-card')).toHaveCount(4);
+  await expect(page.getByText('ゲームを始める')).toHaveCount(0);
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await answerWrongChoice(page);
+
+    if (attempt < 2) {
+      await page.getByRole('button', { name: '次の問題' }).click();
+    }
+  }
+
+  await expect(page.locator('.game-over-panel')).toBeVisible();
+  await page.getByRole('button', { name: 'トップへ戻る' }).click();
+  await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
+  await expect(page.locator('.level-panel')).toBeVisible();
 });

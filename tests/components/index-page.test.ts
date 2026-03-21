@@ -313,6 +313,41 @@ describe('index page', () => {
     expect(wrapper.find('.level-panel').exists()).toBe(true);
   });
 
+  it('次の問題への切り替え失敗は回答済み状態のままエラー表示する', async () => {
+    const trainer = createTrainerStub();
+    trainer.nextQuestion.mockImplementation(() => {
+      throw new Error('next question failed');
+    });
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage, {
+      global: {
+        config: {
+          errorHandler() {},
+        },
+      },
+    });
+
+    await startGame(wrapper);
+
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    const nextButton = wrapper.get('button.primary-button');
+    await nextButton.trigger('click');
+    await flushPromises();
+
+    expect(trainer.nextQuestion).toHaveBeenCalled();
+    expect(wrapper.text()).toContain('next question failed');
+    expect(wrapper.text()).toContain('正解');
+    expect(wrapper.text()).toContain('次の問題');
+    expect(wrapper.find('.game-over-panel').exists()).toBe(false);
+  });
+
   it('不正解時は正解と終了までの残り回数を表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
@@ -398,6 +433,22 @@ describe('index page', () => {
 
     expect(wrapper.text()).toContain('謝謝');
     expect(window.speechSynthesis.speak).toHaveBeenCalled();
+  });
+
+  it('数字キーで回答し Enter で次の問題へ進める', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: '1' }));
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('正解');
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('謝謝');
   });
 
   it('metadata 読み込み失敗時もゲーム本体は表示する', async () => {
