@@ -106,20 +106,18 @@ export const useTrainerSessionUi = ({
   const canStartSession = computed(
     () => showSessionStart.value && !isLoading.value && Boolean(currentQuestion.value)
   );
-  const startPanelTitle = computed(() =>
-    rounds.value > 0 ? '同じレベルでもう一度始める' : 'このレベルから始める'
-  );
+  const startPanelTitle = computed(() => 'Ready to Launch');
   const startPanelCopy = computed(() =>
     speechSupported.value
-      ? '始めると、最初の問題が表示され、読み上げも始まります。'
-      : '始めると、最初の問題を表示します。'
+      ? 'レベルを選んで、最初の1問から静かに始めます。'
+      : 'レベルを選んで、最初の1問から始めます。'
   );
   const startPanelModeLabel = computed(() =>
     speechSupported.value ? 'Sound Ready' : 'Visual Ready'
   );
-  const sessionPanelKicker = computed(() => (showSessionStart.value ? 'Records' : 'Session'));
+  const sessionPanelKicker = computed(() => (showSessionStart.value ? 'Progress' : 'Session'));
   const sessionPanelTitle = computed(() =>
-    showSessionStart.value ? 'レベルごとの最高記録' : '今回の記録'
+    showSessionStart.value ? 'Best Score / Best Streak' : '今回の記録'
   );
   const sessionMetricCards = computed(() => [
     {
