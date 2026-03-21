@@ -58,6 +58,7 @@ const selectedChoiceId = computed(() => trainer.game.value.selectedChoiceId);
 const currentQuestionId = computed(() => currentQuestion.value?.questionId ?? null);
 const pinyinReading = computed(() => formatPinyinReading(currentQuestion.value?.pronunciation));
 const katakanaReading = computed(() => formatKatakanaReading(currentQuestion.value?.pronunciation));
+const maxMisses = MAX_MISSES_IN_ROW;
 const trainerAudio = useTrainerAudio({
   getQuestionId: () => currentQuestionId.value,
   getQuestionText: () => currentQuestionTrad.value,
@@ -505,68 +506,62 @@ useSeoMeta({
           <h2>この単語の意味は？</h2>
         </div>
 
-        <article class="word-card">
-          <template v-if="hasFatalLoadError">
-            <div class="word-card-top">
+        <template v-if="hasFatalLoadError">
+          <article class="question-stage">
+            <div class="question-stage__topline">
               <span class="word-chip">初期設定</span>
               <button class="audio-button" type="button" disabled>読み上げ</button>
             </div>
-            <strong class="trad-word trad-word--loading">辞書データがありません</strong>
-            <p class="word-help">{{ fatalError }}</p>
+            <strong class="question-stage__trad question-stage__trad--loading">辞書データがありません</strong>
+            <p class="question-stage__help">{{ fatalError }}</p>
             <div class="audio-start-notice">
               <p>初回は辞書データを同梱していません。</p>
               <code>npm run setup:data</code>
             </div>
-          </template>
-          <template v-else-if="showSessionStart">
-            <SessionStartPanel
-              :current-level-label="currentLevelCard.label"
-              :start-panel-mode-label="startPanelModeLabel"
-              :start-panel-title="startPanelTitle"
-              :start-panel-copy="startPanelCopy"
-              :current-level-count-label="currentLevelCountLabel"
-              :speech-supported="speechSupported"
-              :can-start-session="canStartSession"
-              :load-error="uiError"
-              :has-previous-rounds="rounds > 0"
-              @start="startSession()"
-            />
-          </template>
-          <template v-else-if="currentQuestion">
-            <TrainerTopRail
-              :level-label="currentLevelCard.label"
-              :score="score"
-              :streak="streak"
-              :misses-in-row="missesInRow"
-              :max-misses="MAX_MISSES_IN_ROW"
-            />
-            <div class="word-card-top">
-              <span class="word-chip">{{ LEVEL_COPY[currentQuestion.level].label }}</span>
-              <button
-                class="audio-button"
-                type="button"
-                :disabled="!canPlayAudio"
-                :class="{ 'audio-button--active': isSpeaking }"
-                @click="togglePronunciationAudio()"
-              >
-                {{ isSpeaking ? '停止' : '読み上げ' }}
-              </button>
-            </div>
-            <strong class="trad-word">{{ currentQuestion.trad }}</strong>
-            <div v-if="katakanaReading || pinyinReading" class="reading-stack">
-              <p v-if="katakanaReading" class="reading-kana">{{ katakanaReading }}</p>
-              <p v-if="pinyinReading" class="reading-pinyin">{{ pinyinReading }}</p>
-            </div>
-          </template>
-          <template v-else>
-            <div class="word-card-top">
+          </article>
+        </template>
+        <template v-else-if="showSessionStart">
+          <SessionStartPanel
+            :current-level-label="currentLevelCard.label"
+            :start-panel-mode-label="startPanelModeLabel"
+            :start-panel-title="startPanelTitle"
+            :start-panel-copy="startPanelCopy"
+            :current-level-count-label="currentLevelCountLabel"
+            :speech-supported="speechSupported"
+            :can-start-session="canStartSession"
+            :load-error="uiError"
+            :has-previous-rounds="rounds > 0"
+            @start="startSession()"
+          />
+        </template>
+        <template v-else-if="currentQuestion">
+          <TrainerTopRail
+            :level-label="currentLevelCard.label"
+            :score="score"
+            :streak="streak"
+            :misses-in-row="missesInRow"
+            :max-misses="maxMisses"
+          />
+          <QuestionStage
+            :level-label="LEVEL_COPY[currentQuestion.level].label"
+            :trad="currentQuestion.trad"
+            :katakana-reading="katakanaReading"
+            :pinyin-reading="pinyinReading"
+            :can-play-audio="canPlayAudio"
+            :is-speaking="isSpeaking"
+            @toggle-audio="togglePronunciationAudio()"
+          />
+        </template>
+        <template v-else>
+          <article class="question-stage">
+            <div class="question-stage__topline">
               <span class="word-chip">読み込み中</span>
               <button class="audio-button" type="button" disabled>読み上げ</button>
             </div>
-            <strong class="trad-word trad-word--loading">問題を準備しています</strong>
-            <p class="word-help">選択したレベルの単語を読み込んでいます。</p>
-          </template>
-        </article>
+            <strong class="question-stage__trad question-stage__trad--loading">問題を準備しています</strong>
+            <p class="question-stage__help">選択したレベルの単語を読み込んでいます。</p>
+          </article>
+        </template>
 
         <template v-if="currentQuestion && !showSessionStart && !hasFatalLoadError">
           <div class="choice-grid">
