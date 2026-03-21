@@ -9,16 +9,17 @@ describe('ResultBanner', () => {
       props: {
         tone: 'correct',
         badge: 'Correct',
-        message: '正解です。+12点',
+        message: '正解。+12点獲得',
         uiError: null,
       },
     });
 
     expect(wrapper.text()).toContain('Correct');
-    expect(wrapper.text()).toContain('正解です。+12点');
+    expect(wrapper.text()).toContain('正解。+12点獲得');
     expect(wrapper.classes()).toContain('result-banner');
     expect(wrapper.classes()).toContain('result-banner--embedded');
     expect(wrapper.classes()).toContain('result-banner--correct');
+    expect(wrapper.classes()).toContain('result-banner--correct-impact');
   });
 
   it('不正解状態では残り回数とUIエラーを併記する', () => {
@@ -26,15 +27,16 @@ describe('ResultBanner', () => {
       props: {
         tone: 'incorrect',
         badge: 'Miss',
-        message: '不正解です。終了まであと2回',
+        message: '不正解。正解は「星期」。残り2回で終了します。',
         uiError: '次の問題への切り替えに失敗しました。',
       },
     });
 
     expect(wrapper.text()).toContain('Miss');
-    expect(wrapper.text()).toContain('不正解です。終了まであと2回');
+    expect(wrapper.text()).toContain('不正解。正解は「星期」。残り2回で終了します。');
     expect(wrapper.text()).toContain('次の問題への切り替えに失敗しました。');
     expect(wrapper.classes()).toContain('result-banner--incorrect');
+    expect(wrapper.classes()).toContain('result-banner--incorrect-impact');
   });
 
   it('読み込み中は loading 状態を示す', () => {

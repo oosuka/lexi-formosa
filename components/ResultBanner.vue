@@ -9,10 +9,25 @@ const props = defineProps<{
 }>();
 
 const toneClass = computed(() => `result-banner--${props.tone}`);
+const impactClass = computed(() => {
+  if (props.tone === 'correct') {
+    return 'result-banner--correct-impact';
+  }
+
+  if (props.tone === 'incorrect') {
+    return 'result-banner--incorrect-impact';
+  }
+
+  return null;
+});
 </script>
 
 <template>
-  <article class="result-banner result-banner--embedded" :class="toneClass" aria-live="polite">
+  <article
+    class="result-banner result-banner--embedded"
+    :class="[toneClass, impactClass]"
+    aria-live="polite"
+  >
     <div class="result-banner__copy">
       <span class="feedback-pill result-banner__badge" :class="`feedback-pill--${props.tone}`">
         {{ props.badge }}

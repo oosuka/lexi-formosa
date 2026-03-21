@@ -1013,6 +1013,32 @@ button {
   font-size: 0.92rem;
 }
 
+.result-banner--correct-impact .result-banner__copy,
+.result-banner--incorrect-impact .result-banner__copy {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.82) inset,
+    0 14px 26px rgba(76, 58, 38, 0.05);
+}
+
+.result-banner--correct-impact .result-banner__copy {
+  border-color: rgba(29, 122, 71, 0.18);
+  background:
+    linear-gradient(180deg, rgba(242, 250, 244, 0.98), rgba(248, 252, 249, 0.96)),
+    rgba(255, 255, 255, 0.94);
+  animation: result-banner-correct-impact 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.result-banner--incorrect-impact .result-banner__copy {
+  border-color: rgba(177, 79, 47, 0.18);
+  background:
+    linear-gradient(180deg, rgba(253, 243, 239, 0.98), rgba(251, 244, 240, 0.96)),
+    rgba(255, 255, 255, 0.94);
+  animation: result-banner-incorrect-impact 460ms ease both;
+}
+
 .feedback-copy {
   display: grid;
   gap: 10px;
@@ -1105,7 +1131,9 @@ button {
   .choice-card--incorrect-impact,
   .choice-card--correct-reveal,
   .quiz-panel--correct-impact,
-  .quiz-panel--incorrect-impact {
+  .quiz-panel--incorrect-impact,
+  .result-banner--correct-impact .result-banner__copy,
+  .result-banner--incorrect-impact .result-banner__copy {
     animation: none;
     transform: none;
   }
@@ -1610,6 +1638,45 @@ button {
 
   100% {
     box-shadow: 0 18px 60px rgba(76, 58, 38, 0.14);
+  }
+}
+
+@keyframes result-banner-correct-impact {
+  0% {
+    transform: scale(0.985);
+    box-shadow:
+      0 0 0 0 rgba(29, 122, 71, 0.1),
+      0 8px 18px rgba(29, 122, 71, 0.08);
+  }
+
+  60% {
+    transform: scale(1.01);
+    box-shadow:
+      0 0 0 8px rgba(29, 122, 71, 0.04),
+      0 14px 28px rgba(29, 122, 71, 0.12);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes result-banner-incorrect-impact {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  22% {
+    transform: translateX(-3px);
+  }
+
+  44% {
+    transform: translateX(3px);
+  }
+
+  66% {
+    transform: translateX(-2px);
   }
 }
 
