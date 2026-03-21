@@ -1,5 +1,7 @@
 # Top Screen Renewal Implementation Plan
 
+> Status: この計画に沿った実装は 2026-03-21 に一度 `feat/game_update` へ取り込まれましたが、その後 revert 済みです。以下は完了済みの現行計画ではなく、再挑戦用の履歴です。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** ゲームトップを `Premium Launch Pad` へ作り替え、開始導線を `Start Session` 1つに整理したうえで、旧 `Lobby / Session / Records` 構造を廃止する。
