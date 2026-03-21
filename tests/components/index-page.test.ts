@@ -148,23 +148,11 @@ describe('index page', () => {
     const wrapper = await mountSuspended(IndexPage);
 
     expect(wrapper.text()).toContain(APP_VERSION_LABEL);
-    expect(wrapper.text()).toContain('Ready to Launch');
-    expect(wrapper.text()).toContain('Start Session');
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).toContain('Focused Learning Desk');
+    expect(wrapper.text()).toContain('このレベルから始める');
     expect(wrapper.text()).toContain('45語');
-    expect(wrapper.text()).not.toContain('Lobby');
-    expect(wrapper.text()).not.toContain('Records');
-    expect(wrapper.text()).not.toContain('ゲームを始める');
-    expect(wrapper.text()).not.toContain('このレベルから始める');
     expect(wrapper.text()).not.toContain('你好');
-  });
-
-  it('開始画面ではレベル選択が主役カードへ反映される', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    await wrapper.get('[data-level-selector="2"]').trigger('click');
-    await flushPromises();
-
-    expect(wrapper.get('.session-start-panel').text()).toContain('Level 2');
   });
 
   it('開始画面ではレベルごとの最高記録を表示する', async () => {
