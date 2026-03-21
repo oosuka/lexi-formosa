@@ -1,5 +1,52 @@
 import { expect, type Page, test } from '@playwright/test';
 
+const level1SeedVocabulary = [
+  {
+    id: 'seed-001',
+    trad: '你好',
+    ja: 'こんにちは',
+    level: 1,
+    length: 2,
+    category: 'greeting',
+    taiwanPriority: true,
+    sources: ['seed'],
+    pronunciation: 'ni3 hao3',
+  },
+  {
+    id: 'seed-002',
+    trad: '謝謝',
+    ja: 'ありがとう',
+    level: 1,
+    length: 2,
+    category: 'greeting',
+    taiwanPriority: true,
+    sources: ['seed'],
+    pronunciation: 'xie4 xie5',
+  },
+  {
+    id: 'seed-003',
+    trad: '老師',
+    ja: '先生',
+    level: 1,
+    length: 2,
+    category: 'people',
+    taiwanPriority: true,
+    sources: ['seed'],
+    pronunciation: 'lao3 shi1',
+  },
+  {
+    id: 'seed-004',
+    trad: '學生',
+    ja: '学生',
+    level: 1,
+    length: 2,
+    category: 'people',
+    taiwanPriority: true,
+    sources: ['seed'],
+    pronunciation: 'xue2 sheng1',
+  },
+] as const;
+
 const installMockWordlists = async (page: Page) => {
   await page.route('**/wordlists/metadata.json', async (route) => {
     await route.fulfill({
@@ -18,61 +65,13 @@ const installMockWordlists = async (page: Page) => {
   await page.route('**/wordlists/vocabulary-level-1.json', async (route) => {
     await route.fulfill({
       contentType: 'application/json',
-      body: JSON.stringify([
-        {
-          id: 'seed-001',
-          trad: '你好',
-          ja: 'こんにちは',
-          level: 1,
-          length: 2,
-          category: 'greeting',
-          taiwanPriority: true,
-          sources: ['seed'],
-          pronunciation: 'ni3 hao3',
-        },
-        {
-          id: 'seed-002',
-          trad: '謝謝',
-          ja: 'ありがとう',
-          level: 1,
-          length: 2,
-          category: 'greeting',
-          taiwanPriority: true,
-          sources: ['seed'],
-          pronunciation: 'xie4 xie5',
-        },
-        {
-          id: 'seed-003',
-          trad: '老師',
-          ja: '先生',
-          level: 1,
-          length: 2,
-          category: 'people',
-          taiwanPriority: true,
-          sources: ['seed'],
-          pronunciation: 'lao3 shi1',
-        },
-        {
-          id: 'seed-004',
-          trad: '學生',
-          ja: '学生',
-          level: 1,
-          length: 2,
-          category: 'people',
-          taiwanPriority: true,
-          sources: ['seed'],
-          pronunciation: 'xue2 sheng1',
-        },
-      ]),
+      body: JSON.stringify(level1SeedVocabulary),
     });
   });
 };
 
 const correctLabelByTrad: Record<string, string> = {
-  你好: 'こんにちは',
-  謝謝: 'ありがとう',
-  老師: '先生',
-  學生: '学生',
+  ...Object.fromEntries(level1SeedVocabulary.map((entry) => [entry.trad, entry.ja])),
 };
 
 const answerWrongChoice = async (page: Page) => {
@@ -122,6 +121,24 @@ test('ゲームを1問進められる', async ({ page }) => {
   await nextButton.click();
 
   await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
+});
+
+test('PC 幅ではプレイ中に Score / Streak / Miss がプレイエリアで見える', async ({
+  page,
+}) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 1440, height: 900 });
+
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
+
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  const playArea = page.locator('.quiz-panel');
+
+  await expect(playArea).toBeVisible();
+  await expect(playArea.getByText('Score', { exact: true })).toBeVisible();
+  await expect(playArea.getByText('Streak', { exact: true })).toBeVisible();
+  await expect(playArea.getByText('Miss', { exact: true })).toBeVisible();
 });
 
 test('開始前の案内カードは高さが揃う', async ({ page }) => {

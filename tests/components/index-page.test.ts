@@ -190,6 +190,71 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('nǐ hǎo');
   });
 
+  it('プレイ中は Score / Streak / Miss をプレイエリアに表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const quizPanel = wrapper.get('.quiz-panel');
+    const heroStatsPanel = wrapper.get('.hero-stats-panel');
+
+    expect(quizPanel.text()).toContain('Score');
+    expect(quizPanel.text()).toContain('Streak');
+    expect(quizPanel.text()).toContain('Miss');
+    expect(heroStatsPanel.text()).not.toContain('Miss');
+  });
+
+  it('回答後の正解と不正解は選択肢の見た目で区別できる', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const firstQuestionChoices = wrapper.findAll('.choice-card');
+    const correctChoice = firstQuestionChoices.find((candidate) =>
+      candidate.text().includes('こんにちは')
+    );
+
+    await correctChoice?.trigger('click');
+    await flushPromises();
+
+    const answeredCorrectChoices = wrapper.findAll('.choice-card');
+    const answeredCorrectChoice = answeredCorrectChoices.find((candidate) =>
+      candidate.text().includes('こんにちは')
+    );
+    const answeredWrongChoice = answeredCorrectChoices.find((candidate) =>
+      candidate.text().includes('牛乳')
+    );
+
+    expect(answeredCorrectChoice?.classes()).toContain('choice-card--correct');
+    expect(answeredWrongChoice?.classes()).toContain('choice-card--muted');
+
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    const secondQuestionChoices = wrapper.findAll('.choice-card');
+    const secondWrongChoice = secondQuestionChoices.find((candidate) =>
+      candidate.text().includes('牛乳')
+    );
+    const secondCorrectChoice = secondQuestionChoices.find((candidate) =>
+      candidate.text().includes('ありがとう')
+    );
+
+    await secondWrongChoice?.trigger('click');
+    await flushPromises();
+
+    const answeredWrongChoices = wrapper.findAll('.choice-card');
+    const answeredWrongSelectedChoice = answeredWrongChoices.find((candidate) =>
+      candidate.text().includes('牛乳')
+    );
+    const answeredWrongCorrectChoice = answeredWrongChoices.find((candidate) =>
+      candidate.text().includes('ありがとう')
+    );
+
+    expect(answeredWrongSelectedChoice?.classes()).toContain('choice-card--incorrect');
+    expect(answeredWrongCorrectChoice?.classes()).toContain('choice-card--correct');
+    expect(secondCorrectChoice?.text()).toContain('ありがとう');
+  });
+
   it('正解時にそのレベルの最高記録を保存する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
