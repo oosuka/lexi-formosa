@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { getScoreForCorrectAnswer } from '~/composables/useTraditionalTrainer';
 import IndexPage from '~/pages/index.vue';
-import type { GameState } from '~/types/vocabulary';
+import type { GameState, Level } from '~/types/vocabulary';
 import packageJson from '../../package.json' with { type: 'json' };
 
 import { questionOne, questionTwo } from '../fixtures/vocabulary';
@@ -102,7 +102,12 @@ const createTrainerStub = () => {
         level: game.value.level,
       };
     }),
-    setLevel: vi.fn(async () => undefined),
+    setLevel: vi.fn(async (level: Level) => {
+      game.value = {
+        ...game.value,
+        level,
+      };
+    }),
   };
 };
 
@@ -167,7 +172,7 @@ describe('index page', () => {
     expect(wrapper.get('.session-start-panel').text()).toContain('Level 2');
   });
 
-  it('開始画面ではレベルごとの最高記録を表示する', async () => {
+  it('開始画面では選択中レベルの最高記録を主役カードへ表示する', async () => {
     window.localStorage.setItem(
       HIGH_SCORE_STORAGE_KEY,
       JSON.stringify({
@@ -178,21 +183,19 @@ describe('index page', () => {
     );
 
     const wrapper = await mountSuspended(IndexPage);
-    const recordGridText = wrapper.get('.record-grid').text();
+    const progressStrip = wrapper.get('.session-start-progress-strip');
 
-    expect(wrapper.text()).toContain('レベルごとの最高記録');
-    expect(recordGridText).toContain('Level 1');
-    expect(recordGridText).toContain('Best Score');
-    expect(recordGridText).toContain('80');
-    expect(recordGridText).toContain('Best Streak');
-    expect(recordGridText).toContain('5');
-    expect(recordGridText).toContain('Level 2');
-    expect(recordGridText).toContain('140');
-    expect(recordGridText).toContain('9');
-    expect(recordGridText).toContain('Level 3');
-    expect(recordGridText).toContain('60');
-    expect(recordGridText).toContain('3');
-    expect(recordGridText).not.toContain('45語');
+    expect(progressStrip.text()).toContain('Best Score');
+    expect(progressStrip.text()).toContain('80');
+    expect(progressStrip.text()).toContain('Best Streak');
+    expect(progressStrip.text()).toContain('5');
+    expect(progressStrip.text()).not.toContain('140');
+
+    await wrapper.get('[data-level-selector="2"]').trigger('click');
+    await flushPromises();
+
+    expect(progressStrip.text()).toContain('140');
+    expect(progressStrip.text()).toContain('9');
   });
 
   it('開始後に読み方を表示する', async () => {
@@ -425,7 +428,7 @@ describe('index page', () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain('你好');
-    expect(wrapper.text()).not.toContain('ゲームを始める');
+    expect(wrapper.text()).not.toContain('Start Session');
     expect(wrapper.find('.level-panel').exists()).toBe(false);
   });
 
@@ -454,8 +457,8 @@ describe('index page', () => {
     await topButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.find('.level-panel').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Start Session');
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
   });
 
   it('次の問題への切り替え失敗は回答済み状態のままエラー表示する', async () => {
@@ -520,9 +523,15 @@ describe('index page', () => {
 
     const wrapper = await mountSuspended(IndexPage);
 
-    expect(wrapper.text()).toContain('50');
-    expect(wrapper.text()).toContain('90');
-    expect(wrapper.text()).toContain('30');
+    expect(wrapper.get('.session-start-progress-strip').text()).toContain('50');
+
+    await wrapper.get('[data-level-selector="2"]').trigger('click');
+    await flushPromises();
+    expect(wrapper.get('.session-start-progress-strip').text()).toContain('90');
+
+    await wrapper.get('[data-level-selector="3"]').trigger('click');
+    await flushPromises();
+    expect(wrapper.get('.session-start-progress-strip').text()).toContain('30');
   });
 
   it('外部確認リンクは回答後に別タブで表示する', async () => {
@@ -601,11 +610,10 @@ describe('index page', () => {
 
     const wrapper = await mountSuspended(IndexPage);
 
-    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).toContain('Start Session');
     expect(wrapper.text()).toContain('語数未取得');
     expect(wrapper.text()).not.toContain('語数を読み込み中');
-    expect(wrapper.text()).toContain('Lobby');
-    expect(wrapper.text()).toContain('学習を始める');
+    expect(wrapper.text()).toContain('Ready to Launch');
     expect(wrapper.text()).not.toContain('辞書データ未生成');
   });
 
@@ -635,8 +643,8 @@ describe('index page', () => {
 
     const wrapper = await mountSuspended(IndexPage);
 
-    expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.text()).toContain('レベルごとの最高記録');
+    expect(wrapper.text()).toContain('Start Session');
+    expect(wrapper.text()).toContain('Best Score');
   });
 
   it('localStorage の保存に失敗してもゲーム本体は継続できる', async () => {
@@ -664,20 +672,18 @@ describe('index page', () => {
     useTraditionalTrainerMock.mockReturnValue(trainer);
 
     const wrapper = await mountSuspended(IndexPage);
-    const levelButton = wrapper
-      .findAll('.level-card')
-      .find((candidate) => candidate.text().includes('Level 2'));
+    const levelButton = wrapper.get('[data-level-selector="2"]');
 
-    await levelButton?.trigger('click');
+    await levelButton.trigger('click');
     await flushPromises();
 
     expect(trainer.setLevel).toHaveBeenCalledWith(2);
     expect(wrapper.text()).toContain('level 2 missing');
-    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).toContain('Start Session');
     expect(wrapper.find('.session-start-panel').exists()).toBe(true);
     expect(wrapper.text()).not.toContain('你好');
     expect(wrapper.text()).not.toContain('辞書データ未生成');
-    expect(levelButton?.attributes('disabled')).toBeUndefined();
+    expect(levelButton.attributes('disabled')).toBeUndefined();
   });
 
   it('開始前のレベル変更失敗後にゲームを始めると古いエラーを残さない', async () => {
@@ -686,11 +692,9 @@ describe('index page', () => {
     useTraditionalTrainerMock.mockReturnValue(trainer);
 
     const wrapper = await mountSuspended(IndexPage);
-    const levelButton = wrapper
-      .findAll('.level-card')
-      .find((candidate) => candidate.text().includes('Level 2'));
+    const levelButton = wrapper.get('[data-level-selector="2"]');
 
-    await levelButton?.trigger('click');
+    await levelButton.trigger('click');
     await flushPromises();
     expect(wrapper.text()).toContain('level 2 missing');
 
@@ -713,11 +717,9 @@ describe('index page', () => {
     useTraditionalTrainerMock.mockReturnValue(trainer);
 
     const wrapper = await mountSuspended(IndexPage);
-    const levelButton = wrapper
-      .findAll('.level-card')
-      .find((candidate) => candidate.text().includes('Level 2'));
+    const levelButton = wrapper.get('[data-level-selector="2"]');
 
-    await levelButton?.trigger('click');
+    await levelButton.trigger('click');
     await flushPromises();
 
     const startButton = wrapper.get('button.session-start-button');
@@ -726,7 +728,7 @@ describe('index page', () => {
     await startButton.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).toContain('Start Session');
     expect(wrapper.text()).not.toContain('4つの選択肢から、意味に合うものを1つ選んでください。');
     expect(trainer.game.value.level).toBe(1);
 
@@ -794,7 +796,7 @@ describe('index page', () => {
 
     const wrapper = await mountSuspended(IndexPage);
 
-    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).toContain('Start Session');
     expect(wrapper.text()).not.toContain('音声開始が必要');
   });
 
@@ -892,7 +894,7 @@ describe('index page', () => {
     await resetButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('このレベルから始める');
+    expect(wrapper.text()).toContain('Ready to Launch');
     expect(wrapper.text()).not.toContain('你好');
   });
 
@@ -920,7 +922,7 @@ describe('index page', () => {
     await resetButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('このレベルから始める');
+    expect(wrapper.text()).toContain('Ready to Launch');
     expect(wrapper.text()).not.toContain('再見');
 
     deferred.resolve();

@@ -103,13 +103,11 @@ const {
   answered,
   revealAnswer,
   canStartSession,
-  startPanelTitle,
   startPanelCopy,
   startPanelModeLabel,
   sessionPanelKicker,
   sessionPanelTitle,
   sessionMetricCards,
-  highScoreCards,
   currentLevelHighScore,
   gameOverAchievements,
   gameOverTitle,
@@ -424,16 +422,22 @@ useSeoMeta({
 
 <template>
   <main class="page-shell" :class="{ 'reduce-motion': reducedMotion }">
-    <section class="hero-panel">
-      <div class="hero-brand surface-card">
+    <section class="hero-panel" :class="{ 'hero-panel--launch': showLevelPanel }">
+      <div class="hero-brand surface-card" :class="{ 'hero-brand--launch': showLevelPanel }">
         <div class="hero-topline">
           <p class="eyebrow">Taiwan Traditional Chinese Trainer</p>
           <span class="app-version">v{{ appVersion }}</span>
         </div>
         <h1>LexiFormosa</h1>
         <p class="hero-text">
-          台湾で使われる繁体字の単語を、日本語の4択で学べるローカル完結のゲームです。<br />
-          文字の形、意味、読み方を、落ち着いたテンポで繰り返し確認できます。
+          台湾で使われる繁体字の単語を、日本語の4択で学べるローカル完結のゲームです。
+          <br v-if="!showLevelPanel" />
+          <template v-if="showLevelPanel">
+            レベルを選んで、文字の形、意味、読み方を落ち着いたテンポで確認できます。
+          </template>
+          <template v-else>
+            文字の形、意味、読み方を、落ち着いたテンポで繰り返し確認できます。
+          </template>
         </p>
         <div class="hero-meta">
           <span>繁体字のみ</span>
@@ -442,35 +446,12 @@ useSeoMeta({
         </div>
       </div>
 
-      <div class="hero-stats-panel surface-card">
+      <div v-if="!showLevelPanel" class="hero-stats-panel surface-card">
         <div class="panel-heading">
           <p class="panel-kicker">{{ sessionPanelKicker }}</p>
           <h2>{{ sessionPanelTitle }}</h2>
         </div>
-        <div v-if="showSessionStart" class="record-grid">
-          <article
-            v-for="item in highScoreCards"
-            :key="item.level"
-            class="record-card"
-            :class="{ 'record-card--active': item.active }"
-          >
-            <div class="record-card-topline">
-              <span class="record-level">{{ item.label }}</span>
-              <span v-if="item.active" class="record-current">Current</span>
-            </div>
-            <div class="record-stats">
-              <div class="record-stat">
-                <span class="record-stat-label">Best Score</span>
-                <strong>{{ item.score }}</strong>
-              </div>
-              <div class="record-stat">
-                <span class="record-stat-label">Best Streak</span>
-                <strong>{{ item.streak }}</strong>
-              </div>
-            </div>
-          </article>
-        </div>
-        <div v-else class="hero-stats">
+        <div class="hero-stats">
           <article v-for="item in sessionMetricCards" :key="item.id" class="metric-card">
             <span class="metric-label">{{ item.label }}</span>
             <strong>{{ item.value }}</strong>
@@ -480,48 +461,17 @@ useSeoMeta({
       </div>
     </section>
 
-    <section class="workspace-grid" :class="{ 'workspace-grid--focus': !showLevelPanel }">
-      <aside v-if="showLevelPanel" class="level-panel surface-card">
-        <div class="panel-heading">
-          <p class="panel-kicker">Level</p>
-          <h2>出題レベル</h2>
-        </div>
-
-        <div class="level-list">
-          <button
-            v-for="item in levelCards"
-            :key="item.level"
-            class="level-card"
-            :class="{ 'level-card--active': trainer.game.value.level === item.level }"
-            type="button"
-            :disabled="trainer.isLoading.value"
-            @click="selectLevel(item.level)"
-          >
-            <div class="level-card-topline">
-              <span class="level-badge">{{ item.label }}</span>
-              <span class="level-count">
-                {{ item.countLabel }}
-              </span>
-            </div>
-            <strong>{{ item.summary }}</strong>
-          </button>
-        </div>
-
-        <div class="hint-block">
-          <p>ルール</p>
-          <ul>
-            <li>すべて繁体字の単語</li>
-            <li>正解は4択のうち1つだけ</li>
-            <li>3回続けて間違えると終了</li>
-            <li>正解で10点<br />3連続正解以降はボーナス加点</li>
-          </ul>
-        </div>
-      </aside>
-
+    <section
+      class="workspace-grid"
+      :class="{
+        'workspace-grid--focus': !showLevelPanel,
+        'workspace-grid--launch': showLevelPanel,
+      }"
+    >
       <section
         class="quiz-panel surface-card"
         :class="{
-          'quiz-panel--lobby': showSessionStart,
+          'quiz-panel--launch': showSessionStart,
           'quiz-panel--correct': feedbackTone === 'correct',
           'quiz-panel--correct-impact': feedbackTone === 'correct',
           'quiz-panel--incorrect': feedbackTone === 'incorrect',
@@ -529,7 +479,7 @@ useSeoMeta({
           'quiz-panel--game-over': isGameOver,
         }"
       >
-        <div class="panel-heading">
+        <div v-if="!showSessionStart" class="panel-heading">
           <p class="panel-kicker">{{ quizPanelKicker }}</p>
           <h2>{{ quizPanelTitle }}</h2>
         </div>
@@ -551,14 +501,16 @@ useSeoMeta({
         <template v-else-if="showSessionStart">
           <SessionStartPanel
             :current-level-label="currentLevelCard.label"
+            :current-level-summary="currentLevelCard.summary"
             :start-panel-mode-label="startPanelModeLabel"
-            :start-panel-title="startPanelTitle"
             :start-panel-copy="startPanelCopy"
             :current-level-count-label="currentLevelCountLabel"
-            :speech-supported="speechSupported"
+            :level-options="levelCards"
+            :best-score="currentLevelHighScore.score"
+            :best-streak="currentLevelHighScore.streak"
             :can-start-session="canStartSession"
             :load-error="uiError"
-            :has-previous-rounds="rounds > 0"
+            @select-level="selectLevel"
             @start="startSession()"
           />
         </template>
