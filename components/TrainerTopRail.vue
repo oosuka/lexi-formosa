@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 const props = defineProps<{
   levelLabel: string;
   score: number;
   streak: number;
   missesInRow: number;
+  maxMisses: number;
 }>();
+
+const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
 </script>
 
 <template>
@@ -25,7 +30,7 @@ const props = defineProps<{
       </div>
       <div class="trainer-top-rail__stat">
         <dt>Miss</dt>
-        <dd>{{ props.missesInRow }}</dd>
+        <dd>{{ missLabel }}</dd>
       </div>
     </dl>
   </div>

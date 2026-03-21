@@ -11,6 +11,7 @@ describe('TrainerTopRail', () => {
         score: 45,
         streak: 3,
         missesInRow: 1,
+        maxMisses: 3,
       },
     });
 
@@ -20,6 +21,6 @@ describe('TrainerTopRail', () => {
     expect(wrapper.text()).toContain('Streak');
     expect(wrapper.text()).toContain('3');
     expect(wrapper.text()).toContain('Miss');
-    expect(wrapper.text()).toContain('1');
+    expect(wrapper.text()).toContain('1 / 3');
   });
 });

@@ -3,6 +3,7 @@ import { usePreferredReducedMotion } from '@vueuse/core';
 
 import { useFeedbackAudio } from '~/composables/useFeedbackAudio';
 import { type LevelHighScore, useHighScores } from '~/composables/useHighScores';
+import { MAX_MISSES_IN_ROW, useTraditionalTrainer } from '~/composables/useTraditionalTrainer';
 import { useTrainerAudio } from '~/composables/useTrainerAudio';
 import { useTrainerSessionUi } from '~/composables/useTrainerSessionUi';
 import {
@@ -537,6 +538,7 @@ useSeoMeta({
               :score="score"
               :streak="streak"
               :misses-in-row="missesInRow"
+              :max-misses="MAX_MISSES_IN_ROW"
             />
             <div class="word-card-top">
               <span class="word-chip">{{ LEVEL_COPY[currentQuestion.level].label }}</span>
