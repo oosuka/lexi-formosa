@@ -110,7 +110,7 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.feedbackTone.value).toBe('incorrect');
     expect(sessionUi.answerMessage.value).toContain(
-      '不正解です。正解は「こんにちは」です。あと2回で終了'
+      '不正解です。正解は「こんにちは」です。終了まであと2回'
     );
     expect(sessionUi.feedbackBadge.value).toBe('Miss');
   });

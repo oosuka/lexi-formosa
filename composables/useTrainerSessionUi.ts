@@ -206,7 +206,7 @@ export const useTrainerSessionUi = ({
 
     return game.value.lastCorrect
       ? `正解です。+${getScoreForCorrectAnswer(streak.value)}点`
-      : `不正解です。正解は「${correctChoiceLabel.value ?? '不明'}」です。あと${remainingMisses.value}回で終了`;
+      : `不正解です。正解は「${correctChoiceLabel.value ?? '不明'}」です。終了まであと${remainingMisses.value}回`;
   });
   const feedbackBadge = computed(() => {
     if (feedbackTone.value === 'loading') {

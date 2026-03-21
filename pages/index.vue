@@ -605,13 +605,12 @@ useSeoMeta({
               'feedback-row--loading': feedbackTone === 'loading',
             }"
           >
-            <div class="feedback-copy" aria-live="polite">
-              <span class="feedback-pill" :class="`feedback-pill--${feedbackTone}`">
-                {{ feedbackBadge }}
-              </span>
-              <p v-if="uiError" class="feedback-error">{{ uiError }}</p>
-              <p>{{ answerMessage }}</p>
-            </div>
+            <ResultBanner
+              :tone="feedbackTone"
+              :badge="feedbackBadge"
+              :message="answerMessage"
+              :ui-error="uiError"
+            />
             <div class="feedback-actions">
               <button
                 class="ghost-button"
