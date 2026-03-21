@@ -32,8 +32,8 @@ const impactClass = computed(() => {
       <span class="feedback-pill result-banner__badge" :class="`feedback-pill--${props.tone}`">
         {{ props.badge }}
       </span>
-      <p v-if="props.uiError" class="result-banner__error">{{ props.uiError }}</p>
       <p class="result-banner__message">{{ props.message }}</p>
+      <p v-if="props.uiError" class="result-banner__error">{{ props.uiError }}</p>
     </div>
   </article>
 </template>

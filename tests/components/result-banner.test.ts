@@ -35,6 +35,9 @@ describe('ResultBanner', () => {
     expect(wrapper.text()).toContain('Miss');
     expect(wrapper.text()).toContain('不正解。正解は「星期」。残り2回で終了します。');
     expect(wrapper.text()).toContain('次の問題への切り替えに失敗しました。');
+    const copyChildren = Array.from(wrapper.get('.result-banner__copy').element.children);
+    expect(copyChildren[1]?.classList.contains('result-banner__message')).toBe(true);
+    expect(copyChildren[2]?.classList.contains('result-banner__error')).toBe(true);
     expect(wrapper.classes()).toContain('result-banner--incorrect');
     expect(wrapper.classes()).toContain('result-banner--incorrect-impact');
   });
