@@ -15,3 +15,4 @@ data/vocabulary-metadata.json
 public/wordlists/*.json
 !public/wordlists/.gitkeep
 .worktrees/
+.superpowers/
