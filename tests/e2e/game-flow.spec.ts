@@ -154,6 +154,12 @@ test('回答後の impact state が最低限見える', async ({ page }) => {
   await expect(page.locator('.quiz-panel--incorrect-impact')).toBeVisible();
   await expect(page.locator('.choice-card--incorrect-impact')).toBeVisible();
   await expect(page.locator('.choice-card--correct-reveal')).toBeVisible();
+
+  const wordBeforeNext = await page.locator('.trad-word').first().textContent();
+  const nextButton = page.getByRole('button', { name: '次の問題' });
+  await expect(nextButton).toBeEnabled();
+  await nextButton.click();
+  await expect(page.locator('.trad-word').first()).not.toHaveText(wordBeforeNext ?? '');
 });
 
 test('PC 幅ではプレイ中に Score / Streak / Miss がプレイエリアで見える', async ({ page }) => {
