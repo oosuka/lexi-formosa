@@ -100,15 +100,29 @@ const answerWrongChoice = async (page: Page) => {
   throw new Error(`Could not find a wrong choice for ${trad}`);
 };
 
+const answerCorrectChoice = async (page: Page) => {
+  const trad = (await page.locator('.trad-word').first().textContent())?.trim() ?? '';
+  const correctLabel = correctLabelByTrad[trad];
+
+  expect(correctLabel, `missing correct label for ${trad}`).toBeTruthy();
+
+  if (!correctLabel) {
+    throw new Error(`missing correct label for ${trad}`);
+  }
+
+  await page.getByRole('button', { name: new RegExp(`^[1-4]\\. ${correctLabel}$`) }).click();
+};
+
 test('ゲームを1問進められる', async ({ page }) => {
   await installMockWordlists(page);
 
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
-  await expect(page.getByRole('heading', { name: 'この単語の意味は？' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '学習デスクに着く' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  await expect(page.getByRole('heading', { name: 'この単語の意味は？' })).toBeVisible();
   await expect(page.locator('.choice-card')).toHaveCount(4);
 
   const wordBefore = await page.locator('.trad-word').first().textContent();
@@ -172,7 +186,7 @@ test('モバイル幅でも横にはみ出さない', async ({ page }) => {
   expect(overflowBeforeStart.scrollWidth).toBeLessThanOrEqual(overflowBeforeStart.clientWidth);
 
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
-  await page.locator('.choice-card').first().click();
+  await answerCorrectChoice(page);
 
   const overflowAfterAnswer = await page.evaluate(() => ({
     clientWidth: document.documentElement.clientWidth,
@@ -180,6 +194,26 @@ test('モバイル幅でも横にはみ出さない', async ({ page }) => {
   }));
 
   expect(overflowAfterAnswer.scrollWidth).toBeLessThanOrEqual(overflowAfterAnswer.clientWidth);
+  await page.getByRole('button', { name: '次の問題' }).click();
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await answerWrongChoice(page);
+
+    if (attempt < 2) {
+      await page.getByRole('button', { name: '次の問題' }).click();
+    }
+  }
+
+  await expect(page.locator('.game-over-panel')).toBeVisible();
+
+  const overflowAfterGameOver = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+
+  expect(overflowAfterGameOver.scrollWidth).toBeLessThanOrEqual(
+    overflowAfterGameOver.clientWidth
+  );
 });
 
 test('game over 後に restart と reset の導線を使える', async ({ page }) => {
