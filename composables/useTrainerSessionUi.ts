@@ -15,10 +15,25 @@ type GameOverAchievement = {
   tone: 'new' | 'tie';
 };
 
+type FeedbackView =
+  | {
+      variant: 'banner';
+      tone: 'correct' | 'incorrect' | 'loading';
+      badge: string;
+      message: string;
+      uiError: string | null;
+    }
+  | {
+      variant: 'inline';
+      message: string;
+      uiError: string | null;
+    };
+
 type UseTrainerSessionUiOptions = {
   game: Ref<GameState>;
   sessionStartPending: Ref<boolean>;
   fatalError: Ref<string | null>;
+  uiError: Ref<string | null>;
   isLoading: Ref<boolean>;
   speechSupported: Ref<boolean>;
   highScores: Ref<Record<Level, LevelHighScore>>;
@@ -61,6 +76,7 @@ export const useTrainerSessionUi = ({
   game,
   sessionStartPending,
   fatalError,
+  uiError,
   isLoading,
   speechSupported,
   highScores,
@@ -187,11 +203,44 @@ export const useTrainerSessionUi = ({
 
     return game.value.lastCorrect ? 'correct' : 'incorrect';
   });
-  const answerMessage = computed(() => {
-    if (isLoading.value) {
-      return '問題データを読み込んでいます。';
+  const feedbackView = computed<FeedbackView>(() => {
+    if (feedbackTone.value === 'loading') {
+      return {
+        variant: 'banner',
+        tone: 'loading',
+        badge: 'Loading',
+        message: '問題データを読み込んでいます。',
+        uiError: null,
+      };
     }
 
+    if (feedbackTone.value === 'correct') {
+      return {
+        variant: 'banner',
+        tone: 'correct',
+        badge: 'Correct',
+        message: `正解です。+${getScoreForCorrectAnswer(streak.value)}点`,
+        uiError: uiError.value,
+      };
+    }
+
+    if (feedbackTone.value === 'incorrect') {
+      return {
+        variant: 'banner',
+        tone: 'incorrect',
+        badge: 'Miss',
+        message: `不正解です。正解は「${correctChoiceLabel.value ?? '不明'}」です。終了まであと${remainingMisses.value}回`,
+        uiError: uiError.value,
+      };
+    }
+
+    return {
+      variant: 'inline',
+      message: '4つの選択肢から、意味に合うものを1つ選んでください。',
+      uiError: uiError.value,
+    };
+  });
+  const answerMessage = computed(() => {
     if (showSessionStart.value) {
       return startPanelCopy.value;
     }
@@ -200,17 +249,15 @@ export const useTrainerSessionUi = ({
       return '3回続けて不正解でした。';
     }
 
-    if (!answered.value) {
-      return '4つの選択肢から、意味に合うものを1つ選んでください。';
+    if (feedbackView.value.variant === 'inline') {
+      return feedbackView.value.message;
     }
 
-    return game.value.lastCorrect
-      ? `正解です。+${getScoreForCorrectAnswer(streak.value)}点`
-      : `不正解です。正解は「${correctChoiceLabel.value ?? '不明'}」です。終了まであと${remainingMisses.value}回`;
+    return feedbackView.value.message;
   });
   const feedbackBadge = computed(() => {
-    if (feedbackTone.value === 'loading') {
-      return 'Loading';
+    if (feedbackView.value.variant === 'banner') {
+      return feedbackView.value.badge;
     }
 
     if (showSessionStart.value) {
@@ -219,14 +266,6 @@ export const useTrainerSessionUi = ({
 
     if (isGameOver.value) {
       return 'Game Over';
-    }
-
-    if (feedbackTone.value === 'correct') {
-      return 'Correct';
-    }
-
-    if (feedbackTone.value === 'incorrect') {
-      return 'Miss';
     }
 
     return 'Ready';
@@ -258,6 +297,7 @@ export const useTrainerSessionUi = ({
     gameOverTitle,
     gameOverSummary,
     feedbackTone,
+    feedbackView,
     answerMessage,
     feedbackBadge,
   };

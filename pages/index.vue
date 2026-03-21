@@ -82,6 +82,7 @@ const sessionUi = useTrainerSessionUi({
   game: trainer.game,
   sessionStartPending,
   fatalError,
+  uiError,
   isLoading: pageLoading,
   speechSupported: trainerAudio.speechSupported,
   highScores,
@@ -114,7 +115,7 @@ const {
   gameOverTitle,
   gameOverSummary,
   feedbackTone,
-  answerMessage,
+  feedbackView,
   feedbackBadge,
 } = sessionUi;
 const externalLookupLinks = computed(() => {
@@ -606,15 +607,15 @@ useSeoMeta({
             }"
           >
             <ResultBanner
-              v-if="feedbackTone !== 'idle'"
-              :tone="feedbackTone"
-              :badge="feedbackBadge"
-              :message="answerMessage"
-              :ui-error="uiError"
+              v-if="feedbackView.variant === 'banner'"
+              :tone="feedbackView.tone"
+              :badge="feedbackView.badge"
+              :message="feedbackView.message"
+              :ui-error="feedbackView.uiError"
             />
             <div v-else class="feedback-copy feedback-copy--idle" aria-live="polite">
-              <p class="feedback-copy__message">{{ answerMessage }}</p>
-              <p v-if="uiError" class="feedback-error">{{ uiError }}</p>
+              <p class="feedback-copy__message">{{ feedbackView.message }}</p>
+              <p v-if="feedbackView.uiError" class="feedback-error">{{ feedbackView.uiError }}</p>
             </div>
             <div class="feedback-actions">
               <button

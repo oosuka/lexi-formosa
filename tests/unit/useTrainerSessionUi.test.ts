@@ -26,6 +26,7 @@ describe('useTrainerSessionUi', () => {
     const game = ref(createGameState());
     const sessionStartPending = ref(true);
     const fatalError = ref<string | null>(null);
+    const uiError = ref<string | null>(null);
     const isLoading = ref(false);
     const speechSupported = ref(true);
     const highScores = ref({
@@ -44,6 +45,7 @@ describe('useTrainerSessionUi', () => {
       game,
       sessionStartPending,
       fatalError,
+      uiError,
       isLoading,
       speechSupported,
       highScores,
@@ -71,6 +73,7 @@ describe('useTrainerSessionUi', () => {
     );
     const sessionStartPending = ref(false);
     const fatalError = ref<string | null>(null);
+    const uiError = ref<string | null>(null);
     const isLoading = ref(false);
     const speechSupported = ref(true);
     const highScores = ref({
@@ -89,6 +92,7 @@ describe('useTrainerSessionUi', () => {
       game,
       sessionStartPending,
       fatalError,
+      uiError,
       isLoading,
       speechSupported,
       highScores,
@@ -113,6 +117,53 @@ describe('useTrainerSessionUi', () => {
       '不正解です。正解は「こんにちは」です。終了まであと2回'
     );
     expect(sessionUi.feedbackBadge.value).toBe('Miss');
+    expect(sessionUi.feedbackView.value).toEqual({
+      variant: 'banner',
+      tone: 'incorrect',
+      badge: 'Miss',
+      message: '不正解です。正解は「こんにちは」です。終了まであと2回',
+      uiError: null,
+    });
+  });
+
+  it('未回答時はインライン案内を返して結果バナーを出さない', () => {
+    const game = ref(createGameState());
+    const sessionStartPending = ref(false);
+    const fatalError = ref<string | null>(null);
+    const uiError = ref<string | null>(null);
+    const isLoading = ref(false);
+    const speechSupported = ref(true);
+    const highScores = ref({
+      1: { score: 0, streak: 0 },
+      2: { score: 0, streak: 0 },
+      3: { score: 0, streak: 0 },
+    });
+    const sessionRecordBaseline = ref({
+      1: { score: 0, streak: 0 },
+      2: { score: 0, streak: 0 },
+      3: { score: 0, streak: 0 },
+    });
+    const correctChoiceLabel = computed(() => 'こんにちは');
+
+    const sessionUi = useTrainerSessionUi({
+      game,
+      sessionStartPending,
+      fatalError,
+      uiError,
+      isLoading,
+      speechSupported,
+      highScores,
+      sessionRecordBaseline,
+      correctChoiceLabel,
+    });
+
+    expect(sessionUi.feedbackTone.value).toBe('idle');
+    expect(sessionUi.feedbackBadge.value).toBe('Ready');
+    expect(sessionUi.feedbackView.value).toEqual({
+      variant: 'inline',
+      message: '4つの選択肢から、意味に合うものを1つ選んでください。',
+      uiError: null,
+    });
   });
 
   it('致命エラー値があっても問題が残っていれば回答メッセージは維持する', () => {
@@ -128,6 +179,7 @@ describe('useTrainerSessionUi', () => {
     );
     const sessionStartPending = ref(false);
     const fatalError = ref<string | null>('next question failed');
+    const uiError = ref<string | null>(null);
     const isLoading = ref(false);
     const speechSupported = ref(true);
     const highScores = ref({
@@ -146,6 +198,7 @@ describe('useTrainerSessionUi', () => {
       game,
       sessionStartPending,
       fatalError,
+      uiError,
       isLoading,
       speechSupported,
       highScores,
@@ -169,6 +222,7 @@ describe('useTrainerSessionUi', () => {
     );
     const sessionStartPending = ref(false);
     const fatalError = ref<string | null>(null);
+    const uiError = ref<string | null>(null);
     const isLoading = ref(false);
     const speechSupported = ref(false);
     const highScores = ref({
@@ -187,6 +241,7 @@ describe('useTrainerSessionUi', () => {
       game,
       sessionStartPending,
       fatalError,
+      uiError,
       isLoading,
       speechSupported,
       highScores,
