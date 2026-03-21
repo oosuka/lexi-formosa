@@ -183,10 +183,13 @@ describe('index page', () => {
 
     await startGame(wrapper);
 
+    const idleFeedback = wrapper.get('.feedback-copy');
+
     expect(wrapper.text()).toContain('今回の記録');
     expect(wrapper.text()).toContain('Score');
     expect(wrapper.find('.level-panel').exists()).toBe(false);
     expect(wrapper.find('.result-banner').exists()).toBe(false);
+    expect(idleFeedback.classes()).toContain('feedback-copy--embedded');
     expect(wrapper.text()).toContain('你好');
     expect(wrapper.text()).toContain('ニ ハオ');
     expect(wrapper.text()).toContain('nǐ hǎo');
@@ -248,6 +251,8 @@ describe('index page', () => {
     await flushPromises();
 
     const secondResultBanner = wrapper.get('.result-banner');
+    const secondFeedbackRow = wrapper.get('.feedback-row');
+    const secondFeedbackActions = wrapper.get('.feedback-actions');
     const answeredWrongChoices = wrapper.findAll('.choice-card');
     const answeredWrongSelectedChoice = answeredWrongChoices.find((candidate) =>
       candidate.text().includes('牛乳')
@@ -257,6 +262,9 @@ describe('index page', () => {
     );
 
     expect(secondResultBanner.classes()).toContain('result-banner--incorrect');
+    expect(secondFeedbackRow.classes()).toContain('feedback-row--embedded');
+    expect(secondFeedbackRow.classes()).toContain('feedback-row--stacked');
+    expect(secondFeedbackActions.element.previousElementSibling).toBe(secondResultBanner.element);
     expect(secondResultBanner.text()).toContain('あと2回で終了します');
     expect(answeredWrongSelectedChoice?.classes()).toContain('choice-card--incorrect');
     expect(answeredWrongCorrectChoice?.classes()).toContain('choice-card--correct');

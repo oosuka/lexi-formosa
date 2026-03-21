@@ -62,8 +62,7 @@ button {
 .question-stage,
 .word-card,
 .level-card,
-.choice-card,
-.feedback-row {
+.choice-card {
   animation: rise-up 480ms ease both;
 }
 
@@ -74,8 +73,7 @@ button {
 .reduce-motion .question-stage,
 .reduce-motion .word-card,
 .reduce-motion .level-card,
-.reduce-motion .choice-card,
-.reduce-motion .feedback-row {
+.reduce-motion .choice-card {
   animation: none;
 }
 
@@ -193,8 +191,7 @@ button {
 .metric-card,
 .surface-card,
 .question-stage,
-.word-card,
-.feedback-row {
+.word-card {
   backdrop-filter: blur(18px);
   background: var(--surface);
   border: 1px solid var(--border);
@@ -857,12 +854,23 @@ button {
 
 .feedback-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px 16px;
-  align-items: stretch;
+  gap: 14px;
   transition:
     box-shadow 180ms ease,
     transform 180ms ease;
+}
+
+.feedback-row--embedded {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.feedback-row--stacked {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
 }
 
 .result-banner {
@@ -872,14 +880,23 @@ button {
   padding: 18px 20px;
   border-radius: var(--radius-lg);
   border: 1px solid transparent;
-  backdrop-filter: blur(18px);
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14px 28px rgba(78, 66, 47, 0.08);
+}
+
+.result-banner--embedded {
+  padding: 2px 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .result-banner__copy {
   display: grid;
-  gap: 10px;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px 12px;
+  align-items: start;
 }
 
 .result-banner__message,
@@ -889,10 +906,13 @@ button {
 }
 
 .result-banner__message {
+  grid-column: 2;
+  padding-top: 2px;
   color: var(--ink);
 }
 
 .result-banner__error {
+  grid-column: 1 / -1;
   color: #b42318;
   font-size: 0.92rem;
 }
@@ -902,6 +922,12 @@ button {
   gap: 10px;
   min-width: 0;
   align-self: center;
+}
+
+.feedback-copy--embedded {
+  padding: 4px 0 2px;
+  border: 0;
+  background: transparent;
 }
 
 .feedback-copy__message {
@@ -954,27 +980,18 @@ button {
 }
 
 .result-banner--correct {
-  border-color: rgba(29, 122, 71, 0.22);
-  background:
-    radial-gradient(circle at top right, rgba(29, 122, 71, 0.14), transparent 30%),
-    linear-gradient(180deg, rgba(241, 251, 245, 0.98), rgba(255, 255, 255, 0.94)), var(--surface);
-  box-shadow: 0 18px 44px rgba(29, 122, 71, 0.14);
+  background: transparent;
+  box-shadow: none;
 }
 
 .result-banner--incorrect {
-  border-color: rgba(177, 79, 47, 0.24);
-  background:
-    radial-gradient(circle at top right, rgba(177, 79, 47, 0.13), transparent 30%),
-    linear-gradient(180deg, rgba(253, 244, 241, 0.98), rgba(255, 255, 255, 0.94)), var(--surface);
-  box-shadow: 0 18px 44px rgba(177, 79, 47, 0.14);
+  background: transparent;
+  box-shadow: none;
 }
 
 .result-banner--loading {
-  border-color: rgba(15, 118, 110, 0.14);
-  background:
-    radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 30%),
-    linear-gradient(180deg, rgba(243, 248, 247, 0.98), rgba(255, 255, 255, 0.94)), var(--surface);
-  box-shadow: 0 18px 44px rgba(15, 118, 110, 0.1);
+  background: transparent;
+  box-shadow: none;
 }
 
 .game-over-panel {
@@ -1137,9 +1154,10 @@ button {
 .feedback-actions {
   display: flex;
   gap: 10px;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
-  align-self: stretch;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
 }
 
 .game-over-actions {
@@ -1171,12 +1189,21 @@ button {
 .ghost-button {
   border-radius: 999px;
   padding: 12px 18px;
+  min-height: 52px;
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
+  font-size: 1rem;
+  font-weight: 700;
   transition:
     transform 160ms ease,
     opacity 160ms ease;
+}
+
+.feedback-actions .primary-button,
+.feedback-actions .ghost-button {
+  flex: 0 0 auto;
+  min-width: 164px;
 }
 
 .primary-button {
@@ -1302,6 +1329,7 @@ button {
   .game-over-actions button,
   .feedback-actions button {
     flex: 1;
+    min-width: 0;
   }
 
   .hint-block li {

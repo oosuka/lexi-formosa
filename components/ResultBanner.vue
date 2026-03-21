@@ -12,7 +12,7 @@ const toneClass = computed(() => `result-banner--${props.tone}`);
 </script>
 
 <template>
-  <article class="result-banner" :class="toneClass" aria-live="polite">
+  <article class="result-banner result-banner--embedded" :class="toneClass" aria-live="polite">
     <div class="result-banner__copy">
       <span class="feedback-pill result-banner__badge" :class="`feedback-pill--${props.tone}`">
         {{ props.badge }}

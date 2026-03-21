@@ -17,6 +17,7 @@ describe('ResultBanner', () => {
     expect(wrapper.text()).toContain('Correct');
     expect(wrapper.text()).toContain('正解です。+12点');
     expect(wrapper.classes()).toContain('result-banner');
+    expect(wrapper.classes()).toContain('result-banner--embedded');
     expect(wrapper.classes()).toContain('result-banner--correct');
   });
 

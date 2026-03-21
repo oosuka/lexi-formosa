@@ -624,6 +624,8 @@ useSeoMeta({
             v-else
             class="feedback-row"
             :class="{
+              'feedback-row--embedded': true,
+              'feedback-row--stacked': true,
               'feedback-row--correct': feedbackTone === 'correct',
               'feedback-row--incorrect': feedbackTone === 'incorrect',
               'feedback-row--loading': feedbackTone === 'loading',
@@ -636,7 +638,7 @@ useSeoMeta({
               :message="feedbackView.message"
               :ui-error="feedbackView.uiError"
             />
-            <div v-else class="feedback-copy feedback-copy--idle" aria-live="polite">
+            <div v-else class="feedback-copy feedback-copy--idle feedback-copy--embedded" aria-live="polite">
               <p class="feedback-copy__message">{{ feedbackView.message }}</p>
               <p v-if="feedbackView.uiError" class="feedback-error">{{ feedbackView.uiError }}</p>
             </div>
