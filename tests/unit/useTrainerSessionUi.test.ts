@@ -55,8 +55,8 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.showSessionStart.value).toBe(true);
     expect(sessionUi.showLevelPanel.value).toBe(true);
-    expect(sessionUi.startPanelTitle.value).toBe('このレベルから始める');
-    expect(sessionUi.startPanelCopy.value).toContain('読み上げも始まります');
+    expect(sessionUi.startPanelTitle.value).toBe('Ready to Launch');
+    expect(sessionUi.startPanelCopy.value).toContain('レベルを選んで、最初の1問から静かに始めます。');
     expect(sessionUi.feedbackBadge.value).toBe('Start');
   });
 
