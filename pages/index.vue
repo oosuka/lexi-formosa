@@ -72,6 +72,7 @@ const currentLevelCard = computed(() => LEVEL_COPY[trainer.game.value.level]);
 const currentLevelCount = computed(
   () => vocabularyMetadata.value?.counts[trainer.game.value.level] ?? null
 );
+const missesInRow = computed(() => trainer.game.value.missesInRow);
 const currentLevelCountLabel = computed(() =>
   formatVocabularyCountLabel(currentLevelCount.value, metadataStatus.value)
 );
@@ -531,6 +532,12 @@ useSeoMeta({
             />
           </template>
           <template v-else-if="currentQuestion">
+            <TrainerTopRail
+              :level-label="currentLevelCard.label"
+              :score="score"
+              :streak="streak"
+              :misses-in-row="missesInRow"
+            />
             <div class="word-card-top">
               <span class="word-chip">{{ LEVEL_COPY[currentQuestion.level].label }}</span>
               <button

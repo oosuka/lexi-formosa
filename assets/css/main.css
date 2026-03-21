@@ -398,6 +398,69 @@ button {
   gap: 20px;
 }
 
+.trainer-top-rail {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(15, 118, 110, 0.12);
+}
+
+.trainer-top-rail__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.trainer-top-rail__eyebrow {
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.trainer-top-rail__level {
+  color: var(--accent-strong);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.trainer-top-rail__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.trainer-top-rail__stat {
+  display: grid;
+  gap: 5px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(15, 118, 110, 0.1);
+}
+
+.trainer-top-rail__stat dt {
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.trainer-top-rail__stat dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
 .quiz-panel--correct .word-card {
   box-shadow:
     0 0 0 1px rgba(29, 122, 71, 0.2),
