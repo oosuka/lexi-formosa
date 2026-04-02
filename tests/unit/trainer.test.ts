@@ -93,6 +93,53 @@ describe('trainer utilities', () => {
     );
   });
 
+  it('出題語は seed と TOCFL レベルを重み付けして選ぶ', () => {
+    const weightedVocabulary = [
+      createEntry('seed-1', '你好', 'こんにちは', 1, 'greeting'),
+      {
+        ...createEntry('tocfl-basic', '公車', 'バス', 1, 'transport'),
+        sources: ['tocfl'],
+        tocflLevel: 2,
+      },
+      {
+        ...createEntry('tocfl-mid', '餐廳', 'レストラン', 1, 'place'),
+        sources: ['tocfl'],
+        tocflLevel: 4,
+      },
+      {
+        ...createEntry('tocfl-advanced', '風景', '風景', 1, 'nature'),
+        sources: ['tocfl'],
+        tocflLevel: 6,
+      },
+      {
+        ...createEntry('fallback', '地圖', '地図', 1, 'object'),
+        sources: ['mjdic'],
+        tocflLevel: undefined,
+      },
+    ];
+
+    const randomSpy = vi.spyOn(Math, 'random');
+
+    randomSpy.mockReturnValueOnce(0).mockReturnValue(0);
+    expect(buildQuestion(weightedVocabulary, 1, []).questionId).toBe('seed-1');
+
+    randomSpy.mockReset();
+    randomSpy.mockReturnValueOnce(0.4).mockReturnValue(0);
+    expect(buildQuestion(weightedVocabulary, 1, []).questionId).toBe('tocfl-basic');
+
+    randomSpy.mockReset();
+    randomSpy.mockReturnValueOnce(0.72).mockReturnValue(0);
+    expect(buildQuestion(weightedVocabulary, 1, []).questionId).toBe('tocfl-mid');
+
+    randomSpy.mockReset();
+    randomSpy.mockReturnValueOnce(0.95).mockReturnValue(0);
+    expect(buildQuestion(weightedVocabulary, 1, []).questionId).toBe('tocfl-advanced');
+
+    randomSpy.mockReset();
+    randomSpy.mockReturnValueOnce(0.99).mockReturnValue(0);
+    expect(buildQuestion(weightedVocabulary, 1, []).questionId).toBe('fallback');
+  });
+
   it('正解が欠けた問題は取得時に失敗する', () => {
     expect(() =>
       getCorrectChoice({

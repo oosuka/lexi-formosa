@@ -97,4 +97,27 @@ describe('useFeedbackAudio', () => {
     expect(SuspendedAudioContext.instances).toHaveLength(1);
     expect(SuspendedAudioContext.instances[0]?.createOscillator).not.toHaveBeenCalled();
   });
+
+  it('cleanup は開いている AudioContext を閉じて次回再生成できる', async () => {
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(globalThis, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    await feedbackAudio.playFeedbackSound(true);
+    expect(TestAudioContext.instances).toHaveLength(1);
+
+    feedbackAudio.cleanup();
+    expect(TestAudioContext.instances[0]?.close).toHaveBeenCalledTimes(1);
+
+    await feedbackAudio.playFeedbackSound(false);
+    expect(TestAudioContext.instances).toHaveLength(2);
+  });
 });

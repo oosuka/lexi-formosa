@@ -5,6 +5,7 @@ import {
   isRejectedJapaneseGlossCandidate,
   parseTocflSource,
   pickBestGloss,
+  scoreCandidate,
 } from '../../scripts/generate-vocabulary.mjs';
 
 describe('generate vocabulary script', () => {
@@ -38,6 +39,13 @@ describe('generate vocabulary script', () => {
     ).toBeNull();
   });
 
+  it('訳語スコアは自然な日本語を説明的な候補より高く評価する', () => {
+    expect(scoreCandidate('ありがとう')).toBeGreaterThan(scoreCandidate('thank you'));
+    expect(scoreCandidate('東南アジア諸国連合')).toBeGreaterThan(
+      scoreCandidate('same as ASEAN', 'fallback')
+    );
+  });
+
   it('TOCFL ソースの JSON 配列を読み込める', () => {
     expect(
       parseTocflSource(
@@ -57,5 +65,9 @@ describe('generate vocabulary script', () => {
       { id: 1, text: '八' },
       { id: 2, text: '爸爸' },
     ]);
+  });
+
+  it('TOCFL ソースの空文字は空配列として扱う', () => {
+    expect(parseTocflSource('\n')).toEqual([]);
   });
 });

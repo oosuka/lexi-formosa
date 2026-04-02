@@ -3,9 +3,29 @@ import { ref } from 'vue';
 
 import { useTrainerAudio } from '~/composables/useTrainerAudio';
 
+class TestSpeechSynthesisUtterance {
+  lang = '';
+  rate = 1;
+  pitch = 1;
+  voice: SpeechSynthesisVoice | null = null;
+  onstart: ((event: SpeechSynthesisEvent) => void) | null = null;
+  onend: ((event: SpeechSynthesisEvent) => void) | null = null;
+  onerror: ((event: SpeechSynthesisErrorEvent) => void) | null = null;
+
+  constructor(public text: string) {}
+}
+
 describe('useTrainerAudio', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', {
+      configurable: true,
+      value: TestSpeechSynthesisUtterance,
+    });
+    Object.defineProperty(globalThis, 'SpeechSynthesisUtterance', {
+      configurable: true,
+      value: TestSpeechSynthesisUtterance,
+    });
   });
 
   it('SpeechSynthesis 非対応環境では再生不可のまま継続する', () => {
@@ -25,7 +45,6 @@ describe('useTrainerAudio', () => {
       shouldReplayPending: () => sessionStarted.value,
     });
 
-    audio.setup();
     audio.requestCurrentQuestionAudio();
 
     expect(audio.speechSupported.value).toBe(false);
@@ -33,7 +52,6 @@ describe('useTrainerAudio', () => {
   });
 
   it('zh-TW voice を優先して pending を解消し、停止できる', () => {
-    let voicesChangedHandler: (() => void) | undefined;
     const speechSynthesisMock = {
       speaking: false,
       getVoices: vi.fn(
@@ -44,12 +62,6 @@ describe('useTrainerAudio', () => {
             { lang: 'zh-TW', name: 'Taiwanese Mandarin' },
           ] as SpeechSynthesisVoice[]
       ),
-      addEventListener: vi.fn((eventName: string, handler: () => void) => {
-        if (eventName === 'voiceschanged') {
-          voicesChangedHandler = handler;
-        }
-      }),
-      removeEventListener: vi.fn(),
       cancel: vi.fn(() => {
         speechSynthesisMock.speaking = false;
       }),
@@ -73,7 +85,6 @@ describe('useTrainerAudio', () => {
       shouldReplayPending: () => sessionStarted.value,
     });
 
-    audio.setup();
     audio.requestCurrentQuestionAudio();
 
     expect(audio.speechSupported.value).toBe(true);
@@ -82,11 +93,58 @@ describe('useTrainerAudio', () => {
     const utterance = speechSynthesisMock.speak.mock.calls[0]?.[0] as SpeechSynthesisUtterance;
     expect(utterance.voice?.lang).toBe('zh-TW');
 
-    voicesChangedHandler?.();
-    expect(speechSynthesisMock.speak).toHaveBeenCalledTimes(1);
-
     audio.clearPendingQuestionAudio();
     expect(speechSynthesisMock.cancel).toHaveBeenCalled();
     expect(audio.isSpeaking.value).toBe(false);
+  });
+
+  it('音声一覧が遅れて届いたら pending 中の問題を再生し直す', () => {
+    const voices = [
+      [] as SpeechSynthesisVoice[],
+      [] as SpeechSynthesisVoice[],
+      [{ lang: 'zh-HK', name: 'Hong Kong Mandarin' } as SpeechSynthesisVoice],
+      [{ lang: 'zh-HK', name: 'Hong Kong Mandarin' } as SpeechSynthesisVoice],
+    ];
+    const speechSynthesisMock = {
+      speaking: false,
+      getVoices: vi.fn(() => voices.shift() ?? []),
+      cancel: vi.fn(() => {
+        speechSynthesisMock.speaking = false;
+      }),
+      speak: vi.fn((utterance: SpeechSynthesisUtterance) => {
+        if (speechSynthesisMock.speak.mock.calls.length >= 2) {
+          speechSynthesisMock.speaking = true;
+          utterance.onstart?.({} as SpeechSynthesisEvent);
+        }
+      }),
+    };
+
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: speechSynthesisMock,
+    });
+
+    const currentQuestionId = ref('q-late-voice');
+    const currentQuestionText = ref('請問');
+    const sessionStarted = ref(true);
+    const audio = useTrainerAudio({
+      getQuestionId: () => currentQuestionId.value,
+      getQuestionText: () => currentQuestionText.value,
+      shouldReplayPending: () => sessionStarted.value,
+    });
+
+    audio.requestCurrentQuestionAudio();
+
+    expect(audio.pendingQuestionAudioId.value).toBe('q-late-voice');
+    expect(speechSynthesisMock.speak).toHaveBeenCalledTimes(1);
+    const initialUtterance = speechSynthesisMock.speak.mock.calls[0]?.[0] as SpeechSynthesisUtterance;
+    expect(initialUtterance.voice).toBeNull();
+
+    audio.handleVoicesChanged();
+
+    expect(speechSynthesisMock.speak).toHaveBeenCalledTimes(2);
+    expect(audio.pendingQuestionAudioId.value).toBeNull();
+    const replayUtterance = speechSynthesisMock.speak.mock.calls[1]?.[0] as SpeechSynthesisUtterance;
+    expect(replayUtterance.voice?.lang).toBe('zh-HK');
   });
 });

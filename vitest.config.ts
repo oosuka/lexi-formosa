@@ -18,6 +18,7 @@ export default defineVitestConfig({
         '.nuxt/**',
         '.output/**',
         'coverage/**',
+        'package.json',
         'app.vue',
         'assets/**',
       ],
