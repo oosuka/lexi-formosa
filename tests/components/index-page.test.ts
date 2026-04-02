@@ -155,6 +155,16 @@ describe('index page', () => {
     expect(wrapper.text()).not.toContain('你好');
   });
 
+  it('開始画面のルール一覧では加点条件を別々の箇条書きで表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+    const ruleItems = wrapper
+      .findAll('.hint-block li')
+      .map((item) => item.text().replace(/\s+/g, ' ').trim());
+
+    expect(ruleItems).toContain('正解で10点');
+    expect(ruleItems).toContain('3連続正解以降はボーナス加点');
+  });
+
   it('開始画面ではレベルごとの最高記録を表示する', async () => {
     window.localStorage.setItem(
       HIGH_SCORE_STORAGE_KEY,
