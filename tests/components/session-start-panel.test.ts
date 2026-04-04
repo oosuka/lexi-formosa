@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import SessionStartPanel from '~/components/SessionStartPanel.vue';
 
 describe('SessionStartPanel', () => {
-  it('開始ステージでは CTA を主役にし、旧補助カードを出さない', async () => {
+  it('開始ステージでは CTA を主役にし、選択中の開始条件だけを表示する', async () => {
     const wrapper = mount(SessionStartPanel, {
       props: {
         currentLevelLabel: 'Level 1',
@@ -18,32 +18,9 @@ describe('SessionStartPanel', () => {
     expect(wrapper.text()).toContain('Level 1');
     expect(wrapper.text()).toContain('45語');
     expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.text()).not.toContain('Focused Learning Desk');
+    expect(wrapper.text()).toContain('Arcade Lobby');
     expect(wrapper.text()).not.toContain('Session');
     expect(wrapper.text()).not.toContain('Records');
-  });
-
-  it('学習デスクの開始案内として level / count / sound をまとめて表示する', async () => {
-    const wrapper = mount(SessionStartPanel, {
-      props: {
-        currentLevelLabel: 'Level 1',
-        startPanelModeLabel: 'Sound Ready',
-        startPanelTitle: 'このレベルで始める',
-        startPanelCopy: '始めると、最初の問題を表示して読み上げも始まります。',
-        currentLevelCountLabel: '45語',
-        speechSupported: true,
-        canStartSession: true,
-        loadError: null,
-        hasPreviousRounds: false,
-      },
-    });
-
-    expect(wrapper.text()).toContain('Focused Learning Desk');
-    expect(wrapper.text()).toContain('このレベルで始める');
-    expect(wrapper.text()).toContain('45語');
-    expect(wrapper.text()).toContain('ブラウザ音声あり');
-    expect(wrapper.text()).toContain('Session');
-    expect(wrapper.text()).toContain('Records');
 
     await wrapper.get('button.session-start-button').trigger('click');
 
@@ -54,21 +31,16 @@ describe('SessionStartPanel', () => {
     const wrapper = mount(SessionStartPanel, {
       props: {
         currentLevelLabel: 'Level 2',
-        startPanelModeLabel: 'Visual Ready',
-        startPanelTitle: '同じレベルでもう一度始める',
-        startPanelCopy: '始めると、最初の問題を表示します。',
-        currentLevelCountLabel: '語数未取得',
-        speechSupported: false,
+        currentLevelCountLabel: '38語',
         canStartSession: false,
         loadError: 'level 2 missing',
-        hasPreviousRounds: true,
       },
     });
 
     expect(wrapper.get('button.session-start-button').attributes('disabled')).toBeDefined();
-    expect(wrapper.text()).toContain('音声なしで開始');
-    expect(wrapper.text()).toContain('同じレベルで最初からやり直す');
+    expect(wrapper.text()).toContain('準備OK。');
+    expect(wrapper.text()).toContain('38語');
     expect(wrapper.text()).toContain('level 2 missing');
-    expect(wrapper.text()).toContain('Focused Learning Desk');
+    expect(wrapper.text()).toContain('Arcade Lobby');
   });
 });

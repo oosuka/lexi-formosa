@@ -35,7 +35,6 @@ type UseTrainerSessionUiOptions = {
   fatalError: Ref<string | null>;
   uiError: Ref<string | null>;
   isLoading: Ref<boolean>;
-  speechSupported: Ref<boolean>;
   highScores: Ref<Record<Level, LevelHighScore>>;
   sessionRecordBaseline: Ref<Record<Level, LevelHighScore>>;
   correctChoiceLabel: Ref<string | null>;
@@ -78,7 +77,6 @@ export const useTrainerSessionUi = ({
   fatalError,
   uiError,
   isLoading,
-  speechSupported,
   highScores,
   sessionRecordBaseline,
   correctChoiceLabel,
@@ -105,17 +103,6 @@ export const useTrainerSessionUi = ({
   const currentLevel = computed(() => game.value.level);
   const canStartSession = computed(
     () => showSessionStart.value && !isLoading.value && Boolean(currentQuestion.value)
-  );
-  const startPanelTitle = computed(() =>
-    rounds.value > 0 ? '同じレベルでもう一度始める' : 'このレベルから始める'
-  );
-  const startPanelCopy = computed(() =>
-    speechSupported.value
-      ? '始めると、最初の問題が表示され、読み上げも始まります。'
-      : '始めると、最初の問題を表示します。'
-  );
-  const startPanelModeLabel = computed(() =>
-    speechSupported.value ? 'Sound Ready' : 'Visual Ready'
   );
   const sessionPanelKicker = computed(() => (showSessionStart.value ? 'Records' : 'Session'));
   const sessionPanelTitle = computed(() =>
@@ -241,10 +228,6 @@ export const useTrainerSessionUi = ({
     };
   });
   const answerMessage = computed(() => {
-    if (showSessionStart.value) {
-      return startPanelCopy.value;
-    }
-
     if (isGameOver.value) {
       return '3回続けて不正解でした。';
     }
@@ -285,9 +268,6 @@ export const useTrainerSessionUi = ({
     answered,
     revealAnswer,
     canStartSession,
-    startPanelTitle,
-    startPanelCopy,
-    startPanelModeLabel,
     sessionPanelKicker,
     sessionPanelTitle,
     sessionMetricCards,

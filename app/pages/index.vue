@@ -84,7 +84,6 @@ const sessionUi = useTrainerSessionUi({
   fatalError,
   uiError,
   isLoading: pageLoading,
-  speechSupported: trainerAudio.speechSupported,
   highScores,
   sessionRecordBaseline,
   correctChoiceLabel: computed(() => trainer.correctChoice.value?.label ?? null),
@@ -103,9 +102,6 @@ const {
   answered,
   revealAnswer,
   canStartSession,
-  startPanelTitle,
-  startPanelCopy,
-  startPanelModeLabel,
   sessionPanelKicker,
   sessionPanelTitle,
   sessionMetricCards,
@@ -552,14 +548,9 @@ useSeoMeta({
         <template v-else-if="showSessionStart">
           <SessionStartPanel
             :current-level-label="currentLevelCard.label"
-            :start-panel-mode-label="startPanelModeLabel"
-            :start-panel-title="startPanelTitle"
-            :start-panel-copy="startPanelCopy"
             :current-level-count-label="currentLevelCountLabel"
-            :speech-supported="speechSupported"
             :can-start-session="canStartSession"
             :load-error="uiError"
-            :has-previous-rounds="rounds > 0"
             @start="startSession()"
           />
         </template>
