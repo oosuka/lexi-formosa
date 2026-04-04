@@ -52,6 +52,8 @@
 
 ## 4. 主要ディレクトリ
 
+- Nuxt 4 標準構成に合わせて、アプリ本体は `app/`、共有型は `shared/` を基準に扱います。
+
 - `app/pages/index.vue`
   - 単一画面のゲームUI
 - `app/composables/useTraditionalTrainer.ts`
