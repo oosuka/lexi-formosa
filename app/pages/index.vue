@@ -418,8 +418,11 @@ useSeoMeta({
 
 <template>
   <main class="page-shell" :class="{ 'reduce-motion': reducedMotion }">
-    <section class="hero-panel">
-      <div class="hero-brand surface-card">
+    <section class="hero-panel" :class="{ 'hero-panel--start-screen': showSessionStart }">
+      <div
+        class="hero-brand surface-card"
+        :class="{ 'hero-brand--start-screen': showSessionStart }"
+      >
         <div class="hero-topline">
           <p class="eyebrow">Taiwan Traditional Chinese Trainer</p>
           <span class="app-version">v{{ appVersion }}</span>
@@ -435,7 +438,10 @@ useSeoMeta({
         </div>
       </div>
 
-      <div class="hero-stats-panel surface-card">
+      <div
+        class="hero-stats-panel surface-card"
+        :class="{ 'hero-stats-panel--start-screen': showSessionStart }"
+      >
         <div class="panel-heading">
           <p class="panel-kicker">{{ showSessionStart ? 'Records' : sessionPanelKicker }}</p>
           <h2>{{ showSessionStart ? 'レベルごとの最高記録' : sessionPanelTitle }}</h2>

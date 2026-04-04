@@ -148,11 +148,11 @@ describe('index page', () => {
     const wrapper = await mountSuspended(IndexPage);
 
     expect(wrapper.text()).toContain(APP_VERSION_LABEL);
-    expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.text()).toContain('Arcade Lobby');
-    expect(wrapper.text()).toContain('準備OK。');
-    expect(wrapper.text()).toContain('Records');
-    expect(wrapper.text()).toContain('45語');
+    expect(wrapper.findAll('button.session-start-button')).toHaveLength(1);
+    expect(wrapper.get('.hero-panel').classes()).toContain('hero-panel--start-screen');
+    expect(wrapper.get('.hero-brand').classes()).toContain('hero-brand--start-screen');
+    expect(wrapper.get('.hero-stats-panel').classes()).toContain('hero-stats-panel--start-screen');
+    expect(wrapper.findAll('.record-grid .record-card')).toHaveLength(3);
     expect(wrapper.text()).not.toContain('你好');
   });
 
@@ -189,6 +189,21 @@ describe('index page', () => {
     expect(recordGridText).toContain('Best Score');
     expect(recordGridText).toContain('Best Streak');
     expect(ruleItems).not.toContain('すべて繁体字の単語');
+    expect(wrapper.text()).not.toContain('Session');
+  });
+
+  it('開始画面専用のヒーロー圧縮クラスはプレイ開始後に外れる', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    expect(wrapper.get('.hero-panel').classes()).toContain('hero-panel--start-screen');
+    expect(wrapper.get('.hero-brand').classes()).toContain('hero-brand--start-screen');
+    expect(wrapper.get('.hero-stats-panel').classes()).toContain('hero-stats-panel--start-screen');
+
+    await startGame(wrapper);
+
+    expect(wrapper.get('.hero-panel').classes()).not.toContain('hero-panel--start-screen');
+    expect(wrapper.get('.hero-brand').classes()).not.toContain('hero-brand--start-screen');
+    expect(wrapper.get('.hero-stats-panel').classes()).not.toContain('hero-stats-panel--start-screen');
   });
 
   it('開始画面ではレベルごとの最高記録を表示する', async () => {

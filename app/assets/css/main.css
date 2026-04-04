@@ -100,10 +100,10 @@ button {
 
 .hero-brand {
   display: grid;
-  gap: 14px;
+  gap: 18px;
   align-content: space-between;
-  min-height: 248px;
-  padding: 24px 28px;
+  min-height: 332px;
+  padding: 32px;
   background:
     radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), transparent 38%),
     radial-gradient(circle at bottom right, rgba(17, 94, 89, 0.08), transparent 34%),
@@ -160,9 +160,9 @@ button {
 
 .hero-stats-panel {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   align-content: start;
-  min-height: 248px;
+  min-height: 332px;
   grid-template-rows: auto 1fr;
 }
 
@@ -174,7 +174,7 @@ button {
 
 .record-grid {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .metric-card,
@@ -215,9 +215,9 @@ button {
 
 .record-card {
   display: grid;
-  gap: 10px;
+  gap: 14px;
   border-radius: var(--radius-lg);
-  padding: 14px 16px;
+  padding: 18px;
   border: 1px solid var(--border);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 242, 236, 0.9));
 }
@@ -266,8 +266,34 @@ button {
 }
 
 .record-stat strong {
-  font-size: 1.45rem;
+  font-size: 1.7rem;
   line-height: 1;
+}
+
+.hero-panel--start-screen .hero-brand,
+.hero-brand--start-screen {
+  gap: 14px;
+  min-height: 248px;
+  padding: 24px 28px;
+}
+
+.hero-panel--start-screen .hero-stats-panel,
+.hero-stats-panel--start-screen {
+  gap: 12px;
+  min-height: 248px;
+}
+
+.hero-panel--start-screen .record-grid {
+  gap: 10px;
+}
+
+.hero-panel--start-screen .record-card {
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.hero-panel--start-screen .record-stat strong {
+  font-size: 1.45rem;
 }
 
 .workspace-grid {
