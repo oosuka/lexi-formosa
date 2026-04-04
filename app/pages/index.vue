@@ -406,7 +406,7 @@ watch(
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleGlobalKeydown);
-  trainerAudio.cleanup();
+  trainerAudio.dispose();
   feedbackAudio.cleanup();
 });
 

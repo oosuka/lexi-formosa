@@ -203,7 +203,9 @@ describe('index page', () => {
 
     expect(wrapper.get('.hero-panel').classes()).not.toContain('hero-panel--start-screen');
     expect(wrapper.get('.hero-brand').classes()).not.toContain('hero-brand--start-screen');
-    expect(wrapper.get('.hero-stats-panel').classes()).not.toContain('hero-stats-panel--start-screen');
+    expect(wrapper.get('.hero-stats-panel').classes()).not.toContain(
+      'hero-stats-panel--start-screen'
+    );
   });
 
   it('開始画面ではレベルごとの最高記録を表示する', async () => {
