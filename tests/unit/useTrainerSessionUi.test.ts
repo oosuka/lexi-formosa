@@ -152,9 +152,53 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.feedbackTone.value).toBe('idle');
     expect(sessionUi.feedbackBadge.value).toBe('Ready');
+    expect(sessionUi.answerMessage.value).toBe(
+      '4つの選択肢から、意味に合うものを1つ選んでください。'
+    );
     expect(sessionUi.feedbackView.value).toEqual({
       variant: 'inline',
       message: '4つの選択肢から、意味に合うものを1つ選んでください。',
+      uiError: null,
+    });
+  });
+
+  it('読み込み中は loading バナーを返す', () => {
+    const game = ref(createGameState());
+    const sessionStartPending = ref(false);
+    const fatalError = ref<string | null>(null);
+    const uiError = ref<string | null>(null);
+    const isLoading = ref(true);
+    const highScores = ref({
+      1: { score: 0, streak: 0 },
+      2: { score: 0, streak: 0 },
+      3: { score: 0, streak: 0 },
+    });
+    const sessionRecordBaseline = ref({
+      1: { score: 0, streak: 0 },
+      2: { score: 0, streak: 0 },
+      3: { score: 0, streak: 0 },
+    });
+    const correctChoiceLabel = computed(() => 'こんにちは');
+
+    const sessionUi = useTrainerSessionUi({
+      game,
+      sessionStartPending,
+      fatalError,
+      uiError,
+      isLoading,
+      highScores,
+      sessionRecordBaseline,
+      correctChoiceLabel,
+    });
+
+    expect(sessionUi.showLevelPanel.value).toBe(true);
+    expect(sessionUi.feedbackTone.value).toBe('loading');
+    expect(sessionUi.feedbackBadge.value).toBe('Loading');
+    expect(sessionUi.feedbackView.value).toEqual({
+      variant: 'banner',
+      tone: 'loading',
+      badge: 'Loading',
+      message: '問題データを読み込んでいます。',
       uiError: null,
     });
   });
@@ -289,5 +333,67 @@ describe('useTrainerSessionUi', () => {
     expect(sessionUi.gameOverSummary.value).toBe(
       '3回続けて不正解になったため、今回はここで終了です。'
     );
+  });
+
+  it('ゲームオーバー時に自己ベストと同記録なら tie 用の要約を返す', () => {
+    const game = ref(
+      createGameState({
+        score: 45,
+        bestStreak: 4,
+        missesInRow: 3,
+        rounds: 6,
+        status: 'finished',
+      })
+    );
+    const sessionStartPending = ref(false);
+    const fatalError = ref<string | null>(null);
+    const uiError = ref<string | null>(null);
+    const isLoading = ref(false);
+    const highScores = ref({
+      1: { score: 45, streak: 4 },
+      2: { score: 0, streak: 0 },
+      3: { score: 0, streak: 0 },
+    });
+    const sessionRecordBaseline = ref({
+      1: { score: 45, streak: 4 },
+      2: { score: 0, streak: 0 },
+      3: { score: 0, streak: 0 },
+    });
+    const correctChoiceLabel = computed(() => 'こんにちは');
+
+    const sessionUi = useTrainerSessionUi({
+      game,
+      sessionStartPending,
+      fatalError,
+      uiError,
+      isLoading,
+      highScores,
+      sessionRecordBaseline,
+      correctChoiceLabel,
+    });
+
+    expect(sessionUi.gameOverAchievements.value).toEqual([
+      {
+        key: 'score',
+        badge: 'RECORD TIED',
+        label: 'Score',
+        value: 45,
+        note: '自己ベストと同記録',
+        tone: 'tie',
+      },
+      {
+        key: 'streak',
+        badge: 'RECORD TIED',
+        label: 'Streak',
+        value: 4,
+        note: '自己ベストと同記録',
+        tone: 'tie',
+      },
+    ]);
+    expect(sessionUi.gameOverCelebrationTone.value).toBe('none');
+    expect(sessionUi.gameOverTitle.value).toBe('自己ベストタイ');
+    expect(sessionUi.gameOverSummary.value).toBe('今回のプレイで自己ベストに並びました。');
+    expect(sessionUi.answerMessage.value).toBe('3回続けて不正解でした。');
+    expect(sessionUi.feedbackBadge.value).toBe('Game Over');
   });
 });

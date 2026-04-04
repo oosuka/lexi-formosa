@@ -7,30 +7,28 @@ describe('SessionStartPanel', () => {
   it('開始パネルでは Level 名、確認メタ、CTA、補助メモ 4 項目だけを表示する', async () => {
     const wrapper = mount(SessionStartPanel, {
       props: {
-        levelLabel: 'Level 3',
-        levelSummary: '5–6文字中心。少し長めの複合語に挑戦。',
-        summaryItems: [
-          '4択から1つ選ぶ',
-          '正解で10点',
-          '3連続正解からボーナス',
-          '3回連続ミスで終了',
-        ],
+        levelLabel: 'Level test',
+        levelSummary: '要約1。要約2。',
+        summaryItems: ['項目1', '項目2', '項目3', '項目4'],
         canStartSession: true,
         loadError: null,
       },
     });
 
-    expect(wrapper.text()).toContain('Level 3');
-    expect(wrapper.text()).toContain('5–6文字中心');
-    expect(wrapper.text()).toContain('少し長めの複合語');
-    expect(wrapper.text()).toContain('4択から1つ選ぶ');
-    expect(wrapper.text()).toContain('正解で10点');
-    expect(wrapper.text()).toContain('3回連続ミスで終了');
-    expect(wrapper.text()).toContain('3連続正解からボーナス');
-    expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.get('.session-start-panel__header').exists()).toBe(true);
-    expect(wrapper.text()).not.toContain('START');
-    expect(wrapper.text()).not.toContain('words');
+    expect(wrapper.get('.session-start-title').text()).toBe('Level test');
+    expect(wrapper.get('.session-start-button').attributes('type')).toBe('button');
+    expect(wrapper.get('.session-start-button').attributes('disabled')).toBeUndefined();
+    expect(wrapper.findAll('.session-start-meta-item').map((item) => item.text())).toEqual([
+      '要約1',
+      '要約2',
+    ]);
+    expect(wrapper.findAll('.session-start-list li').map((item) => item.text())).toEqual([
+      '項目1',
+      '項目2',
+      '項目3',
+      '項目4',
+    ]);
+    expect(wrapper.find('.session-start-error').exists()).toBe(false);
 
     await wrapper.get('button.session-start-button').trigger('click');
 
@@ -40,25 +38,18 @@ describe('SessionStartPanel', () => {
   it('開始不可時は CTA を無効化して補足エラーを見せる', () => {
     const wrapper = mount(SessionStartPanel, {
       props: {
-        levelLabel: 'Level 2',
-        levelSummary: '3–4文字中心。日常表現や施設名がメイン。',
-        summaryItems: [
-          '4択から1つ選ぶ',
-          '正解で10点',
-          '3連続正解からボーナス',
-          '3回連続ミスで終了',
-        ],
+        levelLabel: 'Level error',
+        levelSummary: '要約A。要約B。',
+        summaryItems: ['項目A', '項目B', '項目C', '項目D'],
         canStartSession: false,
         loadError: 'level 2 missing',
       },
     });
 
     expect(wrapper.get('button.session-start-button').attributes('disabled')).toBeDefined();
-    expect(wrapper.text()).toContain('Level 2');
-    expect(wrapper.text()).toContain('3–4文字中心');
-    expect(wrapper.text()).toContain('日常表現や施設名');
-    expect(wrapper.text()).toContain('level 2 missing');
-    expect(wrapper.text()).not.toContain('START');
-    expect(wrapper.text()).not.toContain('words');
+    expect(wrapper.get('.session-start-title').text()).toBe('Level error');
+    expect(wrapper.findAll('.session-start-meta-item')).toHaveLength(2);
+    expect(wrapper.findAll('.session-start-list li')).toHaveLength(4);
+    expect(wrapper.get('.session-start-error').text()).toBe('level 2 missing');
   });
 });

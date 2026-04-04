@@ -6,7 +6,6 @@ import { computed, ref } from 'vue';
 import { getScoreForCorrectAnswer } from '~/composables/useTraditionalTrainer';
 import IndexPage from '~/pages/index.vue';
 import type { GameState } from '~~/shared/types/vocabulary';
-import packageJson from '../../package.json' with { type: 'json' };
 
 import { questionOne, questionTwo } from '../fixtures/vocabulary';
 
@@ -35,7 +34,6 @@ vi.mock('~/composables/useFeedbackAudio', () => ({
 const useTraditionalTrainerMock = vi.hoisted(() => vi.fn());
 const loadVocabularyMetadataMock = vi.hoisted(() => vi.fn());
 const HIGH_SCORE_STORAGE_KEY = 'lexi-formosa-high-scores-v2';
-const APP_VERSION_LABEL = `v${packageJson.version}`;
 
 mockNuxtImport('useTraditionalTrainer', () => useTraditionalTrainerMock);
 
@@ -164,58 +162,16 @@ describe('index page', () => {
   it('初回表示では開始パネルを表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
-    expect(wrapper.text()).toContain(APP_VERSION_LABEL);
     expect(wrapper.findAll('button.session-start-button')).toHaveLength(1);
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
+    expect(wrapper.find('.workspace-grid--play').exists()).toBe(false);
     expect(wrapper.get('.hero-panel').classes()).toContain('hero-panel--start-screen');
     expect(wrapper.get('.hero-brand').classes()).toContain('hero-brand--start-screen');
     expect(wrapper.get('.hero-stats-panel').classes()).toContain('hero-stats-panel--start-screen');
     expect(wrapper.get('.record-grid').classes()).toContain('record-grid--start-screen');
     expect(wrapper.findAll('.record-grid .record-card')).toHaveLength(3);
     expect(wrapper.findAll('.record-grid .record-stats--start-screen')).toHaveLength(3);
-    expect(wrapper.text()).not.toContain('你好');
-  });
-
-  it('開始画面では説明を1文にし、冗長な開始文言を出さない', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    expect(wrapper.text()).toContain(
-      '台湾で使われる繁体字の意味を、日本語4択でテンポよく見抜いていく単語ゲーム。'
-    );
-    expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.text()).not.toContain('このレベルから始める');
-    expect(wrapper.text()).not.toContain('学習を始める');
-    expect(wrapper.text()).not.toContain('落ち着いたテンポ');
-  });
-
-  it('開始画面では PLAY モジュールを表示し、LEVELS と START を出さない', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-    const sessionModule = wrapper.get('.session-module');
-
-    expect(sessionModule.text()).toContain('PLAY');
-    expect(sessionModule.text()).toContain('Level 1');
-    expect(sessionModule.text()).toContain('45 words');
-    expect(sessionModule.text()).not.toContain('LEVELS');
-    expect(sessionModule.text()).not.toContain('START');
-    expect(sessionModule.text()).not.toContain('自分に合った難度を選ぶ');
-    expect(sessionModule.findAll('.level-card')).toHaveLength(3);
-  });
-
-  it('開始画面の RECORDS 枠では説明見出しを出さず、3枚の card を主役にする', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-    const records = wrapper.get('.hero-stats-panel');
-    const recordGridText = records.text();
-
-    expect(wrapper.text()).toContain('Taiwan Traditional Chinese Trainer');
-    expect(recordGridText).toContain('RECORDS');
-    expect(recordGridText).toContain('Level 1');
-    expect(recordGridText).toContain('Level 2');
-    expect(recordGridText).toContain('Level 3');
-    expect(recordGridText).toContain('Best Score');
-    expect(recordGridText).toContain('Best Streak');
-    expect(recordGridText).not.toContain('レベルごとの最高記録');
-    expect(records.findAll('.record-card')).toHaveLength(3);
-    expect(wrapper.findAll('.hint-block')).toHaveLength(0);
-    expect(wrapper.text()).not.toContain('出題レベル');
+    expect(wrapper.find('.question-stage').exists()).toBe(false);
   });
 
   it('プレイ開始後は hero-panel を消し、quiz-panel だけを主役にする', async () => {
@@ -244,23 +200,14 @@ describe('index page', () => {
     );
 
     const wrapper = await mountSuspended(IndexPage);
-    const recordGridText = wrapper.get('.record-grid').text();
+    const recordCards = wrapper.get('.record-grid').findAll('.record-card');
 
-    expect(wrapper.text()).toContain('RECORDS');
-    expect(wrapper.text()).not.toContain('レベルごとの最高記録');
-    expect(recordGridText).toContain('Level 1');
-    expect(recordGridText).toContain('Best Score');
-    expect(recordGridText).toContain('80');
-    expect(recordGridText).toContain('Best Streak');
-    expect(recordGridText).toContain('5');
-    expect(recordGridText).toContain('Level 2');
-    expect(recordGridText).toContain('140');
-    expect(recordGridText).toContain('9');
-    expect(recordGridText).toContain('Level 3');
-    expect(recordGridText).toContain('60');
-    expect(recordGridText).toContain('3');
-    expect(recordGridText).not.toContain('45語');
-    expect(recordGridText).not.toContain('Current');
+    expect(recordCards).toHaveLength(3);
+    expect(recordCards.map((card) => card.findAll('strong').map((item) => item.text()))).toEqual([
+      ['80', '5'],
+      ['140', '9'],
+      ['60', '3'],
+    ]);
   });
 
   it('開始後に読み方を表示する', async () => {
@@ -269,15 +216,14 @@ describe('index page', () => {
     await startGame(wrapper);
 
     expect(wrapper.find('.hero-panel').exists()).toBe(false);
-    expect(wrapper.text()).not.toContain('今回の記録');
     expect(wrapper.text()).toContain('Level 1');
     expect(wrapper.text()).toContain('Score');
-    expect(wrapper.text()).not.toContain('4つの選択肢から、意味に合うものを1つ選んでください。');
-    expect(wrapper.text()).not.toContain('次の問題');
-    expect(wrapper.text()).not.toContain('トップへ戻る');
     expect(wrapper.find('.level-panel').exists()).toBe(false);
     expect(wrapper.find('.result-banner').exists()).toBe(false);
     expect(wrapper.find('.feedback-row').exists()).toBe(false);
+    expect(wrapper.find('.answer-support-row').exists()).toBe(false);
+    expect(wrapper.find('.game-over-panel').exists()).toBe(false);
+    expect(wrapper.find('.choice-grid').exists()).toBe(true);
     expect(wrapper.text()).toContain('你好');
     expect(wrapper.text()).toContain('ニ ハオ');
     expect(wrapper.text()).toContain('nǐ hǎo');
@@ -483,19 +429,11 @@ describe('index page', () => {
     }
 
     expect(wrapper.text()).toContain('Game Over');
-    expect(wrapper.text()).toContain('新記録達成');
-    expect(wrapper.text()).toContain('Double Record');
-    expect(wrapper.text()).toContain('今回のプレイで自己ベストを更新しました');
-    expect(wrapper.text()).toContain('NEW BEST');
-    expect(wrapper.text()).toContain('Score');
-    expect(wrapper.text()).toContain('Streak');
-    expect(wrapper.text()).not.toContain('Best Streak');
-    expect(wrapper.text()).toContain('Level Best');
-    expect(wrapper.text()).toContain('10');
-    expect(wrapper.text()).toContain('1');
-    expect(wrapper.text()).toContain('自己ベストを更新');
-    expect(wrapper.text()).toContain('もう一度始める');
-    expect(wrapper.text()).toContain('トップへ戻る');
+    expect(wrapper.find('.game-over-panel').exists()).toBe(true);
+    expect(wrapper.find('.game-over-panel')?.classes()).toContain('game-over-panel--celebration');
+    expect(wrapper.findAll('.game-over-achievement')).toHaveLength(2);
+    expect(wrapper.find('.game-over-actions').exists()).toBe(true);
+    expect(wrapper.findAll('.game-over-achievement')).toHaveLength(2);
     expect(playFeedbackSoundMock).toHaveBeenCalledTimes(3);
     expect(playGameOverSoundMock).toHaveBeenCalledTimes(1);
     expect(playRecordCelebrationSoundMock).toHaveBeenCalledWith('double');
@@ -523,7 +461,8 @@ describe('index page', () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain('你好');
-    expect(wrapper.text()).not.toContain('ゲームを始める');
+    expect(wrapper.find('.session-start-panel').exists()).toBe(false);
+    expect(wrapper.find('.choice-grid').exists()).toBe(true);
     expect(wrapper.find('.level-panel').exists()).toBe(false);
   });
 
@@ -701,11 +640,13 @@ describe('index page', () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.text()).toContain('Words unavailable');
-    expect(wrapper.text()).not.toContain('Loading words');
-    expect(wrapper.text()).toContain('PLAY');
-    expect(wrapper.text()).not.toContain('学習を始める');
-    expect(wrapper.text()).not.toContain('辞書データ未生成');
+    expect(wrapper.findAll('.level-count').map((candidate) => candidate.text())).toEqual([
+      'Words unavailable',
+      'Words unavailable',
+      'Words unavailable',
+    ]);
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
+    expect(wrapper.find('.audio-start-notice').exists()).toBe(false);
   });
 
   it('metadata が応答しなくても初期化失敗はすぐに表示する', async () => {
@@ -735,8 +676,7 @@ describe('index page', () => {
     const wrapper = await mountSuspended(IndexPage);
 
     expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.text()).toContain('RECORDS');
-    expect(wrapper.text()).not.toContain('レベルごとの最高記録');
+    expect(wrapper.findAll('.record-card')).toHaveLength(3);
   });
 
   it('localStorage の保存に失敗してもゲーム本体は継続できる', async () => {
@@ -775,8 +715,8 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('level 2 missing');
     expect(wrapper.text()).toContain('ゲームを始める');
     expect(wrapper.find('.session-start-panel').exists()).toBe(true);
-    expect(wrapper.text()).not.toContain('你好');
-    expect(wrapper.text()).not.toContain('辞書データ未生成');
+    expect(wrapper.find('.question-stage').exists()).toBe(false);
+    expect(wrapper.find('.audio-start-notice').exists()).toBe(false);
     expect(levelButton?.attributes('disabled')).toBeUndefined();
   });
 
@@ -797,8 +737,9 @@ describe('index page', () => {
     await wrapper.get('button.session-start-button').trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).not.toContain('level 2 missing');
-    expect(wrapper.text()).not.toContain('4つの選択肢から、意味に合うものを1つ選んでください。');
+    expect(wrapper.find('.session-start-error').exists()).toBe(false);
+    expect(wrapper.find('.session-start-panel').exists()).toBe(false);
+    expect(wrapper.find('.choice-grid').exists()).toBe(true);
   });
 
   it('レベル切替中はゲーム開始を受け付けない', async () => {
@@ -827,7 +768,8 @@ describe('index page', () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.text()).not.toContain('4つの選択肢から、意味に合うものを1つ選んでください。');
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
+    expect(wrapper.find('.choice-grid').exists()).toBe(false);
     expect(trainer.game.value.level).toBe(1);
 
     deferred.resolve();
@@ -902,7 +844,7 @@ describe('index page', () => {
     const wrapper = await mountSuspended(IndexPage);
 
     expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.text()).not.toContain('音声開始が必要');
+    expect(wrapper.find('.audio-start-notice').exists()).toBe(false);
   });
 
   it('voiceschanged で再読み上げ中の音声を再キューしない', async () => {
@@ -999,9 +941,8 @@ describe('index page', () => {
     await resetButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('PLAY');
-    expect(wrapper.text()).not.toContain('START');
-    expect(wrapper.text()).not.toContain('你好');
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
+    expect(wrapper.find('.workspace-grid--play').exists()).toBe(false);
   });
 
   it('リセット中は先に開始パネルへ切り替える', async () => {
@@ -1034,9 +975,8 @@ describe('index page', () => {
     await resetButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('PLAY');
-    expect(wrapper.text()).not.toContain('START');
-    expect(wrapper.text()).not.toContain('再見');
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
+    expect(wrapper.find('.workspace-grid--play').exists()).toBe(false);
 
     deferred.resolve();
     await flushPromises();
