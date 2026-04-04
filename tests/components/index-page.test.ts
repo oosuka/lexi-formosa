@@ -432,6 +432,9 @@ describe('index page', () => {
     expect(wrapper.find('.game-over-panel').exists()).toBe(true);
     expect(wrapper.find('.game-over-panel')?.classes()).toContain('game-over-panel--celebration');
     expect(wrapper.findAll('.game-over-achievement')).toHaveLength(2);
+    expect(wrapper.find('.answer-support-row').exists()).toBe(true);
+    expect(wrapper.find('.lookup-panel').exists()).toBe(true);
+    expect(wrapper.find('.answer-support-actions').exists()).toBe(false);
     expect(wrapper.find('.game-over-actions').exists()).toBe(true);
     expect(wrapper.findAll('.game-over-achievement')).toHaveLength(2);
     expect(playFeedbackSoundMock).toHaveBeenCalledTimes(3);

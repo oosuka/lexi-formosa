@@ -622,7 +622,7 @@ useSeoMeta({
               <p v-if="feedbackView.uiError" class="feedback-error">{{ feedbackView.uiError }}</p>
             </div>
           </div>
-          <div v-if="revealAnswer && !isGameOver" class="answer-support-row">
+          <div v-if="revealAnswer" class="answer-support-row">
             <div v-if="externalLookupLinks.length > 0" class="lookup-panel">
               <p class="lookup-panel-label">外部辞書で確認</p>
               <div class="lookup-links">
@@ -638,7 +638,7 @@ useSeoMeta({
                 </a>
               </div>
             </div>
-            <div class="answer-support-actions">
+            <div v-if="!isGameOver" class="answer-support-actions">
               <button
                 class="primary-button"
                 type="button"
