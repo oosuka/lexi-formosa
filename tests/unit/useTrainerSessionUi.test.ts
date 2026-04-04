@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { computed, ref } from 'vue';
 
 import { useTrainerSessionUi } from '~/composables/useTrainerSessionUi';
-import type { GameState } from '~/types/vocabulary';
+import type { GameState } from '~~/shared/types/vocabulary';
 
 import { questionOne } from '../fixtures/vocabulary';
 

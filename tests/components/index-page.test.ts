@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { getScoreForCorrectAnswer } from '~/composables/useTraditionalTrainer';
 import IndexPage from '~/pages/index.vue';
-import type { GameState } from '~/types/vocabulary';
+import type { GameState } from '~~/shared/types/vocabulary';
 import packageJson from '../../package.json' with { type: 'json' };
 
 import { questionOne, questionTwo } from '../fixtures/vocabulary';

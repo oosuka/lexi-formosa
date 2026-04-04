@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { VocabularyMetadata } from '~/types/vocabulary';
+import type { VocabularyMetadata } from '~~/shared/types/vocabulary';
 
 const fetchMock = vi.fn();
 

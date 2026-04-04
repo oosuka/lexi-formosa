@@ -7,7 +7,7 @@ import {
   getScoreForCorrectAnswer,
   useTraditionalTrainer,
 } from '~/composables/useTraditionalTrainer';
-import type { GameState, Level, VocabEntry } from '~/types/vocabulary';
+import type { GameState, Level, VocabEntry } from '~~/shared/types/vocabulary';
 
 import { level1Vocabulary } from '../fixtures/vocabulary';
 

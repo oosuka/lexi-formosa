@@ -137,14 +137,16 @@ describe('useTrainerAudio', () => {
 
     expect(audio.pendingQuestionAudioId.value).toBe('q-late-voice');
     expect(speechSynthesisMock.speak).toHaveBeenCalledTimes(1);
-    const initialUtterance = speechSynthesisMock.speak.mock.calls[0]?.[0] as SpeechSynthesisUtterance;
+    const initialUtterance = speechSynthesisMock.speak.mock
+      .calls[0]?.[0] as SpeechSynthesisUtterance;
     expect(initialUtterance.voice).toBeNull();
 
     audio.handleVoicesChanged();
 
     expect(speechSynthesisMock.speak).toHaveBeenCalledTimes(2);
     expect(audio.pendingQuestionAudioId.value).toBeNull();
-    const replayUtterance = speechSynthesisMock.speak.mock.calls[1]?.[0] as SpeechSynthesisUtterance;
+    const replayUtterance = speechSynthesisMock.speak.mock
+      .calls[1]?.[0] as SpeechSynthesisUtterance;
     expect(replayUtterance.voice?.lang).toBe('zh-HK');
   });
 });

@@ -1,4 +1,4 @@
-import type { Level, QuestionChoice, QuestionRound, VocabEntry } from '~/types/vocabulary';
+import type { Level, QuestionChoice, QuestionRound, VocabEntry } from '~~/shared/types/vocabulary';
 
 export const RECENT_WINDOW_SIZE = 5;
 

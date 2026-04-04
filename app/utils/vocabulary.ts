@@ -1,7 +1,7 @@
 import { joinURL } from 'ufo';
 import { z } from 'zod';
 
-import type { Level, VocabEntry, VocabularyMetadata } from '~/types/vocabulary';
+import type { Level, VocabEntry, VocabularyMetadata } from '~~/shared/types/vocabulary';
 
 const vocabEntrySchema = z.object({
   id: z.string().min(1),

@@ -6,15 +6,15 @@ import { type LevelHighScore, useHighScores } from '~/composables/useHighScores'
 import { MAX_MISSES_IN_ROW, useTraditionalTrainer } from '~/composables/useTraditionalTrainer';
 import { useTrainerAudio } from '~/composables/useTrainerAudio';
 import { useTrainerSessionUi } from '~/composables/useTrainerSessionUi';
+import { formatKatakanaReading, formatPinyinReading } from '~/utils/pronunciation';
+import { LEVEL_COPY } from '~/utils/trainer';
+import { loadVocabularyMetadata } from '~/utils/vocabulary';
 import {
   LEVELS,
   type Level,
   type QuestionChoice,
   type VocabularyMetadata,
-} from '~/types/vocabulary';
-import { formatKatakanaReading, formatPinyinReading } from '~/utils/pronunciation';
-import { LEVEL_COPY } from '~/utils/trainer';
-import { loadVocabularyMetadata } from '~/utils/vocabulary';
+} from '~~/shared/types/vocabulary';
 
 const trainer = useTraditionalTrainer();
 const appVersion = useRuntimeConfig().public.appVersion;

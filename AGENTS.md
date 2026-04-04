@@ -52,17 +52,17 @@
 
 ## 4. 主要ディレクトリ
 
-- `pages/index.vue`
+- `app/pages/index.vue`
   - 単一画面のゲームUI
-- `composables/useTraditionalTrainer.ts`
+- `app/composables/useTraditionalTrainer.ts`
   - ゲーム状態、出題進行、レベル切替
-- `utils/trainer.ts`
+- `app/utils/trainer.ts`
   - 出題ロジック、4択生成、出題重み付け
-- `utils/pronunciation.ts`
+- `app/utils/pronunciation.ts`
   - ピンイン整形とカタカナ補助生成
-- `utils/vocabulary.ts`
+- `app/utils/vocabulary.ts`
   - 語彙ロードと検証
-- `types/vocabulary.ts`
+- `shared/types/vocabulary.ts`
   - 型定義
 - `scripts/generate-vocabulary.mjs`
   - 大規模辞書生成
@@ -128,10 +128,12 @@
 ## 7. 生成物の扱い
 
 - 手で編集してよいファイル:
-  - `pages/`
-  - `composables/`
-  - `utils/`
-  - `types/`
+  - `app/pages/`
+  - `app/components/`
+  - `app/composables/`
+  - `app/utils/`
+  - `app/assets/`
+  - `shared/types/`
   - `scripts/`
   - `docs/`
   - `data/manual-vocabulary.json`

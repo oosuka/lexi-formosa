@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-import { LEVELS, type Level } from '~/types/vocabulary';
+import { LEVELS, type Level } from '~~/shared/types/vocabulary';
 
 export type LevelHighScore = {
   score: number;

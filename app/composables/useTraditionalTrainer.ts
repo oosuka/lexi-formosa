@@ -1,6 +1,6 @@
-import type { AnswerResult, GameState, Level } from '~/types/vocabulary';
 import { buildQuestion, getCorrectChoice, RECENT_WINDOW_SIZE } from '~/utils/trainer';
 import { loadVocabularyLevel } from '~/utils/vocabulary';
+import type { AnswerResult, GameState, Level } from '~~/shared/types/vocabulary';
 
 export const MAX_MISSES_IN_ROW = 3;
 export const getScoreForCorrectAnswer = (nextStreak: number) => {

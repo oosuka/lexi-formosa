@@ -1,8 +1,8 @@
 import { computed, type Ref } from 'vue';
 
 import { getScoreForCorrectAnswer, MAX_MISSES_IN_ROW } from '~/composables/useTraditionalTrainer';
-import { type GameState, LEVELS, type Level } from '~/types/vocabulary';
 import { LEVEL_COPY } from '~/utils/trainer';
+import { type GameState, LEVELS, type Level } from '~~/shared/types/vocabulary';
 
 import type { LevelHighScore } from './useHighScores';
 
