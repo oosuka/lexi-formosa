@@ -74,6 +74,11 @@ button {
   margin-bottom: 24px;
 }
 
+.hero-panel--start-screen {
+  align-items: stretch;
+  grid-template-columns: minmax(0, 1.5fr) minmax(360px, 0.95fr);
+}
+
 .eyebrow,
 .panel-kicker,
 .metric-label,
@@ -273,27 +278,79 @@ button {
 .hero-panel--start-screen .hero-brand,
 .hero-brand--start-screen {
   gap: 14px;
-  min-height: 248px;
+  min-height: 160px;
   padding: 24px 28px;
 }
 
 .hero-panel--start-screen .hero-stats-panel,
 .hero-stats-panel--start-screen {
-  gap: 12px;
-  min-height: 248px;
+  gap: 8px;
+  min-height: 160px;
+  padding: 16px 18px;
 }
 
 .hero-panel--start-screen .record-grid {
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .hero-panel--start-screen .record-card {
-  gap: 10px;
-  padding: 14px 16px;
+  gap: 8px;
+  height: 100%;
+  grid-template-rows: auto 1fr;
+  padding: 10px 10px 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 244, 238, 0.92));
 }
 
 .hero-panel--start-screen .record-stat strong {
-  font-size: 1.45rem;
+  font-size: clamp(1.75rem, 2.2vw, 2.35rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+}
+
+.hero-panel--start-screen .record-card-topline {
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.hero-panel--start-screen .record-level {
+  font-size: 1.12rem;
+  letter-spacing: 0.01em;
+}
+
+.hero-panel--start-screen .record-stat-label {
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
+}
+
+.hero-panel--start-screen .record-stats {
+  display: grid;
+  gap: 8px;
+}
+
+.hero-panel--start-screen .record-stats--start-screen {
+  align-content: stretch;
+  height: 100%;
+}
+
+.hero-panel--start-screen .record-stat {
+  gap: 12px;
+}
+
+.hero-panel--start-screen .record-stats--start-screen .record-stat:first-child {
+  align-content: start;
+}
+
+.hero-panel--start-screen .record-stats--start-screen .record-stat:last-child {
+  align-content: end;
+}
+
+.hero-panel--start-screen .record-card--active {
+  border-color: rgba(15, 118, 110, 0.34);
+  background: linear-gradient(180deg, rgba(233, 248, 245, 0.98), rgba(245, 251, 249, 0.94));
+  box-shadow: 0 10px 24px rgba(15, 118, 110, 0.08);
 }
 
 .workspace-grid {
@@ -318,6 +375,11 @@ button {
 
 .hero-stats-panel .panel-heading h2 {
   font-size: 1.28rem;
+}
+
+.hero-panel--start-screen .panel-heading h2 {
+  margin-top: 4px;
+  font-size: 1rem;
 }
 
 .level-list {

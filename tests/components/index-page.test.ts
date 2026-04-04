@@ -152,7 +152,9 @@ describe('index page', () => {
     expect(wrapper.get('.hero-panel').classes()).toContain('hero-panel--start-screen');
     expect(wrapper.get('.hero-brand').classes()).toContain('hero-brand--start-screen');
     expect(wrapper.get('.hero-stats-panel').classes()).toContain('hero-stats-panel--start-screen');
+    expect(wrapper.get('.record-grid').classes()).toContain('record-grid--start-screen');
     expect(wrapper.findAll('.record-grid .record-card')).toHaveLength(3);
+    expect(wrapper.findAll('.record-grid .record-stats--start-screen')).toHaveLength(3);
     expect(wrapper.text()).not.toContain('你好');
   });
 
@@ -234,6 +236,7 @@ describe('index page', () => {
     expect(recordGridText).toContain('60');
     expect(recordGridText).toContain('3');
     expect(recordGridText).not.toContain('45語');
+    expect(recordGridText).not.toContain('Current');
   });
 
   it('開始後に読み方を表示する', async () => {

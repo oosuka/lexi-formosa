@@ -446,7 +446,11 @@ useSeoMeta({
           <p class="panel-kicker">{{ showSessionStart ? 'Records' : sessionPanelKicker }}</p>
           <h2>{{ showSessionStart ? 'レベルごとの最高記録' : sessionPanelTitle }}</h2>
         </div>
-        <div v-if="showSessionStart" class="record-grid">
+        <div
+          v-if="showSessionStart"
+          class="record-grid"
+          :class="{ 'record-grid--start-screen': showSessionStart }"
+        >
           <article
             v-for="item in highScoreCards"
             :key="item.level"
@@ -455,9 +459,11 @@ useSeoMeta({
           >
             <div class="record-card-topline">
               <span class="record-level">{{ item.label }}</span>
-              <span v-if="item.active" class="record-current">Current</span>
             </div>
-            <div class="record-stats">
+            <div
+              class="record-stats"
+              :class="{ 'record-stats--start-screen': showSessionStart }"
+            >
               <div class="record-stat">
                 <span class="record-stat-label">Best Score</span>
                 <strong>{{ item.score }}</strong>
