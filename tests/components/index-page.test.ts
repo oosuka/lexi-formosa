@@ -155,6 +155,17 @@ describe('index page', () => {
     expect(wrapper.text()).not.toContain('你好');
   });
 
+  it('開始画面では説明を1文にし、冗長な開始文言を出さない', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    expect(wrapper.text()).toContain(
+      '台湾で使われる繁体字の意味を、日本語4択でテンポよく見抜いていく単語ゲーム。'
+    );
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).not.toContain('このレベルから始める');
+    expect(wrapper.text()).not.toContain('落ち着いたテンポ');
+  });
+
   it('開始画面のルール一覧では加点条件を別々の箇条書きで表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
     const ruleItems = wrapper
@@ -163,6 +174,19 @@ describe('index page', () => {
 
     expect(ruleItems).toContain('正解で10点');
     expect(ruleItems).toContain('3連続正解以降はボーナス加点');
+  });
+
+  it('開始画面では全レベル Records を維持し、Level ルールから不要文言を除く', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+    const recordGridText = wrapper.get('.record-grid').text();
+    const ruleItems = wrapper.findAll('.hint-block li').map((item) => item.text());
+
+    expect(recordGridText).toContain('Level 1');
+    expect(recordGridText).toContain('Level 2');
+    expect(recordGridText).toContain('Level 3');
+    expect(recordGridText).toContain('Best Score');
+    expect(recordGridText).toContain('Best Streak');
+    expect(ruleItems).not.toContain('すべて繁体字の単語');
   });
 
   it('開始画面ではレベルごとの最高記録を表示する', async () => {

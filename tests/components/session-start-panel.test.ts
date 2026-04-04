@@ -4,6 +4,25 @@ import { describe, expect, it } from 'vitest';
 import SessionStartPanel from '~/components/SessionStartPanel.vue';
 
 describe('SessionStartPanel', () => {
+  it('開始ステージでは CTA を主役にし、旧補助カードを出さない', async () => {
+    const wrapper = mount(SessionStartPanel, {
+      props: {
+        currentLevelLabel: 'Level 1',
+        currentLevelCountLabel: '45語',
+        canStartSession: true,
+        loadError: null,
+      },
+    });
+
+    expect(wrapper.text()).toContain('準備OK。');
+    expect(wrapper.text()).toContain('Level 1');
+    expect(wrapper.text()).toContain('45語');
+    expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.text()).not.toContain('Focused Learning Desk');
+    expect(wrapper.text()).not.toContain('Session');
+    expect(wrapper.text()).not.toContain('Records');
+  });
+
   it('学習デスクの開始案内として level / count / sound をまとめて表示する', async () => {
     const wrapper = mount(SessionStartPanel, {
       props: {
