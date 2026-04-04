@@ -45,24 +45,28 @@
 - 初回表示とリセット後は開始パネルを表示し、`ゲームを始める` からセッションを開始します。
 - 開始パネルでは、`localStorage` に保存した Level 1-3 ごとの最高 `Score / Streak` を表示します。
 - スコアは正解時の基本点に加え、3連続正解以降は連続正解数に応じたボーナスを加算します。
-- ゲーム終了時は、同じレベルで即再開する `もう一度始める` と、開始画面へ戻る `トップに戻る` を表示します。
+- ゲーム終了時は、同じレベルで即再開する `もう一度始める` と、開始画面へ戻る `トップへ戻る` を表示します。
+- ゲーム終了時に `Best Score` または `Best Streak` を更新した場合は、専用の祝福演出と専用音を表示します。
+- `Best Score` と `Best Streak` の両方を更新した場合は、単独更新より強い演出にします。
 - ゲーム開始後は Question 枠を優先し、レベル選択とルール表示は隠します。
 - Google 翻訳と Weblio の外部確認リンクは、回答後に下部表示し別タブで開きます。
 - 生成済みの大規模JSONは成果物です。構造変更や再生成方針がない限り、直接の手編集は避けてください。
 
 ## 4. 主要ディレクトリ
 
-- `pages/index.vue`
+- Nuxt 4 標準構成に合わせて、アプリ本体は `app/`、共有型は `shared/` を基準に扱います。
+
+- `app/pages/index.vue`
   - 単一画面のゲームUI
-- `composables/useTraditionalTrainer.ts`
+- `app/composables/useTraditionalTrainer.ts`
   - ゲーム状態、出題進行、レベル切替
-- `utils/trainer.ts`
+- `app/utils/trainer.ts`
   - 出題ロジック、4択生成、出題重み付け
-- `utils/pronunciation.ts`
+- `app/utils/pronunciation.ts`
   - ピンイン整形とカタカナ補助生成
-- `utils/vocabulary.ts`
+- `app/utils/vocabulary.ts`
   - 語彙ロードと検証
-- `types/vocabulary.ts`
+- `shared/types/vocabulary.ts`
   - 型定義
 - `scripts/generate-vocabulary.mjs`
   - 大規模辞書生成
@@ -106,9 +110,31 @@
 - 既存の設計意図を崩さず、小さく安全に変更してください。
 - 無関係なリファクタや命名変更は避けてください。
 - UI は「シンプルでモダン」を維持してください。
+- 今後の UI 変更は、Apple の Human Interface Guidelines と Apple Design の方針を参照し、その文法をできる限り踏襲してください。
+  - https://developer.apple.com/design/human-interface-guidelines
+  - https://developer.apple.com/design
+- UI を新規追加または改修する場合は、少なくとも以下の要素を既存画面と統一してください。
+  - カラーシステム
+  - タイポグラフィ
+  - 余白・間隔
+  - 角丸
+  - 影の効果
+  - ボタンやカードなどのコンポーネント設計
+  - アクセシビリティ配慮
+- Apple 寄りの UI 方針として、以下を守ってください。
+  - 色は少数の design token で管理し、通常状態の panel / card / button で同じトーンを共有する
+  - タイポグラフィは階層を明確にし、見出し・補助ラベル・数値・本文の役割を混ぜない
+  - 余白は 8pt 系のリズムを基本にし、近接・関連・区切りを余白で表現する
+  - 角丸は token 化し、親より子を少し小さくして調和を保つ
+  - 影は薄く抑え、情報の区切りは影よりも面差と境界線で作る
+  - primary / secondary button の役割差を常に明確にする
+  - card は情報整理の単位として扱い、不要な装飾で性格を増やしすぎない
+  - `focus-visible`、十分なコントラスト、44px 以上の操作領域、`prefers-reduced-motion` を前提にする
+- ただし、ゲーム中の正誤フィードバックのような状態変化は例外です。通常状態より少し強い色・影・アニメーションを使ってよいですが、通常時の文法を壊さない範囲に留めてください。
 - 既存の1ページ構成を崩す場合は、理由が明確なときだけにしてください。
 - データ量が大きいので、クライアントバンドル肥大化には注意してください。
 - Public リポジトリには生成済み辞書データをコミットしないでください。
+- このリポジトリのコミットメッセージは、要点が分かる日本語1行で記述してください。
 - 語彙ロードは、可能な限り「必要なレベルだけ読む」形を維持してください。
 - レベル切替や初期化の非同期処理では、古いリクエストが新しい state を上書きしないようにしてください。
 - 音声や効果音を変更する場合は、ブラウザ標準APIで完結するかを優先してください。
@@ -127,10 +153,12 @@
 ## 7. 生成物の扱い
 
 - 手で編集してよいファイル:
-  - `pages/`
-  - `composables/`
-  - `utils/`
-  - `types/`
+  - `app/pages/`
+  - `app/components/`
+  - `app/composables/`
+  - `app/utils/`
+  - `app/assets/`
+  - `shared/types/`
   - `scripts/`
   - `docs/`
   - `data/manual-vocabulary.json`
@@ -238,6 +266,8 @@ npx playwright install chromium
 - 対象は少なくとも `README.md`、`AGENTS.md`、`docs/` 配下の関連文書です。
 - すべての Markdown を毎回機械的に更新するのではなく、変更内容に影響する文書だけを更新してください。
 - 文書更新が不要と判断した場合は、その判断が妥当かを一度確認してください。
+- `docs/superpowers/` は作業計画と設計メモを置く場所であり、採用中の文書は現行仕様の一次情報として扱ってください。実装と挙動を変えた場合は、関連する `docs/superpowers/` 配下の文書も同じ作業内で更新し続けてください。
+- `docs/superpowers/` 配下に履歴文書や不採用案を残す場合は、各ファイル冒頭の `Status` 表記で `採用中` `実装済み` `履歴` `不採用` `revert 済み` などを明示し、現行文書と混同されないようにしてください。
 - ユーザー向けの使い方、セットアップ、コマンド、挙動が変わった場合は `README.md` を更新してください。
 - エージェント運用ルール、レビュー方針、検証手順が変わった場合は `AGENTS.md` を更新してください。
 - 辞書、生成、データソース、再生成手順が変わった場合は `docs/dictionary-sources.md` を更新してください。

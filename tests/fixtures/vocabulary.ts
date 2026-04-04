@@ -1,4 +1,4 @@
-import type { Level, QuestionRound, VocabEntry } from '~/types/vocabulary';
+import type { Level, QuestionRound, VocabEntry } from '~~/shared/types/vocabulary';
 
 export const createEntry = (
   id: string,
