@@ -1,5 +1,7 @@
 # Codebase Hardening Implementation Plan
 
+> Status: この計画の主要な内容は実装済みです。現行仕様の一次情報ではなく、責務分離とテスト補強を進めた時点の実装計画の履歴として扱ってください。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 既存のゲーム挙動を維持したまま、`pages/index.vue` の責務を分離し、状態遷移の失敗を明示的に扱えるようにし、回帰を防ぐテストを補強する。

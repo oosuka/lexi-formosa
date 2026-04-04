@@ -2,7 +2,7 @@
 
 Date: 2026-04-04
 
-> Status: トップ画面の視覚ルールと開始導線を Apple HIG 参照で再定義する仕様。`docs/superpowers/specs/2026-04-04-start-screen-arcade-refresh-design.md` の `アーケード寄り` 方針は採用せず、本仕様を優先する。
+> Status: この設計は採用中です。トップ画面とプレイ中画面の現行デザイン仕様として扱い、実装変更に合わせて更新してください。`docs/superpowers/specs/2026-04-04-start-screen-arcade-refresh-design.md` の `アーケード寄り` 方針は不採用です。
 
 ## Goal
 

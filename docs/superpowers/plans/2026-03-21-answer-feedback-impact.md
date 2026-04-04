@@ -1,5 +1,7 @@
 # Answer Feedback Impact Implementation Plan
 
+> Status: この計画の内容は実装済みです。現行仕様の一次情報ではなく、回答フィードバック強化を行った時点の実装計画の履歴として扱ってください。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 音や効果音がなくても、回答直後に正解・不正解・自分の選択・正解のカードが一瞬で分かる強い視覚フィードバックを実装する。

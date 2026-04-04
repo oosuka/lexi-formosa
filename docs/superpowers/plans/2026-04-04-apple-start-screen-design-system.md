@@ -1,5 +1,7 @@
 # Apple-Informed Top And Play Screen Design System Implementation Plan
 
+> Status: この計画に沿った変更は採用・実装済みです。開始画面とプレイ中画面の現行デザインに最も近い計画メモですが、一次情報はコードと `README.md` `AGENTS.md` です。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Apple HIG を参照した静かな学習アプリ寄りの UI 文法を、トップ画面、プレイ中画面、ゲームオーバー画面の通常状態で厳密に統一し、正誤フィードバックだけは少し強めに維持する。

@@ -2,7 +2,7 @@
 
 Date: 2026-04-04
 
-> Status: 現行トップ画面の再設計用仕様。`docs/superpowers/specs/2026-03-21-top-screen-renewal-design.md` の `Premium Launch Pad` 方針は採用せず、今回の合意内容で上書きする。
+> Status: この設計は不採用です。最終的には `docs/superpowers/specs/2026-04-04-apple-start-screen-design-system.md` の Apple HIG 参照方針を採用しており、この文書は比較検討時の履歴として扱ってください。
 
 ## Goal
 
