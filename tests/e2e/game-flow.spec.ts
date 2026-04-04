@@ -119,8 +119,11 @@ test('ゲームを1問進められる', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
-  await expect(page.getByRole('heading', { name: '学習を始める' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
+  await expect(
+    page.getByText('台湾で使われる繁体字の意味を、日本語4択でテンポよく見抜いていく単語ゲーム。')
+  ).toBeVisible();
+  await expect(page.getByText('このレベルから始める')).toHaveCount(0);
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
   await expect(page.getByRole('heading', { name: 'この単語の意味は？' })).toBeVisible();
   await expect(page.locator('.choice-card')).toHaveCount(4);
@@ -203,22 +206,16 @@ test('PC 幅ではプレイ中に Score / Streak / Miss がプレイエリアで
   await expect(playArea.getByText('Miss', { exact: true })).toBeVisible();
 });
 
-test('開始前の案内カードは高さが揃う', async ({ page }) => {
+test('開始前の大型 Lobby は選択レベルと語数だけを補足表示する', async ({ page }) => {
   await installMockWordlists(page);
 
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
-  const detailCards = page.locator('.session-start-detail');
-
-  await expect(detailCards).toHaveCount(2);
-
-  const firstCard = await detailCards.nth(0).boundingBox();
-  const secondCard = await detailCards.nth(1).boundingBox();
-
-  expect(firstCard).not.toBeNull();
-  expect(secondCard).not.toBeNull();
-  expect(Math.abs((firstCard?.height ?? 0) - (secondCard?.height ?? 0))).toBeLessThanOrEqual(1);
+  await expect(page.locator('.session-start-chip')).toHaveCount(2);
+  await expect(page.locator('.session-start-chip').nth(0)).toHaveText('Level 1');
+  await expect(page.locator('.session-start-chip').nth(1)).toHaveText('2語');
+  await expect(page.locator('.session-start-detail')).toHaveCount(0);
 });
 
 test('モバイル幅でも横にはみ出さない', async ({ page }) => {
