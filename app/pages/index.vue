@@ -65,7 +65,6 @@ const trainerAudio = useTrainerAudio({
   shouldReplayPending: () => !sessionStartPending.value,
 });
 const feedbackAudio = useFeedbackAudio();
-const speechSupported = trainerAudio.speechSupported;
 const isSpeaking = trainerAudio.isSpeaking;
 const canPlayAudio = computed(
   () => trainerAudio.speechSupported.value && Boolean(currentQuestionTrad.value)
@@ -98,7 +97,6 @@ const {
   streak,
   bestRunStreak,
   remainingMisses,
-  rounds,
   answered,
   revealAnswer,
   canStartSession,

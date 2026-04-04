@@ -22,13 +22,12 @@ const createGameState = (overrides: Partial<GameState> = {}): GameState => ({
 });
 
 describe('useTrainerSessionUi', () => {
-  it('開始前パネルの表示状態と開始コピーを返す', () => {
+  it('開始前パネルの表示状態と開始可否を返す', () => {
     const game = ref(createGameState());
     const sessionStartPending = ref(true);
     const fatalError = ref<string | null>(null);
     const uiError = ref<string | null>(null);
     const isLoading = ref(false);
-    const speechSupported = ref(true);
     const highScores = ref({
       1: { score: 10, streak: 2 },
       2: { score: 0, streak: 0 },
@@ -47,7 +46,6 @@ describe('useTrainerSessionUi', () => {
       fatalError,
       uiError,
       isLoading,
-      speechSupported,
       highScores,
       sessionRecordBaseline,
       correctChoiceLabel,
@@ -55,8 +53,7 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.showSessionStart.value).toBe(true);
     expect(sessionUi.showLevelPanel.value).toBe(true);
-    expect(sessionUi.startPanelTitle.value).toBe('このレベルから始める');
-    expect(sessionUi.startPanelCopy.value).toContain('読み上げも始まります');
+    expect(sessionUi.canStartSession.value).toBe(true);
     expect(sessionUi.feedbackBadge.value).toBe('Start');
   });
 
@@ -75,7 +72,6 @@ describe('useTrainerSessionUi', () => {
     const fatalError = ref<string | null>(null);
     const uiError = ref<string | null>(null);
     const isLoading = ref(false);
-    const speechSupported = ref(true);
     const highScores = ref({
       1: { score: 10, streak: 1 },
       2: { score: 0, streak: 0 },
@@ -94,7 +90,6 @@ describe('useTrainerSessionUi', () => {
       fatalError,
       uiError,
       isLoading,
-      speechSupported,
       highScores,
       sessionRecordBaseline,
       correctChoiceLabel,
@@ -132,7 +127,6 @@ describe('useTrainerSessionUi', () => {
     const fatalError = ref<string | null>(null);
     const uiError = ref<string | null>(null);
     const isLoading = ref(false);
-    const speechSupported = ref(true);
     const highScores = ref({
       1: { score: 0, streak: 0 },
       2: { score: 0, streak: 0 },
@@ -151,7 +145,6 @@ describe('useTrainerSessionUi', () => {
       fatalError,
       uiError,
       isLoading,
-      speechSupported,
       highScores,
       sessionRecordBaseline,
       correctChoiceLabel,
@@ -181,7 +174,6 @@ describe('useTrainerSessionUi', () => {
     const fatalError = ref<string | null>('next question failed');
     const uiError = ref<string | null>(null);
     const isLoading = ref(false);
-    const speechSupported = ref(true);
     const highScores = ref({
       1: { score: 10, streak: 1 },
       2: { score: 0, streak: 0 },
@@ -200,7 +192,6 @@ describe('useTrainerSessionUi', () => {
       fatalError,
       uiError,
       isLoading,
-      speechSupported,
       highScores,
       sessionRecordBaseline,
       correctChoiceLabel,
@@ -224,7 +215,6 @@ describe('useTrainerSessionUi', () => {
     const fatalError = ref<string | null>(null);
     const uiError = ref<string | null>(null);
     const isLoading = ref(false);
-    const speechSupported = ref(false);
     const highScores = ref({
       1: { score: 45, streak: 4 },
       2: { score: 0, streak: 0 },
@@ -243,7 +233,6 @@ describe('useTrainerSessionUi', () => {
       fatalError,
       uiError,
       isLoading,
-      speechSupported,
       highScores,
       sessionRecordBaseline,
       correctChoiceLabel,

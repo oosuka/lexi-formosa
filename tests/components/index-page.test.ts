@@ -149,8 +149,8 @@ describe('index page', () => {
 
     expect(wrapper.text()).toContain(APP_VERSION_LABEL);
     expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.text()).toContain('Focused Learning Desk');
-    expect(wrapper.text()).toContain('このレベルから始める');
+    expect(wrapper.text()).toContain('Arcade Lobby');
+    expect(wrapper.text()).toContain('準備OK。');
     expect(wrapper.text()).toContain('45語');
     expect(wrapper.text()).not.toContain('你好');
   });
@@ -914,7 +914,8 @@ describe('index page', () => {
     await resetButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('このレベルから始める');
+    expect(wrapper.text()).toContain('Arcade Lobby');
+    expect(wrapper.text()).toContain('準備OK。');
     expect(wrapper.text()).not.toContain('你好');
   });
 
@@ -942,7 +943,8 @@ describe('index page', () => {
     await resetButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('このレベルから始める');
+    expect(wrapper.text()).toContain('Arcade Lobby');
+    expect(wrapper.text()).toContain('準備OK。');
     expect(wrapper.text()).not.toContain('再見');
 
     deferred.resolve();
