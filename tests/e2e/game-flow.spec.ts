@@ -119,16 +119,21 @@ test('ゲームを1問進められる', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
-  const startScreen = page.locator('.session-start-panel');
-  const startConditions = page.getByLabel('選択中の開始条件');
+  const sessionModule = page.locator('.session-module');
 
-  await expect(startScreen).toBeVisible();
+  await expect(sessionModule).toBeVisible();
+  await expect(page.getByText('PLAY', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
   await expect(page.getByText(/繁体字の意味を、\s*日本語4択/)).toBeVisible();
-  await expect(startConditions).toContainText('Level 1');
-  await expect(startConditions).toContainText('2語');
+  await expect(sessionModule).toContainText('Level 1');
+  await expect(sessionModule).toContainText('2 words');
+  await expect(sessionModule).not.toContainText('LEVELS');
+  await expect(sessionModule).not.toContainText('START');
+  await expect(page.locator('.hero-stats-panel')).not.toContainText('レベルごとの最高記録');
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
-  await expect(page.getByRole('heading', { name: 'この単語の意味は？' })).toBeVisible();
+  await expect(page.locator('.hero-panel')).toHaveCount(0);
+  await expect(page.locator('.quiz-panel')).toContainText('Level 1');
+  await expect(page.locator('.quiz-panel')).toContainText('Score');
   await expect(page.locator('.choice-card')).toHaveCount(4);
 
   const wordBefore = await page.locator('.trad-word').first().textContent();
@@ -204,22 +209,26 @@ test('PC 幅ではプレイ中に Score / Streak / Miss がプレイエリアで
   const playArea = page.locator('.quiz-panel');
 
   await expect(playArea).toBeVisible();
+  await expect(page.locator('.hero-panel')).toHaveCount(0);
   await expect(playArea.getByText('Score', { exact: true })).toBeVisible();
   await expect(playArea.getByText('Streak', { exact: true })).toBeVisible();
   await expect(playArea.getByText('Miss', { exact: true })).toBeVisible();
 });
 
-test('開始前の大型 Lobby は選択レベルと語数だけを補足表示する', async ({ page }) => {
+test('開始画面の PLAY モジュールは選択レベルと語数を表示する', async ({ page }) => {
   await installMockWordlists(page);
 
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
 
-  const startConditions = page.getByLabel('選択中の開始条件');
+  const sessionModule = page.locator('.session-module');
 
-  await expect(startConditions).toBeVisible();
-  await expect(startConditions).toContainText('Level 1');
-  await expect(startConditions).toContainText('2語');
+  await expect(sessionModule).toBeVisible();
+  await expect(sessionModule).toContainText('PLAY');
+  await expect(sessionModule).toContainText('Level 1');
+  await expect(sessionModule).toContainText('2 words');
+  await expect(sessionModule).not.toContainText('LEVELS');
+  await expect(sessionModule).not.toContainText('START');
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
 });
 
@@ -298,5 +307,6 @@ test('game over 後に restart と reset の導線を使える', async ({ page }
   await expect(page.locator('.game-over-panel')).toBeVisible();
   await page.getByRole('button', { name: 'トップへ戻る' }).click();
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
-  await expect(page.locator('.level-panel')).toBeVisible();
+  await expect(page.locator('.session-module')).toBeVisible();
+  await expect(page.getByText('PLAY', { exact: true })).toBeVisible();
 });

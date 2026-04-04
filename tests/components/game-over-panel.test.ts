@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import GameOverPanel from '~/components/GameOverPanel.vue';
 
 describe('GameOverPanel', () => {
-  it('結果サマリーとして Score / Best Streak / level best を整理して表示する', async () => {
+  it('結果サマリーとして Score / Best streak / level best を整理して表示する', async () => {
     const wrapper = mount(GameOverPanel, {
       props: {
         feedbackBadge: 'Game Over',
@@ -29,7 +29,7 @@ describe('GameOverPanel', () => {
 
     expect(wrapper.text()).toContain('新記録達成');
     expect(wrapper.text()).toContain('Score');
-    expect(wrapper.text()).toContain('Best Streak');
+    expect(wrapper.text()).toContain('Best streak');
     expect(wrapper.text()).toContain('Level Best');
     expect(wrapper.text()).toContain('45');
     expect(wrapper.text()).toContain('NEW BEST');

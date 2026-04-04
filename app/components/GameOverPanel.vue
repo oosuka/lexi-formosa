@@ -42,7 +42,7 @@ const emit = defineEmits<{
         <strong>{{ props.score }}</strong>
       </article>
       <article class="game-over-stat game-over-stat--primary">
-        <span>Best Streak</span>
+        <span>Best streak</span>
         <strong>{{ props.bestRunStreak }}</strong>
       </article>
     </div>

@@ -36,6 +36,21 @@ const formatVocabularyCountLabel = (
   return `${count.toLocaleString()}語`;
 };
 
+const formatVocabularyWordsLabel = (
+  count: number | null | undefined,
+  status: MetadataStatus
+): string => {
+  if (status === 'failed') {
+    return 'Words unavailable';
+  }
+
+  if (count === null || count === undefined) {
+    return 'Loading words';
+  }
+
+  return `${count.toLocaleString()} words`;
+};
+
 const sessionStartPending = ref(true);
 const fatalError = ref<string | null>(null);
 const uiError = ref<string | null>(null);
@@ -70,13 +85,13 @@ const canPlayAudio = computed(
   () => trainerAudio.speechSupported.value && Boolean(currentQuestionTrad.value)
 );
 const currentLevelCard = computed(() => LEVEL_COPY[trainer.game.value.level]);
-const currentLevelCount = computed(
-  () => vocabularyMetadata.value?.counts[trainer.game.value.level] ?? null
-);
 const missesInRow = computed(() => trainer.game.value.missesInRow);
-const currentLevelCountLabel = computed(() =>
-  formatVocabularyCountLabel(currentLevelCount.value, metadataStatus.value)
-);
+const sessionStartSummaryItems = computed(() => [
+  '4択から1つ選ぶ',
+  '正解で10点',
+  '3連続正解からボーナス',
+  '3回連続ミスで終了',
+]);
 const sessionUi = useTrainerSessionUi({
   game: trainer.game,
   sessionStartPending,
@@ -91,7 +106,6 @@ const {
   hasFatalLoadError,
   isLoading,
   showSessionStart,
-  showLevelPanel,
   isGameOver,
   score,
   streak,
@@ -100,9 +114,6 @@ const {
   answered,
   revealAnswer,
   canStartSession,
-  sessionPanelKicker,
-  sessionPanelTitle,
-  sessionMetricCards,
   highScoreCards,
   currentLevelHighScore,
   gameOverAchievements,
@@ -112,28 +123,6 @@ const {
   feedbackView,
   feedbackBadge,
 } = sessionUi;
-const quizPanelKicker = computed(() => {
-  if (showSessionStart.value) {
-    return 'Lobby';
-  }
-
-  if (isGameOver.value) {
-    return 'Summary';
-  }
-
-  return 'Question';
-});
-const quizPanelTitle = computed(() => {
-  if (showSessionStart.value) {
-    return '学習を始める';
-  }
-
-  if (isGameOver.value) {
-    return '結果サマリー';
-  }
-
-  return 'この単語の意味は？';
-});
 const externalLookupLinks = computed(() => {
   const trad = currentQuestion.value?.trad;
 
@@ -418,10 +407,9 @@ useSeoMeta({
 
 <template>
   <main class="page-shell" :class="{ 'reduce-motion': reducedMotion }">
-    <section class="hero-panel" :class="{ 'hero-panel--start-screen': showSessionStart }">
+    <section v-if="showSessionStart" class="hero-panel hero-panel--start-screen">
       <div
-        class="hero-brand surface-card"
-        :class="{ 'hero-brand--start-screen': showSessionStart }"
+        class="hero-brand surface-card hero-brand--start-screen"
       >
         <div class="hero-topline">
           <p class="eyebrow">Taiwan Traditional Chinese Trainer</p>
@@ -438,19 +426,11 @@ useSeoMeta({
         </div>
       </div>
 
-      <div
-        class="hero-stats-panel surface-card"
-        :class="{ 'hero-stats-panel--start-screen': showSessionStart }"
-      >
+      <div class="hero-stats-panel surface-card hero-stats-panel--start-screen">
         <div class="panel-heading">
-          <p class="panel-kicker">{{ showSessionStart ? 'Records' : sessionPanelKicker }}</p>
-          <h2>{{ showSessionStart ? 'レベルごとの最高記録' : sessionPanelTitle }}</h2>
+          <p class="panel-kicker">RECORDS</p>
         </div>
-        <div
-          v-if="showSessionStart"
-          class="record-grid"
-          :class="{ 'record-grid--start-screen': showSessionStart }"
-        >
+        <div class="record-grid record-grid--start-screen">
           <article
             v-for="item in highScoreCards"
             :key="item.level"
@@ -460,69 +440,61 @@ useSeoMeta({
             <div class="record-card-topline">
               <span class="record-level">{{ item.label }}</span>
             </div>
-            <div
-              class="record-stats"
-              :class="{ 'record-stats--start-screen': showSessionStart }"
-            >
+            <div class="record-stats record-stats--start-screen">
               <div class="record-stat">
-                <span class="record-stat-label">Best Score</span>
+                <span class="record-stat-label">Best score</span>
                 <strong>{{ item.score }}</strong>
               </div>
               <div class="record-stat">
-                <span class="record-stat-label">Best Streak</span>
+                <span class="record-stat-label">Best streak</span>
                 <strong>{{ item.streak }}</strong>
               </div>
             </div>
           </article>
         </div>
-        <div v-else class="hero-stats">
-          <article v-for="item in sessionMetricCards" :key="item.id" class="metric-card">
-            <span class="metric-label">{{ item.label }}</span>
-            <strong>{{ item.value }}</strong>
-            <span class="metric-help">{{ item.help }}</span>
-          </article>
-        </div>
       </div>
     </section>
 
-    <section class="workspace-grid" :class="{ 'workspace-grid--focus': !showLevelPanel }">
-      <aside v-if="showLevelPanel" class="level-panel surface-card">
-        <div class="panel-heading">
-          <p class="panel-kicker">Level</p>
-          <h2>出題レベル</h2>
-        </div>
+    <section v-if="showSessionStart" class="session-module surface-card">
+      <div class="session-module__header">
+        <p class="panel-kicker">PLAY</p>
+      </div>
 
-        <div class="level-list">
-          <button
-            v-for="item in levelCards"
-            :key="item.level"
-            class="level-card"
-            :class="{ 'level-card--active': trainer.game.value.level === item.level }"
-            type="button"
-            :disabled="trainer.isLoading.value"
-            @click="selectLevel(item.level)"
-          >
-            <div class="level-card-topline">
-              <span class="level-badge">{{ item.label }}</span>
-              <span class="level-count">
-                {{ item.countLabel }}
-              </span>
-            </div>
-            <strong>{{ item.summary }}</strong>
-          </button>
-        </div>
+      <div class="session-module__grid">
+        <aside class="session-module__levels">
+          <div class="level-list">
+            <button
+              v-for="item in levelCards"
+              :key="item.level"
+              class="level-card"
+              :class="{ 'level-card--active': trainer.game.value.level === item.level }"
+              type="button"
+              :disabled="trainer.isLoading.value"
+              @click="selectLevel(item.level)"
+            >
+              <div class="level-card-topline">
+                <span class="level-badge">{{ item.label }}</span>
+                <span class="level-count">
+                  {{ formatVocabularyWordsLabel(item.count, metadataStatus) }}
+                </span>
+              </div>
+              <strong>{{ item.summary }}</strong>
+            </button>
+          </div>
+        </aside>
 
-        <div class="hint-block">
-          <p>ルール</p>
-          <ul>
-            <li>正解は4択のうち1つだけ</li>
-            <li>3回続けて間違えると終了</li>
-            <li>正解で10点</li>
-            <li>3連続正解以降はボーナス加点</li>
-          </ul>
-        </div>
-      </aside>
+        <SessionStartPanel
+          :level-label="currentLevelCard.label"
+          :level-summary="currentLevelCard.summary"
+          :summary-items="sessionStartSummaryItems"
+          :can-start-session="canStartSession"
+          :load-error="uiError"
+          @start="startSession()"
+        />
+      </div>
+    </section>
 
+    <section v-else class="workspace-grid workspace-grid--play">
       <section
         class="quiz-panel surface-card"
         :class="{
@@ -534,11 +506,6 @@ useSeoMeta({
           'quiz-panel--game-over': isGameOver,
         }"
       >
-        <div v-if="!showSessionStart" class="panel-heading">
-          <p class="panel-kicker">{{ quizPanelKicker }}</p>
-          <h2>{{ quizPanelTitle }}</h2>
-        </div>
-
         <template v-if="hasFatalLoadError">
           <article class="question-stage">
             <div class="question-stage__topline">
@@ -553,25 +520,13 @@ useSeoMeta({
             </div>
           </article>
         </template>
-        <template v-else-if="showSessionStart">
-          <SessionStartPanel
-            :current-level-label="currentLevelCard.label"
-            :current-level-count-label="currentLevelCountLabel"
-            :can-start-session="canStartSession"
-            :load-error="uiError"
-            @start="startSession()"
-          />
-        </template>
         <template v-else-if="currentQuestion">
-          <TrainerTopRail
-            :level-label="currentLevelCard.label"
+          <QuestionStage
+            :level-label="LEVEL_COPY[currentQuestion.level].label"
             :score="score"
             :streak="streak"
             :misses-in-row="missesInRow"
             :max-misses="maxMisses"
-          />
-          <QuestionStage
-            :level-label="LEVEL_COPY[currentQuestion.level].label"
             :trad="currentQuestion.trad"
             :katakana-reading="katakanaReading"
             :pinyin-reading="pinyinReading"

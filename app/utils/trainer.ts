@@ -5,15 +5,15 @@ export const RECENT_WINDOW_SIZE = 5;
 export const LEVEL_COPY: Record<Level, { label: string; summary: string }> = {
   1: {
     label: 'Level 1',
-    summary: '1〜2文字が中心。\n生活や旅行でよく使う単語。',
+    summary: '1–2文字中心。生活や旅行でよく使う単語。',
   },
   2: {
     label: 'Level 2',
-    summary: '3〜4文字が中心。\n日常表現や施設名がメイン。',
+    summary: '3–4文字中心。日常表現や施設名がメイン。',
   },
   3: {
     label: 'Level 3',
-    summary: '5〜6文字が中心。\n少し長めの複合語に挑戦。',
+    summary: '5–6文字中心。少し長めの複合語に挑戦。',
   },
 };
 

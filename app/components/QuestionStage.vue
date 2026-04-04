@@ -3,6 +3,10 @@ import { computed } from 'vue';
 
 const props = defineProps<{
   levelLabel: string;
+  score: number;
+  streak: number;
+  missesInRow: number;
+  maxMisses: number;
   trad: string;
   katakanaReading: string;
   pinyinReading: string;
@@ -15,12 +19,31 @@ const emit = defineEmits<{
 }>();
 
 const audioButtonLabel = computed(() => (props.isSpeaking ? '停止' : '読み上げ'));
+const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
 </script>
 
 <template>
   <article class="question-stage">
-    <div class="question-stage__topline">
-      <span class="word-chip">{{ props.levelLabel }}</span>
+    <div class="question-stage__hud">
+      <div class="question-stage__meta">
+        <span class="question-stage__level">{{ props.levelLabel }}</span>
+      </div>
+
+      <dl class="question-stage__stats">
+        <div class="question-stage__stat">
+          <dt>Score</dt>
+          <dd>{{ props.score }}</dd>
+        </div>
+        <div class="question-stage__stat">
+          <dt>Streak</dt>
+          <dd>{{ props.streak }}</dd>
+        </div>
+        <div class="question-stage__stat">
+          <dt>Miss</dt>
+          <dd>{{ missLabel }}</dd>
+        </div>
+      </dl>
+
       <button
         class="audio-button"
         type="button"
