@@ -14,6 +14,7 @@ const props = defineProps<{
   feedbackBadge: string;
   gameOverTitle: string;
   gameOverSummary: string;
+  celebrationTone: 'none' | 'single' | 'double';
   loadError: string | null;
   score: number;
   bestRunStreak: number;
@@ -28,23 +29,35 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <section class="game-over-panel">
+  <section
+    class="game-over-panel"
+    :class="{
+      'game-over-panel--celebration': props.celebrationTone !== 'none',
+      'game-over-panel--celebration-double': props.celebrationTone === 'double',
+    }"
+  >
     <div class="game-over-copy">
-      <span class="feedback-pill feedback-pill--game-over">{{ props.feedbackBadge }}</span>
-      <strong class="game-over-title">{{ props.gameOverTitle }}</strong>
+      <p v-if="props.celebrationTone !== 'none'" class="game-over-celebration-badge">
+        {{ props.celebrationTone === 'double' ? 'Double Record' : 'New Record' }}
+      </p>
+      <p v-if="props.gameOverTitle" class="game-over-kicker">{{ props.gameOverTitle }}</p>
+      <strong class="game-over-title">{{ props.feedbackBadge }}</strong>
       <p class="game-over-summary">{{ props.gameOverSummary }}</p>
       <p v-if="props.loadError" class="game-over-error">{{ props.loadError }}</p>
     </div>
 
-    <div class="game-over-summary-grid">
-      <article class="game-over-stat game-over-stat--primary">
-        <span>Score</span>
-        <strong>{{ props.score }}</strong>
-      </article>
-      <article class="game-over-stat game-over-stat--primary">
-        <span>Best streak</span>
-        <strong>{{ props.bestRunStreak }}</strong>
-      </article>
+    <div class="game-over-level-best">
+      <p class="game-over-section-label">This Session</p>
+      <div class="game-over-summary-grid">
+        <article class="game-over-stat game-over-stat--primary">
+          <span>Score</span>
+          <strong>{{ props.score }}</strong>
+        </article>
+        <article class="game-over-stat game-over-stat--primary">
+          <span>Streak</span>
+          <strong>{{ props.bestRunStreak }}</strong>
+        </article>
+      </div>
     </div>
 
     <div class="game-over-level-best">
@@ -76,8 +89,10 @@ const emit = defineEmits<{
     </div>
 
     <div class="game-over-actions">
+      <button class="ghost-button ghost-button--subtle" type="button" @click="emit('reset')">
+        トップへ戻る
+      </button>
       <button class="primary-button" type="button" @click="emit('restart')">もう一度始める</button>
-      <button class="ghost-button" type="button" @click="emit('reset')">トップへ戻る</button>
     </div>
   </section>
 </template>

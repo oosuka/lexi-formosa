@@ -9,13 +9,13 @@ describe('ResultBanner', () => {
       props: {
         tone: 'correct',
         badge: 'Correct',
-        message: '正解。+12点獲得',
+        message: '正解。+12点を獲得しました。',
         uiError: null,
       },
     });
 
     expect(wrapper.text()).toContain('Correct');
-    expect(wrapper.text()).toContain('正解。+12点獲得');
+    expect(wrapper.text()).toContain('正解。+12点を獲得しました。');
     expect(wrapper.classes()).toContain('result-banner');
     expect(wrapper.classes()).toContain('result-banner--embedded');
     expect(wrapper.classes()).toContain('result-banner--correct');

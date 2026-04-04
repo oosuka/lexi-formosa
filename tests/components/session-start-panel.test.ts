@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import SessionStartPanel from '~/components/SessionStartPanel.vue';
 
 describe('SessionStartPanel', () => {
-  it('開始パネルでは Level 名、説明、CTA、補助メモ 4 項目だけを表示する', async () => {
+  it('開始パネルでは Level 名、確認メタ、CTA、補助メモ 4 項目だけを表示する', async () => {
     const wrapper = mount(SessionStartPanel, {
       props: {
         levelLabel: 'Level 3',
@@ -21,12 +21,14 @@ describe('SessionStartPanel', () => {
     });
 
     expect(wrapper.text()).toContain('Level 3');
-    expect(wrapper.text()).toContain('5–6文字中心。少し長めの複合語に挑戦。');
+    expect(wrapper.text()).toContain('5–6文字中心');
+    expect(wrapper.text()).toContain('少し長めの複合語');
     expect(wrapper.text()).toContain('4択から1つ選ぶ');
     expect(wrapper.text()).toContain('正解で10点');
     expect(wrapper.text()).toContain('3回連続ミスで終了');
     expect(wrapper.text()).toContain('3連続正解からボーナス');
     expect(wrapper.text()).toContain('ゲームを始める');
+    expect(wrapper.get('.session-start-panel__header').exists()).toBe(true);
     expect(wrapper.text()).not.toContain('START');
     expect(wrapper.text()).not.toContain('words');
 
@@ -53,6 +55,8 @@ describe('SessionStartPanel', () => {
 
     expect(wrapper.get('button.session-start-button').attributes('disabled')).toBeDefined();
     expect(wrapper.text()).toContain('Level 2');
+    expect(wrapper.text()).toContain('3–4文字中心');
+    expect(wrapper.text()).toContain('日常表現や施設名');
     expect(wrapper.text()).toContain('level 2 missing');
     expect(wrapper.text()).not.toContain('START');
     expect(wrapper.text()).not.toContain('words');

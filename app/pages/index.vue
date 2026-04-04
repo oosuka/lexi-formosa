@@ -117,6 +117,7 @@ const {
   highScoreCards,
   currentLevelHighScore,
   gameOverAchievements,
+  gameOverCelebrationTone,
   gameOverTitle,
   gameOverSummary,
   feedbackTone,
@@ -238,6 +239,18 @@ const answer = (choiceId: string) => {
   clearUiError();
   trainerAudio.clearPendingQuestionAudio();
   const result = trainer.submitAnswer(choiceId);
+
+  if (trainer.game.value.status === 'finished') {
+    void (async () => {
+      await feedbackAudio.playGameOverSound();
+
+      if (gameOverCelebrationTone.value !== 'none') {
+        await feedbackAudio.playRecordCelebrationSound(gameOverCelebrationTone.value);
+      }
+    })();
+    return;
+  }
+
   void feedbackAudio.playFeedbackSound(result.correct);
 };
 
@@ -442,11 +455,11 @@ useSeoMeta({
             </div>
             <div class="record-stats record-stats--start-screen">
               <div class="record-stat">
-                <span class="record-stat-label">Best score</span>
+                <span class="record-stat-label">Best Score</span>
                 <strong>{{ item.score }}</strong>
               </div>
               <div class="record-stat">
-                <span class="record-stat-label">Best streak</span>
+                <span class="record-stat-label">Best Streak</span>
                 <strong>{{ item.streak }}</strong>
               </div>
             </div>
@@ -571,6 +584,7 @@ useSeoMeta({
             :feedback-badge="feedbackBadge"
             :game-over-title="gameOverTitle"
             :game-over-summary="gameOverSummary"
+            :celebration-tone="gameOverCelebrationTone"
             :load-error="uiError"
             :score="score"
             :best-run-streak="bestRunStreak"
@@ -580,7 +594,7 @@ useSeoMeta({
             @reset="resetSession()"
           />
           <div
-            v-else
+            v-else-if="answered || isLoading || feedbackView.uiError"
             class="feedback-row"
             :class="{
               'feedback-row--embedded': true,
@@ -601,15 +615,24 @@ useSeoMeta({
               <p class="feedback-copy__message">{{ feedbackView.message }}</p>
               <p v-if="feedbackView.uiError" class="feedback-error">{{ feedbackView.uiError }}</p>
             </div>
-            <div class="feedback-actions">
-              <button
-                class="ghost-button"
-                type="button"
-                :disabled="trainer.isLoading.value || hasFatalLoadError"
-                @click="resetSession()"
-              >
-                最初からやり直す
-              </button>
+          </div>
+          <div v-if="revealAnswer && !isGameOver" class="answer-support-row">
+            <div v-if="externalLookupLinks.length > 0" class="lookup-panel">
+              <p class="lookup-panel-label">外部辞書で確認</p>
+              <div class="lookup-links">
+                <a
+                  v-for="link in externalLookupLinks"
+                  :key="link.id"
+                  class="ghost-button lookup-link"
+                  :href="link.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ link.label }}
+                </a>
+              </div>
+            </div>
+            <div class="answer-support-actions">
               <button
                 class="primary-button"
                 type="button"
@@ -619,21 +642,14 @@ useSeoMeta({
               >
                 次の問題
               </button>
-            </div>
-          </div>
-          <div v-if="revealAnswer && externalLookupLinks.length > 0" class="lookup-panel">
-            <p class="lookup-panel-label">外部辞書で確認</p>
-            <div class="lookup-links">
-              <a
-                v-for="link in externalLookupLinks"
-                :key="link.id"
-                class="ghost-button lookup-link"
-                :href="link.href"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                class="ghost-button ghost-button--subtle"
+                type="button"
+                :disabled="trainer.isLoading.value || hasFatalLoadError"
+                @click="resetSession()"
               >
-                {{ link.label }}
-              </a>
+                トップへ戻る
+              </button>
             </div>
           </div>
         </template>

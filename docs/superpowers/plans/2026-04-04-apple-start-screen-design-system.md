@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Apple HIG を参照した静かな学習アプリ寄りの UI 文法を、トップ画面だけでなくプレイ中画面まで一貫して適用する。
+**Goal:** Apple HIG を参照した静かな学習アプリ寄りの UI 文法を、トップ画面、プレイ中画面、ゲームオーバー画面の通常状態で厳密に統一し、正誤フィードバックだけは少し強めに維持する。
 
-**Architecture:** 開始画面は既存の `PLAY` モジュール構成を維持しつつ、プレイ中は `hero-panel` と独立した `Session` 枠を非表示にし、`quiz-panel` 1 枚へ情報を集約する。`Score / Streak / Miss` は独立帯ではなく問題カード上部の細い情報列へ統合し、`QuestionStage` をプレイ中の主役コンポーネントとして再構成する。
+**Architecture:** 開始画面は既存の `PLAY` モジュール構成を維持しつつ、プレイ中は `hero-panel` と独立した `Session` 枠を非表示にし、`quiz-panel` 1 枚へ情報を集約する。`Score / Streak / Miss` は独立帯ではなく問題カード上部の細い情報列へ統合し、通常状態の card / button / label / spacing / radius / shadow は開始画面と同じ token で共通化する。`correct / incorrect / game over` のフィードバックだけは例外として強めの色と影を維持する。
 
 **Tech Stack:** Nuxt 4, Vue 3, TypeScript, Vitest, Playwright, CSS
 
@@ -17,19 +17,35 @@
 - `app/pages/index.vue`
   - プレイ中は `hero-panel` を出さず、`quiz-panel` だけを表示する
   - `TrainerTopRail` を外し、プレイ中情報を `QuestionStage` へ渡す
+  - ゲームオーバー時に新記録演出トーンに応じて専用音を追加再生する
 - `app/components/QuestionStage.vue`
   - `Level / Score / Streak / Miss` の情報列を内包する構造へ更新する
   - 音声ボタンを上部情報列の一部として馴染ませる
+- `app/components/GameOverPanel.vue`
+  - 新記録時の celebration state と補助バッジを表示する
+- `app/composables/useFeedbackAudio.ts`
+  - ゲームオーバー専用音に加えて、新記録専用の上昇音シーケンスを持つ
+- `app/composables/useTrainerSessionUi.ts`
+  - 新記録1件更新と2件更新を `single / double` 演出トーンへ変換する
 - `app/assets/css/main.css`
   - プレイ中の単一 surface、情報列、問題カード、選択肢、フィードバックの余白と素材感を整える
+  - 新記録ゲームオーバー時は通常の game over より強い animation と glow を与える
 - `tests/components/question-stage.test.ts`
   - 情報列を含む新しい `QuestionStage` API と表示を固定する
 - `tests/components/index-page.test.ts`
   - プレイ中に `hero-panel` が消え、`quiz-panel` に情報列が統合されることを固定する
+  - 新記録ゲームオーバー時に専用音と celebration copy が出ることを固定する
+- `tests/components/game-over-panel.test.ts`
+  - celebration state と補助バッジを固定する
+- `tests/unit/useFeedbackAudio.test.ts`
+  - 新記録専用音のトーン数と gain を固定する
+- `tests/unit/useTrainerSessionUi.test.ts`
+  - single / double 演出トーン判定を固定する
 - `tests/e2e/game-flow.spec.ts`
   - プレイ開始後の `hero-panel` 非表示と `Score / Streak / Miss` 統合を固定する
 - `README.md`
   - プレイ中 UI が単一カードへ統合されたことを説明する
+  - 新記録ゲームオーバー時の専用演出と専用音を説明する
 
 ### Delete
 

@@ -43,6 +43,19 @@ const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
           <dd>{{ missLabel }}</dd>
         </div>
       </dl>
+    </div>
+
+    <strong class="question-stage__trad trad-word">{{ props.trad }}</strong>
+
+    <div class="question-stage__readings-bar">
+      <div v-if="props.katakanaReading || props.pinyinReading" class="question-stage__readings">
+        <p v-if="props.katakanaReading" class="question-stage__reading question-stage__reading--kana">
+          {{ props.katakanaReading }}
+        </p>
+        <p v-if="props.pinyinReading" class="question-stage__reading question-stage__reading--pinyin">
+          {{ props.pinyinReading }}
+        </p>
+      </div>
 
       <button
         class="audio-button"
@@ -53,17 +66,6 @@ const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
       >
         {{ audioButtonLabel }}
       </button>
-    </div>
-
-    <strong class="question-stage__trad trad-word">{{ props.trad }}</strong>
-
-    <div v-if="props.katakanaReading || props.pinyinReading" class="question-stage__readings">
-      <p v-if="props.katakanaReading" class="question-stage__reading question-stage__reading--kana">
-        {{ props.katakanaReading }}
-      </p>
-      <p v-if="props.pinyinReading" class="question-stage__reading question-stage__reading--pinyin">
-        {{ props.pinyinReading }}
-      </p>
     </div>
   </article>
 </template>

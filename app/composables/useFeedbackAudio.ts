@@ -7,16 +7,38 @@ type ToneStep = {
   type?: OscillatorType;
 };
 
+type RecordCelebrationTone = 'single' | 'double';
+
 const CORRECT_TONES: ToneStep[] = [
-  { frequency: 660, duration: 0.08, gain: 0.04, type: 'triangle' },
-  { frequency: 880, duration: 0.12, gain: 0.05, type: 'triangle' },
-  { frequency: 1108, duration: 0.18, gain: 0.04, type: 'sine' },
+  { frequency: 660, duration: 0.08, gain: 0.14, type: 'triangle' },
+  { frequency: 880, duration: 0.12, gain: 0.18, type: 'triangle' },
+  { frequency: 1108, duration: 0.18, gain: 0.14, type: 'sine' },
 ];
 
 const INCORRECT_TONES: ToneStep[] = [
-  { frequency: 320, duration: 0.11, gain: 0.045, type: 'sawtooth' },
-  { frequency: 240, duration: 0.16, gain: 0.04, type: 'sawtooth' },
+  { frequency: 320, duration: 0.11, gain: 0.16, type: 'sawtooth' },
+  { frequency: 240, duration: 0.16, gain: 0.13, type: 'sawtooth' },
 ];
+
+const GAME_OVER_TONES: ToneStep[] = [
+  { frequency: 392, duration: 0.16, gain: 0.24, type: 'triangle' },
+  { frequency: 294, duration: 0.2, gain: 0.2, type: 'triangle' },
+  { frequency: 220, duration: 0.28, gain: 0.18, type: 'sine' },
+];
+
+const RECORD_CELEBRATION_TONES: Record<RecordCelebrationTone, ToneStep[]> = {
+  single: [
+    { frequency: 440, duration: 0.1, gain: 0.18, type: 'triangle' },
+    { frequency: 587, duration: 0.14, gain: 0.2, type: 'triangle' },
+    { frequency: 784, duration: 0.22, gain: 0.18, type: 'sine' },
+  ],
+  double: [
+    { frequency: 440, duration: 0.08, gain: 0.18, type: 'triangle' },
+    { frequency: 587, duration: 0.1, gain: 0.2, type: 'triangle' },
+    { frequency: 784, duration: 0.12, gain: 0.22, type: 'triangle' },
+    { frequency: 1046, duration: 0.24, gain: 0.2, type: 'sine' },
+  ],
+};
 
 export const useFeedbackAudio = () => {
   const audioEffectsSupported = ref(false);
@@ -97,6 +119,22 @@ export const useFeedbackAudio = () => {
     await playToneSequence(correct ? CORRECT_TONES : INCORRECT_TONES);
   };
 
+  const playGameOverSound = async () => {
+    if (!audioEffectsSupported.value) {
+      return;
+    }
+
+    await playToneSequence(GAME_OVER_TONES);
+  };
+
+  const playRecordCelebrationSound = async (tone: RecordCelebrationTone) => {
+    if (!audioEffectsSupported.value) {
+      return;
+    }
+
+    await playToneSequence(RECORD_CELEBRATION_TONES[tone]);
+  };
+
   const cleanup = () => {
     if (audioContext && audioContext.state !== 'closed') {
       void audioContext.close();
@@ -107,6 +145,8 @@ export const useFeedbackAudio = () => {
   return {
     audioEffectsSupported,
     playFeedbackSound,
+    playGameOverSound,
+    playRecordCelebrationSound,
     setup,
     cleanup,
   };

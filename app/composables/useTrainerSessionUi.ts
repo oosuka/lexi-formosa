@@ -15,6 +15,8 @@ type GameOverAchievement = {
   tone: 'new' | 'tie';
 };
 
+type GameOverCelebrationTone = 'none' | 'single' | 'double';
+
 type FeedbackView =
   | {
       variant: 'banner';
@@ -166,7 +168,22 @@ export const useTrainerSessionUi = ({
       return '自己ベストタイ';
     }
 
-    return '今回の結果';
+    return '';
+  });
+  const gameOverCelebrationTone = computed<GameOverCelebrationTone>(() => {
+    const newRecordCount = gameOverAchievements.value.filter(
+      (achievement) => achievement.tone === 'new'
+    ).length;
+
+    if (newRecordCount >= 2) {
+      return 'double';
+    }
+
+    if (newRecordCount === 1) {
+      return 'single';
+    }
+
+    return 'none';
   });
   const gameOverSummary = computed(() => {
     if (gameOverAchievements.value.some((achievement) => achievement.tone === 'new')) {
@@ -206,7 +223,7 @@ export const useTrainerSessionUi = ({
         variant: 'banner',
         tone: 'correct',
         badge: 'Correct',
-        message: `正解。+${getScoreForCorrectAnswer(streak.value)}点獲得`,
+        message: `正解。+${getScoreForCorrectAnswer(streak.value)}点を獲得しました。`,
         uiError: uiError.value,
       };
     }
@@ -274,6 +291,7 @@ export const useTrainerSessionUi = ({
     highScoreCards,
     currentLevelHighScore,
     gameOverAchievements,
+    gameOverCelebrationTone,
     gameOverTitle,
     gameOverSummary,
     feedbackTone,

@@ -97,7 +97,7 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.answered.value).toBe(true);
     expect(sessionUi.feedbackTone.value).toBe('correct');
-    expect(sessionUi.answerMessage.value).toBe('正解。+10点獲得');
+    expect(sessionUi.answerMessage.value).toBe('正解。+10点を獲得しました。');
     expect(sessionUi.feedbackBadge.value).toBe('Correct');
 
     game.value = {
@@ -197,7 +197,7 @@ describe('useTrainerSessionUi', () => {
       correctChoiceLabel,
     });
 
-    expect(sessionUi.answerMessage.value).toBe('正解。+10点獲得');
+    expect(sessionUi.answerMessage.value).toBe('正解。+10点を獲得しました。');
     expect(sessionUi.hasFatalLoadError.value).toBe(false);
   });
 
@@ -240,8 +240,54 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.isGameOver.value).toBe(true);
     expect(sessionUi.gameOverAchievements.value).toHaveLength(2);
+    expect(sessionUi.gameOverCelebrationTone.value).toBe('double');
     expect(sessionUi.gameOverTitle.value).toBe('新記録達成');
     expect(sessionUi.gameOverSummary.value).toBe('今回のプレイで自己ベストを更新しました。');
     expect(sessionUi.feedbackBadge.value).toBe('Game Over');
+  });
+
+  it('ゲームオーバー時に新記録がなければ汎用の終了要約だけを返す', () => {
+    const game = ref(
+      createGameState({
+        score: 10,
+        bestStreak: 1,
+        missesInRow: 3,
+        rounds: 4,
+        status: 'finished',
+      })
+    );
+    const sessionStartPending = ref(false);
+    const fatalError = ref<string | null>(null);
+    const uiError = ref<string | null>(null);
+    const isLoading = ref(false);
+    const highScores = ref({
+      1: { score: 100, streak: 8 },
+      2: { score: 0, streak: 0 },
+      3: { score: 0, streak: 0 },
+    });
+    const sessionRecordBaseline = ref({
+      1: { score: 100, streak: 8 },
+      2: { score: 0, streak: 0 },
+      3: { score: 0, streak: 0 },
+    });
+    const correctChoiceLabel = computed(() => 'こんにちは');
+
+    const sessionUi = useTrainerSessionUi({
+      game,
+      sessionStartPending,
+      fatalError,
+      uiError,
+      isLoading,
+      highScores,
+      sessionRecordBaseline,
+      correctChoiceLabel,
+    });
+
+    expect(sessionUi.gameOverAchievements.value).toHaveLength(0);
+    expect(sessionUi.gameOverCelebrationTone.value).toBe('none');
+    expect(sessionUi.gameOverTitle.value).toBe('');
+    expect(sessionUi.gameOverSummary.value).toBe(
+      '3回続けて不正解になったため、今回はここで終了です。'
+    );
   });
 });

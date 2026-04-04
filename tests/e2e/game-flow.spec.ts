@@ -135,11 +135,18 @@ test('ゲームを1問進められる', async ({ page }) => {
   await expect(page.locator('.quiz-panel')).toContainText('Level 1');
   await expect(page.locator('.quiz-panel')).toContainText('Score');
   await expect(page.locator('.choice-card')).toHaveCount(4);
+  await expect(page.getByText('4つの選択肢から、意味に合うものを1つ選んでください。')).toHaveCount(
+    0
+  );
+  await expect(page.getByRole('button', { name: '次の問題' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'トップへ戻る' })).toHaveCount(0);
 
   const wordBefore = await page.locator('.trad-word').first().textContent();
 
   await page.locator('.choice-card').first().click();
   await expect(page.locator('.feedback-pill')).toHaveText(/Correct|Miss/);
+  await expect(page.locator('.answer-support-row')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'トップへ戻る' })).toBeVisible();
 
   const nextButton = page.getByRole('button', { name: '次の問題' });
   await expect(nextButton).toBeEnabled();
@@ -273,6 +280,26 @@ test('モバイル幅でも横にはみ出さない', async ({ page }) => {
   }));
 
   expect(overflowAfterGameOver.scrollWidth).toBeLessThanOrEqual(overflowAfterGameOver.clientWidth);
+});
+
+test('PC 幅では外部辞書リンクが 1 行で並ぶ', async ({ page }) => {
+  await installMockWordlists(page);
+
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
+
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  await answerCorrectChoice(page);
+
+  const lookupLinks = page.locator('.lookup-links .lookup-link');
+  await expect(lookupLinks).toHaveCount(2);
+
+  const firstBox = await lookupLinks.nth(0).boundingBox();
+  const secondBox = await lookupLinks.nth(1).boundingBox();
+
+  expect(firstBox).not.toBeNull();
+  expect(secondBox).not.toBeNull();
+  expect(Math.abs((firstBox?.y ?? 0) - (secondBox?.y ?? 0))).toBeLessThan(2);
 });
 
 test('game over 後に restart と reset の導線を使える', async ({ page }) => {

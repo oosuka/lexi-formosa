@@ -15,7 +15,7 @@ Date: 2026-04-04
 - 上部 2 枠と下部モジュールが同じ視覚文法で統一される
 - 下部が `選択 UI` と `開始 UI` の寄せ集めではなく、1 つの開始体験に見える
 - ゲーム感は抑え、学習アプリとしての静けさと信頼感を優先する
-- `Best score / Best streak` の英語トーンは維持しつつ、他の実用文言との整合が取れる
+- `Best Score / Best Streak` の英語トーンは維持しつつ、他の実用文言との整合が取れる
 - 余白、角丸、影、選択状態、CTA の強弱が一貫する
 - プレイ中画面もトップ画面と同じ Apple 寄りの文法へ揃える
 - プレイ中は不要な上部枠を消し、問題カードを唯一の主役にする
@@ -28,7 +28,7 @@ Date: 2026-04-04
 - 最優先は `上品で整った見た目の完成度`
 - 下部レイアウトは `B案` を採用する
 - 左上の小見出し `Taiwan Traditional Chinese Trainer` は維持する
-- `Best score / Best streak` は英語のまま維持する
+- `Best Score / Best Streak` は英語のまま維持する
 - 下部のモジュール小見出しは `PLAY` を採用する
 - `LEVELS` `START` `自分に合った難度を選ぶ` は使わない
 - 下部の `出題を始める` `準備OK。` のような説明的な開始見出しは使わない
@@ -39,6 +39,12 @@ Date: 2026-04-04
 - プレイ中は `Taiwan Traditional Chinese Trainer` 枠と `Session` 枠を表示しない
 - プレイ中の `Score / Streak / Miss` は独立帯ではなく、問題カード上部の細い情報列へ統合する
 - プレイ中の情報ラベルは `Score / Streak / Miss` の Title Case で統一する
+- ゲームオーバー画面では `Game Over` を主役にし、`今回の結果` のような汎用見出しは置かない
+- ゲームオーバー時は通常の不正解音と別に、下降する専用終了音を使う
+- `Best Score` または `Best Streak` を更新したゲームオーバーでは、専用の祝福演出と専用音を追加する
+- `Score` と `Streak` の両方を更新した場合は、単独更新より強い祝福演出を使う
+- 通常状態の UI はトップ画面、プレイ中画面、ゲームオーバー画面で同じ design token と component rule にそろえる
+- `正解 / 不正解 / Game Over` のフィードバックだけは、通常状態より少し強い色と影を許容する
 
 ## Information Architecture
 
@@ -87,8 +93,8 @@ Date: 2026-04-04
 
 - `Taiwan Traditional Chinese Trainer`
 - `RECORDS`
-- `Best score`
-- `Best streak`
+- `Best Score`
+- `Best Streak`
 - `ゲームを始める`
 
 ### Add
@@ -138,6 +144,8 @@ Date: 2026-04-04
 - 大面積の面は半透明白に近い `surface`
 - 選択状態と primary CTA だけアクセント色を使う
 - カードごとの色キャラクターは作りすぎない
+- 通常状態の card / panel / button はトップ画面とプレイ中画面で同じ surface と border を使う
+- `correct / incorrect / game over` の状態色だけは例外として強めに使う
 
 Design tokens:
 
@@ -215,6 +223,8 @@ Type scale:
 - 右上の見出し群と右下の補助メモの間は `28px` 前後
 - 右下補助メモは上罫線 + 上余白 `20px` で区切る
 - 右下補助メモの項目間は `10px` 前後
+- `surface-card / question-stage / game-over-panel` の基本 padding は同一トークンで管理する
+- `record-card / level-card / choice-card / game-over-stat / lookup-panel` の card padding は同一トークンで管理する
 
 ### 4. Corner Radius
 
@@ -244,6 +254,8 @@ Type scale:
 - 通常状態は `--shadow-rest`
 - 選択中レベルカードと hover のみ `--shadow-raised`
 - 情報の区切りは影よりも境界線と面差で作る
+- 通常状態の panel / card / button shadow はトップ画面とプレイ中画面で同じ強さにそろえる
+- 正誤フィードバック時だけ個別の shadow を許容する
 
 ## In-Game Layout
 
@@ -264,6 +276,7 @@ Type scale:
 - 右: `Score / Streak / Miss`
 - ラベルは Title Case
 - 数字を主役にし、ラベルは一段静かに見せる
+- `Level n`、補助ラベル、数値、主要 CTA のサイズ体系は開始画面と共通トークンで管理する
 
 ### 3. Question Card
 
@@ -278,13 +291,25 @@ Type scale:
 - 4択カードはトップ画面と同じ角丸、境界、影の文法を使う
 - 正解 / 不正解の色は使いすぎず、背景差は薄く保つ
 - `次の問題` を唯一の primary button にする
-- `最初からやり直す` は secondary に保つ
+- `トップへ戻る` は secondary に保つ
 
 ### 5. Copy Tone
 
-- 開始画面の一覧ラベルは `Best score / Best streak`
+- 開始画面の一覧ラベルは `Best Score / Best Streak`
 - プレイ中のリアルタイム指標は `Score / Streak / Miss`
 - プレイ中の不要な見出し `Question` `Summary` は可能な限り消す
+
+### 6. Game Over
+
+- `Game Over` を終了画面の最大見出しにする
+- 新記録やタイ記録は小さな補助見出しで添える
+- 新記録がない場合は `今回の結果` のような汎用見出しを置かない
+- 今回の成績ブロックには `This Session`、レベル内自己ベストには `Level Best` を使う
+- ゲームオーバー画面内の統計ラベルは `Score / Streak` に統一し、`Best Streak` は使わない
+- 終了要約は `3回続けて不正解になったため、今回はここで終了です。` を基準にする
+- ゲームオーバー時は通常の不正解音ではなく、短い下降音を再生する
+- `Best Score` または `Best Streak` を更新した場合は、ゲームオーバー音のあとに上昇する祝福音を追加する
+- `Score` と `Streak` の両方更新時は、単独更新より強い visual state と音を使う
 
 ## Component Rules
 
@@ -363,7 +388,7 @@ Type scale:
 
 ### 5. Record Card
 
-- `Best score / Best streak` は英語維持
+- `Best Score / Best Streak` は英語維持
 - `レベルごとの最高記録` のような説明見出しは置かない
 - アクティブカードの背景色は少し弱める
 - 数字の強さで見せる
@@ -437,7 +462,7 @@ PLAY
 │         [選択肢]                   [選択肢]                 │
 │         [選択肢]                   [選択肢]                 │
 │                                                            │
-│     フィードバック + 次の問題 / 最初からやり直す            │
+│     フィードバック + 次の問題 / トップへ戻る                │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -466,7 +491,7 @@ component:
 
 - 開始画面で `PLAY` モジュールが表示されること
 - `Arcade Lobby` と `準備OK。` が消えていること
-- `Best score / Best streak` が上部で維持されること
+- `Best Score / Best Streak` が上部で維持されること
 - レベル切替で右カラムの `Level X` と説明文が更新されること
 - `ゲームを始める` が唯一の primary CTA として残ること
 - 左のレベルカードが従来より大きく見えること
@@ -497,7 +522,7 @@ visual review:
 ## Acceptance Criteria
 
 - 左上の `Taiwan Traditional Chinese Trainer` は維持される
-- 上部右では `Best score / Best streak` が英語のまま表示される
+- 上部右では `Best Score / Best Streak` が英語のまま表示される
 - 上部右から `レベルごとの最高記録` が消える
 - 下部は `PLAY` を見出しとする 1 つの開始モジュールに再構成される
 - 左カラムから旧 `ルール` ブロックが消える

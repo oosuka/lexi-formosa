@@ -13,9 +13,23 @@ import { questionOne, questionTwo } from '../fixtures/vocabulary';
 const preferredReducedMotion = vi.hoisted(() => ({
   value: 'no-preference' as 'no-preference' | 'reduce',
 }));
+const playFeedbackSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
+const playGameOverSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
+const playRecordCelebrationSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 
 vi.mock('@vueuse/core', () => ({
   usePreferredReducedMotion: () => preferredReducedMotion,
+}));
+
+vi.mock('~/composables/useFeedbackAudio', () => ({
+  useFeedbackAudio: () => ({
+    audioEffectsSupported: ref(true),
+    playFeedbackSound: playFeedbackSoundMock,
+    playGameOverSound: playGameOverSoundMock,
+    playRecordCelebrationSound: playRecordCelebrationSoundMock,
+    setup: vi.fn(),
+    cleanup: vi.fn(),
+  }),
 }));
 
 const useTraditionalTrainerMock = vi.hoisted(() => vi.fn());
@@ -131,6 +145,9 @@ describe('index page', () => {
   beforeEach(() => {
     window.localStorage.clear();
     preferredReducedMotion.value = 'no-preference';
+    playFeedbackSoundMock.mockReset();
+    playGameOverSoundMock.mockReset();
+    playRecordCelebrationSoundMock.mockReset();
     useTraditionalTrainerMock.mockReset();
     useTraditionalTrainerMock.mockReturnValue(createTrainerStub());
     loadVocabularyMetadataMock.mockReset();
@@ -193,8 +210,8 @@ describe('index page', () => {
     expect(recordGridText).toContain('Level 1');
     expect(recordGridText).toContain('Level 2');
     expect(recordGridText).toContain('Level 3');
-    expect(recordGridText).toContain('Best score');
-    expect(recordGridText).toContain('Best streak');
+    expect(recordGridText).toContain('Best Score');
+    expect(recordGridText).toContain('Best Streak');
     expect(recordGridText).not.toContain('レベルごとの最高記録');
     expect(records.findAll('.record-card')).toHaveLength(3);
     expect(wrapper.findAll('.hint-block')).toHaveLength(0);
@@ -232,9 +249,9 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('RECORDS');
     expect(wrapper.text()).not.toContain('レベルごとの最高記録');
     expect(recordGridText).toContain('Level 1');
-    expect(recordGridText).toContain('Best score');
+    expect(recordGridText).toContain('Best Score');
     expect(recordGridText).toContain('80');
-    expect(recordGridText).toContain('Best streak');
+    expect(recordGridText).toContain('Best Streak');
     expect(recordGridText).toContain('5');
     expect(recordGridText).toContain('Level 2');
     expect(recordGridText).toContain('140');
@@ -251,15 +268,16 @@ describe('index page', () => {
 
     await startGame(wrapper);
 
-    const idleFeedback = wrapper.get('.feedback-copy');
-
     expect(wrapper.find('.hero-panel').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('今回の記録');
     expect(wrapper.text()).toContain('Level 1');
     expect(wrapper.text()).toContain('Score');
+    expect(wrapper.text()).not.toContain('4つの選択肢から、意味に合うものを1つ選んでください。');
+    expect(wrapper.text()).not.toContain('次の問題');
+    expect(wrapper.text()).not.toContain('トップへ戻る');
     expect(wrapper.find('.level-panel').exists()).toBe(false);
     expect(wrapper.find('.result-banner').exists()).toBe(false);
-    expect(idleFeedback.classes()).toContain('feedback-copy--embedded');
+    expect(wrapper.find('.feedback-row').exists()).toBe(false);
     expect(wrapper.text()).toContain('你好');
     expect(wrapper.text()).toContain('ニ ハオ');
     expect(wrapper.text()).toContain('nǐ hǎo');
@@ -276,6 +294,28 @@ describe('index page', () => {
     expect(quizPanel.text()).toContain('Streak');
     expect(quizPanel.text()).toContain('Miss');
     expect(wrapper.find('.hero-panel').exists()).toBe(false);
+  });
+
+  it('回答後の操作は右列にまとめ、次の問題を上、トップへ戻るを右下に置く', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    const supportRow = wrapper.get('.answer-support-row');
+    const supportActions = wrapper.get('.answer-support-actions');
+
+    expect(wrapper.find('.feedback-actions').exists()).toBe(false);
+    expect(supportRow.find('.lookup-panel').exists()).toBe(true);
+    expect(supportActions.text()).toContain('次の問題');
+    expect(supportActions.text()).toContain('トップへ戻る');
+    expect(supportActions.findAll('button')).toHaveLength(2);
   });
 
   it('回答後の正解と不正解は選択肢の見た目で区別できる', async () => {
@@ -302,7 +342,7 @@ describe('index page', () => {
     );
 
     expect(resultBanner.classes()).toContain('result-banner--correct');
-    expect(resultBanner.text()).toContain('正解。+10点獲得');
+    expect(resultBanner.text()).toContain('正解。+10点を獲得しました。');
     expect(answeredCorrectChoice?.classes()).toContain('choice-card--correct');
     expect(answeredCorrectChoice?.classes()).toContain('choice-card--correct-impact');
     expect(answeredWrongChoice?.classes()).toContain('choice-card--muted');
@@ -324,7 +364,7 @@ describe('index page', () => {
 
     const secondResultBanner = wrapper.get('.result-banner');
     const secondFeedbackRow = wrapper.get('.feedback-row');
-    const secondFeedbackActions = wrapper.get('.feedback-actions');
+    const answerSupportActions = wrapper.get('.answer-support-actions');
     const secondQuizPanel = wrapper.get('.quiz-panel');
     const answeredWrongChoices = wrapper.findAll('.choice-card');
     const answeredWrongSelectedChoice = answeredWrongChoices.find((candidate) =>
@@ -337,7 +377,8 @@ describe('index page', () => {
     expect(secondResultBanner.classes()).toContain('result-banner--incorrect');
     expect(secondFeedbackRow.classes()).toContain('feedback-row--embedded');
     expect(secondFeedbackRow.classes()).toContain('feedback-row--stacked');
-    expect(secondFeedbackActions.element.previousElementSibling).toBe(secondResultBanner.element);
+    expect(answerSupportActions.text()).toContain('次の問題');
+    expect(answerSupportActions.text()).toContain('トップへ戻る');
     expect(secondResultBanner.text()).toContain('残り2回で終了します');
     expect(answeredWrongSelectedChoice?.classes()).toContain('choice-card--incorrect');
     expect(answeredWrongSelectedChoice?.classes()).toContain('choice-card--incorrect-impact');
@@ -443,16 +484,21 @@ describe('index page', () => {
 
     expect(wrapper.text()).toContain('Game Over');
     expect(wrapper.text()).toContain('新記録達成');
+    expect(wrapper.text()).toContain('Double Record');
     expect(wrapper.text()).toContain('今回のプレイで自己ベストを更新しました');
     expect(wrapper.text()).toContain('NEW BEST');
     expect(wrapper.text()).toContain('Score');
-    expect(wrapper.text()).toContain('Best streak');
+    expect(wrapper.text()).toContain('Streak');
+    expect(wrapper.text()).not.toContain('Best Streak');
     expect(wrapper.text()).toContain('Level Best');
     expect(wrapper.text()).toContain('10');
     expect(wrapper.text()).toContain('1');
     expect(wrapper.text()).toContain('自己ベストを更新');
     expect(wrapper.text()).toContain('もう一度始める');
     expect(wrapper.text()).toContain('トップへ戻る');
+    expect(playFeedbackSoundMock).toHaveBeenCalledTimes(3);
+    expect(playGameOverSoundMock).toHaveBeenCalledTimes(1);
+    expect(playRecordCelebrationSoundMock).toHaveBeenCalledWith('double');
   });
 
   it('ゲームオーバー後にもう一度始めると同じレベルで即再開する', async () => {
@@ -752,7 +798,7 @@ describe('index page', () => {
     await flushPromises();
 
     expect(wrapper.text()).not.toContain('level 2 missing');
-    expect(wrapper.text()).toContain('4つの選択肢から、意味に合うものを1つ選んでください。');
+    expect(wrapper.text()).not.toContain('4つの選択肢から、意味に合うものを1つ選んでください。');
   });
 
   it('レベル切替中はゲーム開始を受け付けない', async () => {
@@ -797,9 +843,16 @@ describe('index page', () => {
 
     const wrapper = await mountSuspended(IndexPage);
     await startGame(wrapper);
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
     const resetButton = wrapper
       .findAll('button')
-      .find((candidate) => candidate.text().includes('最初からやり直す'));
+      .find((candidate) => candidate.text().includes('トップへ戻る'));
 
     await resetButton?.trigger('click');
     await flushPromises();
@@ -941,7 +994,7 @@ describe('index page', () => {
 
     const resetButton = wrapper
       .findAll('button')
-      .find((candidate) => candidate.text().includes('最初からやり直す'));
+      .find((candidate) => candidate.text().includes('トップへ戻る'));
 
     await resetButton?.trigger('click');
     await flushPromises();
@@ -967,10 +1020,16 @@ describe('index page', () => {
 
     const wrapper = await mountSuspended(IndexPage);
     await startGame(wrapper);
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
 
     const resetButton = wrapper
       .findAll('button')
-      .find((candidate) => candidate.text().includes('最初からやり直す'));
+      .find((candidate) => candidate.text().includes('トップへ戻る'));
 
     await resetButton?.trigger('click');
     await flushPromises();
