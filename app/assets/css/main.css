@@ -100,10 +100,10 @@ button {
 
 .hero-brand {
   display: grid;
-  gap: 18px;
+  gap: 14px;
   align-content: space-between;
-  min-height: 332px;
-  padding: 32px;
+  min-height: 248px;
+  padding: 24px 28px;
   background:
     radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), transparent 38%),
     radial-gradient(circle at bottom right, rgba(17, 94, 89, 0.08), transparent 34%),
@@ -160,9 +160,9 @@ button {
 
 .hero-stats-panel {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   align-content: start;
-  min-height: 332px;
+  min-height: 248px;
   grid-template-rows: auto 1fr;
 }
 
@@ -174,7 +174,7 @@ button {
 
 .record-grid {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .metric-card,
@@ -215,9 +215,9 @@ button {
 
 .record-card {
   display: grid;
-  gap: 14px;
+  gap: 10px;
   border-radius: var(--radius-lg);
-  padding: 18px;
+  padding: 14px 16px;
   border: 1px solid var(--border);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 242, 236, 0.9));
 }
@@ -266,7 +266,7 @@ button {
 }
 
 .record-stat strong {
-  font-size: 1.7rem;
+  font-size: 1.45rem;
   line-height: 1;
 }
 
@@ -370,7 +370,7 @@ button {
   margin: 0;
   padding-left: 18px;
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .hint-block li {
@@ -637,25 +637,30 @@ button {
 
 .session-start-panel {
   display: grid;
-  gap: 20px;
-  min-height: 280px;
-  align-content: start;
-  border-radius: var(--radius-lg);
+  gap: 18px;
+  min-height: 100%;
+  align-content: center;
+  border-radius: var(--radius-xl);
   padding: 28px;
   background:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 42%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 248, 0.94));
-  border: 1px solid rgba(15, 118, 110, 0.14);
+    radial-gradient(circle at top left, rgba(255, 188, 92, 0.22), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(15, 118, 110, 0.16), transparent 36%),
+    linear-gradient(160deg, rgba(255, 249, 239, 0.98), rgba(242, 250, 247, 0.96));
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  box-shadow:
+    0 18px 48px rgba(76, 58, 38, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.session-start-panel__lead {
+.session-start-panel__hero {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
-.session-start-copy {
-  display: grid;
-  gap: 12px;
+.session-start-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .session-start-kicker {
@@ -677,62 +682,29 @@ button {
 }
 
 .session-start-title {
+  margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  line-height: 1;
-  letter-spacing: -0.05em;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  line-height: 0.94;
+  letter-spacing: -0.06em;
 }
 
-.session-start-text,
-.session-start-detail p {
-  margin: 0;
-  color: var(--ink-soft);
-  font-size: 0.98rem;
-  line-height: 1.6;
-}
-
-.session-start-meta {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0;
-}
-
-.session-start-meta-item {
-  display: grid;
-  gap: 8px;
-  padding: 14px 16px;
-  border-radius: var(--radius-md);
+.session-start-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid rgba(15, 118, 110, 0.12);
-}
-
-.session-start-meta-item dt {
-  color: var(--ink-soft);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.session-start-meta-item dd {
-  margin: 0;
-  color: var(--ink);
-  font-size: 1.16rem;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-.session-start-meta-note {
   color: var(--accent-strong);
-  font-size: 0.76rem;
-  font-weight: 700;
-  line-height: 1.4;
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
 }
 
 .session-start-panel__actions {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   justify-items: start;
 }
 
@@ -745,29 +717,6 @@ button {
   color: #b42318;
   font-size: 0.92rem;
   line-height: 1.5;
-}
-
-.session-start-support {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.session-start-detail {
-  display: grid;
-  grid-template-rows: auto minmax(3.2rem, auto) 1fr;
-  gap: 8px;
-  align-content: start;
-  padding: 18px;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(15, 118, 110, 0.1);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(246, 248, 247, 0.92));
-}
-
-.session-start-detail strong {
-  font-size: 1rem;
-  line-height: 1.45;
-  align-self: start;
 }
 
 .quiz-panel--lobby .panel-heading h2 {

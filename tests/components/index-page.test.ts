@@ -151,6 +151,7 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('ゲームを始める');
     expect(wrapper.text()).toContain('Arcade Lobby');
     expect(wrapper.text()).toContain('準備OK。');
+    expect(wrapper.text()).toContain('Records');
     expect(wrapper.text()).toContain('45語');
     expect(wrapper.text()).not.toContain('你好');
   });
@@ -163,6 +164,7 @@ describe('index page', () => {
     );
     expect(wrapper.text()).toContain('ゲームを始める');
     expect(wrapper.text()).not.toContain('このレベルから始める');
+    expect(wrapper.text()).not.toContain('学習を始める');
     expect(wrapper.text()).not.toContain('落ち着いたテンポ');
   });
 
@@ -627,7 +629,7 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('語数未取得');
     expect(wrapper.text()).not.toContain('語数を読み込み中');
     expect(wrapper.text()).toContain('Lobby');
-    expect(wrapper.text()).toContain('学習を始める');
+    expect(wrapper.text()).not.toContain('学習を始める');
     expect(wrapper.text()).not.toContain('辞書データ未生成');
   });
 

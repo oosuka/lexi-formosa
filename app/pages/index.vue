@@ -426,8 +426,7 @@ useSeoMeta({
         </div>
         <h1>LexiFormosa</h1>
         <p class="hero-text">
-          台湾で使われる繁体字の単語を、日本語の4択で学べるローカル完結のゲームです。<br />
-          文字の形、意味、読み方を、落ち着いたテンポで繰り返し確認できます。
+          台湾で使われる繁体字の意味を、日本語4択でテンポよく見抜いていく単語ゲーム。
         </p>
         <div class="hero-meta">
           <span>繁体字のみ</span>
@@ -438,8 +437,8 @@ useSeoMeta({
 
       <div class="hero-stats-panel surface-card">
         <div class="panel-heading">
-          <p class="panel-kicker">{{ sessionPanelKicker }}</p>
-          <h2>{{ sessionPanelTitle }}</h2>
+          <p class="panel-kicker">{{ showSessionStart ? 'Records' : sessionPanelKicker }}</p>
+          <h2>{{ showSessionStart ? 'レベルごとの最高記録' : sessionPanelTitle }}</h2>
         </div>
         <div v-if="showSessionStart" class="record-grid">
           <article
@@ -504,7 +503,6 @@ useSeoMeta({
         <div class="hint-block">
           <p>ルール</p>
           <ul>
-            <li>すべて繁体字の単語</li>
             <li>正解は4択のうち1つだけ</li>
             <li>3回続けて間違えると終了</li>
             <li>正解で10点</li>
@@ -524,7 +522,7 @@ useSeoMeta({
           'quiz-panel--game-over': isGameOver,
         }"
       >
-        <div class="panel-heading">
+        <div v-if="!showSessionStart" class="panel-heading">
           <p class="panel-kicker">{{ quizPanelKicker }}</p>
           <h2>{{ quizPanelTitle }}</h2>
         </div>
