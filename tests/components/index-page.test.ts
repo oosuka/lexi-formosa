@@ -849,6 +849,12 @@ describe('index page', () => {
 
   it('voiceschanged で再読み上げ中の音声を再キューしない', async () => {
     let voicesChangedHandler: (() => void) | undefined;
+    const addEventListener = vi.fn((eventName: string, handler: () => void) => {
+      if (eventName === 'voiceschanged') {
+        voicesChangedHandler = handler;
+      }
+    });
+    const removeEventListener = vi.fn();
 
     Object.defineProperty(window, 'speechSynthesis', {
       configurable: true,
@@ -857,12 +863,8 @@ describe('index page', () => {
         getVoices: vi.fn(
           () => [{ lang: 'zh-TW', name: 'Mock Taiwanese' }] as SpeechSynthesisVoice[]
         ),
-        addEventListener: vi.fn((eventName: string, handler: () => void) => {
-          if (eventName === 'voiceschanged') {
-            voicesChangedHandler = handler;
-          }
-        }),
-        removeEventListener: vi.fn(),
+        addEventListener,
+        removeEventListener,
         cancel: vi.fn(),
         speak: vi.fn(),
       } satisfies Partial<SpeechSynthesis>,
@@ -872,12 +874,17 @@ describe('index page', () => {
     await startGame(wrapper);
     await flushPromises();
 
+    expect(addEventListener).toHaveBeenCalledWith('voiceschanged', expect.any(Function));
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
 
     voicesChangedHandler?.();
     await flushPromises();
 
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
+
+    await wrapper.unmount();
+
+    expect(removeEventListener).toHaveBeenCalledWith('voiceschanged', expect.any(Function));
   });
 
   it('回答時は進行中の読み上げを停止する', async () => {

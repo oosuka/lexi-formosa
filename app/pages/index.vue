@@ -372,12 +372,17 @@ const restartSession = async () => {
   }
 };
 
+const handleSpeechVoicesChanged = () => {
+  trainerAudio.handleVoicesChanged();
+};
+
 onMounted(async () => {
   loadHighScores();
 
   trainerAudio.setup();
   feedbackAudio.setup();
   window.addEventListener('keydown', handleGlobalKeydown);
+  window.speechSynthesis?.addEventListener?.('voiceschanged', handleSpeechVoicesChanged);
 
   void loadVocabularyMetadata()
     .then((metadata) => {
@@ -408,6 +413,7 @@ watch(
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleGlobalKeydown);
+  window.speechSynthesis?.removeEventListener?.('voiceschanged', handleSpeechVoicesChanged);
   trainerAudio.dispose();
   feedbackAudio.cleanup();
 });
