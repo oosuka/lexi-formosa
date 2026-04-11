@@ -94,7 +94,7 @@ describe('vocabulary review batch', () => {
       ]
     );
 
-    expect(batch.map((entry) => entry.trad)).toEqual(['上手', '百科全書', '阿拉善右旗']);
+    expect(batch.map((entry) => entry.trad)).toEqual(['上手', '百科全書']);
     expect(batch[0]).toMatchObject({
       trad: '上手',
       level: 1,
@@ -105,10 +105,66 @@ describe('vocabulary review batch', () => {
       trad: '百科全書',
       level: 2,
     });
-    expect(batch[2]).toMatchObject({
-      trad: '阿拉善右旗',
-      level: 3,
-    });
+  });
+
+  it('Level 3 high-risk batch は固有名詞・説明文ラベルを優先して出す', async () => {
+    const { buildReviewBatch } = await import('../../scripts/export-vocabulary-review-batch.mjs');
+
+    const batch = buildReviewBatch(
+      [
+        {
+          trad: '世外桃花源',
+          level: 3,
+          canonicalJa: '桃源郷',
+          confidence: 'low',
+          sources: ['mjdic'],
+          rawGlosses: [{ source: 'mjdic', meansJa: '桃源郷', means: 'utopia' }],
+        },
+        {
+          trad: '大田廣域市',
+          level: 3,
+          canonicalJa: '忠清南道の道庁所在地 忠清南道',
+          confidence: 'low',
+          sources: ['mjdic'],
+          rawGlosses: [
+            {
+              source: 'mjdic',
+              meansJa: '忠清南道の道庁所在地 忠清南道',
+              means: 'Daejeon',
+            },
+          ],
+        },
+      ],
+      [],
+      { level: 3, riskOnly: true, limit: 10 }
+    );
+
+    expect(batch.map((entry) => entry.trad)).toEqual(['大田廣域市']);
+  });
+
+  it('既定の review batch は Level 1-2 の未レビュー候補を優先する', async () => {
+    const { buildReviewBatch } = await import('../../scripts/export-vocabulary-review-batch.mjs');
+
+    const batch = buildReviewBatch([
+      {
+        trad: '發炎',
+        level: 1,
+        canonicalJa: '炎症を起こす',
+        confidence: 'medium',
+        sources: ['tocfl', 'mjdic'],
+        rawGlosses: [{ source: 'mjdic', meansJa: '炎症を起こす', means: 'to become inflamed' }],
+      },
+      {
+        trad: '世外桃花源',
+        level: 3,
+        canonicalJa: '桃源郷',
+        confidence: 'low',
+        sources: ['mjdic'],
+        rawGlosses: [{ source: 'mjdic', meansJa: '桃源郷', means: 'utopia' }],
+      },
+    ]);
+
+    expect(batch.map((entry) => entry.trad)).toEqual(['發炎']);
   });
 
   it('review batch は最大件数で切れる', async () => {

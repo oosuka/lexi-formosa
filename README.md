@@ -103,6 +103,7 @@ npm run setup:data
 npm run generate:data
 npm run check:data
 npm run audit:data
+npm run review:vocab:export -- --level=3 --risk-only --limit=200
 npm run review:vocab:export -- --limit=500
 npm run review:vocab:apply -- /path/to/review-results.json
 ```
@@ -158,9 +159,11 @@ npm run review:vocab:apply -- /path/to/review-results.json
 - `public/wordlists/metadata.json` が欠けていても、件数表示だけを省略してゲーム本体は動作します
 - `npm run generate:data` で語彙を再生成し、`npm run check:data` で基本整合性を確認します
 - `npm run audit:data` で、不自然な日本語カード候補を監査できます
-- 語彙レビューを進める場合は、`npm run review:vocab:export -- --limit=500` と `npm run review:vocab:apply -- /path/to/review-results.json` を使います
+- 語彙レビューを進める場合は、Level 3 の地名・組織名・説明文寄り候補を先に `npm run review:vocab:export -- --level=3 --risk-only --limit=200` で書き出し、その後に通常の Level 1-2 batch を `npm run review:vocab:export -- --limit=500` で書き出します
+- review 結果の反映には `npm run review:vocab:apply -- /path/to/review-results.json` を使います
 - `--limit=500` は上限ではありませんが、品質を落とさず確認する単位として推奨しています
-- review batch は `Level 1-2` の未レビュー候補と低信頼候補を対象にし、既に `data/editorial-overrides.json` にある語は除外します
+- 既定の review batch は `Level 1-2` の未レビュー候補と低信頼候補を対象にし、既に `data/editorial-overrides.json` にある語は除外します
+- Level 3 は Truth-first Challenge Deck として残し、`--level=3 --risk-only` では固有名詞・説明文ラベル・13文字以上のラベルを優先してレビューします
 - review batch、外部ソーススナップショット、生成済み wordlist は Git 管理対象にしません
 - 生成された辞書データはコードとは別の権利関係を持つため、再配布時は `NOTICE.md` を確認してください
 

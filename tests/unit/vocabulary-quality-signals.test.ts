@@ -61,6 +61,44 @@ describe('vocabulary quality signals', () => {
     expect(isReferenceOnlyGloss('参考にする')).toBe(false);
   });
 
+  it('全レベル共通の辞書断片と説明文ラベルを検出する', async () => {
+    const { isExplanatoryGloss, isReferenceOnlyGloss } = await import(
+      '../../scripts/lib/vocabulary-quality-signals.mjs'
+    );
+
+    expect(isReferenceOnlyGloss('般乐を参照')).toBe(true);
+    expect(isExplanatoryGloss('鳥の一種')).toBe(true);
+
+    expect(isReferenceOnlyGloss('参照する')).toBe(false);
+    expect(isExplanatoryGloss('ありがとう')).toBe(false);
+  });
+
+  it('Level 3 の固有名詞・地名・組織名寄りラベルを検出する', async () => {
+    const { isLevelThreeProperNounRiskGloss } = await import(
+      '../../scripts/lib/vocabulary-quality-signals.mjs'
+    );
+
+    expect(isLevelThreeProperNounRiskGloss('オーストリアの都市インスブルック')).toBe(true);
+    expect(isLevelThreeProperNounRiskGloss('忠清南道の道庁所在地 忠清南道')).toBe(true);
+    expect(isLevelThreeProperNounRiskGloss('国際ミラノサッカークラブ')).toBe(true);
+
+    expect(isLevelThreeProperNounRiskGloss('桃源郷')).toBe(false);
+    expect(isLevelThreeProperNounRiskGloss('トランス脂肪酸')).toBe(false);
+  });
+
+  it('Level 3 の説明文ラベルを検出し、短い challenge ラベルは除外しない', async () => {
+    const { isLevelThreeExplanatoryRiskGloss } = await import(
+      '../../scripts/lib/vocabulary-quality-signals.mjs'
+    );
+
+    expect(isLevelThreeExplanatoryRiskGloss('中國教育和科研计算机网の略')).toBe(true);
+    expect(isLevelThreeExplanatoryRiskGloss('ヘイシャジ島と同じ黑瞎子島')).toBe(true);
+    expect(isLevelThreeExplanatoryRiskGloss('西周王朝の初代王として在位')).toBe(true);
+
+    expect(isLevelThreeExplanatoryRiskGloss('でたらめな話')).toBe(false);
+    expect(isLevelThreeExplanatoryRiskGloss('歯列矯正器')).toBe(false);
+  });
+
   it('既知の壊れた MJdic 由来ラベルを検出し、通常の糞を含む語義は除外しない', async () => {
     const { isCorruptedJapaneseGloss } = await import(
       '../../scripts/lib/vocabulary-quality-signals.mjs'

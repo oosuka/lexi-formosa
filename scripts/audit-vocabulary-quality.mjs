@@ -4,6 +4,8 @@ import {
   isClassifierLikeGloss,
   isCorruptedJapaneseGloss,
   isExplanatoryGloss,
+  isLevelThreeExplanatoryRiskGloss,
+  isLevelThreeProperNounRiskGloss,
   isProperNounLikeGloss,
   isReferenceOnlyGloss,
 } from './lib/vocabulary-quality-signals.mjs';
@@ -48,6 +50,18 @@ const checks = [
   {
     name: 'proper_noun_like',
     test: (entry) => isProperNounLikeGloss(entry.ja),
+  },
+  {
+    name: 'level3_proper_noun_risk',
+    test: (entry) => entry.level === 3 && isLevelThreeProperNounRiskGloss(entry.ja),
+  },
+  {
+    name: 'level3_explanatory_risk',
+    test: (entry) => entry.level === 3 && isLevelThreeExplanatoryRiskGloss(entry.ja),
+  },
+  {
+    name: 'level3_too_long_label',
+    test: (entry) => entry.level === 3 && entry.ja.length >= 13,
   },
 ];
 

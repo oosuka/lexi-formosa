@@ -34,8 +34,9 @@ Public リポジトリには生成済み辞書データを同梱しません。
 - 公開デッキは `Level 1-2` で `TOCFL/TBCL` を根拠にできる候補を優先し、`Level 3` は `MJdic` を根拠にできる 5-6文字候補を中心に組み立てます。
 - 日本語訳は機械翻訳起源のため、完全ではありません。
 - 重要語の seed は `data/manual-vocabulary.json`、既存候補の採否や日本語ラベル補正は `data/editorial-overrides.json` で管理します。
-- `data/vocabulary-candidates.json` はレビュー用の中間成果物で、`npm run review:vocab:export -- --limit=500` の入力になります。
-- review batch は `Level 1-2` の未レビュー候補と低信頼候補を対象にし、既に `data/editorial-overrides.json` にある語は除外します。
+- `data/vocabulary-candidates.json` はレビュー用の中間成果物で、`npm run review:vocab:export -- --limit=500` と `npm run review:vocab:export -- --level=3 --risk-only --limit=200` の入力になります。
+- 既定の review batch は `Level 1-2` の未レビュー候補と低信頼候補を対象にし、既に `data/editorial-overrides.json` にある語は除外します。
+- Level 3 は Truth-first Challenge Deck として残し、`--level=3 --risk-only` では固有名詞・説明文ラベル・13文字以上の日本語ラベルを優先して書き出します。
 - review batch の結果は `npm run review:vocab:apply -- /path/to/review-results.json` で `data/editorial-overrides.json` に反映します。
 - 語彙品質改善の現在地は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` に記録します。サイクルを進めたら件数、全レベルのレビュー状況、次の推奨 batch を更新してください。
 - 選択肢に壊れた日本語が出る場合は、通常の 500 件順次レビューより先に、公開済み `data/vocabulary*.json` 全体の `ja` を横断監査して `editorial-overrides` へ反映してください。
@@ -48,6 +49,7 @@ Public リポジトリには生成済み辞書データを同梱しません。
 - `metadata.json` が欠けている場合でも、語彙ファイルがあればゲーム本体は動く設計です。
 - 日本語カード品質の粗い候補は `npm run audit:data` で確認できます。
 - `audit:data` は、辞書内リンクの残骸である `〜を参照` 系ラベルと、確認済みの壊れた MJdic 由来ラベルも検出します。
+- `audit:data` は Level 3 の固有名詞寄りラベル、説明文ラベル、13文字以上のラベルも review queue として出力します。これらは即時失敗ではなく、Truth-first review の優先順位付けに使います。
 - データ再配布の扱いは [NOTICE.md](../NOTICE.md) を確認してください。
 
 ## Rebuild
@@ -78,11 +80,13 @@ npm run setup:data
 低信頼候補や未レビュー候補をレビューする場合は、生成後に次を実行します。
 
 ```bash
+npm run review:vocab:export -- --level=3 --risk-only --limit=200
 npm run review:vocab:export -- --limit=500
 npm run review:vocab:apply -- /path/to/review-results.json
 ```
 
-`--limit=500` は技術上の上限ではありません。`1000` 件以上も指定できますが、誤訳や reject 対象を安全に確認する単位としては 500 件を推奨します。
+Level 3 high-risk batch は、固有名詞クイズ、説明文ラベル、長すぎる日本語ラベルを通常レビューより先に除去・補正するための queue です。
+`--limit=500` は技術上の上限ではありません。`1000` 件以上も指定できますが、誤訳や reject 対象を安全に確認する単位としては Level 3 high-risk は 200 件、Level 1-2 通常レビューは 500 件を推奨します。
 レビュー作業の現在地と再開手順は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` を参照してください。
 
 再生成後は、少なくとも次を実行してください。
