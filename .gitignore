@@ -9,6 +9,9 @@ test-results
 .nuxtrc
 data/source-snapshots/*
 !data/source-snapshots/.gitkeep
+data/review-batches/*
+!data/review-batches/.gitkeep
+data/vocabulary-candidates.json
 data/vocabulary.json
 data/vocabulary-level-*.json
 data/vocabulary-metadata.json

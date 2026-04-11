@@ -9,6 +9,7 @@
 - リポジトリには、再配布リスクを避けるため生成済み辞書データを同梱しません。
 - 利用者は `npm run setup:data` を実行して、外部ソースを各自の環境へ取得し、ローカルで語彙データを生成してください。
 - `data/manual-vocabulary.json` はこのリポジトリ側で管理する手修正語彙です。
+- `data/editorial-overrides.json` はこのリポジトリ側で管理する採否・日本語ラベル補正データです。
 
 ## Referenced Sources
 

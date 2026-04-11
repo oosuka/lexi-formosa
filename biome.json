@@ -11,6 +11,8 @@
       "!**/test-results",
       "!**/node_modules",
       "!**/data/source-snapshots",
+      "!**/data/review-batches",
+      "!**/data/vocabulary-candidates.json",
       "!**/data/vocabulary.json",
       "!**/data/vocabulary-metadata.json",
       "!**/data/vocabulary-level-1.json",

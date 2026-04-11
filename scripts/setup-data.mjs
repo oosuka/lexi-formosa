@@ -8,17 +8,26 @@ const snapshotDir = path.join(repoRoot, 'data', 'source-snapshots');
 const sources = [
   {
     label: 'TOCFL source',
-    url:
+    envPath: process.env.TOCFL_SOURCE_PATH,
+    envUrl:
       process.env.TOCFL_SOURCE_URL ??
       'https://raw.githubusercontent.com/PSeitz/tocfl/main/tocfl_words.json',
     outputPath: path.join(snapshotDir, 'tocfl_words.json'),
   },
   {
     label: 'MJdic source',
-    url:
+    envPath: process.env.MJDIC_SOURCE_PATH,
+    envUrl:
       process.env.MJDIC_SOURCE_URL ??
       'https://raw.githubusercontent.com/code4fukui/MJdic/main/cedict_ts.csv',
     outputPath: path.join(snapshotDir, 'mjdic.csv'),
+  },
+  {
+    label: 'TBCL source',
+    envPath: process.env.TBCL_SOURCE_PATH,
+    envUrl: process.env.TBCL_SOURCE_URL,
+    outputPath: path.join(snapshotDir, 'tbcl_words.json'),
+    optional: true,
   },
 ];
 
@@ -34,10 +43,25 @@ const runNodeScript = (scriptPath) => {
   }
 };
 
-const downloadFile = async ({ label, url, outputPath }) => {
+const ensureSourceFile = async ({ label, envPath, envUrl, outputPath, optional = false }) => {
+  if (envPath) {
+    console.log(`Using local ${label}: ${envPath}`);
+    fs.copyFileSync(envPath, outputPath);
+    return;
+  }
+
+  if (!envUrl) {
+    if (optional) {
+      console.log(`Skipping ${label}: no source path or URL configured.`);
+      return;
+    }
+
+    throw new Error(`Missing source for ${label}.`);
+  }
+
   console.log(`Downloading ${label}...`);
 
-  const response = await fetch(url, {
+  const response = await fetch(envUrl, {
     headers: {
       'user-agent': 'LexiFormosa setup-data script',
     },
@@ -58,7 +82,7 @@ const main = async () => {
   console.log('Review source licenses before redistributing generated outputs.');
 
   for (const source of sources) {
-    await downloadFile(source);
+    await ensureSourceFile(source);
   }
 
   runNodeScript(path.join(repoRoot, 'scripts', 'generate-vocabulary.mjs'));

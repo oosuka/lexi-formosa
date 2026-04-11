@@ -7,10 +7,12 @@
 現行仕様を確認するときの優先順位は次のとおりです。
 
 1. コード
-2. `docs/superpowers/` 配下の `採用中` または現行仕様を説明する個別文書
-3. `README.md`
-4. `AGENTS.md`
-5. `docs/dictionary-sources.md`
+2. `README.md`
+3. `AGENTS.md`
+4. `docs/dictionary-sources.md`
+5. `docs/superpowers/` 配下の `採用中` または現行仕様を説明する個別文書
+
+語彙レビューサイクルの再開手順は `docs/superpowers/plans/2026-04-11-vocabulary-review-cycle-handoff.md` を参照してください。
 
 `docs/superpowers/` 配下の各ファイルは、冒頭の `Status` 表記で扱いを判断します。
 

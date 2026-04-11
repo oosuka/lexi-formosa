@@ -1,4 +1,10 @@
 import vocabulary from '../data/vocabulary.json' with { type: 'json' };
+import {
+  isAsciiOnlyGloss,
+  isClassifierLikeGloss,
+  isExplanatoryGloss,
+  isProperNounLikeGloss,
+} from './lib/vocabulary-quality-signals.mjs';
 
 const checks = [
   {
@@ -15,10 +21,7 @@ const checks = [
   },
   {
     name: 'contains_explanatory_phrase',
-    test: (entry) =>
-      /に相当|を表す|の一種|の段階|仏教|旧暦|分類子|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために/.test(
-        entry.ja
-      ),
+    test: (entry) => isExplanatoryGloss(entry.ja),
   },
   {
     name: 'too_long',
@@ -26,7 +29,15 @@ const checks = [
   },
   {
     name: 'ascii_only',
-    test: (entry) => /^[A-Za-z0-9 ?!.,'":;()/-]+$/.test(entry.ja),
+    test: (entry) => isAsciiOnlyGloss(entry.ja),
+  },
+  {
+    name: 'classifier_like',
+    test: (entry) => isClassifierLikeGloss(entry.ja),
+  },
+  {
+    name: 'proper_noun_like',
+    test: (entry) => isProperNounLikeGloss(entry.ja),
   },
 ];
 

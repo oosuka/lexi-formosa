@@ -1,6 +1,6 @@
 {
   "name": "lexi-formosa",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -18,6 +18,8 @@
     "generate:data": "node scripts/generate-vocabulary.mjs",
     "check:data": "node scripts/validate-vocabulary.mjs",
     "audit:data": "node scripts/audit-vocabulary-quality.mjs",
+    "review:vocab:export": "node scripts/export-vocabulary-review-batch.mjs",
+    "review:vocab:apply": "node scripts/apply-vocabulary-review-results.mjs",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "prepare": "nuxt prepare"

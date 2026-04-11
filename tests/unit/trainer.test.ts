@@ -54,6 +54,45 @@ describe('trainer utilities', () => {
     expect(distractorIds).toEqual(expect.arrayContaining(['l1-2', 'l1-3']));
   });
 
+  it('senseTag と distractorTags が近い誤答をカテゴリ一致より優先する', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    const taggedVocabulary = [
+      {
+        ...createEntry('family-1', '爸爸', 'お父さん', 1, 'people'),
+        senseTag: 'people.family',
+        distractorTags: ['people', 'family'],
+      },
+      {
+        ...createEntry('family-2', '媽媽', 'お母さん', 1, 'family'),
+        senseTag: 'people.family',
+        distractorTags: ['people', 'family'],
+      },
+      {
+        ...createEntry('people-1', '老師', '先生', 1, 'people'),
+        senseTag: 'people.profession',
+        distractorTags: ['people', 'profession'],
+      },
+      {
+        ...createEntry('people-2', '學生', '学生', 1, 'people'),
+        senseTag: 'people.profession',
+        distractorTags: ['people', 'profession'],
+      },
+      {
+        ...createEntry('people-3', '朋友', '友達', 1, 'people'),
+        senseTag: 'people.social',
+        distractorTags: ['people', 'social'],
+      },
+    ];
+
+    const question = buildQuestion(taggedVocabulary, 1, []);
+    const distractorLabels = question.choices
+      .filter((choice) => !choice.correct)
+      .map((choice) => choice.label);
+
+    expect(distractorLabels).toContain('お母さん');
+  });
+
   it('4件未満では出題を作れない', () => {
     expect(() => buildQuestion(level1Vocabulary.slice(0, 3), 1, [])).toThrow(
       'Level 1 requires at least 4 entries.'
