@@ -2,8 +2,10 @@ import vocabulary from '../data/vocabulary.json' with { type: 'json' };
 import {
   isAsciiOnlyGloss,
   isClassifierLikeGloss,
+  isCorruptedJapaneseGloss,
   isExplanatoryGloss,
   isProperNounLikeGloss,
+  isReferenceOnlyGloss,
 } from './lib/vocabulary-quality-signals.mjs';
 
 const checks = [
@@ -22,6 +24,14 @@ const checks = [
   {
     name: 'contains_explanatory_phrase',
     test: (entry) => isExplanatoryGloss(entry.ja),
+  },
+  {
+    name: 'reference_only',
+    test: (entry) => isReferenceOnlyGloss(entry.ja),
+  },
+  {
+    name: 'corrupted_japanese_gloss',
+    test: (entry) => isCorruptedJapaneseGloss(entry.ja),
   },
   {
     name: 'too_long',

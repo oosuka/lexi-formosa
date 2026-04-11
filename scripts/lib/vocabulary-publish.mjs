@@ -51,7 +51,7 @@ export const buildPublishedVocabulary = ({ candidates, editorialRecords, seedEnt
         override: editorialMap.get(candidate.trad),
       })
     )
-    .filter((candidate) => candidate.level === 3 || candidate.status === 'approved');
+    .filter((candidate) => candidate.status === 'approved');
 
   return dedupePublishedEntries([
     ...seedEntries.map(toPublishedSeedEntry),

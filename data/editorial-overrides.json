@@ -31,6 +31,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "一回生兩回熟",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "一些",
     "status": "approved",
     "canonicalJa": "少し",
@@ -60,6 +65,11 @@
     "status": "approved",
     "canonicalJa": "一緒に",
     "reviewReason": "review batch initial approval"
+  },
+  {
+    "trad": "一退六二五",
+    "status": "rejected",
+    "acceptedJa": []
   },
   {
     "trad": "一塊",
@@ -134,6 +144,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "八一建軍節",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "十分",
     "status": "approved",
     "canonicalJa": "とても",
@@ -195,6 +210,12 @@
     "canonicalJa": "下",
     "acceptedJa": ["下へ"],
     "reviewReason": "review batch initial label fix"
+  },
+  {
+    "trad": "下功夫",
+    "status": "approved",
+    "canonicalJa": "努力する",
+    "acceptedJa": []
   },
   {
     "trad": "下雨",
@@ -324,6 +345,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "大鱗大馬哈魚",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "大廳",
     "status": "approved",
     "canonicalJa": "ホール",
@@ -397,6 +423,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "山不轉路轉",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "工具",
     "status": "approved",
     "canonicalJa": "道具",
@@ -429,6 +460,11 @@
     "trad": "不用",
     "status": "approved",
     "canonicalJa": "必要ない",
+    "acceptedJa": []
+  },
+  {
+    "trad": "不列顛保衛戰",
+    "status": "rejected",
     "acceptedJa": []
   },
   {
@@ -685,6 +721,17 @@
     "acceptedJa": []
   },
   {
+    "trad": "友誼天長地久",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "反式脂肪酸",
+    "status": "approved",
+    "canonicalJa": "トランス脂肪酸",
+    "acceptedJa": []
+  },
+  {
     "trad": "反對",
     "status": "approved",
     "canonicalJa": "反対する",
@@ -867,6 +914,17 @@
     "trad": "牛排",
     "status": "approved",
     "canonicalJa": "ステーキ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "牛頭不對馬嘴",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "世外桃花源",
+    "status": "approved",
+    "canonicalJa": "桃源郷",
     "acceptedJa": []
   },
   {
@@ -1928,6 +1986,16 @@
     "reviewReason": "review batch initial label fix"
   },
   {
+    "trad": "有一搭無一搭",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "有奶就是娘",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "有用",
     "status": "approved",
     "canonicalJa": "有用",
@@ -1944,6 +2012,11 @@
     "status": "approved",
     "canonicalJa": "あるもの",
     "acceptedJa": ["ある人"]
+  },
+  {
+    "trad": "有的沒有的",
+    "status": "rejected",
+    "acceptedJa": []
   },
   {
     "trad": "有空",
@@ -1994,9 +2067,24 @@
     "acceptedJa": []
   },
   {
+    "trad": "百思不得其解",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "百貨公司",
     "status": "approved",
     "canonicalJa": "デパート",
+    "acceptedJa": []
+  },
+  {
+    "trad": "羊肚子手巾",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "羊肚子毛巾",
+    "status": "rejected",
     "acceptedJa": []
   },
   {
@@ -2264,6 +2352,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "宏亮",
+    "status": "approved",
+    "canonicalJa": "声がよく響く",
+    "acceptedJa": []
+  },
+  {
     "trad": "床",
     "status": "rejected",
     "reviewReason": "classifier-like gloss in initial quality pass"
@@ -2339,6 +2433,12 @@
     "trad": "找錢",
     "status": "approved",
     "canonicalJa": "お釣りを出す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "抑揚頓挫",
+    "status": "approved",
+    "canonicalJa": "抑揚",
     "acceptedJa": []
   },
   {
@@ -2557,6 +2657,11 @@
     "trad": "里",
     "status": "rejected",
     "reviewReason": "encyclopedic gloss in initial quality pass"
+  },
+  {
+    "trad": "防患於未然",
+    "status": "rejected",
+    "acceptedJa": []
   },
   {
     "trad": "並",
@@ -2917,6 +3022,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "拚命",
+    "status": "approved",
+    "canonicalJa": "必死に",
+    "acceptedJa": []
+  },
+  {
     "trad": "放",
     "status": "approved",
     "canonicalJa": "置く",
@@ -3003,6 +3114,11 @@
     "trad": "泡麵",
     "status": "approved",
     "canonicalJa": "即席めん",
+    "acceptedJa": []
+  },
+  {
+    "trad": "波多馬克河",
+    "status": "rejected",
     "acceptedJa": []
   },
   {
@@ -3160,6 +3276,22 @@
     "status": "approved",
     "canonicalJa": "祖父",
     "acceptedJa": ["おじいちゃん"]
+  },
+  {
+    "trad": "阿弗洛狄忒",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "阿拉伯茴香",
+    "status": "approved",
+    "canonicalJa": "クミン",
+    "acceptedJa": []
+  },
+  {
+    "trad": "阿芙羅狄忒",
+    "status": "rejected",
+    "acceptedJa": []
   },
   {
     "trad": "阿嬤",
@@ -3551,6 +3683,11 @@
     "reviewReason": "review batch initial approval"
   },
   {
+    "trad": "柳條溝事件",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "毒",
     "status": "approved",
     "canonicalJa": "毒",
@@ -3638,6 +3775,17 @@
     "trad": "炸",
     "status": "approved",
     "canonicalJa": "揚げる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "狡兔死走狗烹",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "珍珠小番茄",
+    "status": "approved",
+    "canonicalJa": "ミニトマト",
     "acceptedJa": []
   },
   {
@@ -3827,6 +3975,12 @@
     "canonicalJa": "苦い",
     "acceptedJa": ["つらい"],
     "reviewReason": "review batch initial label fix"
+  },
+  {
+    "trad": "苦差事",
+    "status": "approved",
+    "canonicalJa": "つらい仕事",
+    "acceptedJa": []
   },
   {
     "trad": "英文",
@@ -4246,6 +4400,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "海水不可斗量",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "海外",
     "status": "approved",
     "canonicalJa": "海外",
@@ -4315,6 +4474,18 @@
     "trad": "疼痛",
     "status": "approved",
     "canonicalJa": "痛む",
+    "acceptedJa": []
+  },
+  {
+    "trad": "病毒式營銷",
+    "status": "approved",
+    "canonicalJa": "バイラルマーケティング",
+    "acceptedJa": []
+  },
+  {
+    "trad": "病毒性營銷",
+    "status": "approved",
+    "canonicalJa": "バイラルマーケティング",
     "acceptedJa": []
   },
   {
@@ -4404,9 +4575,19 @@
     "acceptedJa": []
   },
   {
+    "trad": "胳膊肘往外拐",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "臭",
     "status": "approved",
     "canonicalJa": "臭う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "般",
+    "status": "rejected",
     "acceptedJa": []
   },
   {
@@ -4456,6 +4637,11 @@
     "trad": "退休",
     "status": "approved",
     "canonicalJa": "退職する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "退休金雙軌制",
+    "status": "rejected",
     "acceptedJa": []
   },
   {
@@ -4779,6 +4965,11 @@
     "reviewReason": "review batch initial approval"
   },
   {
+    "trad": "庵摩落迦果",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "得",
     "status": "rejected",
     "reviewReason": "context-dependent standalone function word in review batch"
@@ -4817,6 +5008,12 @@
     "trad": "從前",
     "status": "approved",
     "canonicalJa": "以前は",
+    "acceptedJa": []
+  },
+  {
+    "trad": "悠哉",
+    "status": "approved",
+    "canonicalJa": "のんびりした",
     "acceptedJa": []
   },
   {
@@ -4925,6 +5122,11 @@
     "reviewReason": "review batch initial approval"
   },
   {
+    "trad": "欲速而不達",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "殺",
     "status": "approved",
     "canonicalJa": "殺す",
@@ -5022,6 +5224,12 @@
     "acceptedJa": ["ケース"]
   },
   {
+    "trad": "眾目睽睽",
+    "status": "approved",
+    "canonicalJa": "人目がある中",
+    "acceptedJa": []
+  },
+  {
     "trad": "移民",
     "status": "approved",
     "canonicalJa": "移住する",
@@ -5086,6 +5294,12 @@
     "trad": "荷",
     "status": "rejected",
     "reviewReason": "encyclopedic gloss in initial quality pass"
+  },
+  {
+    "trad": "荷爾蒙",
+    "status": "approved",
+    "canonicalJa": "ホルモン",
+    "acceptedJa": []
   },
   {
     "trad": "處",
@@ -5462,6 +5676,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "無可厚非",
+    "status": "approved",
+    "canonicalJa": "責められない",
+    "acceptedJa": []
+  },
+  {
     "trad": "無為",
     "status": "rejected",
     "reviewReason": "encyclopedic gloss in initial quality pass"
@@ -5470,6 +5690,12 @@
     "trad": "無聊",
     "status": "approved",
     "canonicalJa": "退屈な",
+    "acceptedJa": []
+  },
+  {
+    "trad": "無稽之談",
+    "status": "approved",
+    "canonicalJa": "でたらめな話",
     "acceptedJa": []
   },
   {
@@ -5645,6 +5871,11 @@
     "reviewReason": "review batch initial label fix"
   },
   {
+    "trad": "貴人多忘事",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "買",
     "status": "approved",
     "canonicalJa": "買う",
@@ -5774,6 +6005,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "開放源代碼",
+    "status": "approved",
+    "canonicalJa": "オープンソース",
+    "acceptedJa": []
+  },
+  {
     "trad": "開玩笑",
     "status": "approved",
     "canonicalJa": "冗談を言う",
@@ -5824,6 +6061,12 @@
     "trad": "飲料",
     "status": "approved",
     "canonicalJa": "飲料",
+    "acceptedJa": []
+  },
+  {
+    "trad": "黃道十二宮",
+    "status": "approved",
+    "canonicalJa": "黄道十二宮",
     "acceptedJa": []
   },
   {
@@ -6199,6 +6442,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "腳踩兩隻船",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "葡萄",
     "status": "approved",
     "canonicalJa": "ぶどう",
@@ -6354,6 +6602,12 @@
     "trad": "達到",
     "status": "approved",
     "canonicalJa": "到達する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "隔日",
+    "status": "approved",
+    "canonicalJa": "一日おき",
     "acceptedJa": []
   },
   {
@@ -6533,6 +6787,12 @@
     "reviewReason": "initial quality pass"
   },
   {
+    "trad": "盡快",
+    "status": "approved",
+    "canonicalJa": "できるだけ早く",
+    "acceptedJa": []
+  },
+  {
     "trad": "種",
     "status": "approved",
     "canonicalJa": "種類",
@@ -6683,6 +6943,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "遠水不救近火",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "酸",
     "status": "approved",
     "canonicalJa": "酸っぱい",
@@ -6746,6 +7011,11 @@
     "status": "approved",
     "canonicalJa": "監督",
     "acceptedJa": ["監督する"]
+  },
+  {
+    "trad": "廣記不如淡墨",
+    "status": "rejected",
+    "acceptedJa": []
   },
   {
     "trad": "影印",
@@ -6908,6 +7178,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "蔚為",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "蝦子",
     "status": "approved",
     "canonicalJa": "エビ",
@@ -7040,6 +7315,11 @@
     "reviewReason": "review batch initial label fix"
   },
   {
+    "trad": "駑馬戀棧豆",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "髮型",
     "status": "approved",
     "canonicalJa": "髪型",
@@ -7049,6 +7329,12 @@
     "trad": "鬧鐘",
     "status": "approved",
     "canonicalJa": "目覚まし時計",
+    "acceptedJa": []
+  },
+  {
+    "trad": "齒列矯正器",
+    "status": "approved",
+    "canonicalJa": "歯列矯正器",
     "acceptedJa": []
   },
   {
@@ -7325,6 +7611,12 @@
     "acceptedJa": ["環境に優しい"]
   },
   {
+    "trad": "瞭若指掌",
+    "status": "approved",
+    "canonicalJa": "よく分かる",
+    "acceptedJa": []
+  },
+  {
     "trad": "縱橫",
     "status": "rejected",
     "reviewReason": "encyclopedic gloss in initial quality pass"
@@ -7365,9 +7657,20 @@
     "acceptedJa": []
   },
   {
+    "trad": "薑是老的辣",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "薪水",
     "status": "approved",
     "canonicalJa": "給与",
+    "acceptedJa": []
+  },
+  {
+    "trad": "謎",
+    "status": "approved",
+    "canonicalJa": "なぞ",
     "acceptedJa": []
   },
   {
@@ -7678,6 +7981,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "懸羊頭賣狗肉",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "競爭",
     "status": "approved",
     "canonicalJa": "競争する",
@@ -7719,6 +8027,17 @@
     "status": "approved",
     "canonicalJa": "麺",
     "reviewReason": "review batch initial label fix"
+  },
+  {
+    "trad": "櫻桃小番茄",
+    "status": "approved",
+    "canonicalJa": "ミニトマト",
+    "acceptedJa": []
+  },
+  {
+    "trad": "爛泥糊不上牆",
+    "status": "rejected",
+    "acceptedJa": []
   },
   {
     "trad": "攤子",

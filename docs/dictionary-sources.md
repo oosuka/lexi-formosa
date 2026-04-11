@@ -47,6 +47,7 @@ Public リポジトリには生成済み辞書データを同梱しません。
 - 実行時の `public/wordlists/*.json` 取得は Nuxt の `app.baseURL` を考慮します。
 - `metadata.json` が欠けている場合でも、語彙ファイルがあればゲーム本体は動く設計です。
 - 日本語カード品質の粗い候補は `npm run audit:data` で確認できます。
+- `audit:data` は、辞書内リンクの残骸である `〜を参照` 系ラベルと、確認済みの壊れた MJdic 由来ラベルも検出します。
 - データ再配布の扱いは [NOTICE.md](../NOTICE.md) を確認してください。
 
 ## Rebuild

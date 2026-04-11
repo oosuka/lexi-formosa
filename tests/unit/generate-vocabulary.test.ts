@@ -364,4 +364,49 @@ describe('generate vocabulary script', () => {
       }),
     ]);
   });
+
+  it('editorial override で参照ラベルしかない候補を教材ラベルへ救済できる', async () => {
+    const repoRoot = createTempRepo();
+
+    writeJson(path.join(repoRoot, 'data', 'manual-vocabulary.json'), []);
+    writeJson(path.join(repoRoot, 'data', 'editorial-overrides.json'), [
+      {
+        trad: '無稽之談',
+        status: 'approved',
+        canonicalJa: 'でたらめな話',
+      },
+    ]);
+    writeJson(path.join(repoRoot, 'data', 'source-snapshots', 'tocfl_words.json'), [
+      {
+        id: 13209,
+        text: '無稽之談',
+        pinyin: 'wú jī zhī tán',
+        zhuyin: 'ㄨˊ ㄐㄧ ㄓ ㄊㄢˊ',
+        tocfl_level: 7,
+        category: '精熟',
+      },
+    ]);
+    writeText(
+      path.join(repoRoot, 'data', 'source-snapshots', 'mjdic.csv'),
+      [
+        'trad,simp,pronunciation,means,meansJa',
+        '無稽之談,无稽之谈,wu2 ji1 zhi1 tan2,complete nonsense (idiom),珍糞漢糞',
+      ].join('\n')
+    );
+
+    const { generateVocabulary } = await loadGenerateVocabularyModule(repoRoot);
+
+    generateVocabulary();
+
+    const vocabulary = JSON.parse(
+      fs.readFileSync(path.join(repoRoot, 'data', 'vocabulary.json'), 'utf8')
+    );
+
+    expect(vocabulary).toEqual([
+      expect.objectContaining({
+        trad: '無稽之談',
+        ja: 'でたらめな話',
+      }),
+    ]);
+  });
 });

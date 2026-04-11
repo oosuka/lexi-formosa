@@ -46,4 +46,28 @@ describe('vocabulary quality signals', () => {
     expect(isProperNounLikeGloss('大統領')).toBe(false);
     expect(isProperNounLikeGloss('漫画')).toBe(false);
   });
+
+  it('辞書内参照だけのラベルを検出し、通常の参照動詞は除外しない', async () => {
+    const { isReferenceOnlyGloss } = await import(
+      '../../scripts/lib/vocabulary-quality-signals.mjs'
+    );
+
+    expect(isReferenceOnlyGloss('般乐を参照')).toBe(true);
+    expect(isReferenceOnlyGloss('病毒营销も参照')).toBe(true);
+    expect(isReferenceOnlyGloss('を参照')).toBe(true);
+    expect(isReferenceOnlyGloss('を参照してください 漂洋[piao1 yang2］')).toBe(true);
+
+    expect(isReferenceOnlyGloss('参照する')).toBe(false);
+    expect(isReferenceOnlyGloss('参考にする')).toBe(false);
+  });
+
+  it('既知の壊れた MJdic 由来ラベルを検出し、通常の糞を含む語義は除外しない', async () => {
+    const { isCorruptedJapaneseGloss } = await import(
+      '../../scripts/lib/vocabulary-quality-signals.mjs'
+    );
+
+    expect(isCorruptedJapaneseGloss('珍糞漢糞')).toBe(true);
+    expect(isCorruptedJapaneseGloss('糞尿')).toBe(false);
+    expect(isCorruptedJapaneseGloss('馬糞紙')).toBe(false);
+  });
 });

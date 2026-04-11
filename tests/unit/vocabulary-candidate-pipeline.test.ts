@@ -40,6 +40,34 @@ describe('vocabulary candidate pipeline', () => {
     expect(candidates).toEqual([]);
   });
 
+  it('MJdic の参照ラベルと壊れた日本語ラベルを公開候補から落とす', async () => {
+    const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
+
+    const candidates = buildCandidates({
+      tocflRows: [
+        { trad: '般', tocflLevel: 7, category: '精熟', source: 'tocfl' },
+        { trad: '無稽之談', tocflLevel: 7, category: '精熟', source: 'tocfl' },
+      ],
+      tbclRows: [],
+      mjdicEntries: [
+        {
+          trad: '般',
+          meansJa: '般乐を参照',
+          means: 'see 般樂',
+          pronunciation: 'ban1',
+        },
+        {
+          trad: '無稽之談',
+          meansJa: '珍糞漢糞',
+          means: 'complete nonsense (idiom)',
+          pronunciation: 'wu2 ji1 zhi1 tan2',
+        },
+      ],
+    });
+
+    expect(candidates).toEqual([]);
+  });
+
   it('TOCFL 初級の false friend は教材向けラベルへ補正する', async () => {
     const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
 

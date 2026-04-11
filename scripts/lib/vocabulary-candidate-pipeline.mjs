@@ -1,4 +1,9 @@
-import { isClassifierLikeGloss, isProperNounLikeGloss } from './vocabulary-quality-signals.mjs';
+import {
+  isClassifierLikeGloss,
+  isCorruptedJapaneseGloss,
+  isProperNounLikeGloss,
+  isReferenceOnlyGloss,
+} from './vocabulary-quality-signals.mjs';
 
 const importOverrides = new Map([
   ['爸爸', 'お父さん'],
@@ -161,6 +166,14 @@ const isRejectedGlossCandidate = (candidate) => {
     return true;
   }
 
+  if (isReferenceOnlyGloss(candidate)) {
+    return true;
+  }
+
+  if (isCorruptedJapaneseGloss(candidate)) {
+    return true;
+  }
+
   return false;
 };
 
@@ -214,6 +227,14 @@ const isRejectedJapaneseGlossCandidate = (candidate, source = 'ja') => {
   }
 
   if (untranslatedChineseGlossPattern.test(candidate)) {
+    return true;
+  }
+
+  if (isReferenceOnlyGloss(candidate)) {
+    return true;
+  }
+
+  if (isCorruptedJapaneseGloss(candidate)) {
     return true;
   }
 
@@ -318,6 +339,14 @@ const createEmptyCandidate = (trad) => ({
   canonicalJa: null,
 });
 
+const toEditorialMap = (editorialOverrides) =>
+  editorialOverrides instanceof Map
+    ? editorialOverrides
+    : new Map(editorialOverrides.map((record) => [record.trad, record]));
+
+const isApprovedLabelOverride = (override) =>
+  override?.status === 'approved' && typeof override.canonicalJa === 'string';
+
 const mergeSourceRow = (candidate, row) => {
   const next = {
     ...candidate,
@@ -337,10 +366,10 @@ const mergeSourceRow = (candidate, row) => {
 };
 
 const buildRiskFlags = (candidate) => {
-  const joinedGloss = candidate.rawGlosses
+  const glossValues = candidate.rawGlosses
     .flatMap((gloss) => [gloss.meansJa, gloss.means])
-    .filter(Boolean)
-    .join(' / ');
+    .filter(Boolean);
+  const joinedGloss = glossValues.join(' / ');
   const flags = [];
 
   if (surnameLikePattern.test(joinedGloss)) {
@@ -355,6 +384,14 @@ const buildRiskFlags = (candidate) => {
     flags.push('proper_noun_like');
   }
 
+  if (glossValues.some((gloss) => isReferenceOnlyGloss(gloss))) {
+    flags.push('reference_only_gloss');
+  }
+
+  if (glossValues.some((gloss) => isCorruptedJapaneseGloss(gloss))) {
+    flags.push('corrupted_japanese_gloss');
+  }
+
   if (candidate.level <= 2 && explanatoryGlossPattern.test(joinedGloss)) {
     flags.push('explanatory_gloss');
   }
@@ -362,7 +399,11 @@ const buildRiskFlags = (candidate) => {
   return flags;
 };
 
-const shouldRejectCandidate = (candidate) => {
+const shouldRejectCandidate = (candidate, { hasApprovedLabelOverride = false } = {}) => {
+  if (candidate.status === 'rejected') {
+    return true;
+  }
+
   if (!candidate.trad || !/^[\p{Script=Han}]+$/u.test(candidate.trad)) {
     return true;
   }
@@ -373,6 +414,17 @@ const shouldRejectCandidate = (candidate) => {
 
   if (!candidate.canonicalJa) {
     return true;
+  }
+
+  if (
+    isReferenceOnlyGloss(candidate.canonicalJa) ||
+    isCorruptedJapaneseGloss(candidate.canonicalJa)
+  ) {
+    return true;
+  }
+
+  if (hasApprovedLabelOverride) {
+    return false;
   }
 
   if (candidate.level <= 2 && candidate.riskFlags.length > 0) {
@@ -406,8 +458,14 @@ const getConfidence = (candidate) => {
   return 'low';
 };
 
-export const buildCandidates = ({ tocflRows = [], tbclRows = [], mjdicEntries = [] }) => {
+export const buildCandidates = ({
+  tocflRows = [],
+  tbclRows = [],
+  mjdicEntries = [],
+  editorialOverrides = [],
+}) => {
   const candidatesByTrad = new Map();
+  const editorialMap = toEditorialMap(editorialOverrides);
 
   for (const row of [...tocflRows, ...tbclRows]) {
     const current = candidatesByTrad.get(row.trad) ?? createEmptyCandidate(row.trad);
@@ -430,16 +488,30 @@ export const buildCandidates = ({ tocflRows = [], tbclRows = [], mjdicEntries = 
 
   return [...candidatesByTrad.values()]
     .map((candidate) => {
+      const override = editorialMap.get(candidate.trad);
+      const hasApprovedLabelOverride = isApprovedLabelOverride(override);
       const canonicalJa =
-        importOverrides.get(candidate.trad) ?? pickBestGloss(candidate.rawGlosses);
+        (hasApprovedLabelOverride ? override.canonicalJa : undefined) ??
+        importOverrides.get(candidate.trad) ??
+        pickBestGloss(candidate.rawGlosses);
       const riskFlags = buildRiskFlags(candidate);
 
       return {
-        ...candidate,
-        canonicalJa,
-        riskFlags,
-        confidence: getConfidence(candidate),
+        candidate: {
+          ...candidate,
+          status: override?.status ?? candidate.status ?? 'approved',
+          canonicalJa,
+          acceptedJa: override?.acceptedJa ?? candidate.acceptedJa ?? [],
+          senseTag: override?.senseTag ?? candidate.senseTag ?? null,
+          riskFlags,
+          confidence: getConfidence(candidate),
+        },
+        hasApprovedLabelOverride,
       };
     })
-    .filter((candidate) => !shouldRejectCandidate(candidate));
+    .filter(
+      ({ candidate, hasApprovedLabelOverride }) =>
+        !shouldRejectCandidate(candidate, { hasApprovedLabelOverride })
+    )
+    .map(({ candidate }) => candidate);
 };

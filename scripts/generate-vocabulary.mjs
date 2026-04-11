@@ -5,6 +5,10 @@ import { pathToFileURL } from 'node:url';
 import { buildCandidates } from './lib/vocabulary-candidate-pipeline.mjs';
 import { parseEditorialOverrides } from './lib/vocabulary-editorial-records.mjs';
 import { buildPublishedVocabulary } from './lib/vocabulary-publish.mjs';
+import {
+  isCorruptedJapaneseGloss,
+  isReferenceOnlyGloss,
+} from './lib/vocabulary-quality-signals.mjs';
 import { readTbclRows, readTocflRows } from './lib/vocabulary-source-readers.mjs';
 
 const repoRoot = process.cwd();
@@ -315,6 +319,14 @@ const isRejectedGlossCandidate = (candidate) => {
     return true;
   }
 
+  if (isReferenceOnlyGloss(candidate)) {
+    return true;
+  }
+
+  if (isCorruptedJapaneseGloss(candidate)) {
+    return true;
+  }
+
   return false;
 };
 
@@ -368,6 +380,14 @@ export const isRejectedJapaneseGlossCandidate = (candidate, source = 'ja') => {
   }
 
   if (untranslatedChineseGlossPattern.test(candidate)) {
+    return true;
+  }
+
+  if (isReferenceOnlyGloss(candidate)) {
+    return true;
+  }
+
+  if (isCorruptedJapaneseGloss(candidate)) {
     return true;
   }
 
@@ -587,6 +607,7 @@ export const generateVocabulary = () => {
     tocflRows: normalizedTocflRows,
     tbclRows: normalizedTbclRows,
     mjdicEntries: normalizedMjdicEntries,
+    editorialOverrides,
   });
   const publishedVocabulary = buildPublishedVocabulary({
     candidates: reviewCandidates
