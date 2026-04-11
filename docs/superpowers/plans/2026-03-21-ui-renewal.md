@@ -1,6 +1,6 @@
 # UI Renewal Implementation Plan
 
-> Status: この計画は初期の UI 改修の履歴です。多くの内容は取り込み済みですが、その後の `app/` 構成への移行と開始画面再設計により現行実装とは一致しない箇所があります。現行仕様の一次情報としては扱わないでください。
+> Status: 破棄済み。現行 plan ではありません。初期 UI 改修の履歴としてのみ扱ってください。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

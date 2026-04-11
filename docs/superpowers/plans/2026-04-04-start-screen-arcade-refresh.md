@@ -1,6 +1,6 @@
 # Start Screen Arcade Refresh Implementation Plan
 
-> Status: この計画は不採用です。開始画面の方向性は `docs/superpowers/specs/2026-04-04-apple-start-screen-design-system.md` 側を採用しており、この文書は比較検討時の履歴として扱ってください。
+> Status: 破棄済み。現行 plan ではありません。開始画面の比較検討時の履歴としてのみ扱ってください。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

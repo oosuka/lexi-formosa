@@ -1,6 +1,6 @@
 # Codebase Hardening Implementation Plan
 
-> Status: この計画の主要な内容は実装済みです。現行仕様の一次情報ではなく、責務分離とテスト補強を進めた時点の実装計画の履歴として扱ってください。
+> Status: 破棄済み。現行 plan ではありません。責務分離とテスト補強を進めた時点の履歴としてのみ扱ってください。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

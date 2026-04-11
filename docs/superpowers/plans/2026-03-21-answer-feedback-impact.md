@@ -1,6 +1,6 @@
 # Answer Feedback Impact Implementation Plan
 
-> Status: この計画の内容は実装済みです。現行仕様の一次情報ではなく、回答フィードバック強化を行った時点の実装計画の履歴として扱ってください。
+> Status: 破棄済み。現行 plan ではありません。回答フィードバック強化を行った時点の履歴としてのみ扱ってください。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

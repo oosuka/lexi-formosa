@@ -42,8 +42,8 @@
 - 重要語の seed 追加や発音補完は `data/manual-vocabulary.json`、自動候補の採否や日本語ラベル補正は `data/editorial-overrides.json` を優先して行います。
 - `npm run review:vocab:export -- --limit=500` は `Level 1-2` の未レビュー候補と低信頼候補をレビュー用 JSONL に書き出します。
 - `npm run review:vocab:apply -- /path/to/review-results.json` はレビュー結果を `data/editorial-overrides.json` に反映します。
-- 語彙レビューの継続手順は `docs/superpowers/plans/2026-04-11-vocabulary-review-cycle-handoff.md` を参照してください。
-- 次回「改善を再開してください」と言われた場合は、通常の 500 件順次レビューより先に、公開済み選択肢プール全体の壊れた日本語ラベル横断除去を優先してください。
+- 語彙品質改善の継続手順は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` を参照してください。
+- 次回「改善を再開してください」と言われた場合は、古い plan ではなく現行 plan を読み、全レベルの言語品質改善を継続してください。Level 3 は Truth-first Challenge Deck として残してください。
 - 問題カードには、可能な範囲でピンインとカタカナ補助を表示します。
 - 単語音声はブラウザの `SpeechSynthesis` を使います。外部TTSは前提にしません。
 - 回答時の効果音は `Web Audio API` を使います。
@@ -283,7 +283,7 @@ npx playwright install chromium
 - 変更が UI なのか、ロジックなのか、辞書生成なのかを先に切り分ける
 - 生成物を直接直すべきか、元データやスクリプトを直すべきかを判断する
 - 語彙や訳の問題なら、seed 追加は `manual-vocabulary`、既存候補の採否や訳修正は `editorial-overrides` で解決できるか確認する
-- 語彙レビューサイクルの続きなら、`docs/superpowers/plans/2026-04-11-vocabulary-review-cycle-handoff.md` で現在地を確認する
+- 語彙品質改善の続きなら、`docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` で現在地を確認する
 - 選択肢に壊れた日本語が出る問題なら、まず公開済み `data/vocabulary*.json` 全体の `ja` を横断監査し、誤答候補プールの地雷を先に除去する
 - metadata のような補助データが壊れても、ゲーム本体まで巻き込んで停止させない設計を優先する
 - Public 公開に関わる変更なら、生成済み辞書データをコミットしていないか確認する

@@ -2,7 +2,7 @@
 
 Date: 2026-04-10
 
-> Status: 採用・実装済みの設計メモです。主題単語と日本語ラベルの品質改善方針の背景として扱ってください。現行の運用手順は `docs/dictionary-sources.md` と `docs/superpowers/plans/2026-04-11-vocabulary-review-cycle-handoff.md` を優先してください。
+> Status: 採用・実装済みの設計メモです。主題単語と日本語ラベルの品質改善方針の背景として扱ってください。現行の運用手順は `docs/dictionary-sources.md` と `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` を優先してください。
 
 ## Implementation Snapshot
 

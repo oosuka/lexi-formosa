@@ -1,6 +1,6 @@
 # Apple-Informed Top And Play Screen Design System Implementation Plan
 
-> Status: この計画に沿った変更は採用・実装済みです。開始画面とプレイ中画面の現行デザインに最も近い計画メモですが、一次情報はコードと `README.md` `AGENTS.md` です。
+> Status: 破棄済み。現行 plan ではありません。開始画面とプレイ中画面を整えた履歴としてのみ扱い、一次情報はコードと `README.md` `AGENTS.md` を優先してください。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

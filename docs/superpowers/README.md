@@ -12,7 +12,7 @@
 4. `docs/dictionary-sources.md`
 5. `docs/superpowers/` 配下の `採用中` または現行仕様を説明する個別文書
 
-語彙レビューサイクルの再開手順は `docs/superpowers/plans/2026-04-11-vocabulary-review-cycle-handoff.md` を参照してください。
+語彙品質改善の再開手順は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` を参照してください。
 
 `docs/superpowers/` 配下の各ファイルは、冒頭の `Status` 表記で扱いを判断します。
 
@@ -21,5 +21,6 @@
 - `履歴`: 当時の計画や設計の記録です。現行実装と一致しない箇所を含みます
 - `不採用`: 検討はしたが採用しなかった案です
 - `revert 済み`: 一度取り込まれた後に取り消された案です
+- `破棄済み`: 現行 plan から明示的に外した文書です。再開手順として使わないでください
 
 古い文書には `pages/` や `components/` のような Nuxt 4 移行前のパスが残ることがありますが、履歴として意図的に残しています。

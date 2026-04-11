@@ -1,6 +1,6 @@
 # Vocabulary Quality Pipeline Implementation Plan
 
-> Status: 採用・実装済みの実装計画メモです。チェックボックスは当時の実装手順であり、現在の作業キューではありません。語彙レビューサイクルの継続は `docs/superpowers/plans/2026-04-11-vocabulary-review-cycle-handoff.md` を優先してください。
+> Status: 破棄済み。現行 plan ではありません。語彙品質パイプライン導入時の履歴としてのみ扱い、今後の語彙品質改善は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` を優先してください。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

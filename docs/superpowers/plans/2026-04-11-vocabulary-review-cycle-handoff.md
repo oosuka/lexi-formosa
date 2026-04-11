@@ -1,6 +1,8 @@
 # Vocabulary Review Cycle Handoff
 
-Status: 採用中
+Status: 破棄済み
+
+この handoff は現行 plan ではありません。今後の語彙品質改善は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` を優先してください。
 
 この文書は、別コンテキストでユーザーが「改善を再開してください」または「次のサイクルを進めてください」と依頼したときの再開手順です。
 
