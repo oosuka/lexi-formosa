@@ -5,11 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { buildCandidates } from './lib/vocabulary-candidate-pipeline.mjs';
 import { parseEditorialOverrides } from './lib/vocabulary-editorial-records.mjs';
 import { buildPublishedVocabulary } from './lib/vocabulary-publish.mjs';
-import {
-  isCorruptedJapaneseGloss,
-  isReferenceOnlyGloss,
-} from './lib/vocabulary-quality-signals.mjs';
-import { readTbclRows, readTocflRows } from './lib/vocabulary-source-readers.mjs';
+import { parseJsonOrJsonl, readTbclRows, readTocflRows } from './lib/vocabulary-source-readers.mjs';
 
 const repoRoot = process.cwd();
 const defaultTocflPath = path.join(repoRoot, 'data', 'source-snapshots', 'tocfl_words.json');
@@ -37,20 +33,6 @@ const tocflSourcePath = process.env.TOCFL_SOURCE_PATH ?? defaultTocflPath;
 const mjdicSourcePath = process.env.MJDIC_SOURCE_PATH ?? defaultMjdicPath;
 const tbclSourcePath = process.env.TBCL_SOURCE_PATH ?? defaultTbclPath;
 
-const rejectionPatterns = [
-  /謙譲表現/,
-  /概念/,
-  /御前方/,
-  /人妻/,
-  /長さ/,
-  /質問に対する否定的な答え/,
-  /台湾のpr\./i,
-  /^\(/,
-];
-const allHanGlossPattern = /^[\p{Script=Han}々]+$/u;
-const simplifiedChineseGlossPattern =
-  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样/u;
-const untranslatedChineseGlossPattern = /什麼|甚麼|東南亞|山東|^[\p{Script=Han}々]+と同じ$/u;
 const toneMap = new Map([
   ['ā', ['a', 1]],
   ['á', ['a', 2]],
@@ -252,256 +234,8 @@ const normalizeMjdicPronunciation = (pronunciation) => {
   return normalized || null;
 };
 
-const collapseRepeatedSegments = (candidate) => {
-  const segments = candidate
-    .split(/[、，,]/)
-    .map((segment) => segment.trim())
-    .filter(Boolean);
-
-  if (segments.length > 1 && new Set(segments).size === 1) {
-    return segments[0];
-  }
-
-  return candidate;
-};
-
-const normalizeGlossCandidate = (candidate) => {
-  return collapseRepeatedSegments(candidate)
-    .replace(/\u3000/g, ' ')
-    .replace(/\{[^{}]*\}/g, ' ')
-    .replace(/<[^<>]*>/g, ' ')
-    .replace(/\bI\.D\.\b/gi, 'ID')
-    .replace(/\bD\.C\b/gi, 'DC')
-    .replace(/\.com\b/gi, '')
-    .replace(/\s*[（(][^()（）]{1,24}[)）]\s*/g, ' ')
-    .replace(/\s*[（(][^()（）]{0,24}$/g, ' ')
-    .replace(/^[^()（）]{1,24}[)）]\s*/g, ' ')
-    .replace(/^[()（）]+|[()（）]+$/g, '')
-    .replace(/^[「『"'“”]+|[」』"'“”]+$/g, '')
-    .replace(/^(fig\.?|lit\.?|figurative|literal|図\.?|フィグ\.?|リット?\.?|比喩的に)\s*/i, '')
-    .replace(/^[\s\-–—:：,，;；/／]+|[\s\-–—:：,，;；/／]+$/g, '')
-    .replace(/[。．.!！?？]+$/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-};
-
-const stripClassifierNotes = (gloss) =>
-  gloss
-    .replace(/\bCL:[^/／;；。]+/gi, '')
-    .replace(/\b(?:classifier|measure words?|count(?:er| word)s?)\s*:[^/／;；。]+/gi, '');
-
-const repeatedGlossPattern = /^(.{1,16}?)(?:[、，,]\1){1,}$/u;
-const explanatoryGlossPattern =
-  /に相当|を表す|の一種|の段階|仏教|旧暦|分類子|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために/;
-
-const isRejectedGlossCandidate = (candidate) => {
-  if (!candidate) {
-    return true;
-  }
-
-  if (/^[\p{P}\p{S}\s]+$/u.test(candidate)) {
-    return true;
-  }
-
-  if (/[。{}<>|()（）]|\.\.\.|…|[?？!！]/.test(candidate) || /\(や\)|（や）/.test(candidate)) {
-    return true;
-  }
-
-  if (repeatedGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (candidate.length > 18) {
-    return true;
-  }
-
-  if (explanatoryGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (isReferenceOnlyGloss(candidate)) {
-    return true;
-  }
-
-  if (isCorruptedJapaneseGloss(candidate)) {
-    return true;
-  }
-
-  return false;
-};
-
-const extractCandidates = (...glosses) => {
-  const candidates = [];
-
-  for (const gloss of glosses) {
-    if (!gloss) {
-      continue;
-    }
-
-    const parts = stripClassifierNotes(gloss.replace(/\uFEFF/g, ''))
-      .replace(/\[[^\]]*\]/g, '')
-      .replace(/\{[^{}]*\}/g, '')
-      .split(/[／/]/)
-      .flatMap((part) => part.split(/[;；]/))
-      .flatMap((part) => part.split(/[、，,]/))
-      .flatMap((part) => part.split(/\.{3,}|…+/))
-      .flatMap((part) => part.split('|'))
-      .flatMap((part) => part.split(/\(や\)|（や）/))
-      .map((part) => part.replace(/^\([^)]*\)/, '').trim())
-      .map((part) =>
-        part.replace(/^(also|lit\.?|fig\.?|figurative|literal|variant of|図\.?)\s+/i, '').trim()
-      )
-      .map((part) => normalizeGlossCandidate(part))
-      .filter(Boolean);
-
-    for (const part of parts) {
-      if (/^(surname|variant|classifier|see also|used in|Taiwan pr\.)/i.test(part)) {
-        continue;
-      }
-
-      if (isRejectedGlossCandidate(part)) {
-        continue;
-      }
-
-      candidates.push(part);
-    }
-  }
-
-  return candidates;
-};
-
-export const isRejectedJapaneseGlossCandidate = (candidate, source = 'ja') => {
-  if (!candidate) {
-    return true;
-  }
-
-  if (simplifiedChineseGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (untranslatedChineseGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (isReferenceOnlyGloss(candidate)) {
-    return true;
-  }
-
-  if (isCorruptedJapaneseGloss(candidate)) {
-    return true;
-  }
-
-  if (source !== 'ja' && allHanGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  return false;
-};
-
-export const scoreCandidate = (candidate, source = 'ja') => {
-  let score = 0;
-
-  if (isRejectedJapaneseGlossCandidate(candidate, source)) {
-    return Number.NEGATIVE_INFINITY;
-  }
-
-  if (/[ぁ-んァ-ヶ]/.test(candidate)) {
-    score += 6;
-  }
-
-  if (/[一-龯々]/u.test(candidate)) {
-    score += 2;
-  }
-
-  if (/^[A-Za-z0-9 ?!.,'":;()-]+$/.test(candidate)) {
-    score -= 2;
-  }
-
-  if (/CL:|surname|variant|classifier|abbr\.|old variant|Taiwan pr\./i.test(candidate)) {
-    score -= 6;
-  }
-
-  if (explanatoryGlossPattern.test(candidate)) {
-    score -= 5;
-  }
-
-  if (/\||\[|\]|pr\./.test(candidate)) {
-    score -= 4;
-  }
-
-  if (candidate.length <= 12) {
-    score += 2;
-  }
-
-  if (candidate.length > 18) {
-    score -= 6;
-  }
-
-  if (rejectionPatterns.some((pattern) => pattern.test(candidate))) {
-    score -= 8;
-  }
-
-  return score;
-};
-
-export const pickBestGloss = (glossPairs) => {
-  const candidates = [];
-
-  for (const [meansJa, means] of glossPairs) {
-    candidates.push(
-      ...extractCandidates(meansJa).map((candidate) => ({ candidate, source: 'ja' }))
-    );
-    candidates.push(
-      ...extractCandidates(means).map((candidate) => ({ candidate, source: 'fallback' }))
-    );
-  }
-
-  const candidateMap = new Map();
-
-  for (const entry of candidates) {
-    if (!candidateMap.has(entry.candidate) || entry.source === 'ja') {
-      candidateMap.set(entry.candidate, entry);
-    }
-  }
-
-  const uniqueCandidates = [...candidateMap.values()]
-    .map((entry) => ({
-      candidate: entry.candidate,
-      score: scoreCandidate(entry.candidate, entry.source),
-    }))
-    .filter((entry) => entry.score >= 1)
-    .sort(
-      (left, right) => right.score - left.score || left.candidate.length - right.candidate.length
-    );
-
-  return uniqueCandidates[0]?.candidate ?? null;
-};
-
 const buildLevelThreeCategory = (word) => {
   return `extended:${word[0]}`;
-};
-
-export const parseTocflSource = (sourceText) => {
-  const trimmed = sourceText.trim().replace(/^\uFEFF/, '');
-
-  if (!trimmed) {
-    return [];
-  }
-
-  if (trimmed.startsWith('[')) {
-    const parsed = JSON.parse(trimmed);
-
-    if (!Array.isArray(parsed)) {
-      throw new Error('TOCFL source must be a JSON array or JSONL.');
-    }
-
-    return parsed;
-  }
-
-  return trimmed
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => JSON.parse(line));
 };
 
 export const generateVocabulary = () => {
@@ -514,7 +248,8 @@ export const generateVocabulary = () => {
   ensureFileExists(mjdicSourcePath, 'MJdic source');
   fs.mkdirSync(publicWordlistDir, { recursive: true });
 
-  const tocflRows = parseTocflSource(fs.readFileSync(tocflSourcePath, 'utf8'));
+  const tocflSourceText = fs.readFileSync(tocflSourcePath, 'utf8');
+  const tocflRows = parseJsonOrJsonl(tocflSourceText);
   const mjdicRows = fs
     .readFileSync(mjdicSourcePath, 'utf8')
     .split(/\r?\n/)
@@ -531,44 +266,29 @@ export const generateVocabulary = () => {
     }))
     .filter((entry) => entry.trad);
   const validSyllables = buildValidSyllables(mjdicRows);
-  const normalizedTocflRows = readTocflRows(fs.readFileSync(tocflSourcePath, 'utf8')).map(
-    (row) => ({
-      ...row,
-      pronunciation: {
-        ...row.pronunciation,
-        pinyin:
-          normalizeTocflPronunciation(
-            row.pronunciation?.pinyin ?? '',
-            row.pronunciation?.zhuyin ?? '',
-            validSyllables
-          ) ??
-          row.pronunciation?.pinyin ??
-          '',
-      },
-    })
-  );
+  const normalizedTocflRows = readTocflRows(tocflSourceText).map((row) => ({
+    ...row,
+    pronunciation: {
+      ...row.pronunciation,
+      pinyin:
+        normalizeTocflPronunciation(
+          row.pronunciation?.pinyin ?? '',
+          row.pronunciation?.zhuyin ?? '',
+          validSyllables
+        ) ??
+        row.pronunciation?.pinyin ??
+        '',
+    },
+  }));
   const normalizedTbclRows = fs.existsSync(tbclSourcePath)
     ? readTbclRows(fs.readFileSync(tbclSourcePath, 'utf8'))
     : [];
-  const dictionary = new Map();
   const tocflByTrad = new Map(tocflRows.map((item) => [String(item.text).trim(), item]));
   const mjdicPronunciationByTrad = new Map();
   const mjdicSourceIndexByTrad = new Map();
 
   for (const entry of normalizedMjdicEntries) {
-    const { trad, pronunciation: normalizedPronunciation, means, meansJa, sourceIndex } = entry;
-
-    if (normalizedPronunciation) {
-      const exactKey = `${trad}\t${normalizedPronunciation}`;
-      const exactEntries = dictionary.get(exactKey) ?? [];
-      exactEntries.push([meansJa, means]);
-      dictionary.set(exactKey, exactEntries);
-    }
-
-    const fallbackKey = `${trad}\t`;
-    const fallbackEntries = dictionary.get(fallbackKey) ?? [];
-    fallbackEntries.push([meansJa, means]);
-    dictionary.set(fallbackKey, fallbackEntries);
+    const { trad, pronunciation: normalizedPronunciation, sourceIndex } = entry;
 
     if (!mjdicPronunciationByTrad.has(trad) && normalizedPronunciation) {
       mjdicPronunciationByTrad.set(trad, normalizedPronunciation);

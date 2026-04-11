@@ -4,13 +4,6 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  isRejectedJapaneseGlossCandidate,
-  parseTocflSource,
-  pickBestGloss,
-  scoreCandidate,
-} from '../../scripts/generate-vocabulary.mjs';
-
 const tempDirectories = [];
 const generateVocabularyModuleUrl = new URL(
   '../../scripts/generate-vocabulary.mjs',
@@ -53,68 +46,6 @@ afterEach(() => {
 });
 
 describe('generate vocabulary script', () => {
-  it('簡体字のまま残っている候補を訳語に採用しない', () => {
-    expect(isRejectedJapaneseGlossCandidate('丝')).toBe(true);
-    expect(pickBestGloss([['丝', 'silk']])).toBeNull();
-  });
-
-  it('中国語の未翻訳候補より日本語候補を優先する', () => {
-    expect(
-      pickBestGloss([
-        ['东南亚国家联盟と同じ', 'same as ASEAN'],
-        ['東南アジア諸国連合', 'association of southeast asian nations'],
-      ])
-    ).toBe('東南アジア諸国連合');
-  });
-
-  it('自然な日本語候補は引き続き採用する', () => {
-    expect(pickBestGloss([['ありがとう', 'thanks']])).toBe('ありがとう');
-    expect(pickBestGloss([['国境', 'border']])).toBe('国境');
-  });
-
-  it('分類詞の断片を訳語として採用しない', () => {
-    expect(
-      pickBestGloss([
-        [
-          '(借用語) motorbike; motorcycle/CL:輛|辆[liang4],部[bu4]。',
-          '(loanword) motorbike; motorcycle/CL:輛|辆[liang4],部[bu4]',
-        ],
-      ])
-    ).toBeNull();
-  });
-
-  it('訳語スコアは自然な日本語を説明的な候補より高く評価する', () => {
-    expect(scoreCandidate('ありがとう')).toBeGreaterThan(scoreCandidate('thank you'));
-    expect(scoreCandidate('東南アジア諸国連合')).toBeGreaterThan(
-      scoreCandidate('same as ASEAN', 'fallback')
-    );
-  });
-
-  it('TOCFL ソースの JSON 配列を読み込める', () => {
-    expect(
-      parseTocflSource(
-        JSON.stringify([
-          { id: 1, text: '八' },
-          { id: 2, text: '爸爸' },
-        ])
-      )
-    ).toEqual([
-      { id: 1, text: '八' },
-      { id: 2, text: '爸爸' },
-    ]);
-  });
-
-  it('TOCFL ソースの JSONL も引き続き読み込める', () => {
-    expect(parseTocflSource('{"id":1,"text":"八"}\n{"id":2,"text":"爸爸"}\n')).toEqual([
-      { id: 1, text: '八' },
-      { id: 2, text: '爸爸' },
-    ]);
-  });
-
-  it('TOCFL ソースの空文字は空配列として扱う', () => {
-    expect(parseTocflSource('\n')).toEqual([]);
-  });
-
   it('手修正語彙・TOCFL・MJdic から配信用データとメタデータを生成する', async () => {
     const repoRoot = createTempRepo();
 
