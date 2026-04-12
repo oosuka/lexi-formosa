@@ -86,6 +86,20 @@ describe('vocabulary quality signals', () => {
     expect(isLevelThreeProperNounRiskGloss('トランス脂肪酸')).toBe(false);
   });
 
+  it('Level 3 の固有名詞 risk で一般語の市・クラブ・組織を過検出しない', async () => {
+    const { isLevelThreeProperNounRiskGloss } = await import(
+      '../../scripts/lib/vocabulary-quality-signals.mjs'
+    );
+
+    expect(isLevelThreeProperNounRiskGloss('クラブサンド')).toBe(false);
+    expect(isLevelThreeProperNounRiskGloss('都市依存症')).toBe(false);
+    expect(isLevelThreeProperNounRiskGloss('市街化地域')).toBe(false);
+    expect(isLevelThreeProperNounRiskGloss('市場の軽食')).toBe(false);
+    expect(isLevelThreeProperNounRiskGloss('夜市グルメ')).toBe(false);
+    expect(isLevelThreeProperNounRiskGloss('組織委員会')).toBe(false);
+    expect(isLevelThreeProperNounRiskGloss('民間非政府団体')).toBe(false);
+  });
+
   it('Level 3 の説明文ラベルを検出し、短い challenge ラベルは除外しない', async () => {
     const { isLevelThreeExplanatoryRiskGloss } = await import(
       '../../scripts/lib/vocabulary-quality-signals.mjs'

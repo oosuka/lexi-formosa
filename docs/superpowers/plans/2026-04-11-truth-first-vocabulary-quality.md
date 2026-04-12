@@ -25,19 +25,19 @@
 
 ## Current State
 
-- 作業ブランチ: `feat/vocabulary-quality-pipeline`
-- 最新コミット: `bc55a7f 不要な語彙生成テストとデッドコードを削除`
-- 公開語彙数: `15505`
-- `data/editorial-overrides.json`: `1676` 件
-- 内訳: `approved 1445`、`rejected 231`
+- 作業ブランチ: `resume/vocabulary-quality-20260412`
+- 最新コミット: `47f83fc Level3高リスク語彙レビュー導線を追加`
+- 公開語彙数: `15255`
+- `data/editorial-overrides.json`: `2030` 件
+- 内訳: `approved 1549`、`rejected 481`
 - Level 1: `10863` 件、reviewed `1306`、unreviewed `9557`
 - Level 2: `1120` 件、reviewed `73`、unreviewed `1047`
-- Level 3: `3522` 件、reviewed `66`、unreviewed `3456`
-- Level 3 内訳: 5文字 `2483`、6文字 `1039`
-- Level 3 MJdic 単独: `3503`
-- Level 3 の日本語ラベル 13文字以上: `198`
-- `audit:data` の現状: global guardrail はすべて `0`、Level 3 risk は `level3_proper_noun_risk: 79`、`level3_explanatory_risk: 9`、`level3_too_long_label: 198`
-- 次の推奨 batch: `npm run review:vocab:export -- --level=3 --risk-only --limit=200`
+- Level 3: `3272` 件、reviewed `170`、unreviewed `3102`
+- Level 3 内訳: 5文字 `2327`、6文字 `945`
+- Level 3 MJdic 単独: `3253`
+- Level 3 の日本語ラベル 13文字以上: `0`
+- `audit:data` の現状: global guardrail はすべて `0`、Level 3 risk は `level3_proper_noun_risk: 0`、`level3_explanatory_risk: 0`、`level3_too_long_label: 0`
+- 次の推奨 batch: `npm run review:vocab:export -- --limit=500`
 
 ## Operating Model
 
@@ -101,7 +101,8 @@ Level 3 は「長い繁体字を楽しむ」ために残す。ただし、嘘は
 ## Next Priority
 
 通常レビューと Level 3 high-risk review を分けて走らせるための監査・export 強化は実装済み。
-次に進めるのは、残りの Level 3 high-risk queue と Level 1-2 Core Review の継続。
+2026-04-12 の再開サイクルで Level 3 high-risk queue は `0` まで処理済み。
+次に進めるのは Level 1-2 Core Review の継続。
 
 最初の実装サイクルでは、以下を作る。
 
@@ -113,8 +114,8 @@ Level 3 は「長い繁体字を楽しむ」ために残す。ただし、嘘は
 その後の運用は、次の順番を基本にする。
 
 1. Global Guardrail が `0` であることを確認
-2. Level 3 high-risk batch を 200 件単位で処理
-3. Level 1-2 通常 batch を 500 件単位で処理
+2. Level 3 high-risk batch が非ゼロなら 200 件単位で処理
+3. Level 3 high-risk batch が `0` なら Level 1-2 通常 batch を 500 件単位で処理
 4. 再生成・検証
 5. この plan の Current State を更新
 
