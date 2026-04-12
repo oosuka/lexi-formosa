@@ -25,13 +25,13 @@
 
 ## Current State
 
-- 作業ブランチ: `resume/vocabulary-quality-20260412`
-- 最新コミット: `47f83fc Level3高リスク語彙レビュー導線を追加`
-- 公開語彙数: `15255`
-- `data/editorial-overrides.json`: `2030` 件
-- 内訳: `approved 1549`、`rejected 481`
-- Level 1: `10863` 件、reviewed `1306`、unreviewed `9557`
-- Level 2: `1120` 件、reviewed `73`、unreviewed `1047`
+- 作業ブランチ: `feat/vocabulary-quality-pipeline`
+- 最新コミット: `fc365c4 Level3高リスク語彙レビューを完了`
+- 公開語彙数: `15252`
+- `data/editorial-overrides.json`: `2530` 件
+- 内訳: `approved 2046`、`rejected 484`
+- Level 1: `10860` 件、reviewed `1777`、unreviewed `9083`
+- Level 2: `1120` 件、reviewed `99`、unreviewed `1021`
 - Level 3: `3272` 件、reviewed `170`、unreviewed `3102`
 - Level 3 内訳: 5文字 `2327`、6文字 `945`
 - Level 3 MJdic 単独: `3253`
@@ -102,6 +102,7 @@ Level 3 は「長い繁体字を楽しむ」ために残す。ただし、嘘は
 
 通常レビューと Level 3 high-risk review を分けて走らせるための監査・export 強化は実装済み。
 2026-04-12 の再開サイクルで Level 3 high-risk queue は `0` まで処理済み。
+2026-04-12 の継続サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `497` 件、却下 `3` 件。
 次に進めるのは Level 1-2 Core Review の継続。
 
 最初の実装サイクルでは、以下を作る。
