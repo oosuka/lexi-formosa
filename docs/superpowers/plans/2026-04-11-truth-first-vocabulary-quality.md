@@ -26,12 +26,12 @@
 ## Current State
 
 - 作業ブランチ: `feat/vocabulary-quality-pipeline`
-- 最新作業: `2026-04-13 Level 1-2 normal batch 500 件を追加処理（承認 500 件、却下 0 件）`
-- 公開語彙数: `15174`
-- `data/editorial-overrides.json`: `10030` 件
-- 内訳: `approved 9468`、`rejected 562`
-- Level 1: `10786` 件、reviewed `8667`、unreviewed `2119`
-- Level 2: `1116` 件、reviewed `631`、unreviewed `485`
+- 最新作業: `2026-04-13 Level 1-2 normal batch 500 件を追加処理（承認 497 件、却下 3 件）`
+- 公開語彙数: `15171`
+- `data/editorial-overrides.json`: `10530` 件
+- 内訳: `approved 9965`、`rejected 565`
+- Level 1: `10783` 件、reviewed `9099`、unreviewed `1684`
+- Level 2: `1116` 件、reviewed `696`、unreviewed `420`
 - Level 3: `3272` 件、reviewed `170`、unreviewed `3102`
 - Level 3 内訳: 5文字 `2327`、6文字 `945`
 - Level 3 MJdic 単独: `3253`
@@ -118,6 +118,7 @@ Level 3 は「長い繁体字を楽しむ」ために残す。ただし、嘘は
 2026-04-13 の今回継続サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `499` 件、却下 `1` 件。
 2026-04-13 の追加改善サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `500` 件、却下 `0` 件。
 2026-04-13 の継続改善サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `500` 件、却下 `0` 件。
+2026-04-13 の今回再開改善サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `497` 件、却下 `3` 件。
 次に進めるのは Level 1-2 Core Review の継続。
 
 最初の実装サイクルでは、以下を作る。
