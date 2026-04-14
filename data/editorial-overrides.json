@@ -2471,6 +2471,12 @@
     "acceptedJa": ["息子と娘"]
   },
   {
+    "trad": "子民",
+    "status": "approved",
+    "canonicalJa": "民",
+    "acceptedJa": []
+  },
+  {
     "trad": "子弟",
     "status": "approved",
     "canonicalJa": "若い世代",
@@ -2486,6 +2492,12 @@
     "trad": "子宮",
     "status": "approved",
     "canonicalJa": "子宮",
+    "acceptedJa": []
+  },
+  {
+    "trad": "子嗣",
+    "status": "approved",
+    "canonicalJa": "子孫",
     "acceptedJa": []
   },
   {
@@ -3500,6 +3512,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "中世紀",
+    "status": "approved",
+    "canonicalJa": "中世",
+    "acceptedJa": []
+  },
+  {
     "trad": "中古",
     "status": "approved",
     "canonicalJa": "中古",
@@ -3537,6 +3555,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "中用",
+    "status": "approved",
+    "canonicalJa": "有用な",
+    "acceptedJa": []
+  },
+  {
     "trad": "中立",
     "status": "approved",
     "canonicalJa": "中立",
@@ -3555,9 +3579,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "中和",
+    "status": "approved",
+    "canonicalJa": "中和する",
+    "acceptedJa": []
+  },
+  {
     "trad": "中性",
     "status": "approved",
     "canonicalJa": "中性",
+    "acceptedJa": []
+  },
+  {
+    "trad": "中肯",
+    "status": "approved",
+    "canonicalJa": "適切",
     "acceptedJa": []
   },
   {
@@ -3676,9 +3712,39 @@
     "acceptedJa": []
   },
   {
+    "trad": "中傷",
+    "status": "approved",
+    "canonicalJa": "中傷する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "中意",
+    "status": "approved",
+    "canonicalJa": "気に入る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "中葉",
+    "status": "approved",
+    "canonicalJa": "中期",
+    "acceptedJa": []
+  },
+  {
+    "trad": "中樞",
+    "status": "approved",
+    "canonicalJa": "ハブ",
+    "acceptedJa": []
+  },
+  {
     "trad": "中獎",
     "status": "approved",
     "canonicalJa": "当る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "中興",
+    "status": "approved",
+    "canonicalJa": "復活・回復・復元",
     "acceptedJa": []
   },
   {
@@ -3973,9 +4039,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "允諾",
+    "status": "approved",
+    "canonicalJa": "約束する",
+    "acceptedJa": []
+  },
+  {
     "trad": "元旦",
     "status": "approved",
     "canonicalJa": "元旦",
+    "acceptedJa": []
+  },
+  {
+    "trad": "元老",
+    "status": "approved",
+    "canonicalJa": "年長者",
+    "acceptedJa": []
+  },
+  {
+    "trad": "元帥",
+    "status": "approved",
+    "canonicalJa": "元帥",
     "acceptedJa": []
   },
   {
@@ -3994,6 +4078,11 @@
     "trad": "元素",
     "status": "approved",
     "canonicalJa": "要素",
+    "acceptedJa": []
+  },
+  {
+    "trad": "元朝",
+    "status": "rejected",
     "acceptedJa": []
   },
   {
@@ -4647,6 +4736,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "勻稱",
+    "status": "approved",
+    "canonicalJa": "均整が取れている",
+    "acceptedJa": []
+  },
+  {
     "trad": "勾引",
     "status": "approved",
     "canonicalJa": "誘惑する",
@@ -4811,6 +4906,12 @@
     "trad": "友善",
     "status": "approved",
     "canonicalJa": "友好的",
+    "acceptedJa": []
+  },
+  {
+    "trad": "友愛",
+    "status": "approved",
+    "canonicalJa": "友愛",
     "acceptedJa": []
   },
   {
@@ -6083,8 +6184,20 @@
     "acceptedJa": []
   },
   {
+    "trad": "扎根",
+    "status": "approved",
+    "canonicalJa": "根付く",
+    "acceptedJa": []
+  },
+  {
     "trad": "扎格羅斯山脈",
     "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "支支吾吾",
+    "status": "approved",
+    "canonicalJa": "言い淀む",
     "acceptedJa": []
   },
   {
@@ -6106,6 +6219,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "支流",
+    "status": "approved",
+    "canonicalJa": "支流",
+    "acceptedJa": []
+  },
+  {
     "trad": "支配",
     "status": "approved",
     "canonicalJa": "支配する",
@@ -6121,6 +6240,12 @@
     "trad": "支撐",
     "status": "approved",
     "canonicalJa": "支える",
+    "acceptedJa": []
+  },
+  {
+    "trad": "支離破碎",
+    "status": "approved",
+    "canonicalJa": "支離滅裂",
     "acceptedJa": []
   },
   {
@@ -6408,6 +6533,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "曰",
+    "status": "approved",
+    "canonicalJa": "言う",
+    "acceptedJa": []
+  },
+  {
     "trad": "月分",
     "status": "approved",
     "canonicalJa": "月",
@@ -6415,6 +6546,12 @@
   },
   {
     "trad": "月光",
+    "status": "approved",
+    "canonicalJa": "月光",
+    "acceptedJa": []
+  },
+  {
+    "trad": "月色",
     "status": "approved",
     "canonicalJa": "月光",
     "acceptedJa": []
@@ -6483,6 +6620,18 @@
     "trad": "止",
     "status": "approved",
     "canonicalJa": "止める",
+    "acceptedJa": []
+  },
+  {
+    "trad": "止痛",
+    "status": "approved",
+    "canonicalJa": "痛みを止める",
+    "acceptedJa": []
+  },
+  {
+    "trad": "止痛藥",
+    "status": "approved",
+    "canonicalJa": "鎮痛薬",
     "acceptedJa": []
   },
   {
@@ -6993,6 +7142,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "主人翁",
+    "status": "approved",
+    "canonicalJa": "主人公",
+    "acceptedJa": []
+  },
+  {
     "trad": "主打",
     "status": "approved",
     "canonicalJa": "主力の",
@@ -7059,6 +7214,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "主將",
+    "status": "approved",
+    "canonicalJa": "主将",
+    "acceptedJa": []
+  },
+  {
     "trad": "主軸",
     "status": "approved",
     "canonicalJa": "軸",
@@ -7122,6 +7283,18 @@
     "trad": "主觀",
     "status": "approved",
     "canonicalJa": "主観的",
+    "acceptedJa": []
+  },
+  {
+    "trad": "乍",
+    "status": "approved",
+    "canonicalJa": "急に",
+    "acceptedJa": []
+  },
+  {
+    "trad": "乍現",
+    "status": "approved",
+    "canonicalJa": "突然現れる",
     "acceptedJa": []
   },
   {
@@ -8457,6 +8630,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "召回",
+    "status": "approved",
+    "canonicalJa": "呼び戻す",
+    "acceptedJa": []
+  },
+  {
     "trad": "召見",
     "status": "approved",
     "canonicalJa": "召し出す",
@@ -8478,6 +8657,12 @@
     "trad": "召集",
     "status": "approved",
     "canonicalJa": "招集する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "召集人",
+    "status": "approved",
+    "canonicalJa": "召集者",
     "acceptedJa": []
   },
   {
@@ -9958,6 +10143,12 @@
     "acceptedJa": ["ちょうど"]
   },
   {
+    "trad": "正人君子",
+    "status": "approved",
+    "canonicalJa": "高潔な紳士",
+    "acceptedJa": []
+  },
+  {
     "trad": "正午",
     "status": "approved",
     "canonicalJa": "昼",
@@ -9967,6 +10158,12 @@
     "trad": "正月",
     "status": "approved",
     "canonicalJa": "旧正月",
+    "acceptedJa": []
+  },
+  {
+    "trad": "正比",
+    "status": "approved",
+    "canonicalJa": "正比例",
     "acceptedJa": []
   },
   {
@@ -9994,9 +10191,45 @@
     "acceptedJa": []
   },
   {
+    "trad": "正色",
+    "status": "approved",
+    "canonicalJa": "厳粛な表情",
+    "acceptedJa": []
+  },
+  {
+    "trad": "正事",
+    "status": "approved",
+    "canonicalJa": "本業",
+    "acceptedJa": []
+  },
+  {
+    "trad": "正宗",
+    "status": "approved",
+    "canonicalJa": "本場の",
+    "acceptedJa": []
+  },
+  {
     "trad": "正直",
     "status": "approved",
     "canonicalJa": "正直",
+    "acceptedJa": []
+  },
+  {
+    "trad": "正門",
+    "status": "approved",
+    "canonicalJa": "ポータル",
+    "acceptedJa": []
+  },
+  {
+    "trad": "正派",
+    "status": "approved",
+    "canonicalJa": "正派な",
+    "acceptedJa": []
+  },
+  {
+    "trad": "正軌",
+    "status": "approved",
+    "canonicalJa": "軌道",
     "acceptedJa": []
   },
   {
@@ -10004,6 +10237,18 @@
     "status": "approved",
     "canonicalJa": "正面",
     "acceptedJa": []
+  },
+  {
+    "trad": "正值",
+    "status": "approved",
+    "canonicalJa": "ちょうどその時",
+    "acceptedJa": []
+  },
+  {
+    "trad": "正氣",
+    "status": "approved",
+    "canonicalJa": "気概",
+    "acceptedJa": ["正気"]
   },
   {
     "trad": "正常",
@@ -10045,6 +10290,12 @@
     "trad": "正義",
     "status": "approved",
     "canonicalJa": "正義",
+    "acceptedJa": []
+  },
+  {
+    "trad": "正道",
+    "status": "approved",
+    "canonicalJa": "正道",
     "acceptedJa": []
   },
   {
@@ -10178,6 +10429,12 @@
     "status": "approved",
     "canonicalJa": "汁",
     "acceptedJa": ["ジュース"]
+  },
+  {
+    "trad": "汁液",
+    "status": "approved",
+    "canonicalJa": "汁",
+    "acceptedJa": []
   },
   {
     "trad": "犯",
@@ -10527,6 +10784,12 @@
     "acceptedJa": ["道具"]
   },
   {
+    "trad": "用武之地",
+    "status": "approved",
+    "canonicalJa": "才能を発揮する場",
+    "acceptedJa": []
+  },
+  {
     "trad": "用途",
     "status": "approved",
     "canonicalJa": "用途",
@@ -10584,6 +10847,12 @@
     "trad": "由於",
     "status": "approved",
     "canonicalJa": "〜により",
+    "acceptedJa": []
+  },
+  {
+    "trad": "由衷",
+    "status": "approved",
+    "canonicalJa": "誠実な",
     "acceptedJa": []
   },
   {
@@ -11278,6 +11547,12 @@
     "trad": "伙食",
     "status": "approved",
     "canonicalJa": "食事",
+    "acceptedJa": []
+  },
+  {
+    "trad": "兆頭",
+    "status": "approved",
+    "canonicalJa": "前兆",
     "acceptedJa": []
   },
   {
@@ -12595,9 +12870,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "在行",
+    "status": "approved",
+    "canonicalJa": "あることに熟達する",
+    "acceptedJa": []
+  },
+  {
     "trad": "在位",
     "status": "approved",
     "canonicalJa": "在位する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "在所難免",
+    "status": "approved",
+    "canonicalJa": "やむをえない",
     "acceptedJa": []
   },
   {
@@ -13148,6 +13435,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "字面",
+    "status": "approved",
+    "canonicalJa": "字面",
+    "acceptedJa": []
+  },
+  {
     "trad": "字條",
     "status": "approved",
     "canonicalJa": "メモ",
@@ -13157,6 +13450,12 @@
     "trad": "字眼",
     "status": "approved",
     "canonicalJa": "言葉遣い",
+    "acceptedJa": []
+  },
+  {
+    "trad": "字跡",
+    "status": "approved",
+    "canonicalJa": "筆跡",
     "acceptedJa": []
   },
   {
@@ -13901,6 +14200,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "旨意",
+    "status": "approved",
+    "canonicalJa": "命令",
+    "acceptedJa": []
+  },
+  {
     "trad": "早",
     "status": "approved",
     "canonicalJa": "早い",
@@ -13990,9 +14295,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "有心人",
+    "status": "approved",
+    "canonicalJa": "志のある人",
+    "acceptedJa": []
+  },
+  {
     "trad": "有史以來",
     "status": "approved",
     "canonicalJa": "有史以来",
+    "acceptedJa": []
+  },
+  {
+    "trad": "有失",
+    "status": "approved",
+    "canonicalJa": "損なう",
     "acceptedJa": []
   },
   {
@@ -14004,6 +14321,12 @@
   {
     "trad": "有奶就是娘",
     "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "有生之年",
+    "status": "approved",
+    "canonicalJa": "この世にいる間",
     "acceptedJa": []
   },
   {
@@ -14034,6 +14357,12 @@
     "trad": "有利",
     "status": "approved",
     "canonicalJa": "有利",
+    "acceptedJa": []
+  },
+  {
+    "trad": "有利可圖",
+    "status": "approved",
+    "canonicalJa": "利益がある",
     "acceptedJa": []
   },
   {
@@ -14078,6 +14407,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "有勁",
+    "status": "approved",
+    "canonicalJa": "力強い",
+    "acceptedJa": ["面白い"]
+  },
+  {
     "trad": "有苦說不出",
     "status": "approved",
     "canonicalJa": "苦しくても言えない",
@@ -14102,6 +14437,24 @@
     "reviewReason": "review batch initial approval"
   },
   {
+    "trad": "有氣無力",
+    "status": "approved",
+    "canonicalJa": "へろへろで力がない",
+    "acceptedJa": []
+  },
+  {
+    "trad": "有條不紊",
+    "status": "approved",
+    "canonicalJa": "整然としている",
+    "acceptedJa": []
+  },
+  {
+    "trad": "有朝一日",
+    "status": "approved",
+    "canonicalJa": "いつの日か",
+    "acceptedJa": []
+  },
+  {
     "trad": "有期徒刑",
     "status": "approved",
     "canonicalJa": "有期懲役",
@@ -14117,6 +14470,24 @@
     "trad": "有意思",
     "status": "approved",
     "canonicalJa": "面白い",
+    "acceptedJa": []
+  },
+  {
+    "trad": "有意無意",
+    "status": "approved",
+    "canonicalJa": "故意であろうとなかろうと",
+    "acceptedJa": []
+  },
+  {
+    "trad": "有道",
+    "status": "approved",
+    "canonicalJa": "賢明な",
+    "acceptedJa": []
+  },
+  {
+    "trad": "有說有笑",
+    "status": "approved",
+    "canonicalJa": "話して笑う",
     "acceptedJa": []
   },
   {
@@ -14143,10 +14514,22 @@
     "acceptedJa": ["裕福な"]
   },
   {
+    "trad": "有聲有色",
+    "status": "approved",
+    "canonicalJa": "生き生きした",
+    "acceptedJa": []
+  },
+  {
     "trad": "有點",
     "status": "approved",
     "canonicalJa": "少し",
     "reviewReason": "review batch initial label fix"
+  },
+  {
+    "trad": "有礙",
+    "status": "approved",
+    "canonicalJa": "邪魔になる",
+    "acceptedJa": []
   },
   {
     "trad": "次女",
@@ -14421,6 +14804,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "竹竿",
+    "status": "approved",
+    "canonicalJa": "竹竿",
+    "acceptedJa": []
+  },
+  {
     "trad": "米粉",
     "status": "approved",
     "canonicalJa": "ビーフン",
@@ -14452,6 +14841,12 @@
     "trad": "羽毛",
     "status": "approved",
     "canonicalJa": "羽毛",
+    "acceptedJa": []
+  },
+  {
+    "trad": "羽翼",
+    "status": "approved",
+    "canonicalJa": "ウイング",
     "acceptedJa": []
   },
   {
@@ -14791,6 +15186,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "自白",
+    "status": "approved",
+    "canonicalJa": "自白する",
+    "acceptedJa": []
+  },
+  {
     "trad": "自立",
     "status": "approved",
     "canonicalJa": "独立する",
@@ -14821,9 +15222,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "自作主張",
+    "status": "approved",
+    "canonicalJa": "自分の考えで行動する",
+    "acceptedJa": []
+  },
+  {
     "trad": "自助",
     "status": "approved",
     "canonicalJa": "セルフサービス",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自告奮勇",
+    "status": "approved",
+    "canonicalJa": "引き受けることを申し出る",
     "acceptedJa": []
   },
   {
@@ -14851,6 +15264,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "自來",
+    "status": "approved",
+    "canonicalJa": "初めから",
+    "acceptedJa": []
+  },
+  {
     "trad": "自來水",
     "status": "approved",
     "canonicalJa": "水道水",
@@ -14860,6 +15279,12 @@
     "trad": "自卑",
     "status": "approved",
     "canonicalJa": "劣等感を持つ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自命不凡",
+    "status": "approved",
+    "canonicalJa": "自分を過大評価する",
     "acceptedJa": []
   },
   {
@@ -14875,6 +15300,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "自知之明",
+    "status": "approved",
+    "canonicalJa": "己を知る",
+    "acceptedJa": []
+  },
+  {
     "trad": "自信",
     "status": "approved",
     "canonicalJa": "自信を持つ",
@@ -14887,9 +15318,39 @@
     "acceptedJa": []
   },
   {
+    "trad": "自怨自艾",
+    "status": "approved",
+    "canonicalJa": "深く悔いる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自相矛盾",
+    "status": "approved",
+    "canonicalJa": "矛盾している",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自若",
+    "status": "approved",
+    "canonicalJa": "落ち着いている",
+    "acceptedJa": []
+  },
+  {
     "trad": "自負",
     "status": "approved",
     "canonicalJa": "自負する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自重",
+    "status": "approved",
+    "canonicalJa": "自重する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自修",
+    "status": "approved",
+    "canonicalJa": "独習する",
     "acceptedJa": []
   },
   {
@@ -14905,9 +15366,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "自得",
+    "status": "approved",
+    "canonicalJa": "満足",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自得其樂",
+    "status": "approved",
+    "canonicalJa": "静かに楽しむ",
+    "acceptedJa": []
+  },
+  {
     "trad": "自從",
     "status": "approved",
     "canonicalJa": "以来",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自救",
+    "status": "approved",
+    "canonicalJa": "窮地を脱する",
     "acceptedJa": []
   },
   {
@@ -14920,6 +15399,12 @@
     "trad": "自尊",
     "status": "approved",
     "canonicalJa": "自尊心",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自欺欺人",
+    "status": "approved",
+    "canonicalJa": "自他を欺く",
     "acceptedJa": []
   },
   {
@@ -14947,6 +15432,30 @@
     "acceptedJa": []
   },
   {
+    "trad": "自圓其說",
+    "status": "approved",
+    "canonicalJa": "もっともらしい説明をする",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自毀",
+    "status": "approved",
+    "canonicalJa": "自滅する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自滿",
+    "status": "approved",
+    "canonicalJa": "自己満足",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自盡",
+    "status": "approved",
+    "canonicalJa": "自殺する",
+    "acceptedJa": []
+  },
+  {
     "trad": "自稱",
     "status": "approved",
     "canonicalJa": "名乗る",
@@ -14956,6 +15465,18 @@
     "trad": "自豪",
     "status": "approved",
     "canonicalJa": "誇りに思う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自暴自棄",
+    "status": "approved",
+    "canonicalJa": "絶望に身を任せる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "自衛",
+    "status": "approved",
+    "canonicalJa": "自分の身を守る",
     "acceptedJa": []
   },
   {
@@ -14989,9 +15510,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "至高無上",
+    "status": "approved",
+    "canonicalJa": "至高無上",
+    "acceptedJa": []
+  },
+  {
     "trad": "至極",
     "status": "approved",
     "canonicalJa": "極めて",
+    "acceptedJa": []
+  },
+  {
+    "trad": "至親",
+    "status": "approved",
+    "canonicalJa": "近親者",
     "acceptedJa": []
   },
   {
@@ -15477,6 +16010,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "佇立",
+    "status": "approved",
+    "canonicalJa": "長く立ち続ける",
+    "acceptedJa": []
+  },
+  {
     "trad": "佈雷頓森林",
     "status": "rejected",
     "acceptedJa": []
@@ -15601,6 +16140,12 @@
     "acceptedJa": ["世帯"]
   },
   {
+    "trad": "住手",
+    "status": "approved",
+    "canonicalJa": "止める",
+    "acceptedJa": []
+  },
+  {
     "trad": "住宅",
     "status": "approved",
     "canonicalJa": "住居",
@@ -15628,6 +16173,18 @@
     "trad": "住宿",
     "status": "approved",
     "canonicalJa": "宿泊",
+    "acceptedJa": []
+  },
+  {
+    "trad": "佔上風",
+    "status": "approved",
+    "canonicalJa": "優位に立つ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "佔用",
+    "status": "approved",
+    "canonicalJa": "占領する",
     "acceptedJa": []
   },
   {
@@ -16121,6 +16678,12 @@
     "trad": "助益",
     "status": "approved",
     "canonicalJa": "助け",
+    "acceptedJa": []
+  },
+  {
+    "trad": "助教",
+    "status": "approved",
+    "canonicalJa": "ティーチングアシスタント",
     "acceptedJa": []
   },
   {
@@ -16709,6 +17272,36 @@
     "acceptedJa": []
   },
   {
+    "trad": "壯年",
+    "status": "approved",
+    "canonicalJa": "壮年",
+    "acceptedJa": []
+  },
+  {
+    "trad": "壯志",
+    "status": "approved",
+    "canonicalJa": "大志",
+    "acceptedJa": []
+  },
+  {
+    "trad": "壯烈",
+    "status": "approved",
+    "canonicalJa": "壮烈な",
+    "acceptedJa": []
+  },
+  {
+    "trad": "壯碩",
+    "status": "approved",
+    "canonicalJa": "がっしりした",
+    "acceptedJa": []
+  },
+  {
+    "trad": "壯闊",
+    "status": "approved",
+    "canonicalJa": "壮大な",
+    "acceptedJa": []
+  },
+  {
     "trad": "壯觀",
     "status": "approved",
     "canonicalJa": "壮観",
@@ -16802,6 +17395,12 @@
     "trad": "妨礙",
     "status": "approved",
     "canonicalJa": "妨げる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "孜孜不倦",
+    "status": "approved",
+    "canonicalJa": "怠らず励む",
     "acceptedJa": []
   },
   {
@@ -17741,6 +18340,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "折服",
+    "status": "approved",
+    "canonicalJa": "説得する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "折返",
+    "status": "approved",
+    "canonicalJa": "引き返す",
+    "acceptedJa": []
+  },
+  {
     "trad": "折磨",
     "status": "approved",
     "canonicalJa": "苦しめる",
@@ -17756,6 +18367,12 @@
     "trad": "折騰",
     "status": "approved",
     "canonicalJa": "振り回す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "攸關",
+    "status": "approved",
+    "canonicalJa": "重要な関わりがある",
     "acceptedJa": []
   },
   {
@@ -18437,6 +19054,30 @@
     "acceptedJa": []
   },
   {
+    "trad": "灶",
+    "status": "approved",
+    "canonicalJa": "かまど",
+    "acceptedJa": []
+  },
+  {
+    "trad": "灼見",
+    "status": "approved",
+    "canonicalJa": "深い洞察",
+    "acceptedJa": []
+  },
+  {
+    "trad": "灼熱",
+    "status": "approved",
+    "canonicalJa": "灼熱",
+    "acceptedJa": []
+  },
+  {
+    "trad": "災情",
+    "status": "approved",
+    "canonicalJa": "悲惨な状況",
+    "acceptedJa": []
+  },
+  {
     "trad": "災禍",
     "status": "approved",
     "canonicalJa": "災害",
@@ -18951,6 +19592,24 @@
     "reviewReason": "review batch initial approval"
   },
   {
+    "trad": "走人",
+    "status": "approved",
+    "canonicalJa": "去る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "走失",
+    "status": "approved",
+    "canonicalJa": "行方不明になる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "走投無路",
+    "status": "approved",
+    "canonicalJa": "もう限界",
+    "acceptedJa": []
+  },
+  {
     "trad": "走私",
     "status": "approved",
     "canonicalJa": "密輸する",
@@ -18960,6 +19619,12 @@
     "trad": "走動",
     "status": "approved",
     "canonicalJa": "歩き回る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "走訪",
+    "status": "approved",
+    "canonicalJa": "訪問する",
     "acceptedJa": []
   },
   {
@@ -18976,9 +19641,27 @@
     "reviewReason": "review batch initial label fix"
   },
   {
+    "trad": "走運",
+    "status": "approved",
+    "canonicalJa": "幸運に恵まれる",
+    "acceptedJa": []
+  },
+  {
     "trad": "走道",
     "status": "approved",
     "canonicalJa": "通路",
+    "acceptedJa": []
+  },
+  {
+    "trad": "走樣",
+    "status": "approved",
+    "canonicalJa": "形を失う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "足見",
+    "status": "approved",
+    "canonicalJa": "よく分かる",
     "acceptedJa": []
   },
   {
@@ -19189,6 +19872,12 @@
     "trad": "巡邏",
     "status": "approved",
     "canonicalJa": "パトロールする",
+    "acceptedJa": []
+  },
+  {
+    "trad": "迂迴",
+    "status": "approved",
+    "canonicalJa": "迂回する",
     "acceptedJa": []
   },
   {
@@ -20014,6 +20703,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "制裁",
+    "status": "approved",
+    "canonicalJa": "罰する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "制衡",
+    "status": "approved",
+    "canonicalJa": "抑制と均衡",
+    "acceptedJa": []
+  },
+  {
     "trad": "刷",
     "status": "approved",
     "canonicalJa": "磨く",
@@ -20137,6 +20838,17 @@
     "trad": "卑賤",
     "status": "approved",
     "canonicalJa": "賤しい",
+    "acceptedJa": []
+  },
+  {
+    "trad": "卒",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "卓著",
+    "status": "approved",
+    "canonicalJa": "傑出した",
     "acceptedJa": []
   },
   {
@@ -20416,9 +21128,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "周全",
+    "status": "approved",
+    "canonicalJa": "周到な",
+    "acceptedJa": []
+  },
+  {
     "trad": "周到",
     "status": "approved",
     "canonicalJa": "気配り",
+    "acceptedJa": []
+  },
+  {
+    "trad": "周延",
+    "status": "approved",
+    "canonicalJa": "網羅的",
     "acceptedJa": []
   },
   {
@@ -20427,9 +21151,32 @@
     "acceptedJa": []
   },
   {
+    "trad": "周密",
+    "status": "approved",
+    "canonicalJa": "周到な",
+    "acceptedJa": []
+  },
+  {
+    "trad": "周旋",
+    "status": "approved",
+    "canonicalJa": "交際する",
+    "acceptedJa": ["対応する"]
+  },
+  {
     "trad": "周圍",
     "status": "approved",
     "canonicalJa": "周辺",
+    "acceptedJa": []
+  },
+  {
+    "trad": "周朝",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "周詳",
+    "status": "approved",
+    "canonicalJa": "綿密",
     "acceptedJa": []
   },
   {
@@ -20553,6 +21300,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "咋舌",
+    "status": "approved",
+    "canonicalJa": "言葉を失う",
+    "acceptedJa": []
+  },
+  {
     "trad": "和平",
     "status": "approved",
     "canonicalJa": "平和",
@@ -20628,6 +21381,12 @@
     "trad": "和藹可親",
     "status": "approved",
     "canonicalJa": "親しみやすい",
+    "acceptedJa": []
+  },
+  {
+    "trad": "咒語",
+    "status": "approved",
+    "canonicalJa": "呪文・呪術・呪い",
     "acceptedJa": []
   },
   {
@@ -21112,6 +21871,12 @@
     "trad": "宗旨",
     "status": "approved",
     "canonicalJa": "目的・目標",
+    "acceptedJa": []
+  },
+  {
+    "trad": "宗師",
+    "status": "approved",
+    "canonicalJa": "大家",
     "acceptedJa": []
   },
   {
@@ -21615,15 +22380,51 @@
     "acceptedJa": []
   },
   {
+    "trad": "征戰",
+    "status": "approved",
+    "canonicalJa": "遠征",
+    "acceptedJa": []
+  },
+  {
     "trad": "忠心",
     "status": "approved",
     "canonicalJa": "忠誠心",
     "acceptedJa": []
   },
   {
+    "trad": "忠心耿耿",
+    "status": "approved",
+    "canonicalJa": "忠誠を尽くす",
+    "acceptedJa": []
+  },
+  {
+    "trad": "忠臣",
+    "status": "approved",
+    "canonicalJa": "忠実な役人",
+    "acceptedJa": []
+  },
+  {
     "trad": "忠告",
     "status": "approved",
     "canonicalJa": "助言する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "忠於",
+    "status": "approved",
+    "canonicalJa": "忠誠を尽くす",
+    "acceptedJa": []
+  },
+  {
+    "trad": "忠厚",
+    "status": "approved",
+    "canonicalJa": "誠実で思いやりがある",
+    "acceptedJa": []
+  },
+  {
+    "trad": "忠貞",
+    "status": "approved",
+    "canonicalJa": "忠実で信頼できる",
     "acceptedJa": []
   },
   {
@@ -22165,6 +22966,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "拄",
+    "status": "approved",
+    "canonicalJa": "寄りかかる",
+    "acceptedJa": []
+  },
+  {
     "trad": "拆",
     "status": "approved",
     "canonicalJa": "解体する",
@@ -22419,6 +23226,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "拙劣",
+    "status": "approved",
+    "canonicalJa": "手際が悪い",
+    "acceptedJa": []
+  },
+  {
     "trad": "拚命",
     "status": "approved",
     "canonicalJa": "必死に",
@@ -22443,6 +23256,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "招收",
+    "status": "approved",
+    "canonicalJa": "採用する",
+    "acceptedJa": []
+  },
+  {
     "trad": "招呼",
     "status": "approved",
     "canonicalJa": "挨拶する",
@@ -22452,6 +23271,18 @@
     "trad": "招待",
     "status": "approved",
     "canonicalJa": "接待する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "招架",
+    "status": "approved",
+    "canonicalJa": "抵抗する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "招致",
+    "status": "approved",
+    "canonicalJa": "招く",
     "acceptedJa": []
   },
   {
@@ -22467,8 +23298,26 @@
     "acceptedJa": []
   },
   {
+    "trad": "招惹",
+    "status": "approved",
+    "canonicalJa": "招く",
+    "acceptedJa": ["挑発する"]
+  },
+  {
+    "trad": "招搖",
+    "status": "approved",
+    "canonicalJa": "自慢する",
+    "acceptedJa": []
+  },
+  {
     "trad": "招聘協調人",
     "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "招數",
+    "status": "approved",
+    "canonicalJa": "手口",
     "acceptedJa": []
   },
   {
@@ -22620,6 +23469,12 @@
     "trad": "放鬆",
     "status": "approved",
     "canonicalJa": "リラックスする",
+    "acceptedJa": []
+  },
+  {
+    "trad": "於事無補",
+    "status": "approved",
+    "canonicalJa": "役に立たない",
     "acceptedJa": []
   },
   {
@@ -23000,6 +23855,18 @@
     "reviewReason": "classifier-like gloss in initial quality pass"
   },
   {
+    "trad": "枝幹",
+    "status": "approved",
+    "canonicalJa": "枝",
+    "acceptedJa": []
+  },
+  {
+    "trad": "枝節",
+    "status": "approved",
+    "canonicalJa": "枝葉末節",
+    "acceptedJa": []
+  },
+  {
     "trad": "枝葉",
     "status": "approved",
     "canonicalJa": "枝葉",
@@ -23154,9 +24021,39 @@
     "acceptedJa": []
   },
   {
+    "trad": "油脂",
+    "status": "approved",
+    "canonicalJa": "油脂",
+    "acceptedJa": []
+  },
+  {
+    "trad": "油然而生",
+    "status": "approved",
+    "canonicalJa": "自然に湧き起こる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "油畫",
+    "status": "approved",
+    "canonicalJa": "油絵",
+    "acceptedJa": []
+  },
+  {
+    "trad": "油燈",
+    "status": "approved",
+    "canonicalJa": "石油ランプ",
+    "acceptedJa": []
+  },
+  {
     "trad": "油膩",
     "status": "approved",
     "canonicalJa": "脂っこい",
+    "acceptedJa": []
+  },
+  {
+    "trad": "治本",
+    "status": "approved",
+    "canonicalJa": "問題を根本から解決する",
     "acceptedJa": []
   },
   {
@@ -23184,6 +24081,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "治標",
+    "status": "approved",
+    "canonicalJa": "対症療法をする",
+    "acceptedJa": []
+  },
+  {
     "trad": "治療",
     "status": "approved",
     "canonicalJa": "病気を治療する",
@@ -23196,9 +24099,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "沼澤",
+    "status": "approved",
+    "canonicalJa": "沼地",
+    "acceptedJa": []
+  },
+  {
     "trad": "沾",
     "status": "approved",
     "canonicalJa": "濡れる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "沾沾自喜",
+    "status": "approved",
+    "canonicalJa": "自己満足する",
     "acceptedJa": []
   },
   {
@@ -23497,9 +24412,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "注目",
+    "status": "approved",
+    "canonicalJa": "注目する",
+    "acceptedJa": []
+  },
+  {
     "trad": "注重",
     "status": "approved",
     "canonicalJa": "重視する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "注射",
+    "status": "approved",
+    "canonicalJa": "注射する",
     "acceptedJa": []
   },
   {
@@ -23557,6 +24484,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "爭先恐後",
+    "status": "approved",
+    "canonicalJa": "先を争う",
+    "acceptedJa": []
+  },
+  {
     "trad": "爭吵",
     "status": "approved",
     "canonicalJa": "言い争う",
@@ -23575,6 +24508,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "爭氣",
+    "status": "approved",
+    "canonicalJa": "向上を決意する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "爭鬥",
+    "status": "approved",
+    "canonicalJa": "闘う",
+    "acceptedJa": []
+  },
+  {
     "trad": "爭執",
     "status": "approved",
     "canonicalJa": "口論する",
@@ -23584,6 +24529,18 @@
     "trad": "爭奪",
     "status": "approved",
     "canonicalJa": "争う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "爭奪戰",
+    "status": "approved",
+    "canonicalJa": "争奪戦",
+    "acceptedJa": []
+  },
+  {
+    "trad": "爭端",
+    "status": "approved",
+    "canonicalJa": "紛争・論争・葛藤",
     "acceptedJa": []
   },
   {
@@ -23821,6 +24778,24 @@
     "acceptedJa": ["すぐに"]
   },
   {
+    "trad": "直率",
+    "status": "approved",
+    "canonicalJa": "率直",
+    "acceptedJa": []
+  },
+  {
+    "trad": "直視",
+    "status": "approved",
+    "canonicalJa": "まっすぐ見る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "直截了當",
+    "status": "approved",
+    "canonicalJa": "単刀直入",
+    "acceptedJa": []
+  },
+  {
     "trad": "直線",
     "status": "approved",
     "canonicalJa": "直線",
@@ -23845,6 +24820,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "知心",
+    "status": "approved",
+    "canonicalJa": "気心が知れた",
+    "acceptedJa": []
+  },
+  {
     "trad": "知名",
     "status": "approved",
     "canonicalJa": "有名",
@@ -23857,9 +24838,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "知音",
+    "status": "approved",
+    "canonicalJa": "親しい友人",
+    "acceptedJa": []
+  },
+  {
+    "trad": "知悉",
+    "status": "approved",
+    "canonicalJa": "知る",
+    "acceptedJa": []
+  },
+  {
     "trad": "知情",
     "status": "approved",
     "canonicalJa": "事情を知る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "知會",
+    "status": "approved",
+    "canonicalJa": "伝える",
     "acceptedJa": []
   },
   {
@@ -24423,6 +25422,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "迎刃而解",
+    "status": "approved",
+    "canonicalJa": "簡単に解ける",
+    "acceptedJa": []
+  },
+  {
     "trad": "迎合",
     "status": "approved",
     "canonicalJa": "迎合する",
@@ -24438,6 +25443,12 @@
     "trad": "迎接",
     "status": "approved",
     "canonicalJa": "歓迎する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "迎戰",
+    "status": "approved",
+    "canonicalJa": "敵を正面から迎え撃つ",
     "acceptedJa": []
   },
   {
@@ -24656,6 +25667,12 @@
     "acceptedJa": ["長短"]
   },
   {
+    "trad": "長進",
+    "status": "approved",
+    "canonicalJa": "進歩する",
+    "acceptedJa": []
+  },
+  {
     "trad": "長壽",
     "status": "approved",
     "canonicalJa": "長寿",
@@ -24752,6 +25769,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "阻隔",
+    "status": "approved",
+    "canonicalJa": "切り離す",
+    "acceptedJa": []
+  },
+  {
     "trad": "阻撓",
     "status": "approved",
     "canonicalJa": "妨害する",
@@ -24764,9 +25787,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "阻斷",
+    "status": "approved",
+    "canonicalJa": "阻止する",
+    "acceptedJa": []
+  },
+  {
     "trad": "阻礙",
     "status": "approved",
     "canonicalJa": "妨げる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "阻攔",
+    "status": "approved",
+    "canonicalJa": "止める",
     "acceptedJa": []
   },
   {
@@ -24924,6 +25959,12 @@
     "trad": "附屬",
     "status": "approved",
     "canonicalJa": "付属",
+    "acceptedJa": []
+  },
+  {
+    "trad": "雨後春筍",
+    "status": "approved",
+    "canonicalJa": "次々に現れる",
     "acceptedJa": []
   },
   {
@@ -25727,6 +26768,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "勇往直前",
+    "status": "approved",
+    "canonicalJa": "勇敢に前進する",
+    "acceptedJa": []
+  },
+  {
     "trad": "勇於",
     "status": "approved",
     "canonicalJa": "勇気を出して",
@@ -25736,6 +26783,12 @@
     "trad": "勇氣",
     "status": "approved",
     "canonicalJa": "勇気",
+    "acceptedJa": []
+  },
+  {
+    "trad": "勇猛",
+    "status": "approved",
+    "canonicalJa": "大胆で力強い",
     "acceptedJa": []
   },
   {
@@ -26079,6 +27132,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "哉",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "哎呀",
     "status": "approved",
     "canonicalJa": "あら",
@@ -26130,6 +27188,11 @@
     "trad": "城牆",
     "status": "approved",
     "canonicalJa": "城壁",
+    "acceptedJa": []
+  },
+  {
+    "trad": "奏摺",
+    "status": "rejected",
     "acceptedJa": []
   },
   {
@@ -26519,6 +27582,18 @@
     "trad": "帥氣",
     "status": "approved",
     "canonicalJa": "かっこいい",
+    "acceptedJa": []
+  },
+  {
+    "trad": "幽暗",
+    "status": "approved",
+    "canonicalJa": "薄暗い",
+    "acceptedJa": []
+  },
+  {
+    "trad": "幽靜",
+    "status": "approved",
+    "canonicalJa": "静かな",
     "acceptedJa": []
   },
   {
@@ -26957,6 +28032,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "怨氣",
+    "status": "approved",
+    "canonicalJa": "恨み",
+    "acceptedJa": []
+  },
+  {
+    "trad": "怨懟",
+    "status": "approved",
+    "canonicalJa": "恨み・恨み節",
+    "acceptedJa": []
+  },
+  {
     "trad": "恍惚",
     "status": "approved",
     "canonicalJa": "気が散っている",
@@ -27185,9 +28272,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "指日可待",
+    "status": "approved",
+    "canonicalJa": "間近に迫っている",
+    "acceptedJa": []
+  },
+  {
     "trad": "指令",
     "status": "approved",
     "canonicalJa": "指令",
+    "acceptedJa": []
+  },
+  {
+    "trad": "指正",
+    "status": "approved",
+    "canonicalJa": "批判する",
     "acceptedJa": []
   },
   {
@@ -27197,9 +28296,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "指使",
+    "status": "approved",
+    "canonicalJa": "煽る",
+    "acceptedJa": []
+  },
+  {
     "trad": "指定",
     "status": "approved",
     "canonicalJa": "指名する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "指明",
+    "status": "approved",
+    "canonicalJa": "示す",
     "acceptedJa": []
   },
   {
@@ -27207,6 +28318,12 @@
     "status": "approved",
     "canonicalJa": "案内する",
     "acceptedJa": ["ガイド"]
+  },
+  {
+    "trad": "指指點點",
+    "status": "approved",
+    "canonicalJa": "身振り手振りで指摘する",
+    "acceptedJa": []
   },
   {
     "trad": "指派",
@@ -27218,6 +28335,12 @@
     "trad": "指紋",
     "status": "approved",
     "canonicalJa": "指紋",
+    "acceptedJa": []
+  },
+  {
+    "trad": "指針",
+    "status": "approved",
+    "canonicalJa": "指針",
     "acceptedJa": []
   },
   {
@@ -27242,6 +28365,18 @@
     "trad": "指責",
     "status": "approved",
     "canonicalJa": "批判する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "指稱",
+    "status": "approved",
+    "canonicalJa": "指す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "指認",
+    "status": "approved",
+    "canonicalJa": "を特定する",
     "acceptedJa": []
   },
   {
@@ -27383,6 +28518,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "政令",
+    "status": "approved",
+    "canonicalJa": "政令",
+    "acceptedJa": []
+  },
+  {
+    "trad": "政見",
+    "status": "approved",
+    "canonicalJa": "政見",
+    "acceptedJa": []
+  },
+  {
     "trad": "政事",
     "status": "approved",
     "canonicalJa": "政治",
@@ -27406,6 +28553,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "政敵",
+    "status": "approved",
+    "canonicalJa": "政敵",
+    "acceptedJa": []
+  },
+  {
     "trad": "政壇",
     "status": "approved",
     "canonicalJa": "政界",
@@ -27421,6 +28574,12 @@
     "trad": "政變",
     "status": "approved",
     "canonicalJa": "クーデター",
+    "acceptedJa": []
+  },
+  {
+    "trad": "政體",
+    "status": "approved",
+    "canonicalJa": "政府システム",
     "acceptedJa": []
   },
   {
@@ -28292,6 +29451,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "炸藥",
+    "status": "approved",
+    "canonicalJa": "爆発物",
+    "acceptedJa": []
+  },
+  {
     "trad": "為",
     "status": "rejected",
     "acceptedJa": []
@@ -28409,6 +29574,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "珍品",
+    "status": "approved",
+    "canonicalJa": "珍品",
+    "acceptedJa": []
+  },
+  {
     "trad": "珍珠小番茄",
     "status": "approved",
     "canonicalJa": "ミニトマト",
@@ -28427,9 +29598,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "珍愛",
+    "status": "approved",
+    "canonicalJa": "大切にする",
+    "acceptedJa": []
+  },
+  {
     "trad": "珍藏",
     "status": "approved",
     "canonicalJa": "珍蔵する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "珍寶",
+    "status": "approved",
+    "canonicalJa": "宝物",
     "acceptedJa": []
   },
   {
@@ -28543,6 +29726,12 @@
     "trad": "皇家",
     "status": "approved",
     "canonicalJa": "王室",
+    "acceptedJa": []
+  },
+  {
+    "trad": "盅",
+    "status": "approved",
+    "canonicalJa": "ゴブレット",
     "acceptedJa": []
   },
   {
@@ -29246,6 +30435,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "約略",
+    "status": "approved",
+    "canonicalJa": "おおよそ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "約莫",
+    "status": "approved",
+    "canonicalJa": "およそ",
+    "acceptedJa": []
+  },
+  {
     "trad": "紅包",
     "status": "approved",
     "canonicalJa": "紅包",
@@ -29598,9 +30799,33 @@
     "acceptedJa": []
   },
   {
+    "trad": "致命傷",
+    "status": "approved",
+    "canonicalJa": "致命傷",
+    "acceptedJa": []
+  },
+  {
+    "trad": "致富",
+    "status": "approved",
+    "canonicalJa": "金持ちになる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "致詞",
+    "status": "approved",
+    "canonicalJa": "スピーチをする",
+    "acceptedJa": []
+  },
+  {
     "trad": "致意",
     "status": "approved",
     "canonicalJa": "あいさつする",
+    "acceptedJa": []
+  },
+  {
+    "trad": "致歉",
+    "status": "approved",
+    "canonicalJa": "謝罪する",
     "acceptedJa": []
   },
   {
@@ -30281,6 +31506,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "重力",
+    "status": "approved",
+    "canonicalJa": "重力",
+    "acceptedJa": []
+  },
+  {
     "trad": "重大",
     "status": "approved",
     "canonicalJa": "重大な",
@@ -30317,9 +31548,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "重兵",
+    "status": "approved",
+    "canonicalJa": "大軍",
+    "acceptedJa": []
+  },
+  {
     "trad": "重來",
     "status": "approved",
     "canonicalJa": "やり直す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "重金",
+    "status": "approved",
+    "canonicalJa": "大枚の金",
     "acceptedJa": []
   },
   {
@@ -30424,6 +31667,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "重擔",
+    "status": "approved",
+    "canonicalJa": "困難な仕事",
+    "acceptedJa": []
+  },
+  {
     "trad": "重整",
     "status": "approved",
     "canonicalJa": "再編する",
@@ -30434,6 +31683,12 @@
     "status": "approved",
     "canonicalJa": "要点",
     "acceptedJa": ["重点"]
+  },
+  {
+    "trad": "重鎮",
+    "status": "approved",
+    "canonicalJa": "重要拠点",
+    "acceptedJa": []
   },
   {
     "trad": "重疊",
@@ -31458,6 +32713,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "值",
+    "status": "approved",
+    "canonicalJa": "価値がある",
+    "acceptedJa": []
+  },
+  {
     "trad": "值班",
     "status": "approved",
     "canonicalJa": "当直",
@@ -31524,10 +32785,22 @@
     "acceptedJa": []
   },
   {
+    "trad": "冤屈",
+    "status": "approved",
+    "canonicalJa": "不当な扱い",
+    "acceptedJa": []
+  },
+  {
     "trad": "冤枉",
     "status": "approved",
     "canonicalJa": "不当な",
     "acceptedJa": []
+  },
+  {
+    "trad": "冤家",
+    "status": "approved",
+    "canonicalJa": "宿敵",
+    "acceptedJa": ["因縁の相手"]
   },
   {
     "trad": "冥想",
@@ -31663,6 +32936,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "原子筆",
+    "status": "approved",
+    "canonicalJa": "ボールペン",
+    "acceptedJa": []
+  },
+  {
     "trad": "原文",
     "status": "approved",
     "canonicalJa": "原文",
@@ -31673,6 +32952,12 @@
     "status": "approved",
     "canonicalJa": "もともと",
     "acceptedJa": ["本来"]
+  },
+  {
+    "trad": "原生",
+    "status": "approved",
+    "canonicalJa": "在来の",
+    "acceptedJa": []
   },
   {
     "trad": "原先",
@@ -31705,6 +32990,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "原形",
+    "status": "approved",
+    "canonicalJa": "本来の姿",
+    "acceptedJa": []
+  },
+  {
     "trad": "原來",
     "status": "approved",
     "canonicalJa": "元々は",
@@ -31729,6 +33020,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "原委",
+    "status": "approved",
+    "canonicalJa": "全貌",
+    "acceptedJa": []
+  },
+  {
     "trad": "原狀",
     "status": "approved",
     "canonicalJa": "元の状態",
@@ -31747,15 +33044,33 @@
     "acceptedJa": []
   },
   {
+    "trad": "原封不動",
+    "status": "approved",
+    "canonicalJa": "手を加えない",
+    "acceptedJa": []
+  },
+  {
     "trad": "原料",
     "status": "approved",
     "canonicalJa": "原料",
     "acceptedJa": []
   },
   {
+    "trad": "原動力",
+    "status": "approved",
+    "canonicalJa": "原動力",
+    "acceptedJa": []
+  },
+  {
     "trad": "原理",
     "status": "approved",
     "canonicalJa": "原理・理論",
+    "acceptedJa": []
+  },
+  {
+    "trad": "原野",
+    "status": "approved",
+    "canonicalJa": "平野",
     "acceptedJa": []
   },
   {
@@ -31768,6 +33083,18 @@
     "trad": "原著",
     "status": "approved",
     "canonicalJa": "原作",
+    "acceptedJa": []
+  },
+  {
+    "trad": "原貌",
+    "status": "approved",
+    "canonicalJa": "原形",
+    "acceptedJa": []
+  },
+  {
+    "trad": "原稿",
+    "status": "approved",
+    "canonicalJa": "原稿",
     "acceptedJa": []
   },
   {
@@ -31853,6 +33180,18 @@
     "trad": "哭笑不得",
     "status": "approved",
     "canonicalJa": "泣き笑いする",
+    "acceptedJa": []
+  },
+  {
+    "trad": "哲人",
+    "status": "approved",
+    "canonicalJa": "賢者",
+    "acceptedJa": []
+  },
+  {
+    "trad": "哲理",
+    "status": "approved",
+    "canonicalJa": "哲学",
     "acceptedJa": []
   },
   {
@@ -32015,6 +33354,18 @@
     "trad": "宮廷",
     "status": "approved",
     "canonicalJa": "朝廷",
+    "acceptedJa": []
+  },
+  {
+    "trad": "宰相",
+    "status": "approved",
+    "canonicalJa": "宰相",
+    "acceptedJa": []
+  },
+  {
+    "trad": "宰割",
+    "status": "approved",
+    "canonicalJa": "屠殺する",
     "acceptedJa": []
   },
   {
@@ -32265,6 +33616,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "展翅",
+    "status": "approved",
+    "canonicalJa": "翼を広げる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "展望",
+    "status": "approved",
+    "canonicalJa": "見通し",
+    "acceptedJa": []
+  },
+  {
     "trad": "展現",
     "status": "approved",
     "canonicalJa": "示す",
@@ -32499,6 +33862,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "恣意",
+    "status": "approved",
+    "canonicalJa": "恣意的な",
+    "acceptedJa": []
+  },
+  {
     "trad": "恥笑",
     "status": "approved",
     "canonicalJa": "嘲笑する",
@@ -32698,9 +34067,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "振振有詞",
+    "status": "approved",
+    "canonicalJa": "もっともらしく弁じる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "振動",
+    "status": "approved",
+    "canonicalJa": "揺らす",
+    "acceptedJa": []
+  },
+  {
     "trad": "振奮",
     "status": "approved",
     "canonicalJa": "鼓舞する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "振興",
+    "status": "approved",
+    "canonicalJa": "振興する",
     "acceptedJa": []
   },
   {
@@ -32785,6 +34172,18 @@
     "trad": "捉弄",
     "status": "approved",
     "canonicalJa": "からかう",
+    "acceptedJa": []
+  },
+  {
+    "trad": "捉拿",
+    "status": "approved",
+    "canonicalJa": "犯人を逮捕する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "捉摸",
+    "status": "approved",
+    "canonicalJa": "理解する",
     "acceptedJa": []
   },
   {
@@ -33192,6 +34591,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "朕",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "朗誦",
     "status": "approved",
     "canonicalJa": "朗読する",
@@ -33368,6 +34772,12 @@
     "trad": "栽培",
     "status": "approved",
     "canonicalJa": "育てる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "栽種",
+    "status": "approved",
+    "canonicalJa": "植える",
     "acceptedJa": []
   },
   {
@@ -34465,6 +35875,12 @@
     "reviewReason": "review batch initial approval"
   },
   {
+    "trad": "真切",
+    "status": "approved",
+    "canonicalJa": "鮮明",
+    "acceptedJa": []
+  },
+  {
     "trad": "真心",
     "status": "approved",
     "canonicalJa": "誠心誠意",
@@ -34499,6 +35915,18 @@
     "trad": "真誠",
     "status": "approved",
     "canonicalJa": "誠実な",
+    "acceptedJa": []
+  },
+  {
+    "trad": "真摯",
+    "status": "approved",
+    "canonicalJa": "真摯な",
+    "acceptedJa": []
+  },
+  {
+    "trad": "真諦",
+    "status": "approved",
+    "canonicalJa": "真意・真髄",
     "acceptedJa": []
   },
   {
@@ -34655,6 +36083,12 @@
     "trad": "祖國",
     "status": "approved",
     "canonicalJa": "祖国",
+    "acceptedJa": []
+  },
+  {
+    "trad": "祖傳",
+    "status": "approved",
+    "canonicalJa": "代々受け継がれる",
     "acceptedJa": []
   },
   {
@@ -35017,6 +36451,12 @@
     "trad": "紗",
     "status": "approved",
     "canonicalJa": "紗",
+    "acceptedJa": []
+  },
+  {
+    "trad": "紙上談兵",
+    "status": "approved",
+    "canonicalJa": "机上の空論",
     "acceptedJa": []
   },
   {
@@ -35413,6 +36853,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "茲",
+    "status": "approved",
+    "canonicalJa": "ここに",
+    "acceptedJa": []
+  },
+  {
     "trad": "茶几",
     "status": "approved",
     "canonicalJa": "小さなサイドテーブル",
@@ -35578,6 +37024,12 @@
     "trad": "衰落",
     "status": "approved",
     "canonicalJa": "衰退する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "衷心",
+    "status": "approved",
+    "canonicalJa": "心からの",
     "acceptedJa": []
   },
   {
@@ -36073,6 +37525,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "追憶",
+    "status": "approved",
+    "canonicalJa": "回想する",
+    "acceptedJa": []
+  },
+  {
     "trad": "追隨",
     "status": "approved",
     "canonicalJa": "ついていく",
@@ -36312,6 +37770,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "酌",
+    "status": "approved",
+    "canonicalJa": "酌む",
+    "acceptedJa": ["斟酌する"]
+  },
+  {
+    "trad": "酌量",
+    "status": "approved",
+    "canonicalJa": "斟酌する",
+    "acceptedJa": []
+  },
+  {
     "trad": "配",
     "status": "approved",
     "canonicalJa": "合わせる",
@@ -36507,6 +37977,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "陣亡",
+    "status": "approved",
+    "canonicalJa": "戦死する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "陣地",
+    "status": "approved",
+    "canonicalJa": "陣地",
+    "acceptedJa": []
+  },
+  {
     "trad": "陣容",
     "status": "approved",
     "canonicalJa": "陣容",
@@ -36553,6 +38035,12 @@
     "status": "approved",
     "canonicalJa": "匹",
     "acceptedJa": ["羽"]
+  },
+  {
+    "trad": "隻身",
+    "status": "approved",
+    "canonicalJa": "ひとりで",
+    "acceptedJa": []
   },
   {
     "trad": "飢渴",
@@ -37398,9 +38886,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "偵查",
+    "status": "approved",
+    "canonicalJa": "捜査する",
+    "acceptedJa": []
+  },
+  {
     "trad": "偵探",
     "status": "approved",
     "canonicalJa": "探偵",
+    "acceptedJa": []
+  },
+  {
+    "trad": "偵察",
+    "status": "approved",
+    "canonicalJa": "偵察する",
     "acceptedJa": []
   },
   {
@@ -37887,6 +39387,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "啄",
+    "status": "approved",
+    "canonicalJa": "つつく",
+    "acceptedJa": []
+  },
+  {
     "trad": "商人",
     "status": "approved",
     "canonicalJa": "商人",
@@ -38207,6 +39713,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "執拗",
+    "status": "approved",
+    "canonicalJa": "執拗な",
+    "acceptedJa": []
+  },
+  {
     "trad": "執法",
     "status": "approved",
     "canonicalJa": "法律を執行する",
@@ -38216,6 +39728,36 @@
     "trad": "執政",
     "status": "approved",
     "canonicalJa": "政権を握る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "執教",
+    "status": "approved",
+    "canonicalJa": "教える",
+    "acceptedJa": []
+  },
+  {
+    "trad": "執掌",
+    "status": "approved",
+    "canonicalJa": "掌握する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "執筆",
+    "status": "approved",
+    "canonicalJa": "書く",
+    "acceptedJa": []
+  },
+  {
+    "trad": "執意",
+    "status": "approved",
+    "canonicalJa": "にこだわる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "執業",
+    "status": "approved",
+    "canonicalJa": "職業に就く",
     "acceptedJa": []
   },
   {
@@ -38719,6 +40261,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "專攻",
+    "status": "approved",
+    "canonicalJa": "専攻する",
+    "acceptedJa": []
+  },
+  {
     "trad": "專制",
     "status": "approved",
     "canonicalJa": "独裁",
@@ -38773,9 +40321,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "專橫",
+    "status": "approved",
+    "canonicalJa": "専横な",
+    "acceptedJa": []
+  },
+  {
     "trad": "專輯",
     "status": "approved",
     "canonicalJa": "アルバム",
+    "acceptedJa": []
+  },
+  {
+    "trad": "專職",
+    "status": "approved",
+    "canonicalJa": "専任",
     "acceptedJa": []
   },
   {
@@ -38872,6 +40432,12 @@
     "trad": "帳戶",
     "status": "approved",
     "canonicalJa": "口座",
+    "acceptedJa": []
+  },
+  {
+    "trad": "帳目",
+    "status": "approved",
+    "canonicalJa": "帳簿の項目",
     "acceptedJa": []
   },
   {
@@ -38998,9 +40564,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "庸俗",
+    "status": "approved",
+    "canonicalJa": "下品な",
+    "acceptedJa": []
+  },
+  {
     "trad": "張力",
     "status": "approved",
     "canonicalJa": "張力",
+    "acceptedJa": []
+  },
+  {
+    "trad": "張口",
+    "status": "approved",
+    "canonicalJa": "口を開く",
+    "acceptedJa": []
+  },
+  {
+    "trad": "張牙舞爪",
+    "status": "approved",
+    "canonicalJa": "威嚇のジェスチャーをする",
     "acceptedJa": []
   },
   {
@@ -39008,6 +40592,12 @@
     "status": "approved",
     "canonicalJa": "見回す",
     "acceptedJa": []
+  },
+  {
+    "trad": "張揚",
+    "status": "approved",
+    "canonicalJa": "広める",
+    "acceptedJa": ["派手な"]
   },
   {
     "trad": "張貼",
@@ -39019,6 +40609,12 @@
     "trad": "張開",
     "status": "approved",
     "canonicalJa": "広げる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "張羅",
+    "status": "approved",
+    "canonicalJa": "世話をする",
     "acceptedJa": []
   },
   {
@@ -39312,6 +40908,16 @@
     "acceptedJa": []
   },
   {
+    "trad": "御史",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "御用",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "悉心",
     "status": "approved",
     "canonicalJa": "心を込める",
@@ -39333,6 +40939,24 @@
     "trad": "悠哉",
     "status": "approved",
     "canonicalJa": "のんびりした",
+    "acceptedJa": []
+  },
+  {
+    "trad": "悠悠",
+    "status": "approved",
+    "canonicalJa": "悠々とした",
+    "acceptedJa": []
+  },
+  {
+    "trad": "悠揚",
+    "status": "approved",
+    "canonicalJa": "メロディアス",
+    "acceptedJa": []
+  },
+  {
+    "trad": "悠然",
+    "status": "approved",
+    "canonicalJa": "のんびり",
     "acceptedJa": []
   },
   {
@@ -40619,6 +42243,24 @@
     "acceptedJa": []
   },
   {
+    "trad": "斬首",
+    "status": "approved",
+    "canonicalJa": "首を切る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "斬釘截鐵",
+    "status": "approved",
+    "canonicalJa": "断固としている",
+    "acceptedJa": []
+  },
+  {
+    "trad": "斬斷",
+    "status": "approved",
+    "canonicalJa": "半分に切る",
+    "acceptedJa": []
+  },
+  {
     "trad": "旋即",
     "status": "approved",
     "canonicalJa": "すぐに",
@@ -41163,6 +42805,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "淵博",
+    "status": "approved",
+    "canonicalJa": "博学",
+    "acceptedJa": []
+  },
+  {
+    "trad": "淵源",
+    "status": "approved",
+    "canonicalJa": "起源",
+    "acceptedJa": []
+  },
+  {
     "trad": "混入",
     "status": "approved",
     "canonicalJa": "紛れ込む",
@@ -41512,6 +43166,12 @@
     "trad": "猖獗",
     "status": "approved",
     "canonicalJa": "暴れる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "猙獰",
+    "status": "approved",
+    "canonicalJa": "凶悪な",
     "acceptedJa": []
   },
   {
@@ -42126,6 +43786,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "眾所周知",
+    "status": "approved",
+    "canonicalJa": "言わずと知れた",
+    "acceptedJa": []
+  },
+  {
     "trad": "祥和",
     "status": "approved",
     "canonicalJa": "穏やかな",
@@ -42347,6 +44013,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "紮",
+    "status": "approved",
+    "canonicalJa": "縛る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "紮營",
+    "status": "approved",
+    "canonicalJa": "駐屯する",
+    "acceptedJa": []
+  },
+  {
     "trad": "累",
     "status": "approved",
     "canonicalJa": "疲れる",
@@ -42461,6 +44139,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "終了",
+    "status": "approved",
+    "canonicalJa": "終了",
+    "acceptedJa": []
+  },
+  {
     "trad": "終日",
     "status": "approved",
     "canonicalJa": "一日中",
@@ -42476,6 +44160,12 @@
     "trad": "終生",
     "status": "approved",
     "canonicalJa": "生涯を通じて",
+    "acceptedJa": []
+  },
+  {
+    "trad": "終年",
+    "status": "approved",
+    "canonicalJa": "通年",
     "acceptedJa": []
   },
   {
@@ -42742,9 +44432,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "莊重",
+    "status": "approved",
+    "canonicalJa": "重厚",
+    "acceptedJa": []
+  },
+  {
     "trad": "莊園",
     "status": "approved",
     "canonicalJa": "荘園",
+    "acceptedJa": []
+  },
+  {
+    "trad": "莊稼",
+    "status": "approved",
+    "canonicalJa": "農作物",
+    "acceptedJa": []
+  },
+  {
+    "trad": "莊嚴",
+    "status": "approved",
+    "canonicalJa": "厳粛な",
     "acceptedJa": []
   },
   {
@@ -43232,15 +44940,33 @@
     "acceptedJa": []
   },
   {
+    "trad": "責問",
+    "status": "approved",
+    "canonicalJa": "説明を求める",
+    "acceptedJa": []
+  },
+  {
     "trad": "責備",
     "status": "approved",
     "canonicalJa": "非難する",
     "acceptedJa": []
   },
   {
+    "trad": "責無旁貸",
+    "status": "approved",
+    "canonicalJa": "義務がある",
+    "acceptedJa": []
+  },
+  {
     "trad": "責罵",
     "status": "approved",
     "canonicalJa": "叱る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "責難",
+    "status": "approved",
+    "canonicalJa": "非難する",
     "acceptedJa": []
   },
   {
@@ -43591,6 +45317,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "造化",
+    "status": "approved",
+    "canonicalJa": "自然の働き",
+    "acceptedJa": ["幸運"]
+  },
+  {
     "trad": "造反",
     "status": "approved",
     "canonicalJa": "反乱を起こす",
@@ -43600,6 +45332,12 @@
     "trad": "造成",
     "status": "approved",
     "canonicalJa": "引き起こす",
+    "acceptedJa": []
+  },
+  {
+    "trad": "造作",
+    "status": "approved",
+    "canonicalJa": "作る",
     "acceptedJa": []
   },
   {
@@ -43618,6 +45356,18 @@
     "trad": "造就",
     "status": "approved",
     "canonicalJa": "育成する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "造詣",
+    "status": "approved",
+    "canonicalJa": "造詣",
+    "acceptedJa": []
+  },
+  {
+    "trad": "造謠",
+    "status": "approved",
+    "canonicalJa": "噂を立てる",
     "acceptedJa": []
   },
   {
@@ -44131,6 +45881,12 @@
     "trad": "頂點",
     "status": "approved",
     "canonicalJa": "頂点",
+    "acceptedJa": []
+  },
+  {
+    "trad": "魚貫",
+    "status": "approved",
+    "canonicalJa": "一列に進む",
     "acceptedJa": []
   },
   {
@@ -45130,15 +46886,45 @@
     "acceptedJa": []
   },
   {
+    "trad": "寓所",
+    "status": "approved",
+    "canonicalJa": "住居",
+    "acceptedJa": []
+  },
+  {
+    "trad": "寓意",
+    "status": "approved",
+    "canonicalJa": "寓意",
+    "acceptedJa": ["教訓"]
+  },
+  {
+    "trad": "尊卑",
+    "status": "approved",
+    "canonicalJa": "身分差",
+    "acceptedJa": []
+  },
+  {
     "trad": "尊重",
     "status": "approved",
     "canonicalJa": "尊ぶ",
     "acceptedJa": []
   },
   {
+    "trad": "尊崇",
+    "status": "approved",
+    "canonicalJa": "称える",
+    "acceptedJa": []
+  },
+  {
     "trad": "尊貴",
     "status": "approved",
     "canonicalJa": "尊敬される",
+    "acceptedJa": []
+  },
+  {
+    "trad": "尊稱",
+    "status": "approved",
+    "canonicalJa": "敬称で呼ぶ",
     "acceptedJa": []
   },
   {
@@ -45567,6 +47353,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "掌",
+    "status": "approved",
+    "canonicalJa": "手のひら",
+    "acceptedJa": ["叩く"]
+  },
+  {
+    "trad": "掌心",
+    "status": "approved",
+    "canonicalJa": "手のひら",
+    "acceptedJa": []
+  },
+  {
     "trad": "掌控",
     "status": "approved",
     "canonicalJa": "掌握する",
@@ -45931,6 +47729,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "援引",
+    "status": "approved",
+    "canonicalJa": "引用する",
+    "acceptedJa": []
+  },
+  {
     "trad": "援手",
     "status": "approved",
     "canonicalJa": "援助の手",
@@ -46239,6 +48043,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "曾祖父",
+    "status": "approved",
+    "canonicalJa": "曾祖父",
+    "acceptedJa": []
+  },
+  {
     "trad": "曾幾何時",
     "status": "approved",
     "canonicalJa": "ちょっと前まで",
@@ -46292,9 +48102,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "朝氣",
+    "status": "approved",
+    "canonicalJa": "活力",
+    "acceptedJa": []
+  },
+  {
     "trad": "朝野",
     "status": "approved",
     "canonicalJa": "官民",
+    "acceptedJa": []
+  },
+  {
+    "trad": "朝陽",
+    "status": "approved",
+    "canonicalJa": "朝日",
     "acceptedJa": []
   },
   {
@@ -46430,6 +48252,12 @@
     "trad": "植入式廣告",
     "status": "approved",
     "canonicalJa": "プロダクトプレイスメント",
+    "acceptedJa": []
+  },
+  {
+    "trad": "植物人",
+    "status": "approved",
+    "canonicalJa": "植物人間",
     "acceptedJa": []
   },
   {
@@ -46691,6 +48519,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "游移",
+    "status": "approved",
+    "canonicalJa": "彷徨う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "游擊",
+    "status": "approved",
+    "canonicalJa": "ゲリラ戦",
+    "acceptedJa": []
+  },
+  {
     "trad": "渺小",
     "status": "approved",
     "canonicalJa": "ちっぽけな",
@@ -46762,15 +48602,51 @@
     "acceptedJa": []
   },
   {
+    "trad": "湛藍",
+    "status": "approved",
+    "canonicalJa": "紺碧",
+    "acceptedJa": []
+  },
+  {
+    "trad": "湧現",
+    "status": "approved",
+    "canonicalJa": "湧き出てくる",
+    "acceptedJa": []
+  },
+  {
     "trad": "湯圓",
     "status": "approved",
     "canonicalJa": "白玉団子",
     "acceptedJa": []
   },
   {
+    "trad": "滋生",
+    "status": "approved",
+    "canonicalJa": "生じる",
+    "acceptedJa": []
+  },
+  {
     "trad": "滋味",
     "status": "approved",
     "canonicalJa": "味わい",
+    "acceptedJa": []
+  },
+  {
+    "trad": "滋長",
+    "status": "approved",
+    "canonicalJa": "成長する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "滋潤",
+    "status": "approved",
+    "canonicalJa": "潤す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "滋養",
+    "status": "approved",
+    "canonicalJa": "栄養を与える",
     "acceptedJa": []
   },
   {
@@ -47286,6 +49162,12 @@
     "trad": "猶如",
     "status": "approved",
     "canonicalJa": "まるで",
+    "acceptedJa": []
+  },
+  {
+    "trad": "猶疑",
+    "status": "approved",
+    "canonicalJa": "ためらう",
     "acceptedJa": []
   },
   {
@@ -47854,9 +49736,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "硬生生",
+    "status": "approved",
+    "canonicalJa": "無理やり",
+    "acceptedJa": ["硬い"]
+  },
+  {
     "trad": "硬朗",
     "status": "approved",
     "canonicalJa": "丈夫な",
+    "acceptedJa": []
+  },
+  {
+    "trad": "硬著頭皮",
+    "status": "approved",
+    "canonicalJa": "勇気を奮い起こす",
     "acceptedJa": []
   },
   {
@@ -48650,6 +50544,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "著力",
+    "status": "approved",
+    "canonicalJa": "一生懸命努力する",
+    "acceptedJa": []
+  },
+  {
     "trad": "著手",
     "status": "approved",
     "canonicalJa": "着手する",
@@ -48674,6 +50574,12 @@
     "acceptedJa": ["心配する"]
   },
   {
+    "trad": "著述",
+    "status": "approved",
+    "canonicalJa": "書く",
+    "acceptedJa": []
+  },
+  {
     "trad": "著重",
     "status": "approved",
     "canonicalJa": "強調する",
@@ -48686,9 +50592,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "著眼",
+    "status": "approved",
+    "canonicalJa": "着目する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "著落",
+    "status": "approved",
+    "canonicalJa": "落ち着き先",
+    "acceptedJa": []
+  },
+  {
     "trad": "著實",
     "status": "approved",
     "canonicalJa": "本当に",
+    "acceptedJa": []
+  },
+  {
+    "trad": "著稱",
+    "status": "approved",
+    "canonicalJa": "広く知られる",
     "acceptedJa": []
   },
   {
@@ -48755,6 +50679,12 @@
     "trad": "虛擬",
     "status": "approved",
     "canonicalJa": "架空の",
+    "acceptedJa": []
+  },
+  {
+    "trad": "蛛絲馬跡",
+    "status": "approved",
+    "canonicalJa": "手がかり",
     "acceptedJa": []
   },
   {
@@ -48848,6 +50778,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "診療",
+    "status": "approved",
+    "canonicalJa": "診断と治療",
+    "acceptedJa": []
+  },
+  {
     "trad": "診斷",
     "status": "approved",
     "canonicalJa": "診断する",
@@ -48875,6 +50811,12 @@
     "trad": "詐",
     "status": "approved",
     "canonicalJa": "だます",
+    "acceptedJa": []
+  },
+  {
+    "trad": "詐欺",
+    "status": "approved",
+    "canonicalJa": "詐欺",
     "acceptedJa": []
   },
   {
@@ -48965,6 +50907,12 @@
     "trad": "象徵",
     "status": "approved",
     "canonicalJa": "表す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "貯存",
+    "status": "approved",
+    "canonicalJa": "貯蔵する",
     "acceptedJa": []
   },
   {
@@ -49263,6 +51211,12 @@
     "trad": "跑道",
     "status": "approved",
     "canonicalJa": "滑走路",
+    "acceptedJa": []
+  },
+  {
+    "trad": "軸心",
+    "status": "approved",
+    "canonicalJa": "軸",
     "acceptedJa": []
   },
   {
@@ -50013,9 +51967,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "雲集",
+    "status": "approved",
+    "canonicalJa": "集まる",
+    "acceptedJa": []
+  },
+  {
     "trad": "雲端",
     "status": "approved",
     "canonicalJa": "クラウド",
+    "acceptedJa": []
+  },
+  {
+    "trad": "雲霄",
+    "status": "approved",
+    "canonicalJa": "大空",
     "acceptedJa": []
   },
   {
@@ -50407,6 +52373,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "債券",
+    "status": "approved",
+    "canonicalJa": "債券",
+    "acceptedJa": []
+  },
+  {
     "trad": "債務",
     "status": "approved",
     "canonicalJa": "負債",
@@ -50740,6 +52712,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "園地",
+    "status": "approved",
+    "canonicalJa": "園地",
+    "acceptedJa": []
+  },
+  {
+    "trad": "園藝",
+    "status": "approved",
+    "canonicalJa": "園芸",
+    "acceptedJa": []
+  },
+  {
     "trad": "圓",
     "status": "approved",
     "canonicalJa": "丸い",
@@ -50761,6 +52745,18 @@
     "trad": "圓滿",
     "status": "approved",
     "canonicalJa": "円満",
+    "acceptedJa": []
+  },
+  {
+    "trad": "圓潤",
+    "status": "approved",
+    "canonicalJa": "まろやかな",
+    "acceptedJa": []
+  },
+  {
+    "trad": "圓融",
+    "status": "approved",
+    "canonicalJa": "円満な",
     "acceptedJa": []
   },
   {
@@ -51077,6 +53073,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "愈發",
+    "status": "approved",
+    "canonicalJa": "ますます",
+    "acceptedJa": []
+  },
+  {
     "trad": "意旨",
     "status": "approved",
     "canonicalJa": "意図",
@@ -51147,6 +53149,12 @@
     "status": "approved",
     "canonicalJa": "無知",
     "acceptedJa": []
+  },
+  {
+    "trad": "愚笨",
+    "status": "approved",
+    "canonicalJa": "愚かな",
+    "acceptedJa": ["不器用な"]
   },
   {
     "trad": "愚蠢",
@@ -51658,6 +53666,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "斟",
+    "status": "approved",
+    "canonicalJa": "注ぐ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "斟酌",
+    "status": "approved",
+    "canonicalJa": "検討する",
+    "acceptedJa": []
+  },
+  {
     "trad": "新不倫瑞克",
     "status": "rejected",
     "acceptedJa": []
@@ -51785,6 +53805,18 @@
     "trad": "暈倒",
     "status": "approved",
     "canonicalJa": "気を失う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "暈眩",
+    "status": "approved",
+    "canonicalJa": "めまいがする",
+    "acceptedJa": []
+  },
+  {
+    "trad": "暈頭轉向",
+    "status": "approved",
+    "canonicalJa": "混乱状態",
     "acceptedJa": []
   },
   {
@@ -52064,6 +54096,12 @@
     "trad": "源於",
     "status": "approved",
     "canonicalJa": "由来する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "源流",
+    "status": "approved",
+    "canonicalJa": "源流",
     "acceptedJa": []
   },
   {
@@ -52391,6 +54429,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "照單全收",
+    "status": "approved",
+    "canonicalJa": "疑うことなく受け入れる",
+    "acceptedJa": []
+  },
+  {
     "trad": "照葫蘆畫瓢",
     "status": "approved",
     "canonicalJa": "型どおりにまねる",
@@ -52403,9 +54447,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "照應",
+    "status": "approved",
+    "canonicalJa": "世話する",
+    "acceptedJa": ["対応する"]
+  },
+  {
     "trad": "照舊",
     "status": "approved",
     "canonicalJa": "以前のように",
+    "acceptedJa": []
+  },
+  {
+    "trad": "照耀",
+    "status": "approved",
+    "canonicalJa": "照らす",
     "acceptedJa": []
   },
   {
@@ -52864,6 +54920,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "稚嫩",
+    "status": "approved",
+    "canonicalJa": "若くて柔らかい",
+    "acceptedJa": []
+  },
+  {
     "trad": "稟告",
     "status": "approved",
     "canonicalJa": "報告する",
@@ -53063,15 +55125,45 @@
     "acceptedJa": []
   },
   {
+    "trad": "罪狀",
+    "status": "approved",
+    "canonicalJa": "罪状",
+    "acceptedJa": []
+  },
+  {
     "trad": "罪惡",
     "status": "approved",
     "canonicalJa": "罪悪",
     "acceptedJa": []
   },
   {
+    "trad": "罪過",
+    "status": "approved",
+    "canonicalJa": "罪",
+    "acceptedJa": []
+  },
+  {
+    "trad": "罪魁禍首",
+    "status": "approved",
+    "canonicalJa": "元凶",
+    "acceptedJa": []
+  },
+  {
+    "trad": "罪孽",
+    "status": "approved",
+    "canonicalJa": "罪業",
+    "acceptedJa": []
+  },
+  {
     "trad": "置入性行銷",
     "status": "approved",
     "canonicalJa": "プロダクトプレイスメント",
+    "acceptedJa": []
+  },
+  {
+    "trad": "置之不理",
+    "status": "approved",
+    "canonicalJa": "無視する",
     "acceptedJa": []
   },
   {
@@ -53252,6 +55344,12 @@
     "trad": "腫",
     "status": "approved",
     "canonicalJa": "腫れる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "腫瘤",
+    "status": "approved",
+    "canonicalJa": "腫瘍",
     "acceptedJa": []
   },
   {
@@ -53451,6 +55549,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "葬身",
+    "status": "approved",
+    "canonicalJa": "命を落とす",
+    "acceptedJa": []
+  },
+  {
     "trad": "葬禮",
     "status": "approved",
     "canonicalJa": "葬儀",
@@ -53589,6 +55693,24 @@
     "acceptedJa": []
   },
   {
+    "trad": "裝束",
+    "status": "approved",
+    "canonicalJa": "服装",
+    "acceptedJa": []
+  },
+  {
+    "trad": "裝修",
+    "status": "approved",
+    "canonicalJa": "内装する",
+    "acceptedJa": ["改装する"]
+  },
+  {
+    "trad": "裝設",
+    "status": "approved",
+    "canonicalJa": "装着する",
+    "acceptedJa": []
+  },
+  {
     "trad": "裝備",
     "status": "approved",
     "canonicalJa": "装備する",
@@ -53604,6 +55726,12 @@
     "trad": "裝飾",
     "status": "approved",
     "canonicalJa": "飾る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "裝模作樣",
+    "status": "approved",
+    "canonicalJa": "演技をする",
     "acceptedJa": []
   },
   {
@@ -53860,6 +55988,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "誅殺",
+    "status": "approved",
+    "canonicalJa": "殺す",
+    "acceptedJa": []
+  },
+  {
     "trad": "誇口",
     "status": "approved",
     "canonicalJa": "自慢する",
@@ -53990,6 +56124,18 @@
     "status": "approved",
     "canonicalJa": "資源",
     "reviewReason": "initial quality pass"
+  },
+  {
+    "trad": "資遣",
+    "status": "approved",
+    "canonicalJa": "退職金を支払って解雇する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "資質",
+    "status": "approved",
+    "canonicalJa": "天賦の才能",
+    "acceptedJa": []
   },
   {
     "trad": "資歷",
@@ -54266,6 +56412,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "逾越",
+    "status": "approved",
+    "canonicalJa": "越える",
+    "acceptedJa": []
+  },
+  {
     "trad": "遇見",
     "status": "approved",
     "canonicalJa": "会う",
@@ -54284,15 +56436,51 @@
     "acceptedJa": []
   },
   {
+    "trad": "遇難",
+    "status": "approved",
+    "canonicalJa": "遭難する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遊山玩水",
+    "status": "approved",
+    "canonicalJa": "山水を楽しむ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遊民",
+    "status": "approved",
+    "canonicalJa": "浮浪者",
+    "acceptedJa": []
+  },
+  {
     "trad": "遊行",
     "status": "approved",
     "canonicalJa": "デモ行進",
     "acceptedJa": []
   },
   {
+    "trad": "遊走",
+    "status": "approved",
+    "canonicalJa": "動き回る",
+    "acceptedJa": []
+  },
+  {
     "trad": "遊玩",
     "status": "approved",
     "canonicalJa": "楽しむ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遊歷",
+    "status": "approved",
+    "canonicalJa": "旅行する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遊蕩",
+    "status": "approved",
+    "canonicalJa": "彷徨う",
     "acceptedJa": []
   },
   {
@@ -54323,6 +56511,12 @@
     "trad": "運送",
     "status": "approved",
     "canonicalJa": "運ぶ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "運算",
+    "status": "approved",
+    "canonicalJa": "演算する",
     "acceptedJa": []
   },
   {
@@ -54702,6 +56896,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "雍容",
+    "status": "approved",
+    "canonicalJa": "優雅で落ち着いた",
+    "acceptedJa": []
+  },
+  {
     "trad": "零",
     "status": "approved",
     "canonicalJa": "ゼロ",
@@ -54861,6 +57061,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "預示",
+    "status": "approved",
+    "canonicalJa": "告げる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "預兆",
+    "status": "approved",
+    "canonicalJa": "兆し",
+    "acceptedJa": []
+  },
+  {
     "trad": "預先",
     "status": "approved",
     "canonicalJa": "事前に",
@@ -54933,6 +57145,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "預留",
+    "status": "approved",
+    "canonicalJa": "取り置く",
+    "acceptedJa": []
+  },
+  {
     "trad": "預習",
     "status": "approved",
     "canonicalJa": "予習する",
@@ -54966,6 +57184,12 @@
     "trad": "預測",
     "status": "approved",
     "canonicalJa": "予測する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "預想",
+    "status": "approved",
+    "canonicalJa": "予想する",
     "acceptedJa": []
   },
   {
@@ -55254,6 +57478,12 @@
     "trad": "嘔吐",
     "status": "approved",
     "canonicalJa": "吐く",
+    "acceptedJa": []
+  },
+  {
+    "trad": "嘖嘖稱奇",
+    "status": "approved",
+    "canonicalJa": "驚く",
     "acceptedJa": []
   },
   {
@@ -55698,6 +57928,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "寨",
+    "status": "approved",
+    "canonicalJa": "キャンプ",
+    "acceptedJa": []
+  },
+  {
     "trad": "對",
     "status": "approved",
     "canonicalJa": "正しい",
@@ -55846,6 +58082,12 @@
     "trad": "嶄新",
     "status": "approved",
     "canonicalJa": "真新しい",
+    "acceptedJa": []
+  },
+  {
+    "trad": "嶄露頭角",
+    "status": "approved",
+    "canonicalJa": "ずば抜けた才能を発揮する",
     "acceptedJa": []
   },
   {
@@ -56044,6 +58286,12 @@
     "trad": "慣性",
     "status": "approved",
     "canonicalJa": "慣性",
+    "acceptedJa": []
+  },
+  {
+    "trad": "慵懶",
+    "status": "approved",
+    "canonicalJa": "気だるい",
     "acceptedJa": []
   },
   {
@@ -56359,6 +58607,12 @@
     "trad": "歌謠",
     "status": "approved",
     "canonicalJa": "民謡・バラード・童謡",
+    "acceptedJa": []
+  },
+  {
+    "trad": "滯留",
+    "status": "approved",
+    "canonicalJa": "残る",
     "acceptedJa": []
   },
   {
@@ -56759,6 +59013,24 @@
     "trad": "蒸",
     "status": "approved",
     "canonicalJa": "蒸す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "蒸氣",
+    "status": "approved",
+    "canonicalJa": "蒸気",
+    "acceptedJa": []
+  },
+  {
+    "trad": "蒸發",
+    "status": "approved",
+    "canonicalJa": "蒸発する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "蒸蒸日上",
+    "status": "approved",
+    "canonicalJa": "日を追うごとに豊かになる",
     "acceptedJa": []
   },
   {
@@ -57811,6 +60083,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "與日俱增",
+    "status": "approved",
+    "canonicalJa": "日増しに増える",
+    "acceptedJa": []
+  },
+  {
+    "trad": "與世隔絕",
+    "status": "approved",
+    "canonicalJa": "世界から切り離される",
+    "acceptedJa": []
+  },
+  {
     "trad": "與生俱來",
     "status": "approved",
     "canonicalJa": "生まれつき",
@@ -57820,6 +60104,12 @@
     "trad": "與其",
     "status": "approved",
     "canonicalJa": "むしろ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "與時俱進",
+    "status": "approved",
+    "canonicalJa": "時代に合わせて進む",
     "acceptedJa": []
   },
   {
@@ -58110,9 +60400,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "誘因",
+    "status": "approved",
+    "canonicalJa": "原因",
+    "acceptedJa": []
+  },
+  {
+    "trad": "誘使",
+    "status": "approved",
+    "canonicalJa": "誘導する",
+    "acceptedJa": []
+  },
+  {
     "trad": "誘惑",
     "status": "approved",
     "canonicalJa": "誘う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "誘發",
+    "status": "approved",
+    "canonicalJa": "誘発する",
     "acceptedJa": []
   },
   {
@@ -58122,9 +60430,39 @@
     "acceptedJa": []
   },
   {
+    "trad": "語句",
+    "status": "approved",
+    "canonicalJa": "語句",
+    "acceptedJa": []
+  },
+  {
+    "trad": "語法",
+    "status": "approved",
+    "canonicalJa": "文法",
+    "acceptedJa": []
+  },
+  {
+    "trad": "語重心長",
+    "status": "approved",
+    "canonicalJa": "心のこもった助言",
+    "acceptedJa": []
+  },
+  {
     "trad": "語音",
     "status": "approved",
     "canonicalJa": "音声",
+    "acceptedJa": []
+  },
+  {
+    "trad": "語無倫次",
+    "status": "approved",
+    "canonicalJa": "支離滅裂な話し方",
+    "acceptedJa": []
+  },
+  {
+    "trad": "語彙",
+    "status": "approved",
+    "canonicalJa": "語彙",
     "acceptedJa": []
   },
   {
@@ -58551,9 +60889,33 @@
     "acceptedJa": []
   },
   {
+    "trad": "遠行",
+    "status": "approved",
+    "canonicalJa": "長い旅",
+    "acceptedJa": []
+  },
+  {
     "trad": "遠見",
     "status": "approved",
     "canonicalJa": "先見の明",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遠走高飛",
+    "status": "approved",
+    "canonicalJa": "遠くへ行く",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遠征",
+    "status": "approved",
+    "canonicalJa": "遠征",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遠眺",
+    "status": "approved",
+    "canonicalJa": "遠くを見つめる",
     "acceptedJa": []
   },
   {
@@ -59046,6 +61408,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "嘴臉",
+    "status": "approved",
+    "canonicalJa": "顔つき",
+    "acceptedJa": []
+  },
+  {
     "trad": "嘶吼",
     "status": "approved",
     "canonicalJa": "叫ぶ",
@@ -59087,6 +61455,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "墜落",
+    "status": "approved",
+    "canonicalJa": "落ちる",
+    "acceptedJa": []
+  },
+  {
     "trad": "增加",
     "status": "approved",
     "canonicalJa": "増やす",
@@ -59102,6 +61476,12 @@
     "trad": "增添",
     "status": "approved",
     "canonicalJa": "増やす",
+    "acceptedJa": []
+  },
+  {
+    "trad": "增援",
+    "status": "approved",
+    "canonicalJa": "増援する",
     "acceptedJa": []
   },
   {
@@ -59574,6 +61954,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "影射",
+    "status": "approved",
+    "canonicalJa": "仄めかす",
+    "acceptedJa": []
+  },
+  {
     "trad": "影展",
     "status": "approved",
     "canonicalJa": "映画祭",
@@ -59584,6 +61970,12 @@
     "status": "approved",
     "canonicalJa": "映像",
     "acceptedJa": ["イメージ"]
+  },
+  {
+    "trad": "徵召",
+    "status": "approved",
+    "canonicalJa": "徴兵する",
+    "acceptedJa": []
   },
   {
     "trad": "徵兆",
@@ -59704,6 +62096,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "憂心忡忡",
+    "status": "approved",
+    "canonicalJa": "深く心配する",
+    "acceptedJa": []
+  },
+  {
     "trad": "憂傷",
     "status": "approved",
     "canonicalJa": "悲痛",
@@ -59737,6 +62135,12 @@
     "trad": "憎恨",
     "status": "approved",
     "canonicalJa": "嫌悪する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "憎惡",
+    "status": "approved",
+    "canonicalJa": "憎む",
     "acceptedJa": []
   },
   {
@@ -59823,6 +62227,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "摯友",
+    "status": "approved",
+    "canonicalJa": "親しい友人",
+    "acceptedJa": []
+  },
+  {
+    "trad": "摯愛",
+    "status": "approved",
+    "canonicalJa": "真実の愛",
+    "acceptedJa": []
+  },
+  {
     "trad": "撈",
     "status": "approved",
     "canonicalJa": "すくい上げる",
@@ -59880,6 +62296,12 @@
     "trad": "撞",
     "status": "approved",
     "canonicalJa": "偶然出会う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "撞見",
+    "status": "approved",
+    "canonicalJa": "偶然に出会う",
     "acceptedJa": []
   },
   {
@@ -59957,6 +62379,18 @@
     "trad": "播種",
     "status": "approved",
     "canonicalJa": "種をまく",
+    "acceptedJa": []
+  },
+  {
+    "trad": "撰文",
+    "status": "approved",
+    "canonicalJa": "記事を書く",
+    "acceptedJa": []
+  },
+  {
+    "trad": "撰述",
+    "status": "approved",
+    "canonicalJa": "書く",
     "acceptedJa": []
   },
   {
@@ -60074,6 +62508,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "暫且",
+    "status": "approved",
+    "canonicalJa": "当分の間",
+    "acceptedJa": []
+  },
+  {
     "trad": "暫時",
     "status": "approved",
     "canonicalJa": "一時的に",
@@ -60083,6 +62523,12 @@
     "trad": "暫停",
     "status": "approved",
     "canonicalJa": "一時停止",
+    "acceptedJa": []
+  },
+  {
+    "trad": "暫緩",
+    "status": "approved",
+    "canonicalJa": "延期する",
     "acceptedJa": []
   },
   {
@@ -60208,6 +62654,12 @@
     "trad": "樂於",
     "status": "approved",
     "canonicalJa": "喜んで〜する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "樂章",
+    "status": "approved",
+    "canonicalJa": "楽章",
     "acceptedJa": []
   },
   {
@@ -60787,6 +63239,12 @@
     "trad": "皺",
     "status": "approved",
     "canonicalJa": "皺になる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "皺眉頭",
+    "status": "approved",
+    "canonicalJa": "眉をひそめる",
     "acceptedJa": []
   },
   {
@@ -61488,6 +63946,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "諄諄",
+    "status": "approved",
+    "canonicalJa": "懇切に",
+    "acceptedJa": []
+  },
+  {
     "trad": "談心",
     "status": "approved",
     "canonicalJa": "腹を割って話す",
@@ -61639,6 +64103,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "諸侯",
+    "status": "approved",
+    "canonicalJa": "地方支配者",
+    "acceptedJa": []
+  },
+  {
     "trad": "豌豆",
     "status": "approved",
     "canonicalJa": "えんどう豆",
@@ -61753,7 +64223,25 @@
     "acceptedJa": []
   },
   {
+    "trad": "質料",
+    "status": "approved",
+    "canonicalJa": "物質",
+    "acceptedJa": []
+  },
+  {
     "trad": "質問",
+    "status": "approved",
+    "canonicalJa": "質問する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "質感",
+    "status": "approved",
+    "canonicalJa": "質感",
+    "acceptedJa": []
+  },
+  {
+    "trad": "質詢",
     "status": "approved",
     "canonicalJa": "質問する",
     "acceptedJa": []
@@ -61991,6 +64479,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "遭殃",
+    "status": "approved",
+    "canonicalJa": "災難に遭う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遭逢",
+    "status": "approved",
+    "canonicalJa": "不愉快なことに遭遇する",
+    "acceptedJa": []
+  },
+  {
     "trad": "遭遇",
     "status": "approved",
     "canonicalJa": "遭遇する",
@@ -62000,6 +64500,24 @@
     "trad": "遮",
     "status": "approved",
     "canonicalJa": "隠す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遮掩",
+    "status": "approved",
+    "canonicalJa": "を覆う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遮蓋",
+    "status": "approved",
+    "canonicalJa": "覆い隠す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遮蔽",
+    "status": "approved",
+    "canonicalJa": "覆い隠す",
     "acceptedJa": []
   },
   {
@@ -62033,6 +64551,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "鄭重",
+    "status": "approved",
+    "canonicalJa": "厳粛",
+    "acceptedJa": []
+  },
+  {
     "trad": "鄰",
     "status": "approved",
     "canonicalJa": "隣",
@@ -62060,6 +64584,18 @@
     "trad": "醉",
     "status": "approved",
     "canonicalJa": "酔う",
+    "acceptedJa": []
+  },
+  {
+    "trad": "醉心",
+    "status": "approved",
+    "canonicalJa": "夢中になる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "醉醺醺",
+    "status": "approved",
+    "canonicalJa": "酔っぱらった",
     "acceptedJa": []
   },
   {
@@ -62147,9 +64683,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "閱歷",
+    "status": "approved",
+    "canonicalJa": "経験",
+    "acceptedJa": []
+  },
+  {
     "trad": "閱讀",
     "status": "approved",
     "canonicalJa": "読む",
+    "acceptedJa": []
+  },
+  {
+    "trad": "震耳欲聾",
+    "status": "approved",
+    "canonicalJa": "耳をつんざく",
+    "acceptedJa": []
+  },
+  {
+    "trad": "震怒",
+    "status": "approved",
+    "canonicalJa": "激怒する",
     "acceptedJa": []
   },
   {
@@ -62162,6 +64716,18 @@
     "trad": "震撼",
     "status": "approved",
     "canonicalJa": "揺さぶる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "震盪",
+    "status": "approved",
+    "canonicalJa": "揺さぶる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "震懾",
+    "status": "approved",
+    "canonicalJa": "畏怖させる",
     "acceptedJa": []
   },
   {
@@ -62286,6 +64852,18 @@
     "reviewReason": "review batch initial label fix"
   },
   {
+    "trad": "餘生",
+    "status": "approved",
+    "canonicalJa": "残された人生",
+    "acceptedJa": []
+  },
+  {
+    "trad": "餘光",
+    "status": "approved",
+    "canonicalJa": "視界の隅",
+    "acceptedJa": ["残光"]
+  },
+  {
     "trad": "餘地",
     "status": "approved",
     "canonicalJa": "余地",
@@ -62295,6 +64873,24 @@
     "trad": "駐",
     "status": "approved",
     "canonicalJa": "駐留する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "駐守",
+    "status": "approved",
+    "canonicalJa": "駐屯して守る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "駐足",
+    "status": "approved",
+    "canonicalJa": "立ち止まる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "駐軍",
+    "status": "approved",
+    "canonicalJa": "駐屯させる",
     "acceptedJa": []
   },
   {
@@ -62758,9 +65354,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "戰友",
+    "status": "approved",
+    "canonicalJa": "戦友",
+    "acceptedJa": []
+  },
+  {
+    "trad": "戰火",
+    "status": "approved",
+    "canonicalJa": "戦火",
+    "acceptedJa": []
+  },
+  {
     "trad": "戰功",
     "status": "approved",
     "canonicalJa": "戦功",
+    "acceptedJa": []
+  },
+  {
+    "trad": "戰局",
+    "status": "approved",
+    "canonicalJa": "戦局",
     "acceptedJa": []
   },
   {
@@ -62773,6 +65387,12 @@
     "trad": "戰事",
     "status": "approved",
     "canonicalJa": "戦争",
+    "acceptedJa": []
+  },
+  {
+    "trad": "戰況",
+    "status": "approved",
+    "canonicalJa": "戦況",
     "acceptedJa": []
   },
   {
@@ -62805,6 +65425,36 @@
     "acceptedJa": []
   },
   {
+    "trad": "戰亂",
+    "status": "approved",
+    "canonicalJa": "戦乱",
+    "acceptedJa": []
+  },
+  {
+    "trad": "戰慄",
+    "status": "approved",
+    "canonicalJa": "震える",
+    "acceptedJa": []
+  },
+  {
+    "trad": "戰線",
+    "status": "approved",
+    "canonicalJa": "戦線",
+    "acceptedJa": []
+  },
+  {
+    "trad": "戰戰兢兢",
+    "status": "approved",
+    "canonicalJa": "恐れおののきながら",
+    "acceptedJa": []
+  },
+  {
+    "trad": "戰艦",
+    "status": "approved",
+    "canonicalJa": "戦艦",
+    "acceptedJa": []
+  },
+  {
     "trad": "撼動",
     "status": "approved",
     "canonicalJa": "揺さぶる",
@@ -62832,6 +65482,12 @@
     "trad": "擁抱",
     "status": "approved",
     "canonicalJa": "抱きしめる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "擁戴",
+    "status": "approved",
+    "canonicalJa": "支持する",
     "acceptedJa": []
   },
   {
@@ -62984,6 +65640,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "整治",
+    "status": "approved",
+    "canonicalJa": "処置する",
+    "acceptedJa": []
+  },
+  {
     "trad": "整修",
     "status": "approved",
     "canonicalJa": "修理する",
@@ -62993,6 +65655,12 @@
     "trad": "整理",
     "status": "approved",
     "canonicalJa": "整理する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "整裝",
+    "status": "approved",
+    "canonicalJa": "整える",
     "acceptedJa": []
   },
   {
@@ -63392,6 +66060,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "濁",
+    "status": "approved",
+    "canonicalJa": "濁っている",
+    "acceptedJa": []
+  },
+  {
     "trad": "濃",
     "status": "approved",
     "canonicalJa": "濃い",
@@ -63654,6 +66328,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "磚塊",
+    "status": "approved",
+    "canonicalJa": "レンガ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "磚頭",
+    "status": "approved",
+    "canonicalJa": "レンガ",
+    "acceptedJa": []
+  },
+  {
     "trad": "磨",
     "status": "approved",
     "canonicalJa": "磨く",
@@ -63756,6 +66442,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "縝密",
+    "status": "approved",
+    "canonicalJa": "緻密な",
+    "acceptedJa": []
+  },
+  {
     "trad": "縣",
     "status": "approved",
     "canonicalJa": "県",
@@ -63790,6 +66482,12 @@
     "status": "approved",
     "canonicalJa": "飽きる",
     "acceptedJa": ["脂っこい"]
+  },
+  {
+    "trad": "臻",
+    "status": "approved",
+    "canonicalJa": "到達する",
+    "acceptedJa": []
   },
   {
     "trad": "興亡",
@@ -64145,6 +66843,11 @@
     "acceptedJa": []
   },
   {
+    "trad": "諭旨",
+    "status": "rejected",
+    "acceptedJa": []
+  },
+  {
     "trad": "諮商",
     "status": "approved",
     "canonicalJa": "カウンセリング",
@@ -64231,6 +66934,12 @@
     "trad": "踱步",
     "status": "approved",
     "canonicalJa": "歩き回る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "踴躍",
+    "status": "approved",
+    "canonicalJa": "積極的に",
     "acceptedJa": []
   },
   {
@@ -64369,6 +67078,12 @@
     "trad": "遵守",
     "status": "approved",
     "canonicalJa": "遵守する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "遵從",
+    "status": "approved",
+    "canonicalJa": "従う",
     "acceptedJa": []
   },
   {
@@ -65112,9 +67827,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "優厚",
+    "status": "approved",
+    "canonicalJa": "手厚い",
+    "acceptedJa": []
+  },
+  {
     "trad": "優待",
     "status": "approved",
     "canonicalJa": "優遇する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "優柔寡斷",
+    "status": "approved",
+    "canonicalJa": "優柔不断",
     "acceptedJa": []
   },
   {
@@ -65133,6 +67860,12 @@
     "trad": "優惠",
     "status": "approved",
     "canonicalJa": "優待",
+    "acceptedJa": []
+  },
+  {
+    "trad": "優渥",
+    "status": "approved",
+    "canonicalJa": "手厚い",
     "acceptedJa": []
   },
   {
@@ -65336,6 +68069,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "應允",
+    "status": "approved",
+    "canonicalJa": "承諾する",
+    "acceptedJa": []
+  },
+  {
     "trad": "應付",
     "status": "approved",
     "canonicalJa": "対処する",
@@ -65367,6 +68106,12 @@
     "reviewReason": "review batch initial label fix"
   },
   {
+    "trad": "應運而生",
+    "status": "approved",
+    "canonicalJa": "時勢に応じて現れる",
+    "acceptedJa": []
+  },
+  {
     "trad": "應酬",
     "status": "approved",
     "canonicalJa": "付き合い",
@@ -65385,9 +68130,33 @@
     "acceptedJa": []
   },
   {
+    "trad": "應戰",
+    "status": "approved",
+    "canonicalJa": "挑戦に応じる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "應聲",
+    "status": "approved",
+    "canonicalJa": "応答する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "應邀",
+    "status": "approved",
+    "canonicalJa": "招待されて",
+    "acceptedJa": []
+  },
+  {
     "trad": "應變",
     "status": "approved",
     "canonicalJa": "臨機応変に対応する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "應驗",
+    "status": "approved",
+    "canonicalJa": "実現する",
     "acceptedJa": []
   },
   {
@@ -65953,6 +68722,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "縱火",
+    "status": "approved",
+    "canonicalJa": "放火する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "縱身",
+    "status": "approved",
+    "canonicalJa": "跳ぶ",
+    "acceptedJa": []
+  },
+  {
     "trad": "縱使",
     "status": "approved",
     "canonicalJa": "たとえ",
@@ -65962,6 +68743,12 @@
     "trad": "縱容",
     "status": "approved",
     "canonicalJa": "甘やかす",
+    "acceptedJa": []
+  },
+  {
+    "trad": "縱情",
+    "status": "approved",
+    "canonicalJa": "心ゆくまで",
     "acceptedJa": []
   },
   {
@@ -66012,6 +68799,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "總量",
+    "status": "approved",
+    "canonicalJa": "総額",
+    "acceptedJa": []
+  },
+  {
+    "trad": "總署",
+    "status": "approved",
+    "canonicalJa": "総局",
+    "acceptedJa": []
+  },
+  {
     "trad": "總監",
     "status": "approved",
     "canonicalJa": "総監",
@@ -66021,6 +68820,12 @@
     "trad": "總算",
     "status": "approved",
     "canonicalJa": "ようやく",
+    "acceptedJa": []
+  },
+  {
+    "trad": "總歸",
+    "status": "approved",
+    "canonicalJa": "いずれにせよ",
     "acceptedJa": []
   },
   {
@@ -66476,6 +69281,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "蟑螂",
+    "status": "approved",
+    "canonicalJa": "ゴキブリ",
+    "acceptedJa": []
+  },
+  {
     "trad": "褻瀆",
     "status": "approved",
     "canonicalJa": "冒涜する",
@@ -66864,6 +69675,12 @@
     "trad": "鍵盤",
     "status": "approved",
     "canonicalJa": "キーボード",
+    "acceptedJa": []
+  },
+  {
+    "trad": "鍾愛",
+    "status": "approved",
+    "canonicalJa": "大切にする",
     "acceptedJa": []
   },
   {
@@ -67453,6 +70270,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "瞻仰",
+    "status": "approved",
+    "canonicalJa": "尊敬する",
+    "acceptedJa": []
+  },
+  {
     "trad": "禮多人不怪",
     "status": "approved",
     "canonicalJa": "礼儀は多くても困らない",
@@ -67626,6 +70449,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "織布",
+    "status": "approved",
+    "canonicalJa": "布を織る",
+    "acceptedJa": []
+  },
+  {
     "trad": "繚繞",
     "status": "approved",
     "canonicalJa": "立ちのぼる",
@@ -67716,9 +70545,21 @@
     "acceptedJa": []
   },
   {
+    "trad": "職守",
+    "status": "approved",
+    "canonicalJa": "職務・責任・ポスト",
+    "acceptedJa": []
+  },
+  {
     "trad": "職位",
     "status": "approved",
     "canonicalJa": "役職",
+    "acceptedJa": []
+  },
+  {
+    "trad": "職能",
+    "status": "approved",
+    "canonicalJa": "機能",
     "acceptedJa": []
   },
   {
@@ -67962,6 +70803,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "轉手",
+    "status": "approved",
+    "canonicalJa": "譲り渡す",
+    "acceptedJa": []
+  },
+  {
+    "trad": "轉世",
+    "status": "approved",
+    "canonicalJa": "輪廻転生",
+    "acceptedJa": []
+  },
+  {
     "trad": "轉告",
     "status": "approved",
     "canonicalJa": "伝える",
@@ -67986,15 +70839,33 @@
     "acceptedJa": []
   },
   {
+    "trad": "轉念",
+    "status": "approved",
+    "canonicalJa": "考え直す",
+    "acceptedJa": []
+  },
+  {
     "trad": "轉型",
     "status": "approved",
     "canonicalJa": "移行する",
     "acceptedJa": []
   },
   {
+    "trad": "轉述",
+    "status": "approved",
+    "canonicalJa": "述べ伝える",
+    "acceptedJa": []
+  },
+  {
     "trad": "轉動",
     "status": "approved",
     "canonicalJa": "回転する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "轉捩點",
+    "status": "approved",
+    "canonicalJa": "転機",
     "acceptedJa": []
   },
   {
@@ -68010,9 +70881,27 @@
     "acceptedJa": []
   },
   {
+    "trad": "轉載",
+    "status": "approved",
+    "canonicalJa": "転載する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "轉達",
+    "status": "approved",
+    "canonicalJa": "伝える",
+    "acceptedJa": []
+  },
+  {
     "trad": "轉播",
     "status": "approved",
     "canonicalJa": "中継放送",
+    "acceptedJa": []
+  },
+  {
+    "trad": "轉學",
+    "status": "approved",
+    "canonicalJa": "転校する",
     "acceptedJa": []
   },
   {
@@ -68020,6 +70909,12 @@
     "status": "approved",
     "canonicalJa": "転機",
     "acceptedJa": ["乗り継ぎ"]
+  },
+  {
+    "trad": "轉瞬",
+    "status": "approved",
+    "canonicalJa": "瞬く間に",
+    "acceptedJa": []
   },
   {
     "trad": "轉彎",
@@ -68100,6 +70995,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "鎮守",
+    "status": "approved",
+    "canonicalJa": "守備する",
+    "acceptedJa": []
+  },
+  {
     "trad": "鎮定",
     "status": "approved",
     "canonicalJa": "落ち着いた",
@@ -68168,6 +71069,18 @@
     "trad": "雜亂",
     "status": "approved",
     "canonicalJa": "ごちゃごちゃ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "雜亂無章",
+    "status": "approved",
+    "canonicalJa": "無秩序で混沌としている",
+    "acceptedJa": []
+  },
+  {
+    "trad": "雜糧",
+    "status": "approved",
+    "canonicalJa": "米麦以外の穀物",
     "acceptedJa": []
   },
   {
@@ -68839,6 +71752,12 @@
     "trad": "證書",
     "status": "approved",
     "canonicalJa": "証書",
+    "acceptedJa": []
+  },
+  {
+    "trad": "證詞",
+    "status": "approved",
+    "canonicalJa": "証言",
     "acceptedJa": []
   },
   {
@@ -69674,6 +72593,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "蘊含",
+    "status": "approved",
+    "canonicalJa": "含む",
+    "acceptedJa": []
+  },
+  {
+    "trad": "蘊藏",
+    "status": "approved",
+    "canonicalJa": "蓄えておく",
+    "acceptedJa": []
+  },
+  {
     "trad": "蠕動",
     "status": "approved",
     "canonicalJa": "蠕動する",
@@ -69858,6 +72789,12 @@
     "trad": "贏得",
     "status": "approved",
     "canonicalJa": "勝ち取る",
+    "acceptedJa": []
+  },
+  {
+    "trad": "躁動",
+    "status": "approved",
+    "canonicalJa": "落ち着かない",
     "acceptedJa": []
   },
   {
@@ -70940,6 +73877,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "蘸",
+    "status": "approved",
+    "canonicalJa": "つける",
+    "acceptedJa": []
+  },
+  {
     "trad": "蠱惑",
     "status": "approved",
     "canonicalJa": "迷わせる",
@@ -71511,6 +74454,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "驟然",
+    "status": "approved",
+    "canonicalJa": "突然",
+    "acceptedJa": []
+  },
+  {
     "trad": "鷹爪翻子拳",
     "status": "rejected",
     "acceptedJa": []
@@ -71648,6 +74597,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "讚不絕口",
+    "status": "approved",
+    "canonicalJa": "とめどなくほめたたえる",
+    "acceptedJa": []
+  },
+  {
     "trad": "讚美",
     "status": "approved",
     "canonicalJa": "褒め称える",
@@ -71661,6 +74616,12 @@
   },
   {
     "trad": "讚揚",
+    "status": "approved",
+    "canonicalJa": "称賛する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "讚頌",
     "status": "approved",
     "canonicalJa": "称賛する",
     "acceptedJa": []
@@ -71681,6 +74642,36 @@
     "trad": "驢子",
     "status": "approved",
     "canonicalJa": "ロバ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "鑽牛角尖",
+    "status": "approved",
+    "canonicalJa": "些細なことにこだわる",
+    "acceptedJa": []
+  },
+  {
+    "trad": "鑽研",
+    "status": "approved",
+    "canonicalJa": "綿密に研究する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "鑿",
+    "status": "approved",
+    "canonicalJa": "のみ",
+    "acceptedJa": ["掘る"]
+  },
+  {
+    "trad": "鸚鵡",
+    "status": "approved",
+    "canonicalJa": "オウム",
+    "acceptedJa": []
+  },
+  {
+    "trad": "鬱悶",
+    "status": "approved",
+    "canonicalJa": "憂鬱",
     "acceptedJa": []
   }
 ]

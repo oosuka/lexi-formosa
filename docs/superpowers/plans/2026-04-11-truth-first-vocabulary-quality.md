@@ -26,18 +26,18 @@
 ## Current State
 
 - 作業ブランチ: `feat/vocabulary-quality-pipeline`
-- 最新作業: `2026-04-13 Level 1-2 normal batch 500 件を追加処理（承認 494 件、却下 6 件）`
-- 公開語彙数: `15140`
-- `data/editorial-overrides.json`: `12030` 件
-- 内訳: `approved 11434`、`rejected 596`
-- Level 1: `10753` 件、reviewed `10280`、unreviewed `473`
-- Level 2: `1115` 件、reviewed `984`、unreviewed `131`
+- 最新作業: `2026-04-14 Level 1-2 normal batch 500 件を追加処理（承認 491 件、却下 9 件）`
+- 公開語彙数: `15131`
+- `data/editorial-overrides.json`: `12530` 件
+- 内訳: `approved 11925`、`rejected 605`
+- Level 1: `10744` 件、reviewed `10686`、unreviewed `58`
+- Level 2: `1115` 件、reviewed `1069`、unreviewed `46`
 - Level 3: `3272` 件、reviewed `170`、unreviewed `3102`
 - Level 3 内訳: 5文字 `2327`、6文字 `945`
 - Level 3 MJdic 単独: `3253`
 - Level 3 の日本語ラベル 13文字以上: `0`
 - `audit:data` の現状: global guardrail はすべて `0`、Level 3 risk は `level3_proper_noun_risk: 0`、`level3_explanatory_risk: 0`、`level3_too_long_label: 0`
-- 次の推奨 batch: `npm run review:vocab:export -- --limit=500`
+- 次の推奨 batch: `npm run review:vocab:export -- --limit=500`（現時点の通常 queue は 19 行）
 
 ## Operating Model
 
@@ -122,6 +122,7 @@ Level 3 は「長い繁体字を楽しむ」ために残す。ただし、嘘は
 2026-04-13 の追加再開改善サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `494` 件、却下 `6` 件。
 2026-04-13 の継続再開改善サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `481` 件、却下 `19` 件。
 2026-04-13 の追加継続改善サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `494` 件、却下 `6` 件。
+2026-04-14 の再開改善サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `491` 件、却下 `9` 件。
 次に進めるのは Level 1-2 Core Review の継続。
 
 最初の実装サイクルでは、以下を作る。
