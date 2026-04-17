@@ -1756,6 +1756,7 @@ button {
   .answer-support-actions {
     justify-content: stretch;
     align-items: stretch;
+    margin-inline: auto;
   }
 
   .game-over-actions button,

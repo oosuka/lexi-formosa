@@ -222,6 +222,39 @@ test('PC 幅ではプレイ中に Score / Streak / Miss がプレイエリアで
   await expect(playArea.getByText('Miss', { exact: true })).toBeVisible();
 });
 
+test('スマホ幅では回答後の次の問題とトップへ戻るを中央に置く', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
+
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  await answerCorrectChoice(page);
+
+  const supportRow = page.locator('.answer-support-row');
+  const supportActions = page.locator('.answer-support-actions');
+
+  await expect(supportRow).toBeVisible();
+  await expect(page.getByRole('button', { name: '次の問題' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'トップへ戻る' })).toBeVisible();
+
+  const rowBox = await supportRow.boundingBox();
+  const actionsBox = await supportActions.boundingBox();
+
+  expect(rowBox).not.toBeNull();
+  expect(actionsBox).not.toBeNull();
+
+  if (!rowBox || !actionsBox) {
+    throw new Error('answer support layout was not measurable');
+  }
+
+  const leftGap = actionsBox.x - rowBox.x;
+  const rightGap = rowBox.x + rowBox.width - (actionsBox.x + actionsBox.width);
+
+  expect(Math.abs(leftGap - rightGap)).toBeLessThanOrEqual(1);
+});
+
 test('開始画面の PLAY モジュールは選択レベルと語数を表示する', async ({ page }) => {
   await installMockWordlists(page);
 
