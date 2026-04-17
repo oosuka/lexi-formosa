@@ -44,7 +44,7 @@
 - `npm run review:vocab:export -- --level=3 --risk-only --limit=200` は `Level 3` の固有名詞・説明文・長すぎる日本語ラベルを優先してレビュー用 JSONL に書き出します。
 - `npm run review:vocab:export -- --level=3 --limit=50` は `Level 3` の低リスク Challenge 候補を少量ずつレビュー用 JSONL に書き出します。
 - `npm run review:vocab:apply -- /path/to/review-results.json` はレビュー結果を `data/editorial-overrides.json` に反映します。
-- 語彙品質改善の継続手順は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` を参照してください。
+- 語彙品質改善の継続手順は、このファイルと `README.md`、`docs/dictionary-sources.md` の現行記述を優先してください。ローカルに `docs/superpowers/` がある場合だけ、作業メモとして参照して構いません。
 - 次回「改善を再開してください」と言われた場合は、古い plan ではなく現行 plan を読み、全レベルの言語品質改善を継続してください。Level 3 は Truth-first Challenge Deck として残してください。
 - 問題カードには、可能な範囲でピンインとカタカナ補助を表示します。
 - 単語音声はブラウザの `SpeechSynthesis` を使います。外部TTSは前提にしません。
@@ -287,7 +287,7 @@ npx playwright install chromium
 - 変更が UI なのか、ロジックなのか、辞書生成なのかを先に切り分ける
 - 生成物を直接直すべきか、元データやスクリプトを直すべきかを判断する
 - 語彙や訳の問題なら、seed 追加は `manual-vocabulary`、既存候補の採否や訳修正は `editorial-overrides` で解決できるか確認する
-- 語彙品質改善の続きなら、`docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` で現在地を確認する
+- 語彙品質改善の続きなら、このファイル、`README.md`、`docs/dictionary-sources.md` で現在地を確認する
 - 選択肢に壊れた日本語が出る問題なら、まず公開済み `data/vocabulary*.json` 全体の `ja` を横断監査し、誤答候補プールの地雷を先に除去する
 - metadata のような補助データが壊れても、ゲーム本体まで巻き込んで停止させない設計を優先する
 - Public 公開に関わる変更なら、生成済み辞書データをコミットしていないか確認する
@@ -300,8 +300,8 @@ npx playwright install chromium
 - 対象は少なくとも `README.md`、`AGENTS.md`、`docs/` 配下の関連文書です。
 - すべての Markdown を毎回機械的に更新するのではなく、変更内容に影響する文書だけを更新してください。
 - 文書更新が不要と判断した場合は、その判断が妥当かを一度確認してください。
-- `docs/superpowers/` は作業計画と設計メモを置く場所です。採用中の文書は詳細仕様や作業再開手順として参照しますが、現行仕様の確認ではコード、`README.md`、`AGENTS.md`、`docs/dictionary-sources.md` を優先してください。
-- `docs/superpowers/` 配下に履歴文書や不採用案を残す場合は、各ファイル冒頭の `Status` 表記で `採用中` `実装済み` `履歴` `不採用` `revert 済み` などを明示し、現行文書と混同されないようにしてください。
+- `docs/superpowers/` はローカル専用の作業計画・設計メモ置き場です。Git 管理対象にせず、Public リポジトリの現行仕様確認ではコード、`README.md`、`AGENTS.md`、`docs/dictionary-sources.md` を優先してください。
+- `docs/superpowers/` 配下に履歴文書や不採用案をローカルで残す場合は、各ファイル冒頭の `Status` 表記で `採用中` `実装済み` `履歴` `不採用` `revert 済み` などを明示し、現行文書と混同されないようにしてください。
 - ユーザー向けの使い方、セットアップ、コマンド、挙動が変わった場合は `README.md` を更新してください。
 - エージェント運用ルール、レビュー方針、検証手順が変わった場合は `AGENTS.md` を更新してください。
 - 辞書、生成、データソース、再生成手順が変わった場合は `docs/dictionary-sources.md` を更新してください。

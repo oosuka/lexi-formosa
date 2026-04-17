@@ -19,3 +19,4 @@ public/wordlists/*.json
 !public/wordlists/.gitkeep
 .worktrees/
 .superpowers/
+docs/superpowers/

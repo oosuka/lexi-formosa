@@ -39,7 +39,7 @@ Public リポジトリには生成済み辞書データを同梱しません。
 - `data/manual-vocabulary.json` 由来の seed 語彙は curated seed として扱い、通常の review batch には出しません。
 - Level 3 は Truth-first Challenge Deck として残し、`--level=3 --risk-only` では固有名詞・説明文ラベル・13文字以上の日本語ラベルを優先して書き出します。
 - review batch の結果は `npm run review:vocab:apply -- /path/to/review-results.json` で `data/editorial-overrides.json` に反映します。
-- 語彙品質改善の現在地は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` に記録します。サイクルを進めたら件数、全レベルのレビュー状況、次の推奨 batch を更新してください。
+- 語彙品質改善の現在地は `AGENTS.md`、`README.md`、この文書の現行記述を優先して確認します。ローカルに `docs/superpowers/` がある場合だけ、作業メモとして参照して構いません。
 - 選択肢に壊れた日本語が出る場合は、通常の 500 件順次レビューより先に、公開済み `data/vocabulary*.json` 全体の `ja` を横断監査して `editorial-overrides` へ反映してください。
 - 発音情報は取得できるものだけを保持します。UI ではピンインとカタカナ補助を表示します。
 - 単語音声は辞書データに音声ファイルを同梱せず、ブラウザの `SpeechSynthesis` を使って再生します。
@@ -90,7 +90,7 @@ npm run review:vocab:apply -- /path/to/review-results.json
 Level 3 high-risk batch は、固有名詞クイズ、説明文ラベル、長すぎる日本語ラベルを通常レビューより先に除去・補正するための queue です。
 Level 1-2 通常レビューが空になった後は、`--level=3 --limit=50` で Level 3 low-risk Challenge 候補を少量ずつ確認します。
 `--limit=500` は技術上の上限ではありません。`1000` 件以上も指定できますが、誤訳や reject 対象を安全に確認する単位としては Level 3 high-risk は 200 件、Level 1-2 通常レビューは 500 件、Level 3 low-risk は 50 件を推奨します。
-レビュー作業の現在地と再開手順は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` を参照してください。
+レビュー作業の現在地と再開手順は `AGENTS.md`、`README.md`、この文書の現行記述を参照してください。
 
 再生成後は、少なくとも次を実行してください。
 
