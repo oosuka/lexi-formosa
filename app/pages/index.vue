@@ -277,6 +277,7 @@ const startSession = () => {
   clearUiError();
   syncSessionRecordBaseline();
   sessionStartPending.value = false;
+  void feedbackAudio.unlockAudioEffects();
   trainerAudio.requestCurrentQuestionAudio();
 };
 
@@ -425,7 +426,10 @@ useSeoMeta({
 </script>
 
 <template>
-  <main class="page-shell" :class="{ 'reduce-motion': reducedMotion }">
+  <main
+    class="page-shell"
+    :class="{ 'page-shell--play': !showSessionStart, 'reduce-motion': reducedMotion }"
+  >
     <section v-if="showSessionStart" class="hero-panel hero-panel--start-screen">
       <div
         class="hero-brand surface-card hero-brand--start-screen"

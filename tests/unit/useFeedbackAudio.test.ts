@@ -44,6 +44,10 @@ describe('useFeedbackAudio', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     TestAudioContext.instances = [];
+    Reflect.deleteProperty(
+      window.navigator as Navigator & { audioSession?: unknown },
+      'audioSession'
+    );
   });
 
   it('AudioContext 非対応環境では no-op で継続する', async () => {
@@ -76,6 +80,20 @@ describe('useFeedbackAudio', () => {
 
     await feedbackAudio.playFeedbackSound(false);
     expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(5);
+  });
+
+  it('対応環境では Web Audio が消音スイッチに巻き込まれないよう audioSession を playback にする', () => {
+    const audioSession = { type: 'auto' };
+
+    Object.defineProperty(window.navigator, 'audioSession', {
+      configurable: true,
+      value: audioSession,
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    expect(audioSession.type).toBe('playback');
   });
 
   it('効果音は読み上げに埋もれにくいよう少し強めの gain を使う', async () => {
@@ -170,6 +188,35 @@ describe('useFeedbackAudio', () => {
     await expect(feedbackAudio.playFeedbackSound(true)).resolves.toBeUndefined();
     expect(SuspendedAudioContext.instances).toHaveLength(1);
     expect(SuspendedAudioContext.instances[0]?.createOscillator).not.toHaveBeenCalled();
+  });
+
+  it('ユーザー操作中に無音ノードで AudioContext をアンロックできる', async () => {
+    class SuspendedAudioContext extends TestAudioContext {
+      override state: AudioContextState = 'suspended';
+      override resume = vi.fn(async () => {
+        this.state = 'running';
+      });
+    }
+
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: SuspendedAudioContext,
+    });
+    Object.defineProperty(globalThis, 'AudioContext', {
+      configurable: true,
+      value: SuspendedAudioContext,
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    await feedbackAudio.unlockAudioEffects();
+
+    const context = SuspendedAudioContext.instances[0];
+
+    expect(context?.resume).toHaveBeenCalledTimes(1);
+    expect(context?.createOscillator).toHaveBeenCalledTimes(1);
+    expect(context?.createGain).toHaveBeenCalledTimes(1);
   });
 
   it('cleanup は開いている AudioContext を閉じて次回再生成できる', async () => {

@@ -1701,6 +1701,108 @@ button {
     align-items: flex-end;
   }
 
+  .page-shell--play {
+    padding: 18px 0 26px;
+  }
+
+  .page-shell--play .quiz-panel {
+    gap: 14px;
+  }
+
+  .page-shell--play .quiz-panel.surface-card {
+    padding: 16px;
+    border-radius: 24px;
+  }
+
+  .page-shell--play .question-stage {
+    gap: 12px;
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .page-shell--play .question-stage__hud {
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  .page-shell--play .question-stage__level {
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+
+  .page-shell--play .question-stage__stats {
+    gap: 8px;
+  }
+
+  .page-shell--play .question-stage__stat {
+    gap: 2px;
+  }
+
+  .page-shell--play .question-stage__stat dt {
+    font-size: 0.68rem;
+    letter-spacing: 0;
+  }
+
+  .page-shell--play .question-stage__stat dd {
+    font-size: 1.05rem;
+  }
+
+  .page-shell--play .question-stage__trad {
+    font-size: clamp(2.7rem, 14vw, 4.1rem);
+    line-height: 0.92;
+    letter-spacing: 0;
+  }
+
+  .page-shell--play .question-stage__readings-bar {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .page-shell--play .question-stage__readings {
+    gap: 3px;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .page-shell--play .question-stage__reading--kana {
+    font-size: 0.92rem;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+
+  .page-shell--play .question-stage__reading--pinyin {
+    font-size: 0.76rem;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+
+  .page-shell--play .question-stage__readings-bar .audio-button {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 0.76rem;
+    letter-spacing: 0;
+  }
+
+  .page-shell--play .choice-grid {
+    gap: 12px;
+  }
+
+  .page-shell--play .choice-card {
+    min-height: 80px;
+    gap: 8px;
+    padding: 14px 16px;
+    font-size: 1rem;
+  }
+
+  .page-shell--play .choice-state {
+    padding: 4px 8px;
+    font-size: 0.68rem;
+    letter-spacing: 0;
+  }
+
   .question-stage__footer {
     justify-content: flex-end;
   }
@@ -1756,7 +1858,10 @@ button {
   .answer-support-actions {
     justify-content: stretch;
     align-items: stretch;
-    margin-inline: auto;
+    justify-self: center;
+    width: 100%;
+    max-width: 320px;
+    margin-inline: 0;
   }
 
   .game-over-actions button,

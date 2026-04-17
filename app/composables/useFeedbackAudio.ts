@@ -8,6 +8,12 @@ type ToneStep = {
 };
 
 type RecordCelebrationTone = 'single' | 'double';
+type AudioSessionLike = {
+  type: string;
+};
+type NavigatorWithAudioSession = Navigator & {
+  audioSession?: AudioSessionLike;
+};
 
 const CORRECT_TONES: ToneStep[] = [
   { frequency: 660, duration: 0.08, gain: 0.14, type: 'triangle' },
@@ -43,6 +49,25 @@ const RECORD_CELEBRATION_TONES: Record<RecordCelebrationTone, ToneStep[]> = {
 export const useFeedbackAudio = () => {
   const audioEffectsSupported = ref(false);
   let audioContext: AudioContext | null = null;
+  let audioEffectsUnlocked = false;
+
+  const configureAudioSession = () => {
+    if (typeof navigator === 'undefined') {
+      return;
+    }
+
+    const audioSession = (navigator as NavigatorWithAudioSession).audioSession;
+
+    if (!audioSession) {
+      return;
+    }
+
+    try {
+      audioSession.type = 'playback';
+    } catch {
+      // Experimental API: unsupported values or platform policy failures should not break gameplay.
+    }
+  };
 
   const setup = () => {
     if (typeof window === 'undefined') {
@@ -54,6 +79,10 @@ export const useFeedbackAudio = () => {
       window.AudioContext ||
         (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
     );
+
+    if (audioEffectsSupported.value) {
+      configureAudioSession();
+    }
   };
 
   const getAudioContext = async () => {
@@ -80,6 +109,34 @@ export const useFeedbackAudio = () => {
     }
 
     return audioContext;
+  };
+
+  const unlockAudioEffects = async () => {
+    if (!audioEffectsSupported.value || audioEffectsUnlocked) {
+      return;
+    }
+
+    const context = await getAudioContext();
+
+    if (!context || context.state !== 'running') {
+      return;
+    }
+
+    try {
+      const oscillator = context.createOscillator();
+      const gainNode = context.createGain();
+      const startAt = context.currentTime;
+      const stopAt = startAt + 0.01;
+
+      gainNode.gain.setValueAtTime(0.0001, startAt);
+      oscillator.connect(gainNode);
+      gainNode.connect(context.destination);
+      oscillator.start(startAt);
+      oscillator.stop(stopAt);
+      audioEffectsUnlocked = true;
+    } catch {
+      audioEffectsUnlocked = false;
+    }
   };
 
   const playToneSequence = async (tones: ToneStep[]) => {
@@ -140,10 +197,12 @@ export const useFeedbackAudio = () => {
       void audioContext.close();
       audioContext = null;
     }
+    audioEffectsUnlocked = false;
   };
 
   return {
     audioEffectsSupported,
+    unlockAudioEffects,
     playFeedbackSound,
     playGameOverSound,
     playRecordCelebrationSound,

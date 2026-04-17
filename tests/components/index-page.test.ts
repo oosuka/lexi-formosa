@@ -12,6 +12,7 @@ import { questionOne, questionTwo } from '../fixtures/vocabulary';
 const preferredReducedMotion = vi.hoisted(() => ({
   value: 'no-preference' as 'no-preference' | 'reduce',
 }));
+const unlockAudioEffectsMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playFeedbackSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playGameOverSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playRecordCelebrationSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
@@ -23,6 +24,7 @@ vi.mock('@vueuse/core', () => ({
 vi.mock('~/composables/useFeedbackAudio', () => ({
   useFeedbackAudio: () => ({
     audioEffectsSupported: ref(true),
+    unlockAudioEffects: unlockAudioEffectsMock,
     playFeedbackSound: playFeedbackSoundMock,
     playGameOverSound: playGameOverSoundMock,
     playRecordCelebrationSound: playRecordCelebrationSoundMock,
@@ -143,6 +145,7 @@ describe('index page', () => {
   beforeEach(() => {
     window.localStorage.clear();
     preferredReducedMotion.value = 'no-preference';
+    unlockAudioEffectsMock.mockReset();
     playFeedbackSoundMock.mockReset();
     playGameOverSoundMock.mockReset();
     playRecordCelebrationSoundMock.mockReset();
@@ -187,6 +190,14 @@ describe('index page', () => {
     expect(wrapper.get('.quiz-panel').text()).toContain('Score');
     expect(wrapper.get('.quiz-panel').text()).toContain('Streak');
     expect(wrapper.get('.quiz-panel').text()).toContain('Miss');
+  });
+
+  it('開始操作で正誤効果音の AudioContext をアンロックする', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    expect(unlockAudioEffectsMock).toHaveBeenCalledTimes(1);
   });
 
   it('開始画面では説明見出しなしでレベルごとの記録を表示する', async () => {
