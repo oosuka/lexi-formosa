@@ -82,6 +82,34 @@ const untranslatedChineseGlossPattern = /什麼|甚麼|東南亞|山東|^[\p{Scr
 const repeatedGlossPattern = /^(.{1,16}?)(?:[、，,]\1){1,}$/u;
 const explanatoryGlossPattern =
   /に相当|を表す|の一種|の段階|仏教|旧暦|分類子|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために/;
+const classifierOnlyGlosses = new Set([
+  '部',
+  '個',
+  '件',
+  '台',
+  '輛',
+  '名',
+  '位',
+  '條',
+  '張',
+  '本',
+  '家',
+  '把',
+  '面',
+  '隻',
+  '口',
+  '頭',
+  '瓶',
+  '杯',
+  '雙',
+  '份',
+  '粒',
+  '棵',
+  '艘',
+  '支',
+  '枚',
+  '匹',
+]);
 const determineLevel = (length) => {
   if (length <= 2) {
     return 1;
@@ -351,6 +379,10 @@ const shouldRejectCandidate = (candidate) => {
   }
 
   if (!candidate.canonicalJa) {
+    return true;
+  }
+
+  if (candidate.length > 1 && classifierOnlyGlosses.has(candidate.canonicalJa)) {
     return true;
   }
 

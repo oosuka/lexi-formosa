@@ -155,7 +155,7 @@ describe('generate vocabulary script', () => {
     generateVocabulary();
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
-      'Generated 8 entries (4 manual, 3 TOCFL, 2 MJdic level-3).'
+      'Generated 7 entries (4 manual, 2 TOCFL, 2 MJdic level-3).'
     );
     consoleLogSpy.mockRestore();
 
@@ -172,7 +172,7 @@ describe('generate vocabulary script', () => {
       fs.readFileSync(path.join(repoRoot, 'public', 'wordlists', 'vocabulary-level-1.json'), 'utf8')
     );
 
-    expect(vocabulary).toHaveLength(8);
+    expect(vocabulary).toHaveLength(7);
     expect(vocabulary.find((entry) => entry.id === 'manual-hello')).toMatchObject({
       trad: '你好',
       tocflLevel: 1,
@@ -203,13 +203,13 @@ describe('generate vocabulary script', () => {
     });
     expect(vocabulary.some((entry) => entry.trad === '圍棋')).toBe(false);
     expect(vocabulary.some((entry) => entry.trad === '巴彥淖爾市')).toBe(true);
-    expect(vocabulary.some((entry) => entry.trad === '摩托車')).toBe(true);
+    expect(vocabulary.some((entry) => entry.trad === '摩托車')).toBe(false);
 
     expect(metadata).toEqual({
-      total: 8,
+      total: 7,
       counts: {
         1: 3,
-        2: 2,
+        2: 1,
         3: 3,
       },
     });

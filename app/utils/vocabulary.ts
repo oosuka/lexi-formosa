@@ -15,6 +15,9 @@ const vocabEntrySchema = z.object({
   tocflLevel: z.number().int().positive().optional(),
   pronunciation: z.string().min(1).optional(),
   notes: z.string().optional(),
+  acceptedJa: z.array(z.string().min(1)).optional(),
+  senseTag: z.string().min(1).optional(),
+  distractorTags: z.array(z.string().min(1)).optional(),
 });
 
 const levelLengthMap: Record<Level, [number, number]> = {

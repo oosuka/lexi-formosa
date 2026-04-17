@@ -50,6 +50,26 @@ describe('vocabulary utilities', () => {
     expect(second).toBe(first);
   });
 
+  it('出題用タグを読み込み時に保持する', async () => {
+    fetchMock.mockResolvedValue([
+      createEntry({
+        acceptedJa: ['やあ'],
+        senseTag: 'greeting.basic',
+        distractorTags: ['greeting', 'basic'],
+      }),
+    ]);
+
+    const { loadVocabularyLevel } = await import('~/utils/vocabulary');
+
+    const entries = await loadVocabularyLevel(1);
+
+    expect(entries[0]).toMatchObject({
+      acceptedJa: ['やあ'],
+      senseTag: 'greeting.basic',
+      distractorTags: ['greeting', 'basic'],
+    });
+  });
+
   it('レベル語彙の取得失敗時はセットアップ案内付きで失敗する', async () => {
     fetchMock.mockRejectedValue(new Error('network down'));
 

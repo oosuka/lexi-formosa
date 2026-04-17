@@ -57,6 +57,25 @@ describe('vocabulary candidate pipeline', () => {
     ]);
   });
 
+  it('分類詞だけの日本語ラベルは公開候補にしない', async () => {
+    const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
+
+    const candidates = buildCandidates({
+      tocflRows: [{ trad: '摩托車', tocflLevel: 2, category: '交通', source: 'tocfl' }],
+      tbclRows: [],
+      mjdicEntries: [
+        {
+          trad: '摩托車',
+          meansJa: '部',
+          means: 'motorbike',
+          pronunciation: 'mo2 tuo1 che1',
+        },
+      ],
+    });
+
+    expect(candidates).toEqual([]);
+  });
+
   it('TOCFL 初級の false friend は教材向けラベルへ補正する', async () => {
     const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
 

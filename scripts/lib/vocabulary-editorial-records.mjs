@@ -6,6 +6,7 @@ const editorialOverrideSchema = z.object({
   canonicalJa: z.string().min(1).optional(),
   acceptedJa: z.array(z.string().min(1)).optional(),
   senseTag: z.string().min(1).optional(),
+  distractorTags: z.array(z.string().min(1)).optional(),
 });
 
 export const parseEditorialOverrides = (rawValue) =>
@@ -17,4 +18,5 @@ export const mergeEditorialState = ({ candidate, override }) => ({
   canonicalJa: override?.canonicalJa ?? candidate.canonicalJa ?? null,
   acceptedJa: override?.acceptedJa ?? candidate.acceptedJa ?? [],
   senseTag: override?.senseTag ?? candidate.senseTag ?? null,
+  distractorTags: override?.distractorTags ?? candidate.distractorTags ?? [],
 });
