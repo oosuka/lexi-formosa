@@ -1,10 +1,3 @@
-import {
-  isClassifierLikeGloss,
-  isCorruptedJapaneseGloss,
-  isProperNounLikeGloss,
-  isReferenceOnlyGloss,
-} from './vocabulary-quality-signals.mjs';
-
 const importOverrides = new Map([
   ['爸爸', 'お父さん'],
   ['大家', 'みんな'],
@@ -86,12 +79,9 @@ const allHanGlossPattern = /^[\p{Script=Han}々]+$/u;
 const simplifiedChineseGlossPattern =
   /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样/u;
 const untranslatedChineseGlossPattern = /什麼|甚麼|東南亞|山東|^[\p{Script=Han}々]+と同じ$/u;
-const classifierLikeGlossPattern =
-  /^(部|個|件|台|輛|名|位|條|張|本|家|把|面|隻|口|頭|瓶|杯|雙|份|粒|棵|艘|支|枚|匹)$/u;
 const repeatedGlossPattern = /^(.{1,16}?)(?:[、，,]\1){1,}$/u;
 const explanatoryGlossPattern =
   /に相当|を表す|の一種|の段階|仏教|旧暦|分類子|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために/;
-const surnameLikePattern = /姓|surname/i;
 const determineLevel = (length) => {
   if (length <= 2) {
     return 1;
@@ -166,14 +156,6 @@ const isRejectedGlossCandidate = (candidate) => {
     return true;
   }
 
-  if (isReferenceOnlyGloss(candidate)) {
-    return true;
-  }
-
-  if (isCorruptedJapaneseGloss(candidate)) {
-    return true;
-  }
-
   return false;
 };
 
@@ -227,14 +209,6 @@ const isRejectedJapaneseGlossCandidate = (candidate, source = 'ja') => {
   }
 
   if (untranslatedChineseGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (isReferenceOnlyGloss(candidate)) {
-    return true;
-  }
-
-  if (isCorruptedJapaneseGloss(candidate)) {
     return true;
   }
 
@@ -334,8 +308,6 @@ const createEmptyCandidate = (trad) => ({
   tbclLevel: undefined,
   rawGlosses: [],
   pronunciation: undefined,
-  riskFlags: [],
-  confidence: 'low',
   canonicalJa: null,
 });
 
@@ -365,41 +337,7 @@ const mergeSourceRow = (candidate, row) => {
   return next;
 };
 
-const buildRiskFlags = (candidate) => {
-  const glossValues = candidate.rawGlosses
-    .flatMap((gloss) => [gloss.meansJa, gloss.means])
-    .filter(Boolean);
-  const joinedGloss = glossValues.join(' / ');
-  const flags = [];
-
-  if (surnameLikePattern.test(joinedGloss)) {
-    flags.push('surname_like');
-  }
-
-  if (isClassifierLikeGloss(joinedGloss)) {
-    flags.push('classifier_like');
-  }
-
-  if (isProperNounLikeGloss(joinedGloss)) {
-    flags.push('proper_noun_like');
-  }
-
-  if (glossValues.some((gloss) => isReferenceOnlyGloss(gloss))) {
-    flags.push('reference_only_gloss');
-  }
-
-  if (glossValues.some((gloss) => isCorruptedJapaneseGloss(gloss))) {
-    flags.push('corrupted_japanese_gloss');
-  }
-
-  if (candidate.level <= 2 && explanatoryGlossPattern.test(joinedGloss)) {
-    flags.push('explanatory_gloss');
-  }
-
-  return flags;
-};
-
-const shouldRejectCandidate = (candidate, { hasApprovedLabelOverride = false } = {}) => {
+const shouldRejectCandidate = (candidate) => {
   if (candidate.status === 'rejected') {
     return true;
   }
@@ -416,46 +354,7 @@ const shouldRejectCandidate = (candidate, { hasApprovedLabelOverride = false } =
     return true;
   }
 
-  if (
-    isReferenceOnlyGloss(candidate.canonicalJa) ||
-    isCorruptedJapaneseGloss(candidate.canonicalJa)
-  ) {
-    return true;
-  }
-
-  if (hasApprovedLabelOverride) {
-    return false;
-  }
-
-  if (candidate.level <= 2 && candidate.riskFlags.length > 0) {
-    return true;
-  }
-
-  if (
-    candidate.sources.length === 1 &&
-    candidate.sources[0] === 'mjdic' &&
-    candidate.riskFlags.includes('proper_noun_like')
-  ) {
-    return true;
-  }
-
-  if (candidate.length > 1 && classifierLikeGlossPattern.test(candidate.canonicalJa)) {
-    return true;
-  }
-
   return false;
-};
-
-const getConfidence = (candidate) => {
-  if (candidate.sources.includes('tocfl') && candidate.sources.includes('tbcl')) {
-    return 'high';
-  }
-
-  if (candidate.sources.includes('tocfl')) {
-    return 'medium';
-  }
-
-  return 'low';
 };
 
 export const buildCandidates = ({
@@ -489,13 +388,10 @@ export const buildCandidates = ({
   return [...candidatesByTrad.values()]
     .map((candidate) => {
       const override = editorialMap.get(candidate.trad);
-      const hasApprovedLabelOverride = isApprovedLabelOverride(override);
       const canonicalJa =
-        (hasApprovedLabelOverride ? override.canonicalJa : undefined) ??
+        (isApprovedLabelOverride(override) ? override.canonicalJa : undefined) ??
         importOverrides.get(candidate.trad) ??
         pickBestGloss(candidate.rawGlosses);
-      const riskFlags = buildRiskFlags(candidate);
-
       return {
         candidate: {
           ...candidate,
@@ -503,15 +399,9 @@ export const buildCandidates = ({
           canonicalJa,
           acceptedJa: override?.acceptedJa ?? candidate.acceptedJa ?? [],
           senseTag: override?.senseTag ?? candidate.senseTag ?? null,
-          riskFlags,
-          confidence: getConfidence(candidate),
         },
-        hasApprovedLabelOverride,
       };
     })
-    .filter(
-      ({ candidate, hasApprovedLabelOverride }) =>
-        !shouldRejectCandidate(candidate, { hasApprovedLabelOverride })
-    )
+    .filter(({ candidate }) => !shouldRejectCandidate(candidate))
     .map(({ candidate }) => candidate);
 };

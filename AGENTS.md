@@ -38,14 +38,7 @@
 - 語彙生成は `TOCFL + TBCL + MJdic + 手修正語彙 + editorial override` を合成するスクリプト方式です。
 - 公開デッキは `Level 1-2` で `TOCFL/TBCL` を根拠にできる候補を優先し、`Level 3` は `MJdic` を根拠にできる 5-6文字候補を中心に組み立ててください。
 - clone 後の初回辞書セットアップは `npm run setup:data` で行います。
-- `setup:data` は validation 失敗で止めますが、`audit:data` の出力は品質確認用の警告として扱います。
 - 重要語の seed 追加や発音補完は `data/manual-vocabulary.json`、自動候補の採否や日本語ラベル補正は `data/editorial-overrides.json` を優先して行います。
-- `npm run review:vocab:export -- --limit=500` は `Level 1-2` の未レビュー候補と低信頼候補をレビュー用 JSONL に書き出します。
-- `npm run review:vocab:export -- --level=3 --risk-only --limit=200` は `Level 3` の固有名詞・説明文・長すぎる日本語ラベルを優先してレビュー用 JSONL に書き出します。
-- `npm run review:vocab:export -- --level=3 --limit=50` は `Level 3` の低リスク Challenge 候補を少量ずつレビュー用 JSONL に書き出します。
-- `npm run review:vocab:apply -- /path/to/review-results.json` はレビュー結果を `data/editorial-overrides.json` に反映します。
-- 語彙品質改善の継続手順は、このファイルと `README.md`、`docs/dictionary-sources.md` の現行記述を優先してください。ローカルに `docs/superpowers/` がある場合だけ、作業メモとして参照して構いません。
-- 次回「改善を再開してください」と言われた場合は、古い plan ではなく現行 plan を読み、全レベルの言語品質改善を継続してください。Level 3 は Truth-first Challenge Deck として残してください。
 - 問題カードには、可能な範囲でピンインとカタカナ補助を表示します。
 - 単語音声はブラウザの `SpeechSynthesis` を使います。外部TTSは前提にしません。
 - 回答時の効果音は `Web Audio API` を使います。
@@ -78,27 +71,19 @@
 - `scripts/generate-vocabulary.mjs`
   - 大規模辞書生成
 - `scripts/setup-data.mjs`
-  - Public リポジトリ向けの辞書取得・生成・監査セットアップ
+  - Public リポジトリ向けの辞書取得・生成・検証セットアップ
 - `scripts/lib/`
-  - 辞書ソース読み込み、候補合成、editorial record 統合、公開デッキ生成、品質シグナル判定
+  - 辞書ソース読み込み、候補合成、editorial record 統合、公開デッキ生成
 - `scripts/validate-vocabulary.mjs`
   - 語彙整合性チェック
-- `scripts/audit-vocabulary-quality.mjs`
-  - 教材ラベル品質の粗い監査
-- `scripts/export-vocabulary-review-batch.mjs`
-  - レビュー対象候補の JSONL 書き出し
-- `scripts/apply-vocabulary-review-results.mjs`
-  - レビュー結果の `editorial-overrides` 反映
 - `data/manual-vocabulary.json`
   - seed deck と発音補完
 - `data/editorial-overrides.json`
   - 自動候補の採否と教材ラベル補正
-- `data/review-batches/`
-  - ローカルレビュー用の一時生成物
 - `data/source-snapshots/`
   - ローカル取得した外部辞書ソース
 - `data/vocabulary-candidates.json`
-  - レビュー用の中間候補
+  - 語彙生成時の中間候補
 - `data/vocabulary.json`
   - 統合済み全語彙
 - `data/vocabulary-metadata.json`
@@ -253,21 +238,6 @@ npm run generate:data
 npm run check:data
 ```
 
-語彙監査:
-
-```bash
-npm run audit:data
-```
-
-語彙レビュー:
-
-```bash
-npm run review:vocab:export -- --level=3 --risk-only --limit=200
-npm run review:vocab:export -- --level=3 --limit=50
-npm run review:vocab:export -- --limit=500
-npm run review:vocab:apply -- /path/to/review-results.json
-```
-
 外部ソースを個別指定して再生成する例:
 
 ```bash
@@ -287,8 +257,6 @@ npx playwright install chromium
 - 変更が UI なのか、ロジックなのか、辞書生成なのかを先に切り分ける
 - 生成物を直接直すべきか、元データやスクリプトを直すべきかを判断する
 - 語彙や訳の問題なら、seed 追加は `manual-vocabulary`、既存候補の採否や訳修正は `editorial-overrides` で解決できるか確認する
-- 語彙品質改善の続きなら、このファイル、`README.md`、`docs/dictionary-sources.md` で現在地を確認する
-- 選択肢に壊れた日本語が出る問題なら、まず公開済み `data/vocabulary*.json` 全体の `ja` を横断監査し、誤答候補プールの地雷を先に除去する
 - metadata のような補助データが壊れても、ゲーム本体まで巻き込んで停止させない設計を優先する
 - Public 公開に関わる変更なら、生成済み辞書データをコミットしていないか確認する
 - パフォーマンスに影響する場合、バンドルへ大きいデータを直接含めていないか確認する
@@ -300,8 +268,6 @@ npx playwright install chromium
 - 対象は少なくとも `README.md`、`AGENTS.md`、`docs/` 配下の関連文書です。
 - すべての Markdown を毎回機械的に更新するのではなく、変更内容に影響する文書だけを更新してください。
 - 文書更新が不要と判断した場合は、その判断が妥当かを一度確認してください。
-- `docs/superpowers/` はローカル専用の作業計画・設計メモ置き場です。Git 管理対象にせず、Public リポジトリの現行仕様確認ではコード、`README.md`、`AGENTS.md`、`docs/dictionary-sources.md` を優先してください。
-- `docs/superpowers/` 配下に履歴文書や不採用案をローカルで残す場合は、各ファイル冒頭の `Status` 表記で `採用中` `実装済み` `履歴` `不採用` `revert 済み` などを明示し、現行文書と混同されないようにしてください。
 - ユーザー向けの使い方、セットアップ、コマンド、挙動が変わった場合は `README.md` を更新してください。
 - エージェント運用ルール、レビュー方針、検証手順が変わった場合は `AGENTS.md` を更新してください。
 - 辞書、生成、データソース、再生成手順が変わった場合は `docs/dictionary-sources.md` を更新してください。
@@ -323,19 +289,17 @@ npm run build
 ```bash
 npm run setup:data
 npm run check:data
-npm run audit:data
 npm run lint
 npm run test:unit
 npx tsc --noEmit -p .nuxt/tsconfig.json
 npm run build
 ```
 
-語彙レビュー結果だけを反映した場合:
+語彙の手修正データだけを反映した場合:
 
 ```bash
 npm run generate:data
 npm run check:data
-npm run audit:data
 npm run lint
 npm run test:unit
 npx tsc --noEmit -p .nuxt/tsconfig.json
@@ -349,7 +313,6 @@ TOCFL_SOURCE_PATH=/path/to/tocfl_words.json \
 MJDIC_SOURCE_PATH=/path/to/mjdic.csv \
 npm run generate:data
 npm run check:data
-npm run audit:data
 ```
 
 UI の主要導線や操作フローを変えた場合:
@@ -421,6 +384,4 @@ npm run build
 ## 15. 補足
 
 - 辞書ソースの詳細は `docs/dictionary-sources.md` を参照してください。
-- 大量語彙化は実現済みですが、日本語訳の品質改善余地はまだあります。
 - 読み方表示と音声再生は実装済みですが、音声品質は利用ブラウザとOSの音声環境に依存します。
-- 今後の品質改善は、`data/editorial-overrides.json` のレビューサイクル、`data/manual-vocabulary.json` の重要語 seed 追加、生成ルールの改善の順で進めるのが安全です。

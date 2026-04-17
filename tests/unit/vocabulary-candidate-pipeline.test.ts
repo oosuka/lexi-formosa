@@ -2,70 +2,59 @@
 import { describe, expect, it } from 'vitest';
 
 describe('vocabulary candidate pipeline', () => {
-  it('姓・分類語・固有名詞寄り語義を Level 1 候補から落とす', async () => {
+  it('editorial override で候補を除外できる', async () => {
     const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
 
     const candidates = buildCandidates({
-      tocflRows: [{ trad: '三', tocflLevel: 1, category: '基礎', source: 'tocfl' }],
+      tocflRows: [{ trad: '東西', tocflLevel: 1, category: '基礎', source: 'tocfl' }],
       tbclRows: [],
       mjdicEntries: [
         {
-          trad: '三',
-          meansJa: 'サン姓',
-          means: 'surname San',
-          pronunciation: 'san1',
+          trad: '東西',
+          meansJa: 'もの',
+          means: 'thing',
+          pronunciation: 'dong1 xi5',
         },
       ],
+      editorialOverrides: [{ trad: '東西', status: 'rejected', canonicalJa: 'もの' }],
     });
 
     expect(candidates).toEqual([]);
   });
 
-  it('MJdic 単独の固有名詞寄り候補を Level 3 でも落とす', async () => {
+  it('editorial override で日本語ラベルを補正できる', async () => {
     const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
 
     const candidates = buildCandidates({
-      tocflRows: [],
+      tocflRows: [{ trad: '爸爸', tocflLevel: 1, category: '基礎', source: 'tocfl' }],
       tbclRows: [],
       mjdicEntries: [
         {
-          trad: '巴彥淖爾市',
-          meansJa: '内モンゴル自治区バヤン・ヌール県級市',
-          means: 'Bayan Nur prefecture-level city in Inner Mongolia',
-          pronunciation: 'ba1 yan4 nao4 er3 shi4',
+          trad: '爸爸',
+          meansJa: 'お父さん',
+          means: 'dad',
+          pronunciation: 'ba4 ba',
+        },
+      ],
+      editorialOverrides: [
+        {
+          trad: '爸爸',
+          status: 'approved',
+          canonicalJa: '父さん',
+          acceptedJa: ['お父さん'],
+          senseTag: 'people.family',
         },
       ],
     });
 
-    expect(candidates).toEqual([]);
-  });
-
-  it('MJdic の参照ラベルと壊れた日本語ラベルを公開候補から落とす', async () => {
-    const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
-
-    const candidates = buildCandidates({
-      tocflRows: [
-        { trad: '般', tocflLevel: 7, category: '精熟', source: 'tocfl' },
-        { trad: '無稽之談', tocflLevel: 7, category: '精熟', source: 'tocfl' },
-      ],
-      tbclRows: [],
-      mjdicEntries: [
-        {
-          trad: '般',
-          meansJa: '般乐を参照',
-          means: 'see 般樂',
-          pronunciation: 'ban1',
-        },
-        {
-          trad: '無稽之談',
-          meansJa: '珍糞漢糞',
-          means: 'complete nonsense (idiom)',
-          pronunciation: 'wu2 ji1 zhi1 tan2',
-        },
-      ],
-    });
-
-    expect(candidates).toEqual([]);
+    expect(candidates).toEqual([
+      expect.objectContaining({
+        trad: '爸爸',
+        canonicalJa: '父さん',
+        acceptedJa: ['お父さん'],
+        senseTag: 'people.family',
+      }),
+    ]);
   });
 
   it('TOCFL 初級の false friend は教材向けラベルへ補正する', async () => {

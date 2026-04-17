@@ -79,7 +79,7 @@ const main = async () => {
   fs.mkdirSync(snapshotDir, { recursive: true });
 
   console.log('Third-party dictionary data is not bundled in this repository.');
-  console.log('Review source licenses before redistributing generated outputs.');
+  console.log('Check source licenses before redistributing generated outputs.');
 
   for (const source of sources) {
     await ensureSourceFile(source);
@@ -87,7 +87,6 @@ const main = async () => {
 
   runNodeScript(path.join(repoRoot, 'scripts', 'generate-vocabulary.mjs'));
   runNodeScript(path.join(repoRoot, 'scripts', 'validate-vocabulary.mjs'));
-  runNodeScript(path.join(repoRoot, 'scripts', 'audit-vocabulary-quality.mjs'));
 
   console.log('Dictionary setup completed.');
   console.log('You can now run: npm run dev');

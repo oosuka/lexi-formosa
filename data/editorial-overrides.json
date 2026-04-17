@@ -170,8 +170,7 @@
     "trad": "一共",
     "status": "approved",
     "canonicalJa": "全部で",
-    "acceptedJa": ["すべて"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["すべて"]
   },
   {
     "trad": "一再",
@@ -295,8 +294,7 @@
   {
     "trad": "一些",
     "status": "approved",
-    "canonicalJa": "少し",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "少し"
   },
   {
     "trad": "一併",
@@ -314,8 +312,7 @@
     "trad": "一定",
     "status": "approved",
     "canonicalJa": "必ず",
-    "acceptedJa": ["確実に"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["確実に"]
   },
   {
     "trad": "一拍即合",
@@ -452,8 +449,7 @@
   {
     "trad": "一起",
     "status": "approved",
-    "canonicalJa": "一緒に",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "一緒に"
   },
   {
     "trad": "一退六二五",
@@ -756,8 +752,7 @@
   {
     "trad": "一樣",
     "status": "approved",
-    "canonicalJa": "同じ",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "同じ"
   },
   {
     "trad": "一擁而上",
@@ -804,8 +799,7 @@
   {
     "trad": "一點",
     "status": "approved",
-    "canonicalJa": "少し",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "少し"
   },
   {
     "trad": "一點一滴",
@@ -893,8 +887,7 @@
   {
     "trad": "九",
     "status": "approved",
-    "canonicalJa": "九",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "九"
   },
   {
     "trad": "九霄雲外",
@@ -941,8 +934,7 @@
   {
     "trad": "二",
     "status": "approved",
-    "canonicalJa": "二",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "二"
   },
   {
     "trad": "二氧化碳",
@@ -1593,8 +1585,7 @@
     "trad": "上",
     "status": "approved",
     "canonicalJa": "上",
-    "acceptedJa": ["上がる"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["上がる"]
   },
   {
     "trad": "上下",
@@ -1830,8 +1821,7 @@
     "trad": "上課",
     "status": "approved",
     "canonicalJa": "授業に出る",
-    "acceptedJa": ["授業する"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["授業する"]
   },
   {
     "trad": "上學",
@@ -1849,8 +1839,7 @@
     "trad": "下",
     "status": "approved",
     "canonicalJa": "下",
-    "acceptedJa": ["下へ"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["下へ"]
   },
   {
     "trad": "下人",
@@ -1896,8 +1885,7 @@
   {
     "trad": "下雨",
     "status": "approved",
-    "canonicalJa": "雨が降る",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "雨が降る"
   },
   {
     "trad": "下毒",
@@ -2034,8 +2022,7 @@
     "trad": "久",
     "status": "approved",
     "canonicalJa": "長い時間",
-    "acceptedJa": ["長く"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["長く"]
   },
   {
     "trad": "久而久之",
@@ -2128,8 +2115,7 @@
   {
     "trad": "千",
     "status": "approved",
-    "canonicalJa": "千",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "千"
   },
   {
     "trad": "千方百計",
@@ -2373,14 +2359,12 @@
   {
     "trad": "大",
     "status": "approved",
-    "canonicalJa": "大きい",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "大きい"
   },
   {
     "trad": "大人",
     "status": "approved",
-    "canonicalJa": "大人",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "大人"
   },
   {
     "trad": "大力",
@@ -2579,8 +2563,7 @@
   {
     "trad": "大家",
     "status": "approved",
-    "canonicalJa": "みんな",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "みんな"
   },
   {
     "trad": "大師",
@@ -2845,8 +2828,7 @@
     "trad": "女",
     "status": "approved",
     "canonicalJa": "女性",
-    "acceptedJa": ["女"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["女"]
   },
   {
     "trad": "女子",
@@ -2863,8 +2845,7 @@
   {
     "trad": "女兒",
     "status": "approved",
-    "canonicalJa": "娘",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "娘"
   },
   {
     "trad": "女性",
@@ -2929,8 +2910,7 @@
   {
     "trad": "小",
     "status": "approved",
-    "canonicalJa": "小さい",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "小さい"
   },
   {
     "trad": "小丑",
@@ -3239,8 +3219,7 @@
   },
   {
     "trad": "才",
-    "status": "rejected",
-    "reviewReason": "context-dependent standalone function word in review batch"
+    "status": "rejected"
   },
   {
     "trad": "才子",
@@ -3880,8 +3859,7 @@
     "trad": "不錯",
     "status": "approved",
     "canonicalJa": "悪くない",
-    "acceptedJa": ["かなり良い"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["かなり良い"]
   },
   {
     "trad": "不斷",
@@ -3922,8 +3900,7 @@
   {
     "trad": "中文",
     "status": "approved",
-    "canonicalJa": "中国語",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "中国語"
   },
   {
     "trad": "中止",
@@ -4329,8 +4306,7 @@
   {
     "trad": "什麼",
     "status": "approved",
-    "canonicalJa": "なに",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "なに"
   },
   {
     "trad": "仁",
@@ -4371,8 +4347,7 @@
   {
     "trad": "今天",
     "status": "approved",
-    "canonicalJa": "今日",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "今日"
   },
   {
     "trad": "今日",
@@ -4389,8 +4364,7 @@
   {
     "trad": "今年",
     "status": "approved",
-    "canonicalJa": "今年",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "今年"
   },
   {
     "trad": "今後",
@@ -4425,8 +4399,7 @@
   {
     "trad": "介紹",
     "status": "approved",
-    "canonicalJa": "紹介する",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "紹介する"
   },
   {
     "trad": "介意",
@@ -4774,8 +4747,7 @@
   {
     "trad": "公車",
     "status": "approved",
-    "canonicalJa": "バス",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "バス"
   },
   {
     "trad": "公里",
@@ -5080,8 +5052,7 @@
   {
     "trad": "分鐘",
     "status": "approved",
-    "canonicalJa": "分",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "分"
   },
   {
     "trad": "分攤",
@@ -5510,8 +5481,7 @@
     "trad": "天",
     "status": "approved",
     "canonicalJa": "空",
-    "acceptedJa": ["日"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["日"]
   },
   {
     "trad": "天上掉餡餅",
@@ -5664,14 +5634,12 @@
   {
     "trad": "天皇",
     "status": "approved",
-    "canonicalJa": "天皇",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "天皇"
   },
   {
     "trad": "天氣",
     "status": "approved",
-    "canonicalJa": "天気",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "天気"
   },
   {
     "trad": "天真",
@@ -5809,8 +5777,7 @@
     "trad": "太",
     "status": "approved",
     "canonicalJa": "とても",
-    "acceptedJa": ["非常に"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["非常に"]
   },
   {
     "trad": "太子",
@@ -5898,8 +5865,7 @@
   },
   {
     "trad": "孔",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "孔雀",
@@ -5910,8 +5876,7 @@
   {
     "trad": "少",
     "status": "approved",
-    "canonicalJa": "少ない",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "少ない"
   },
   {
     "trad": "少女",
@@ -6788,8 +6753,7 @@
   },
   {
     "trad": "斗",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "斗大",
@@ -6824,8 +6788,7 @@
   {
     "trad": "方位",
     "status": "approved",
-    "canonicalJa": "方角",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "方角"
   },
   {
     "trad": "方形",
@@ -6842,8 +6805,7 @@
   {
     "trad": "方便",
     "status": "approved",
-    "canonicalJa": "便利",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "便利"
   },
   {
     "trad": "方程式",
@@ -6859,8 +6821,7 @@
   },
   {
     "trad": "日",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "日子",
@@ -7069,8 +7030,7 @@
   {
     "trad": "比",
     "status": "approved",
-    "canonicalJa": "比較する",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "比較する"
   },
   {
     "trad": "比方說",
@@ -7133,8 +7093,7 @@
   {
     "trad": "比較",
     "status": "approved",
-    "canonicalJa": "比較する",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "比較する"
   },
   {
     "trad": "比劃",
@@ -7744,8 +7703,7 @@
   {
     "trad": "他們",
     "status": "approved",
-    "canonicalJa": "彼ら",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "彼ら"
   },
   {
     "trad": "他鄉",
@@ -7838,8 +7796,7 @@
   },
   {
     "trad": "以",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "以人名命名",
@@ -7902,15 +7859,13 @@
   {
     "trad": "以前",
     "status": "approved",
-    "canonicalJa": "以前",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "以前"
   },
   {
     "trad": "以後",
     "status": "approved",
     "canonicalJa": "以後",
-    "acceptedJa": ["後で"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["後で"]
   },
   {
     "trad": "兄",
@@ -8016,8 +7971,7 @@
   },
   {
     "trad": "出",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "出人意表",
@@ -8691,8 +8645,7 @@
   {
     "trad": "北",
     "status": "approved",
-    "canonicalJa": "北",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "北"
   },
   {
     "trad": "北方民族大學",
@@ -8775,8 +8728,7 @@
     "trad": "半",
     "status": "approved",
     "canonicalJa": "半分",
-    "acceptedJa": ["半"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["半"]
   },
   {
     "trad": "半夜",
@@ -8868,8 +8820,7 @@
   {
     "trad": "去年",
     "status": "approved",
-    "canonicalJa": "去年",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "去年"
   },
   {
     "trad": "去除",
@@ -8986,8 +8937,7 @@
     "trad": "只",
     "status": "approved",
     "canonicalJa": "ただ",
-    "acceptedJa": ["〜だけ"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["〜だけ"]
   },
   {
     "trad": "只好",
@@ -9010,8 +8960,7 @@
   {
     "trad": "叫",
     "status": "approved",
-    "canonicalJa": "呼ぶ",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "呼ぶ"
   },
   {
     "trad": "叫好",
@@ -9191,8 +9140,7 @@
     "trad": "可愛",
     "status": "approved",
     "canonicalJa": "かわいい",
-    "acceptedJa": ["愛らしい"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["愛らしい"]
   },
   {
     "trad": "可疑",
@@ -9262,15 +9210,13 @@
   {
     "trad": "右",
     "status": "approved",
-    "canonicalJa": "右",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "右"
   },
   {
     "trad": "右邊",
     "status": "approved",
     "canonicalJa": "右側",
-    "acceptedJa": ["右"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["右"]
   },
   {
     "trad": "司令",
@@ -9316,8 +9262,7 @@
   {
     "trad": "四",
     "status": "approved",
-    "canonicalJa": "四",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "四"
   },
   {
     "trad": "四一二慘案",
@@ -9397,8 +9342,7 @@
   {
     "trad": "外",
     "status": "approved",
-    "canonicalJa": "外",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "外"
   },
   {
     "trad": "外人",
@@ -9534,8 +9478,7 @@
   {
     "trad": "外頭",
     "status": "approved",
-    "canonicalJa": "外",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "外"
   },
   {
     "trad": "外籍",
@@ -9738,8 +9681,7 @@
   {
     "trad": "它",
     "status": "approved",
-    "canonicalJa": "それ",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "それ"
   },
   {
     "trad": "尼布楚條約",
@@ -9999,8 +9941,7 @@
     "trad": "平常",
     "status": "approved",
     "canonicalJa": "普段",
-    "acceptedJa": ["ふつう"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["ふつう"]
   },
   {
     "trad": "平庸",
@@ -10158,8 +10099,7 @@
     "trad": "打",
     "status": "approved",
     "canonicalJa": "打つ",
-    "acceptedJa": ["叩く"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["叩く"]
   },
   {
     "trad": "打工",
@@ -10402,8 +10342,7 @@
   },
   {
     "trad": "未",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "未必",
@@ -10480,8 +10419,7 @@
   {
     "trad": "本",
     "status": "approved",
-    "canonicalJa": "本",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "本"
   },
   {
     "trad": "本人",
@@ -10541,8 +10479,7 @@
     "trad": "本來",
     "status": "approved",
     "canonicalJa": "もともと",
-    "acceptedJa": ["本来"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["本来"]
   },
   {
     "trad": "本性",
@@ -10948,8 +10885,7 @@
   {
     "trad": "瓦",
     "status": "approved",
-    "canonicalJa": "瓦",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "瓦"
   },
   {
     "trad": "瓦斯",
@@ -11122,8 +11058,7 @@
   {
     "trad": "生病",
     "status": "approved",
-    "canonicalJa": "病気になる",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "病気になる"
   },
   {
     "trad": "生動",
@@ -11942,8 +11877,7 @@
   {
     "trad": "休息",
     "status": "approved",
-    "canonicalJa": "休む",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "休む"
   },
   {
     "trad": "休假",
@@ -12253,8 +12187,7 @@
   {
     "trad": "全部",
     "status": "approved",
-    "canonicalJa": "すべて",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "すべて"
   },
   {
     "trad": "全然",
@@ -12361,8 +12294,7 @@
   {
     "trad": "再見",
     "status": "approved",
-    "canonicalJa": "さようなら",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "さようなら"
   },
   {
     "trad": "再者",
@@ -12569,8 +12501,7 @@
   {
     "trad": "吃",
     "status": "approved",
-    "canonicalJa": "食べる",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "食べる"
   },
   {
     "trad": "吃力",
@@ -12606,8 +12537,7 @@
     "trad": "吃飯",
     "status": "approved",
     "canonicalJa": "食事する",
-    "acceptedJa": ["食べる"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["食べる"]
   },
   {
     "trad": "吃虧",
@@ -12624,8 +12554,7 @@
   {
     "trad": "各",
     "status": "approved",
-    "canonicalJa": "それぞれ",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "それぞれ"
   },
   {
     "trad": "各自",
@@ -12921,8 +12850,7 @@
   },
   {
     "trad": "名",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "名人",
@@ -12998,8 +12926,7 @@
   },
   {
     "trad": "名家",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "名氣",
@@ -13113,8 +13040,7 @@
     "trad": "回",
     "status": "approved",
     "canonicalJa": "戻る",
-    "acceptedJa": ["回る"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["回る"]
   },
   {
     "trad": "回合",
@@ -13131,8 +13057,7 @@
   {
     "trad": "回到",
     "status": "approved",
-    "canonicalJa": "戻る",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "戻る"
   },
   {
     "trad": "回味",
@@ -13275,8 +13200,7 @@
   {
     "trad": "因為",
     "status": "approved",
-    "canonicalJa": "なぜなら",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "なぜなら"
   },
   {
     "trad": "因特網提供商",
@@ -13412,8 +13336,7 @@
   {
     "trad": "地區",
     "status": "approved",
-    "canonicalJa": "地域",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "地域"
   },
   {
     "trad": "地域",
@@ -13490,8 +13413,7 @@
   {
     "trad": "多久",
     "status": "approved",
-    "canonicalJa": "どのくらい",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "どのくらい"
   },
   {
     "trad": "多才多藝",
@@ -13509,8 +13431,7 @@
     "trad": "多少",
     "status": "approved",
     "canonicalJa": "いくつ",
-    "acceptedJa": ["どのくらい"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["どのくらい"]
   },
   {
     "trad": "多方",
@@ -13611,8 +13532,7 @@
   {
     "trad": "她",
     "status": "approved",
-    "canonicalJa": "彼女",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "彼女"
   },
   {
     "trad": "好心",
@@ -13743,8 +13663,7 @@
     "trad": "好像",
     "status": "approved",
     "canonicalJa": "ようだ",
-    "acceptedJa": ["のように見える"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["のように見える"]
   },
   {
     "trad": "好端端",
@@ -14293,8 +14212,7 @@
   {
     "trad": "年輕",
     "status": "approved",
-    "canonicalJa": "若い",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "若い"
   },
   {
     "trad": "年頭",
@@ -14323,8 +14241,7 @@
   {
     "trad": "忙",
     "status": "approved",
-    "canonicalJa": "忙しい",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "忙しい"
   },
   {
     "trad": "忙碌",
@@ -14646,8 +14563,7 @@
   {
     "trad": "早",
     "status": "approved",
-    "canonicalJa": "早い",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "早い"
   },
   {
     "trad": "早日",
@@ -14658,8 +14574,7 @@
   {
     "trad": "早安",
     "status": "approved",
-    "canonicalJa": "おはよう",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "おはよう"
   },
   {
     "trad": "早年",
@@ -14712,8 +14627,7 @@
     "trad": "有",
     "status": "approved",
     "canonicalJa": "ある",
-    "acceptedJa": ["持つ"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["持つ"]
   },
   {
     "trad": "有一搭無一搭",
@@ -14871,8 +14785,7 @@
   {
     "trad": "有時候",
     "status": "approved",
-    "canonicalJa": "時々",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "時々"
   },
   {
     "trad": "有氣無力",
@@ -14960,8 +14873,7 @@
   {
     "trad": "有點",
     "status": "approved",
-    "canonicalJa": "少し",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "少し"
   },
   {
     "trad": "有礙",
@@ -15291,8 +15203,7 @@
     "trad": "老人",
     "status": "approved",
     "canonicalJa": "お年寄り",
-    "acceptedJa": ["老人"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["老人"]
   },
   {
     "trad": "老人家",
@@ -15535,8 +15446,7 @@
   {
     "trad": "肉",
     "status": "approved",
-    "canonicalJa": "肉",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "肉"
   },
   {
     "trad": "肉眼",
@@ -15596,8 +15506,7 @@
     "trad": "自己",
     "status": "approved",
     "canonicalJa": "自分",
-    "acceptedJa": ["自分自身"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["自分自身"]
   },
   {
     "trad": "自己人",
@@ -16438,8 +16347,7 @@
   {
     "trad": "但是",
     "status": "approved",
-    "canonicalJa": "しかし",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "しかし"
   },
   {
     "trad": "但願",
@@ -16460,8 +16368,7 @@
   },
   {
     "trad": "位",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "位子",
@@ -16484,8 +16391,7 @@
   {
     "trad": "低",
     "status": "approved",
-    "canonicalJa": "低い",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "低い"
   },
   {
     "trad": "低下",
@@ -16836,14 +16742,12 @@
   {
     "trad": "你",
     "status": "approved",
-    "canonicalJa": "あなた",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "あなた"
   },
   {
     "trad": "你們",
     "status": "approved",
-    "canonicalJa": "あなたたち",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "あなたたち"
   },
   {
     "trad": "克氏黑鰭鰁",
@@ -17025,8 +16929,7 @@
   {
     "trad": "初中",
     "status": "approved",
-    "canonicalJa": "中学校",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "中学校"
   },
   {
     "trad": "初步",
@@ -17073,8 +16976,7 @@
   {
     "trad": "別人",
     "status": "approved",
-    "canonicalJa": "他人",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "他人"
   },
   {
     "trad": "別出心裁",
@@ -17630,8 +17532,7 @@
   {
     "trad": "告訴",
     "status": "approved",
-    "canonicalJa": "伝える",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "伝える"
   },
   {
     "trad": "告誡",
@@ -18097,8 +17998,7 @@
   },
   {
     "trad": "床",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "床鋪",
@@ -18344,8 +18244,7 @@
     "trad": "快",
     "status": "approved",
     "canonicalJa": "速い",
-    "acceptedJa": ["早い"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["早い"]
   },
   {
     "trad": "快刀斬亂麻",
@@ -18386,14 +18285,12 @@
   {
     "trad": "快樂",
     "status": "approved",
-    "canonicalJa": "楽しい",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "楽しい"
   },
   {
     "trad": "我",
     "status": "approved",
-    "canonicalJa": "私",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "私"
   },
   {
     "trad": "我行我素",
@@ -18404,8 +18301,7 @@
   {
     "trad": "我們",
     "status": "approved",
-    "canonicalJa": "私たち",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "私たち"
   },
   {
     "trad": "戒",
@@ -18542,8 +18438,7 @@
   {
     "trad": "找",
     "status": "approved",
-    "canonicalJa": "探す",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "探す"
   },
   {
     "trad": "找尋",
@@ -19009,8 +18904,7 @@
     "trad": "更",
     "status": "approved",
     "canonicalJa": "さらに",
-    "acceptedJa": ["もっと"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["もっと"]
   },
   {
     "trad": "更加",
@@ -19169,8 +19063,7 @@
   {
     "trad": "每",
     "status": "approved",
-    "canonicalJa": "それぞれ",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "それぞれ"
   },
   {
     "trad": "每每",
@@ -19463,8 +19356,7 @@
   {
     "trad": "沒",
     "status": "approved",
-    "canonicalJa": "ない",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "ない"
   },
   {
     "trad": "沒收",
@@ -19476,8 +19368,7 @@
     "trad": "沒有",
     "status": "approved",
     "canonicalJa": "ない",
-    "acceptedJa": ["持っていない"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["持っていない"]
   },
   {
     "trad": "沒完沒了",
@@ -19507,8 +19398,7 @@
     "trad": "沒關係",
     "status": "approved",
     "canonicalJa": "大丈夫",
-    "acceptedJa": ["構わない"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["構わない"]
   },
   {
     "trad": "沖",
@@ -19692,8 +19582,7 @@
     "trad": "男",
     "status": "approved",
     "canonicalJa": "男性",
-    "acceptedJa": ["男"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["男"]
   },
   {
     "trad": "男士",
@@ -19944,8 +19833,7 @@
     "trad": "見",
     "status": "approved",
     "canonicalJa": "見る",
-    "acceptedJa": ["会う"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["会う"]
   },
   {
     "trad": "見不得人",
@@ -20092,8 +19980,7 @@
     "trad": "走",
     "status": "approved",
     "canonicalJa": "歩く",
-    "acceptedJa": ["行く"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["行く"]
   },
   {
     "trad": "走人",
@@ -20141,8 +20028,7 @@
     "trad": "走路",
     "status": "approved",
     "canonicalJa": "歩く",
-    "acceptedJa": ["歩いて行く"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["歩いて行く"]
   },
   {
     "trad": "走運",
@@ -20303,8 +20189,7 @@
     "trad": "身體",
     "status": "approved",
     "canonicalJa": "身体",
-    "acceptedJa": ["体"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["体"]
   },
   {
     "trad": "身體力行",
@@ -20315,8 +20200,7 @@
   {
     "trad": "車子",
     "status": "approved",
-    "canonicalJa": "車",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "車"
   },
   {
     "trad": "車道",
@@ -20399,8 +20283,7 @@
     "trad": "那麼",
     "status": "approved",
     "canonicalJa": "それなら",
-    "acceptedJa": ["そのように"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["そのように"]
   },
   {
     "trad": "那樣",
@@ -20422,8 +20305,7 @@
   },
   {
     "trad": "里",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "里瓦幾亞條約",
@@ -21015,8 +20897,7 @@
   {
     "trad": "兒子",
     "status": "approved",
-    "canonicalJa": "息子",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "息子"
   },
   {
     "trad": "兒時",
@@ -21034,8 +20915,7 @@
     "trad": "兩",
     "status": "approved",
     "canonicalJa": "二つ",
-    "acceptedJa": ["二"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["二"]
   },
   {
     "trad": "兩極",
@@ -21059,8 +20939,7 @@
     "trad": "其他",
     "status": "approved",
     "canonicalJa": "その他",
-    "acceptedJa": ["それ以外"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["それ以外"]
   },
   {
     "trad": "其次",
@@ -22093,8 +21972,7 @@
     "trad": "奇怪",
     "status": "approved",
     "canonicalJa": "変な",
-    "acceptedJa": ["奇妙な"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["奇妙な"]
   },
   {
     "trad": "奇特",
@@ -22230,8 +22108,7 @@
   {
     "trad": "姊姊",
     "status": "approved",
-    "canonicalJa": "姉",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "姉"
   },
   {
     "trad": "始末",
@@ -23106,8 +22983,7 @@
   {
     "trad": "或是",
     "status": "approved",
-    "canonicalJa": "または",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "または"
   },
   {
     "trad": "或許",
@@ -23135,15 +23011,13 @@
   },
   {
     "trad": "所",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "所以",
     "status": "approved",
     "canonicalJa": "だから",
-    "acceptedJa": ["従って"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["従って"]
   },
   {
     "trad": "所以然",
@@ -23521,8 +23395,7 @@
     "trad": "拉",
     "status": "approved",
     "canonicalJa": "引く",
-    "acceptedJa": ["引っ張る"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["引っ張る"]
   },
   {
     "trad": "拉夫桑賈尼",
@@ -23828,8 +23701,7 @@
     "trad": "放",
     "status": "approved",
     "canonicalJa": "置く",
-    "acceptedJa": ["放つ"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["放つ"]
   },
   {
     "trad": "放下",
@@ -24020,8 +23892,7 @@
   {
     "trad": "明天",
     "status": "approved",
-    "canonicalJa": "明日",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "明日"
   },
   {
     "trad": "明日",
@@ -24055,8 +23926,7 @@
   {
     "trad": "明年",
     "status": "approved",
-    "canonicalJa": "来年",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "来年"
   },
   {
     "trad": "明明",
@@ -24162,8 +24032,7 @@
   },
   {
     "trad": "易",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "易如反掌",
@@ -24355,8 +24224,7 @@
   },
   {
     "trad": "枝",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "枝幹",
@@ -25481,8 +25349,7 @@
   {
     "trad": "空氣",
     "status": "approved",
-    "canonicalJa": "空気",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "空気"
   },
   {
     "trad": "空缺",
@@ -25958,8 +25825,7 @@
   {
     "trad": "近",
     "status": "approved",
-    "canonicalJa": "近い",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "近い"
   },
   {
     "trad": "近乎",
@@ -26072,8 +25938,7 @@
   {
     "trad": "長",
     "status": "approved",
-    "canonicalJa": "長い",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "長い"
   },
   {
     "trad": "長大",
@@ -26438,8 +26303,7 @@
   {
     "trad": "附近",
     "status": "approved",
-    "canonicalJa": "近く",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "近く"
   },
   {
     "trad": "附設",
@@ -26474,13 +26338,11 @@
   {
     "trad": "青",
     "status": "approved",
-    "canonicalJa": "青",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "青"
   },
   {
     "trad": "青山",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "青天",
@@ -26575,8 +26437,7 @@
     "trad": "非常",
     "status": "approved",
     "canonicalJa": "とても",
-    "acceptedJa": ["非常に"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["非常に"]
   },
   {
     "trad": "非議",
@@ -26689,8 +26550,7 @@
   {
     "trad": "便宜",
     "status": "approved",
-    "canonicalJa": "安い",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "安い"
   },
   {
     "trad": "便於",
@@ -27076,8 +26936,7 @@
   {
     "trad": "前",
     "status": "approved",
-    "canonicalJa": "前",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "前"
   },
   {
     "trad": "前人",
@@ -27100,8 +26959,7 @@
   {
     "trad": "前天",
     "status": "approved",
-    "canonicalJa": "一昨日",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "一昨日"
   },
   {
     "trad": "前世",
@@ -27124,8 +26982,7 @@
   {
     "trad": "前年",
     "status": "approved",
-    "canonicalJa": "一昨年",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "一昨年"
   },
   {
     "trad": "前言",
@@ -27179,8 +27036,7 @@
     "trad": "前面",
     "status": "approved",
     "canonicalJa": "前",
-    "acceptedJa": ["前方"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["前方"]
   },
   {
     "trad": "前途",
@@ -27833,8 +27689,7 @@
   {
     "trad": "孩子",
     "status": "approved",
-    "canonicalJa": "子供",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "子供"
   },
   {
     "trad": "孩子氣",
@@ -28176,8 +28031,7 @@
     "trad": "很",
     "status": "approved",
     "canonicalJa": "とても",
-    "acceptedJa": ["非常に"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["非常に"]
   },
   {
     "trad": "律師",
@@ -28195,8 +28049,7 @@
     "trad": "後",
     "status": "approved",
     "canonicalJa": "後ろ",
-    "acceptedJa": ["後"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["後"]
   },
   {
     "trad": "後人",
@@ -28207,8 +28060,7 @@
   {
     "trad": "後天",
     "status": "approved",
-    "canonicalJa": "明後日",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "明後日"
   },
   {
     "trad": "後世",
@@ -28231,8 +28083,7 @@
   {
     "trad": "後年",
     "status": "approved",
-    "canonicalJa": "再来年",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "再来年"
   },
   {
     "trad": "後事",
@@ -28243,8 +28094,7 @@
   {
     "trad": "後來",
     "status": "approved",
-    "canonicalJa": "その後",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "その後"
   },
   {
     "trad": "後果",
@@ -28328,15 +28178,13 @@
     "trad": "怎麼",
     "status": "approved",
     "canonicalJa": "どう",
-    "acceptedJa": ["どうやって"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["どうやって"]
   },
   {
     "trad": "怎麼樣",
     "status": "approved",
     "canonicalJa": "どう",
-    "acceptedJa": ["どうだった"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["どうだった"]
   },
   {
     "trad": "怒火",
@@ -29101,8 +28949,7 @@
     "trad": "故事",
     "status": "approved",
     "canonicalJa": "物語",
-    "acceptedJa": ["話"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["話"]
   },
   {
     "trad": "故意",
@@ -29226,8 +29073,7 @@
   {
     "trad": "星期一",
     "status": "approved",
-    "canonicalJa": "月曜日",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "月曜日"
   },
   {
     "trad": "春季",
@@ -29261,8 +29107,7 @@
   {
     "trad": "昨天",
     "status": "approved",
-    "canonicalJa": "昨日",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "昨日"
   },
   {
     "trad": "昨日",
@@ -29759,8 +29604,7 @@
   {
     "trad": "派對",
     "status": "approved",
-    "canonicalJa": "パーティー",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "パーティー"
   },
   {
     "trad": "派遣",
@@ -30583,8 +30427,7 @@
   {
     "trad": "看",
     "status": "approved",
-    "canonicalJa": "見る",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "見る"
   },
   {
     "trad": "看不起",
@@ -30613,8 +30456,7 @@
   {
     "trad": "看見",
     "status": "approved",
-    "canonicalJa": "見る",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "見る"
   },
   {
     "trad": "看來",
@@ -30625,8 +30467,7 @@
   {
     "trad": "看到",
     "status": "approved",
-    "canonicalJa": "見る",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "見る"
   },
   {
     "trad": "看板",
@@ -30655,8 +30496,7 @@
   {
     "trad": "看病",
     "status": "approved",
-    "canonicalJa": "診察を受ける",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "診察を受ける"
   },
   {
     "trad": "看得起",
@@ -30745,8 +30585,7 @@
   {
     "trad": "科幻",
     "status": "approved",
-    "canonicalJa": "SF",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "SF"
   },
   {
     "trad": "科目",
@@ -30797,8 +30636,7 @@
   {
     "trad": "穿",
     "status": "approved",
-    "canonicalJa": "着る",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "着る"
   },
   {
     "trad": "穿梭",
@@ -30978,8 +30816,7 @@
     "trad": "美",
     "status": "approved",
     "canonicalJa": "美しい",
-    "acceptedJa": ["良い"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["良い"]
   },
   {
     "trad": "美元",
@@ -31090,8 +30927,7 @@
   {
     "trad": "美德",
     "status": "approved",
-    "canonicalJa": "美徳",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "美徳"
   },
   {
     "trad": "美麗",
@@ -31227,8 +31063,7 @@
   {
     "trad": "胖",
     "status": "approved",
-    "canonicalJa": "太っている",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "太っている"
   },
   {
     "trad": "胖子",
@@ -31408,8 +31243,7 @@
     "trad": "苦",
     "status": "approved",
     "canonicalJa": "苦い",
-    "acceptedJa": ["つらい"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["つらい"]
   },
   {
     "trad": "苦口婆心",
@@ -31516,8 +31350,7 @@
   {
     "trad": "英文",
     "status": "approved",
-    "canonicalJa": "英語",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "英語"
   },
   {
     "trad": "英明",
@@ -33016,8 +32849,7 @@
   },
   {
     "trad": "個",
-    "status": "rejected",
-    "reviewReason": "classifier-like standalone word in review batch"
+    "status": "rejected"
   },
   {
     "trad": "個人",
@@ -33400,8 +33232,7 @@
     "trad": "剛剛",
     "status": "approved",
     "canonicalJa": "さっき",
-    "acceptedJa": ["つい最近"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["つい最近"]
   },
   {
     "trad": "剛強",
@@ -33653,20 +33484,17 @@
     "trad": "哪",
     "status": "approved",
     "canonicalJa": "どれ",
-    "acceptedJa": ["どの"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["どの"]
   },
   {
     "trad": "哪裡",
     "status": "approved",
-    "canonicalJa": "どこ",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "どこ"
   },
   {
     "trad": "哭",
     "status": "approved",
-    "canonicalJa": "泣く",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "泣く"
   },
   {
     "trad": "哭泣",
@@ -33905,8 +33733,7 @@
   {
     "trad": "家人",
     "status": "approved",
-    "canonicalJa": "家族",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "家族"
   },
   {
     "trad": "家世",
@@ -34062,8 +33889,7 @@
     "trad": "容易",
     "status": "approved",
     "canonicalJa": "簡単",
-    "acceptedJa": ["簡単な"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["簡単な"]
   },
   {
     "trad": "容納",
@@ -34183,8 +34009,7 @@
     "trad": "差不多",
     "status": "approved",
     "canonicalJa": "ほとんど",
-    "acceptedJa": ["だいたい"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["だいたい"]
   },
   {
     "trad": "差別",
@@ -34254,8 +34079,7 @@
   },
   {
     "trad": "座",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "座右銘",
@@ -34501,8 +34325,7 @@
     "trad": "拿",
     "status": "approved",
     "canonicalJa": "持つ",
-    "acceptedJa": ["取る"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["取る"]
   },
   {
     "trad": "拿手",
@@ -34838,8 +34661,7 @@
     "trad": "旁邊",
     "status": "approved",
     "canonicalJa": "隣",
-    "acceptedJa": ["そば"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["そば"]
   },
   {
     "trad": "旁聽",
@@ -34953,8 +34775,7 @@
     "trad": "時候",
     "status": "approved",
     "canonicalJa": "とき",
-    "acceptedJa": ["時間"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["時間"]
   },
   {
     "trad": "時差",
@@ -34989,8 +34810,7 @@
   {
     "trad": "時間",
     "status": "approved",
-    "canonicalJa": "時間",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "時間"
   },
   {
     "trad": "時勢",
@@ -36381,8 +36201,7 @@
   {
     "trad": "真",
     "status": "approved",
-    "canonicalJa": "本当に",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "本当に"
   },
   {
     "trad": "真切",
@@ -36406,8 +36225,7 @@
     "trad": "真的",
     "status": "approved",
     "canonicalJa": "本当",
-    "acceptedJa": ["本当に"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["本当に"]
   },
   {
     "trad": "真空",
@@ -36787,8 +36605,7 @@
     "trad": "站",
     "status": "approved",
     "canonicalJa": "駅",
-    "acceptedJa": ["停留所"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["停留所"]
   },
   {
     "trad": "站立",
@@ -37767,8 +37584,7 @@
     "trad": "起床",
     "status": "approved",
     "canonicalJa": "起きる",
-    "acceptedJa": ["起床する"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["起床する"]
   },
   {
     "trad": "起步",
@@ -38567,8 +38383,7 @@
   {
     "trad": "馬上",
     "status": "approved",
-    "canonicalJa": "すぐに",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "すぐに"
   },
   {
     "trad": "馬不停蹄",
@@ -38721,8 +38536,7 @@
   {
     "trad": "高中",
     "status": "approved",
-    "canonicalJa": "高校",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "高校"
   },
   {
     "trad": "高亢",
@@ -38883,8 +38697,7 @@
     "trad": "高興",
     "status": "approved",
     "canonicalJa": "うれしい",
-    "acceptedJa": ["楽しい"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["楽しい"]
   },
   {
     "trad": "高壓",
@@ -39009,8 +38822,7 @@
   {
     "trad": "乾淨",
     "status": "approved",
-    "canonicalJa": "きれい",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "きれい"
   },
   {
     "trad": "乾嘉三大家",
@@ -39386,8 +39198,7 @@
   {
     "trad": "健康",
     "status": "approved",
-    "canonicalJa": "健康",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "健康"
   },
   {
     "trad": "側",
@@ -39803,8 +39614,7 @@
   {
     "trad": "參加",
     "status": "approved",
-    "canonicalJa": "参加する",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "参加する"
   },
   {
     "trad": "參考",
@@ -39880,15 +39690,13 @@
   {
     "trad": "唱",
     "status": "approved",
-    "canonicalJa": "歌う",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "歌う"
   },
   {
     "trad": "唱歌",
     "status": "approved",
     "canonicalJa": "歌う",
-    "acceptedJa": ["歌を歌う"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["歌を歌う"]
   },
   {
     "trad": "唾沫",
@@ -39975,15 +39783,13 @@
   },
   {
     "trad": "啊",
-    "status": "rejected",
-    "reviewReason": "standalone interjection is weak as a word card"
+    "status": "rejected"
   },
   {
     "trad": "問",
     "status": "approved",
     "canonicalJa": "尋ねる",
-    "acceptedJa": ["聞く"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["聞く"]
   },
   {
     "trad": "問世",
@@ -40519,8 +40325,7 @@
     "trad": "夠",
     "status": "approved",
     "canonicalJa": "十分",
-    "acceptedJa": ["足りる"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["足りる"]
   },
   {
     "trad": "夠格",
@@ -40595,8 +40400,7 @@
   },
   {
     "trad": "宿",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "宿命",
@@ -41037,8 +40841,7 @@
   {
     "trad": "常常",
     "status": "approved",
-    "canonicalJa": "よく",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "よく"
   },
   {
     "trad": "常理",
@@ -41261,8 +41064,7 @@
   },
   {
     "trad": "得",
-    "status": "rejected",
-    "reviewReason": "context-dependent standalone function word in review batch"
+    "status": "rejected"
   },
   {
     "trad": "得力",
@@ -41515,8 +41317,7 @@
     "trad": "您",
     "status": "approved",
     "canonicalJa": "あなた",
-    "acceptedJa": ["あなた（丁寧）"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["あなた（丁寧）"]
   },
   {
     "trad": "悵然",
@@ -42149,8 +41950,7 @@
     "trad": "接",
     "status": "approved",
     "canonicalJa": "受け取る",
-    "acceptedJa": ["迎える"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["迎える"]
   },
   {
     "trad": "接二連三",
@@ -42816,14 +42616,12 @@
     "trad": "晚",
     "status": "approved",
     "canonicalJa": "夜",
-    "acceptedJa": ["遅い"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["遅い"]
   },
   {
     "trad": "晚安",
     "status": "approved",
-    "canonicalJa": "おやすみ",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "おやすみ"
   },
   {
     "trad": "晚年",
@@ -43545,8 +43343,7 @@
     "trad": "清楚",
     "status": "approved",
     "canonicalJa": "はっきり",
-    "acceptedJa": ["明確な"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["明確な"]
   },
   {
     "trad": "清算",
@@ -43794,8 +43591,7 @@
   {
     "trad": "現在",
     "status": "approved",
-    "canonicalJa": "今",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "今"
   },
   {
     "trad": "現成",
@@ -43932,8 +43728,7 @@
   {
     "trad": "甜",
     "status": "approved",
-    "canonicalJa": "甘い",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "甘い"
   },
   {
     "trad": "甜言蜜語",
@@ -44466,8 +44261,7 @@
     "trad": "第一",
     "status": "approved",
     "canonicalJa": "第一",
-    "acceptedJa": ["一番"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["一番"]
   },
   {
     "trad": "粒",
@@ -44549,8 +44343,7 @@
   {
     "trad": "累",
     "status": "approved",
-    "canonicalJa": "疲れる",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "疲れる"
   },
   {
     "trad": "累計",
@@ -44825,8 +44618,7 @@
   {
     "trad": "聊天",
     "status": "approved",
-    "canonicalJa": "おしゃべりする",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "おしゃべりする"
   },
   {
     "trad": "聊勝於無",
@@ -44932,8 +44724,7 @@
   },
   {
     "trad": "荷",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "荷包",
@@ -46014,8 +45805,7 @@
   },
   {
     "trad": "部",
-    "status": "rejected",
-    "reviewReason": "classifier-like standalone word in review batch"
+    "status": "rejected"
   },
   {
     "trad": "部下",
@@ -46366,8 +46156,7 @@
   },
   {
     "trad": "頂",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "頂多",
@@ -46496,8 +46285,7 @@
   {
     "trad": "最",
     "status": "approved",
-    "canonicalJa": "最も",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "最も"
   },
   {
     "trad": "最初",
@@ -46915,8 +46703,7 @@
   {
     "trad": "喝",
     "status": "approved",
-    "canonicalJa": "飲む",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "飲む"
   },
   {
     "trad": "喝采",
@@ -47224,8 +47011,7 @@
   },
   {
     "trad": "場",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "場合",
@@ -47499,8 +47285,7 @@
   },
   {
     "trad": "就",
-    "status": "rejected",
-    "reviewReason": "context-dependent standalone function word in review batch"
+    "status": "rejected"
   },
   {
     "trad": "就任",
@@ -47589,8 +47374,7 @@
     "trad": "幾",
     "status": "approved",
     "canonicalJa": "いくつ",
-    "acceptedJa": ["いくら"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["いくら"]
   },
   {
     "trad": "幾乎",
@@ -48296,8 +48080,7 @@
     "trad": "敢",
     "status": "approved",
     "canonicalJa": "あえて",
-    "acceptedJa": ["思い切って"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["思い切って"]
   },
   {
     "trad": "散",
@@ -48692,8 +48475,7 @@
   {
     "trad": "期貨",
     "status": "approved",
-    "canonicalJa": "先物",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "先物"
   },
   {
     "trad": "期滿",
@@ -49365,8 +49147,7 @@
   },
   {
     "trad": "無為",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "無計可施",
@@ -49659,8 +49440,7 @@
   {
     "trad": "然後",
     "status": "approved",
-    "canonicalJa": "その後",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "その後"
   },
   {
     "trad": "煮",
@@ -49809,8 +49589,7 @@
   {
     "trad": "痛",
     "status": "approved",
-    "canonicalJa": "痛い",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "痛い"
   },
   {
     "trad": "痛不欲生",
@@ -50080,8 +49859,7 @@
     "trad": "發現",
     "status": "approved",
     "canonicalJa": "見つける",
-    "acceptedJa": ["気づく"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["気づく"]
   },
   {
     "trad": "發麻",
@@ -50230,8 +50008,7 @@
   {
     "trad": "短",
     "status": "approved",
-    "canonicalJa": "短い",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "短い"
   },
   {
     "trad": "短缺",
@@ -50513,8 +50290,7 @@
     "trad": "等",
     "status": "approved",
     "canonicalJa": "待つ",
-    "acceptedJa": ["など"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["など"]
   },
   {
     "trad": "等不及",
@@ -50925,8 +50701,7 @@
     "trad": "舒服",
     "status": "approved",
     "canonicalJa": "心地よい",
-    "acceptedJa": ["快適"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["快適"]
   },
   {
     "trad": "舒展",
@@ -51453,8 +51228,7 @@
     "trad": "貴",
     "status": "approved",
     "canonicalJa": "高い",
-    "acceptedJa": ["高価な"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["高価な"]
   },
   {
     "trad": "貴人",
@@ -51523,8 +51297,7 @@
     "trad": "買",
     "status": "approved",
     "canonicalJa": "買う",
-    "acceptedJa": ["購入する"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["購入する"]
   },
   {
     "trad": "買主",
@@ -51726,8 +51499,7 @@
   {
     "trad": "跑",
     "status": "approved",
-    "canonicalJa": "走る",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "走る"
   },
   {
     "trad": "跑步",
@@ -51780,8 +51552,7 @@
   {
     "trad": "週末",
     "status": "approved",
-    "canonicalJa": "週末",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "週末"
   },
   {
     "trad": "週年",
@@ -51793,8 +51564,7 @@
     "trad": "進",
     "status": "approved",
     "canonicalJa": "進む",
-    "acceptedJa": ["入る"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["入る"]
   },
   {
     "trad": "進一步",
@@ -51990,8 +51760,7 @@
   {
     "trad": "開",
     "status": "approved",
-    "canonicalJa": "開く",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "開く"
   },
   {
     "trad": "開刀",
@@ -52027,8 +51796,7 @@
     "trad": "開車",
     "status": "approved",
     "canonicalJa": "運転する",
-    "acceptedJa": ["車を運転する"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["車を運転する"]
   },
   {
     "trad": "開宗明義",
@@ -52320,8 +52088,7 @@
   },
   {
     "trad": "間",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "間接",
@@ -52670,8 +52437,7 @@
   {
     "trad": "黑",
     "status": "approved",
-    "canonicalJa": "黒い",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "黒い"
   },
   {
     "trad": "黑心",
@@ -53179,8 +52945,7 @@
   {
     "trad": "嗎",
     "status": "approved",
-    "canonicalJa": "〜か",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "〜か"
   },
   {
     "trad": "嗑藥",
@@ -53513,8 +53278,7 @@
     "trad": "想",
     "status": "approved",
     "canonicalJa": "思う",
-    "acceptedJa": ["〜したい"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["〜したい"]
   },
   {
     "trad": "想必",
@@ -54569,8 +54333,7 @@
   },
   {
     "trad": "歲",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "歲月",
@@ -55271,15 +55034,13 @@
   {
     "trad": "睡覺",
     "status": "approved",
-    "canonicalJa": "寝る",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "寝る"
   },
   {
     "trad": "矮",
     "status": "approved",
     "canonicalJa": "背が低い",
-    "acceptedJa": ["低い"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["低い"]
   },
   {
     "trad": "矮小",
@@ -55619,8 +55380,7 @@
     "trad": "經驗",
     "status": "approved",
     "canonicalJa": "経験",
-    "acceptedJa": ["経験する"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["経験する"]
   },
   {
     "trad": "罩",
@@ -56272,15 +56032,13 @@
     "trad": "裡",
     "status": "approved",
     "canonicalJa": "中",
-    "acceptedJa": ["内"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["内"]
   },
   {
     "trad": "裡面",
     "status": "approved",
     "canonicalJa": "中",
-    "acceptedJa": ["内部"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["内部"]
   },
   {
     "trad": "解決",
@@ -56411,8 +56169,7 @@
   {
     "trad": "詩",
     "status": "approved",
-    "canonicalJa": "詩",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "詩"
   },
   {
     "trad": "詩人",
@@ -56650,8 +56407,7 @@
   {
     "trad": "資源",
     "status": "approved",
-    "canonicalJa": "資源",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "資源"
   },
   {
     "trad": "資遣",
@@ -56681,8 +56437,7 @@
     "trad": "跟",
     "status": "approved",
     "canonicalJa": "〜と",
-    "acceptedJa": ["ついて行く"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["ついて行く"]
   },
   {
     "trad": "跟前",
@@ -56805,8 +56560,7 @@
   {
     "trad": "跳",
     "status": "approved",
-    "canonicalJa": "跳ぶ",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "跳ぶ"
   },
   {
     "trad": "跳蚤",
@@ -56823,8 +56577,7 @@
   {
     "trad": "跳舞",
     "status": "approved",
-    "canonicalJa": "踊る",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "踊る"
   },
   {
     "trad": "跳躍",
@@ -57283,8 +57036,7 @@
   },
   {
     "trad": "道家",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "道教",
@@ -57526,8 +57278,7 @@
   {
     "trad": "電",
     "status": "approved",
-    "canonicalJa": "電気",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "電気"
   },
   {
     "trad": "電子",
@@ -57802,8 +57553,7 @@
     "trad": "飽",
     "status": "approved",
     "canonicalJa": "お腹いっぱい",
-    "acceptedJa": ["満腹"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["満腹"]
   },
   {
     "trad": "飽受",
@@ -58465,15 +58215,13 @@
     "trad": "對",
     "status": "approved",
     "canonicalJa": "正しい",
-    "acceptedJa": ["合う"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["合う"]
   },
   {
     "trad": "對不起",
     "status": "approved",
     "canonicalJa": "ごめんなさい",
-    "acceptedJa": ["すみません"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["すみません"]
   },
   {
     "trad": "對手",
@@ -58759,8 +58507,7 @@
   {
     "trad": "慢",
     "status": "approved",
-    "canonicalJa": "遅い",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "遅い"
   },
   {
     "trad": "慢工出巧匠",
@@ -59056,8 +58803,7 @@
   },
   {
     "trad": "槍",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "槍枝",
@@ -59278,8 +59024,7 @@
   {
     "trad": "漂亮",
     "status": "approved",
-    "canonicalJa": "きれい",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "きれい"
   },
   {
     "trad": "漂流",
@@ -59486,8 +59231,7 @@
   {
     "trad": "漫畫",
     "status": "approved",
-    "canonicalJa": "漫画",
-    "reviewReason": "initial quality pass"
+    "canonicalJa": "漫画"
   },
   {
     "trad": "漫遊",
@@ -60288,8 +60032,7 @@
   {
     "trad": "綠",
     "status": "approved",
-    "canonicalJa": "緑",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "緑"
   },
   {
     "trad": "綠豆",
@@ -61038,8 +60781,7 @@
   {
     "trad": "說",
     "status": "approved",
-    "canonicalJa": "話す",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "話す"
   },
   {
     "trad": "說不定",
@@ -61079,8 +60821,7 @@
   {
     "trad": "說話",
     "status": "approved",
-    "canonicalJa": "話す",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "話す"
   },
   {
     "trad": "說話要算數",
@@ -61596,8 +61337,7 @@
   },
   {
     "trad": "領",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "領土",
@@ -62117,8 +61857,7 @@
   {
     "trad": "寫",
     "status": "approved",
-    "canonicalJa": "書く",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "書く"
   },
   {
     "trad": "寫作",
@@ -63151,8 +62890,7 @@
   },
   {
     "trad": "樁",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "樂子",
@@ -63585,8 +63323,7 @@
     "trad": "熱",
     "status": "approved",
     "canonicalJa": "暑い",
-    "acceptedJa": ["熱い"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["熱い"]
   },
   {
     "trad": "熱切",
@@ -63754,8 +63491,7 @@
     "trad": "瘦",
     "status": "approved",
     "canonicalJa": "痩せている",
-    "acceptedJa": ["細い"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["細い"]
   },
   {
     "trad": "瘦削",
@@ -63879,8 +63615,7 @@
   },
   {
     "trad": "磐石",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "磕頭",
@@ -63968,8 +63703,7 @@
   },
   {
     "trad": "篇",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "篇章",
@@ -64519,8 +64253,7 @@
     "trad": "請",
     "status": "approved",
     "canonicalJa": "お願いします",
-    "acceptedJa": ["頼む"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["頼む"]
   },
   {
     "trad": "請示",
@@ -64543,8 +64276,7 @@
   {
     "trad": "請問",
     "status": "approved",
-    "canonicalJa": "すみません",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "すみません"
   },
   {
     "trad": "請將不如激將",
@@ -64818,8 +64550,7 @@
   },
   {
     "trad": "趟",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "趣事",
@@ -64883,8 +64614,7 @@
   },
   {
     "trad": "輛",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "輝映",
@@ -65297,8 +65027,7 @@
   {
     "trad": "鞋子",
     "status": "approved",
-    "canonicalJa": "靴",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "靴"
   },
   {
     "trad": "鞏固",
@@ -65376,8 +65105,7 @@
     "trad": "餓",
     "status": "approved",
     "canonicalJa": "お腹がすく",
-    "acceptedJa": ["飢える"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["飢える"]
   },
   {
     "trad": "餘生",
@@ -65709,8 +65437,7 @@
   {
     "trad": "學",
     "status": "approved",
-    "canonicalJa": "学ぶ",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "学ぶ"
   },
   {
     "trad": "學士",
@@ -65728,8 +65455,7 @@
     "trad": "學生",
     "status": "approved",
     "canonicalJa": "学生",
-    "acceptedJa": ["生徒"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["生徒"]
   },
   {
     "trad": "學生證",
@@ -67169,8 +66895,7 @@
   },
   {
     "trad": "艘",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "蕩然無存",
@@ -68543,8 +68268,7 @@
   {
     "trad": "幫",
     "status": "approved",
-    "canonicalJa": "助ける",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "助ける"
   },
   {
     "trad": "幫手",
@@ -68556,15 +68280,13 @@
     "trad": "幫忙",
     "status": "approved",
     "canonicalJa": "手伝う",
-    "acceptedJa": ["助ける"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["助ける"]
   },
   {
     "trad": "幫助",
     "status": "approved",
     "canonicalJa": "助ける",
-    "acceptedJa": ["援助する"],
-    "reviewReason": "review batch initial approval"
+    "acceptedJa": ["援助する"]
   },
   {
     "trad": "幫派",
@@ -68581,8 +68303,7 @@
   {
     "trad": "懂",
     "status": "approved",
-    "canonicalJa": "理解する",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "理解する"
   },
   {
     "trad": "懂得",
@@ -68636,8 +68357,7 @@
     "trad": "應該",
     "status": "approved",
     "canonicalJa": "すべき",
-    "acceptedJa": ["ねばならない"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["ねばならない"]
   },
   {
     "trad": "應運而生",
@@ -69293,8 +69013,7 @@
   },
   {
     "trad": "縱橫",
-    "status": "rejected",
-    "reviewReason": "encyclopedic gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "總之",
@@ -69526,8 +69245,7 @@
   },
   {
     "trad": "聲",
-    "status": "rejected",
-    "reviewReason": "classifier-like gloss in initial quality pass"
+    "status": "rejected"
   },
   {
     "trad": "聲浪",
@@ -69895,8 +69613,7 @@
   {
     "trad": "講",
     "status": "approved",
-    "canonicalJa": "話す",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "話す"
   },
   {
     "trad": "講求",
@@ -69973,8 +69690,7 @@
   {
     "trad": "謝謝",
     "status": "approved",
-    "canonicalJa": "ありがとう",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "ありがとう"
   },
   {
     "trad": "謠言",
@@ -70148,8 +69864,7 @@
     "trad": "還是",
     "status": "approved",
     "canonicalJa": "それとも",
-    "acceptedJa": ["やはり"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["やはり"]
   },
   {
     "trad": "還原",
@@ -70440,8 +70155,7 @@
   {
     "trad": "點",
     "status": "approved",
-    "canonicalJa": "点",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "点"
   },
   {
     "trad": "點子",
@@ -70830,8 +70544,7 @@
   {
     "trad": "禮拜天",
     "status": "approved",
-    "canonicalJa": "日曜日",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "日曜日"
   },
   {
     "trad": "禮教",
@@ -70949,8 +70662,7 @@
   {
     "trad": "簡單",
     "status": "approved",
-    "canonicalJa": "簡単",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "簡単"
   },
   {
     "trad": "簡短",
@@ -71123,8 +70835,7 @@
   {
     "trad": "舊",
     "status": "approved",
-    "canonicalJa": "古い",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "古い"
   },
   {
     "trad": "薩克洛夫獎",
@@ -71663,8 +71374,7 @@
     "trad": "離開",
     "status": "approved",
     "canonicalJa": "離れる",
-    "acceptedJa": ["出発する"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["出発する"]
   },
   {
     "trad": "離職",
@@ -72543,8 +72253,7 @@
   {
     "trad": "難",
     "status": "approved",
-    "canonicalJa": "難しい",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "難しい"
   },
   {
     "trad": "難上加難",
@@ -73160,8 +72869,7 @@
     "trad": "覺得",
     "status": "approved",
     "canonicalJa": "思う",
-    "acceptedJa": ["感じる"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["感じる"]
   },
   {
     "trad": "覺察",
@@ -73478,8 +73186,7 @@
   {
     "trad": "麵",
     "status": "approved",
-    "canonicalJa": "麺",
-    "reviewReason": "review batch initial label fix"
+    "canonicalJa": "麺"
   },
   {
     "trad": "麵粉",
@@ -74118,8 +73825,7 @@
   {
     "trad": "歡迎",
     "status": "approved",
-    "canonicalJa": "歓迎する",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "歓迎する"
   },
   {
     "trad": "歡笑",
@@ -74220,8 +73926,7 @@
   {
     "trad": "聽見",
     "status": "approved",
-    "canonicalJa": "聞く",
-    "reviewReason": "review batch initial approval"
+    "canonicalJa": "聞く"
   },
   {
     "trad": "聽到",
@@ -74299,8 +74004,7 @@
     "trad": "讀",
     "status": "approved",
     "canonicalJa": "読む",
-    "acceptedJa": ["勉強する"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["勉強する"]
   },
   {
     "trad": "讀者",
@@ -74426,8 +74130,7 @@
     "trad": "變",
     "status": "approved",
     "canonicalJa": "変わる",
-    "acceptedJa": ["変化する"],
-    "reviewReason": "review batch initial label fix"
+    "acceptedJa": ["変化する"]
   },
   {
     "trad": "變化多端",

@@ -323,14 +323,14 @@ export const generateVocabulary = () => {
     });
   }
 
-  const reviewCandidates = buildCandidates({
+  const generatedCandidates = buildCandidates({
     tocflRows: normalizedTocflRows,
     tbclRows: normalizedTbclRows,
     mjdicEntries: normalizedMjdicEntries,
     editorialOverrides,
   });
   const publishedVocabulary = buildPublishedVocabulary({
-    candidates: reviewCandidates
+    candidates: generatedCandidates
       .filter(
         (candidate) =>
           !seenTrad.has(candidate.trad) &&
@@ -375,7 +375,7 @@ export const generateVocabulary = () => {
     return left.trad.localeCompare(right.trad, 'zh-Hant');
   });
 
-  fs.writeFileSync(candidatesOutputPath, `${JSON.stringify(reviewCandidates, null, 2)}\n`);
+  fs.writeFileSync(candidatesOutputPath, `${JSON.stringify(generatedCandidates, null, 2)}\n`);
   fs.writeFileSync(outputPath, `${JSON.stringify(sortedVocabulary, null, 2)}\n`);
 
   const metadata = {

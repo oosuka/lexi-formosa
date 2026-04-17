@@ -155,7 +155,7 @@ describe('generate vocabulary script', () => {
     generateVocabulary();
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
-      'Generated 6 entries (4 manual, 2 TOCFL, 1 MJdic level-3).'
+      'Generated 8 entries (4 manual, 3 TOCFL, 2 MJdic level-3).'
     );
     consoleLogSpy.mockRestore();
 
@@ -172,7 +172,7 @@ describe('generate vocabulary script', () => {
       fs.readFileSync(path.join(repoRoot, 'public', 'wordlists', 'vocabulary-level-1.json'), 'utf8')
     );
 
-    expect(vocabulary).toHaveLength(6);
+    expect(vocabulary).toHaveLength(8);
     expect(vocabulary.find((entry) => entry.id === 'manual-hello')).toMatchObject({
       trad: '你好',
       tocflLevel: 1,
@@ -202,15 +202,15 @@ describe('generate vocabulary script', () => {
       pronunciation: 'guan1 guang1 ye4 shi4 di4 tu2',
     });
     expect(vocabulary.some((entry) => entry.trad === '圍棋')).toBe(false);
-    expect(vocabulary.some((entry) => entry.trad === '巴彥淖爾市')).toBe(false);
-    expect(vocabulary.some((entry) => entry.trad === '摩托車')).toBe(false);
+    expect(vocabulary.some((entry) => entry.trad === '巴彥淖爾市')).toBe(true);
+    expect(vocabulary.some((entry) => entry.trad === '摩托車')).toBe(true);
 
     expect(metadata).toEqual({
-      total: 6,
+      total: 8,
       counts: {
         1: 3,
-        2: 1,
-        3: 2,
+        2: 2,
+        3: 3,
       },
     });
     expect(candidates).toEqual(
