@@ -221,6 +221,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "一次又一次",
+    "status": "approved",
+    "canonicalJa": "何度も何度も",
+    "acceptedJa": ["繰り返し"]
+  },
+  {
+    "trad": "一次方程式",
+    "status": "approved",
+    "canonicalJa": "一次方程式",
+    "acceptedJa": []
+  },
+  {
     "trad": "一技之長",
     "status": "approved",
     "canonicalJa": "一芸",
@@ -239,6 +251,12 @@
     "acceptedJa": ["簡単に手に入る"]
   },
   {
+    "trad": "一步一個腳印",
+    "status": "approved",
+    "canonicalJa": "着実に進む",
+    "acceptedJa": []
+  },
+  {
     "trad": "一見鍾情",
     "status": "approved",
     "canonicalJa": "一目惚れ",
@@ -249,6 +267,18 @@
     "status": "approved",
     "canonicalJa": "一言一句の行い",
     "acceptedJa": []
+  },
+  {
+    "trad": "一言以蔽之",
+    "status": "approved",
+    "canonicalJa": "一言で言うと",
+    "acceptedJa": ["要するに"]
+  },
+  {
+    "trad": "一言抄百總",
+    "status": "approved",
+    "canonicalJa": "手短に言うと",
+    "acceptedJa": ["長い話を短くする"]
   },
   {
     "trad": "一走了之",
@@ -294,6 +324,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "一物降一物",
+    "status": "approved",
+    "canonicalJa": "物には天敵がある",
+    "acceptedJa": ["弱点は必ずある"]
+  },
+  {
     "trad": "一直",
     "status": "approved",
     "canonicalJa": "ずっと",
@@ -327,6 +363,12 @@
     "trad": "一致",
     "status": "approved",
     "canonicalJa": "一致する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "一致性效應",
+    "status": "approved",
+    "canonicalJa": "整合性効果",
     "acceptedJa": []
   },
   {
@@ -366,10 +408,28 @@
     "acceptedJa": []
   },
   {
+    "trad": "一氧化二氮",
+    "status": "approved",
+    "canonicalJa": "亜酸化窒素",
+    "acceptedJa": ["笑気ガス"]
+  },
+  {
+    "trad": "一畝三分地",
+    "status": "approved",
+    "canonicalJa": "自分の縄張り",
+    "acceptedJa": []
+  },
+  {
     "trad": "一眨眼",
     "status": "approved",
     "canonicalJa": "瞬く間に",
     "acceptedJa": []
+  },
+  {
+    "trad": "一級方程式",
+    "status": "approved",
+    "canonicalJa": "フォーミュラ1",
+    "acceptedJa": ["F1"]
   },
   {
     "trad": "一般",
@@ -478,6 +538,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "一條龍服務",
+    "status": "approved",
+    "canonicalJa": "ワンストップサービス",
+    "acceptedJa": []
+  },
+  {
     "trad": "一清二楚",
     "status": "approved",
     "canonicalJa": "はっきりしている",
@@ -514,6 +580,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "一棍子打死",
+    "status": "approved",
+    "canonicalJa": "一方的に否定する",
+    "acceptedJa": ["致命的な一撃を加える"]
+  },
+  {
     "trad": "一無所有",
     "status": "approved",
     "canonicalJa": "何もない",
@@ -538,6 +610,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "一發而不可收",
+    "status": "approved",
+    "canonicalJa": "始めたら止まらない",
+    "acceptedJa": []
+  },
+  {
     "trad": "一等",
     "status": "approved",
     "canonicalJa": "一等",
@@ -554,6 +632,12 @@
     "status": "approved",
     "canonicalJa": "几帳面",
     "acceptedJa": []
+  },
+  {
+    "trad": "一項一項地",
+    "status": "approved",
+    "canonicalJa": "一項目ずつ",
+    "acceptedJa": ["一つずつ"]
   },
   {
     "trad": "一飲而盡",
@@ -592,6 +676,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "一碗水端平",
+    "status": "approved",
+    "canonicalJa": "公平に扱う",
+    "acceptedJa": ["公平である"]
+  },
+  {
     "trad": "一落千丈",
     "status": "approved",
     "canonicalJa": "急落する",
@@ -608,6 +698,12 @@
     "status": "approved",
     "canonicalJa": "道中ご無事で",
     "acceptedJa": []
+  },
+  {
+    "trad": "一遍又一遍",
+    "status": "approved",
+    "canonicalJa": "何度も何度も",
+    "acceptedJa": ["繰り返し"]
   },
   {
     "trad": "一團糟",
@@ -638,6 +734,12 @@
     "status": "approved",
     "canonicalJa": "一躍有名になる",
     "acceptedJa": []
+  },
+  {
+    "trad": "一鼻孔出氣",
+    "status": "approved",
+    "canonicalJa": "口裏を合わせる",
+    "acceptedJa": ["同じことを言う"]
   },
   {
     "trad": "一齊",
@@ -676,10 +778,22 @@
     "acceptedJa": []
   },
   {
+    "trad": "一舉手一投足",
+    "status": "approved",
+    "canonicalJa": "一挙手一投足",
+    "acceptedJa": []
+  },
+  {
     "trad": "一舉兩得",
     "status": "approved",
     "canonicalJa": "一挙両得",
     "acceptedJa": []
+  },
+  {
+    "trad": "一錘子買賣",
+    "status": "approved",
+    "canonicalJa": "一回きりの取引",
+    "acceptedJa": ["一発勝負"]
   },
   {
     "trad": "一頭霧水",
@@ -700,6 +814,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "一點水一個泡",
+    "status": "approved",
+    "canonicalJa": "誠実で信用できる",
+    "acceptedJa": ["信義誠実"]
+  },
+  {
     "trad": "一竅不通",
     "status": "approved",
     "canonicalJa": "まったく分からない",
@@ -712,15 +832,51 @@
     "acceptedJa": []
   },
   {
+    "trad": "一類保護動物",
+    "status": "approved",
+    "canonicalJa": "一級保護動物",
+    "acceptedJa": ["A級保護動物"]
+  },
+  {
     "trad": "一籌莫展",
     "status": "approved",
     "canonicalJa": "手も足も出ない",
     "acceptedJa": []
   },
   {
+    "trad": "一覽眾山小",
+    "status": "rejected",
+    "canonicalJa": "高所からの眺望",
+    "acceptedJa": []
+  },
+  {
     "trad": "一體",
     "status": "approved",
     "canonicalJa": "全体",
+    "acceptedJa": []
+  },
+  {
+    "trad": "七十七國集團",
+    "status": "rejected",
+    "canonicalJa": "77カ国グループ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "七大姑八大姨",
+    "status": "approved",
+    "canonicalJa": "遠い親戚",
+    "acceptedJa": ["遠縁"]
+  },
+  {
+    "trad": "七姊妹星團",
+    "status": "approved",
+    "canonicalJa": "プレアデス星団",
+    "acceptedJa": ["すばる"]
+  },
+  {
+    "trad": "七帶石斑魚",
+    "status": "rejected",
+    "canonicalJa": "七帯ハタ",
     "acceptedJa": []
   },
   {
@@ -1267,8 +1423,92 @@
     "acceptedJa": []
   },
   {
+    "trad": "三七二十一",
+    "status": "approved",
+    "canonicalJa": "事の真相",
+    "acceptedJa": ["実際の状況"]
+  },
+  {
     "trad": "三七開定論",
     "status": "rejected",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三十二位元",
+    "status": "approved",
+    "canonicalJa": "32ビット",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三十八度線",
+    "status": "rejected",
+    "canonicalJa": "38度線",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三十六字母",
+    "status": "rejected",
+    "canonicalJa": "三十六字母",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三下五除二",
+    "status": "approved",
+    "canonicalJa": "素早く片づける",
+    "acceptedJa": ["効率的に"]
+  },
+  {
+    "trad": "三千大千世界",
+    "status": "approved",
+    "canonicalJa": "三千大千世界",
+    "acceptedJa": ["大宇宙"]
+  },
+  {
+    "trad": "三寸不爛之舌",
+    "status": "approved",
+    "canonicalJa": "口が達者",
+    "acceptedJa": ["弁が立つ"]
+  },
+  {
+    "trad": "三分鐘熱度",
+    "status": "approved",
+    "canonicalJa": "三日坊主",
+    "acceptedJa": ["一時的な熱中"]
+  },
+  {
+    "trad": "三件套式西裝",
+    "status": "approved",
+    "canonicalJa": "スリーピーススーツ",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三合一疫苗",
+    "status": "approved",
+    "canonicalJa": "三種混合ワクチン",
+    "acceptedJa": ["DTPワクチン"]
+  },
+  {
+    "trad": "三尖杉酯鹼",
+    "status": "rejected",
+    "canonicalJa": "ハリントニン",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三百六十行",
+    "status": "approved",
+    "canonicalJa": "あらゆる職業",
+    "acceptedJa": ["あらゆる商売"]
+  },
+  {
+    "trad": "三自愛國教會",
+    "status": "rejected",
+    "canonicalJa": "三自愛国教会",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三色紫羅蘭",
+    "status": "approved",
+    "canonicalJa": "パンジー",
     "acceptedJa": []
   },
   {
@@ -1284,9 +1524,33 @@
     "acceptedJa": []
   },
   {
+    "trad": "三角測量法",
+    "status": "approved",
+    "canonicalJa": "三角測量",
+    "acceptedJa": []
+  },
+  {
     "trad": "三言兩語",
     "status": "approved",
     "canonicalJa": "ひとことでいえば",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三思而後行",
+    "status": "approved",
+    "canonicalJa": "よく考えて行動する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三胚層動物",
+    "status": "approved",
+    "canonicalJa": "三胚葉動物",
+    "acceptedJa": []
+  },
+  {
+    "trad": "三島由紀夫",
+    "status": "rejected",
+    "canonicalJa": "三島由紀夫",
     "acceptedJa": []
   },
   {
@@ -1296,10 +1560,34 @@
     "acceptedJa": []
   },
   {
+    "trad": "三硝基甲苯",
+    "status": "approved",
+    "canonicalJa": "トリニトロトルエン",
+    "acceptedJa": ["TNT"]
+  },
+  {
     "trad": "三對三鬥牛",
     "status": "approved",
     "canonicalJa": "3対3バスケ",
     "acceptedJa": ["三対三バスケ"]
+  },
+  {
+    "trad": "三酸甘油酯",
+    "status": "approved",
+    "canonicalJa": "トリグリセリド",
+    "acceptedJa": ["中性脂肪"]
+  },
+  {
+    "trad": "三磷酸腺苷",
+    "status": "approved",
+    "canonicalJa": "アデノシン三リン酸",
+    "acceptedJa": ["ATP"]
+  },
+  {
+    "trad": "三聯式發票",
+    "status": "approved",
+    "canonicalJa": "三枚つづりの統一発票",
+    "acceptedJa": ["三枚つづり領収書"]
   },
   {
     "trad": "上",
@@ -1312,6 +1600,18 @@
     "trad": "上下",
     "status": "approved",
     "canonicalJa": "約",
+    "acceptedJa": []
+  },
+  {
+    "trad": "上下五千年",
+    "status": "rejected",
+    "canonicalJa": "中国五千年史物語",
+    "acceptedJa": []
+  },
+  {
+    "trad": "上下文菜單",
+    "status": "approved",
+    "canonicalJa": "コンテキストメニュー",
     "acceptedJa": []
   },
   {
