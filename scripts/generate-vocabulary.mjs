@@ -2,10 +2,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { buildCandidates } from './lib/vocabulary-candidate-pipeline.mjs';
+import { parseEditorialOverrides } from './lib/vocabulary-editorial-records.mjs';
+import { buildPublishedVocabulary } from './lib/vocabulary-publish.mjs';
+import { parseJsonOrJsonl, readTbclRows, readTocflRows } from './lib/vocabulary-source-readers.mjs';
+
 const repoRoot = process.cwd();
 const defaultTocflPath = path.join(repoRoot, 'data', 'source-snapshots', 'tocfl_words.json');
 const defaultMjdicPath = path.join(repoRoot, 'data', 'source-snapshots', 'mjdic.csv');
+const defaultTbclPath = path.join(repoRoot, 'data', 'source-snapshots', 'tbcl_words.json');
 const manualVocabularyPath = path.join(repoRoot, 'data', 'manual-vocabulary.json');
+const editorialOverridesPath = path.join(repoRoot, 'data', 'editorial-overrides.json');
+const candidatesOutputPath = path.join(repoRoot, 'data', 'vocabulary-candidates.json');
 const outputPath = path.join(repoRoot, 'data', 'vocabulary.json');
 const publicWordlistDir = path.join(repoRoot, 'public', 'wordlists');
 const metadataOutputPath = path.join(repoRoot, 'data', 'vocabulary-metadata.json');
@@ -23,87 +31,7 @@ const publicWordlistPaths = {
 
 const tocflSourcePath = process.env.TOCFL_SOURCE_PATH ?? defaultTocflPath;
 const mjdicSourcePath = process.env.MJDIC_SOURCE_PATH ?? defaultMjdicPath;
-
-const importOverrides = new Map([
-  ['爸爸', 'お父さん'],
-  ['大家', 'みんな'],
-  ['大學', '大学'],
-  ['多少', 'いくつ'],
-  ['今天', '今日'],
-  ['可能', 'かもしれない'],
-  ['可以', 'できる'],
-  ['妹妹', '妹'],
-  ['沒有', 'ない'],
-  ['哪裡', 'どこ'],
-  ['你們', 'あなたたち'],
-  ['朋友', '友達'],
-  ['請問', 'すみません'],
-  ['上午', '午前'],
-  ['什麼', 'なに'],
-  ['時間', '時間'],
-  ['他們', '彼ら'],
-  ['太太', '奥さん'],
-  ['同學', 'クラスメート'],
-  ['晚上', '夜'],
-  ['問題', '問題'],
-  ['我們', '私たち'],
-  ['現在', '今'],
-  ['小孩', '子供'],
-  ['小時', '時間'],
-  ['謝謝', 'ありがとう'],
-  ['喜歡', '好き'],
-  ['一起', '一緒に'],
-  ['英文', '英語'],
-  ['怎麼', 'どう'],
-  ['中文', '中国語'],
-  ['中午', '正午'],
-  ['包子', '肉まん'],
-  ['不錯', '悪くない'],
-  ['常常', 'よく'],
-  ['多久', 'どのくらい'],
-  ['地方', '場所'],
-  ['先生', '先生'],
-  ['對不起', 'ごめんなさい'],
-  ['名字', '名前'],
-  ['時候', 'タイミング'],
-  ['學校', '学校'],
-  ['學生', '学生'],
-  ['老師', '先生'],
-  ['哥哥', '兄'],
-  ['姊姊', '姉'],
-  ['弟弟', '弟'],
-  ['媽媽', 'お母さん'],
-  ['女兒', '娘'],
-  ['兒子', '息子'],
-  ['東西', 'もの'],
-  ['車子', '車'],
-  ['工作', '仕事'],
-  ['手機', '携帯'],
-  ['睡覺', '寝る'],
-  ['早上', '朝'],
-  ['下午', '午後'],
-  ['早安', 'おはよう'],
-  ['晚安', 'おやすみ'],
-  ['沒關係', '大丈夫'],
-  ['再見', 'さようなら'],
-]);
-
-const rejectionPatterns = [
-  /謙譲表現/,
-  /概念/,
-  /御前方/,
-  /人妻/,
-  /長さ/,
-  /質問に対する否定的な答え/,
-  /台湾のpr\./i,
-  /^\(/,
-];
-const allHanGlossPattern = /^[\p{Script=Han}々]+$/u;
-const simplifiedChineseGlossPattern =
-  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样/u;
-const untranslatedChineseGlossPattern = /什麼|甚麼|東南亞|山東|^[\p{Script=Han}々]+と同じ$/u;
-const classifierLikeGlossPattern =
-  /^(部|個|件|台|輛|名|位|條|張|本|家|把|面|隻|口|頭|瓶|杯|雙|份|粒|棵|艘|支|枚|匹)$/u;
+const tbclSourcePath = process.env.TBCL_SOURCE_PATH ?? defaultTbclPath;
 
 const toneMap = new Map([
   ['ā', ['a', 1]],
@@ -306,302 +234,72 @@ const normalizeMjdicPronunciation = (pronunciation) => {
   return normalized || null;
 };
 
-const collapseRepeatedSegments = (candidate) => {
-  const segments = candidate
-    .split(/[、，,]/)
-    .map((segment) => segment.trim())
-    .filter(Boolean);
-
-  if (segments.length > 1 && new Set(segments).size === 1) {
-    return segments[0];
-  }
-
-  return candidate;
-};
-
-const normalizeGlossCandidate = (candidate) => {
-  return collapseRepeatedSegments(candidate)
-    .replace(/\u3000/g, ' ')
-    .replace(/\{[^{}]*\}/g, ' ')
-    .replace(/<[^<>]*>/g, ' ')
-    .replace(/\bI\.D\.\b/gi, 'ID')
-    .replace(/\bD\.C\b/gi, 'DC')
-    .replace(/\.com\b/gi, '')
-    .replace(/\s*[（(][^()（）]{1,24}[)）]\s*/g, ' ')
-    .replace(/\s*[（(][^()（）]{0,24}$/g, ' ')
-    .replace(/^[^()（）]{1,24}[)）]\s*/g, ' ')
-    .replace(/^[()（）]+|[()（）]+$/g, '')
-    .replace(/^[「『"'“”]+|[」』"'“”]+$/g, '')
-    .replace(/^(fig\.?|lit\.?|figurative|literal|図\.?|フィグ\.?|リット?\.?|比喩的に)\s*/i, '')
-    .replace(/^[\s\-–—:：,，;；/／]+|[\s\-–—:：,，;；/／]+$/g, '')
-    .replace(/[。．.!！?？]+$/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-};
-
-const stripClassifierNotes = (gloss) =>
-  gloss
-    .replace(/\bCL:[^/／;；。]+/gi, '')
-    .replace(/\b(?:classifier|measure words?|count(?:er| word)s?)\s*:[^/／;；。]+/gi, '');
-
-const repeatedGlossPattern = /^(.{1,16}?)(?:[、，,]\1){1,}$/u;
-const explanatoryGlossPattern =
-  /に相当|を表す|の一種|の段階|仏教|旧暦|分類子|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために/;
-
-const isRejectedGlossCandidate = (candidate) => {
-  if (!candidate) {
-    return true;
-  }
-
-  if (/^[\p{P}\p{S}\s]+$/u.test(candidate)) {
-    return true;
-  }
-
-  if (/[。{}<>|()（）]|\.\.\.|…|[?？!！]/.test(candidate) || /\(や\)|（や）/.test(candidate)) {
-    return true;
-  }
-
-  if (repeatedGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (candidate.length > 18) {
-    return true;
-  }
-
-  if (explanatoryGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  return false;
-};
-
-const extractCandidates = (...glosses) => {
-  const candidates = [];
-
-  for (const gloss of glosses) {
-    if (!gloss) {
-      continue;
-    }
-
-    const parts = stripClassifierNotes(gloss.replace(/\uFEFF/g, ''))
-      .replace(/\[[^\]]*\]/g, '')
-      .replace(/\{[^{}]*\}/g, '')
-      .split(/[／/]/)
-      .flatMap((part) => part.split(/[;；]/))
-      .flatMap((part) => part.split(/[、，,]/))
-      .flatMap((part) => part.split(/\.{3,}|…+/))
-      .flatMap((part) => part.split('|'))
-      .flatMap((part) => part.split(/\(や\)|（や）/))
-      .map((part) => part.replace(/^\([^)]*\)/, '').trim())
-      .map((part) =>
-        part.replace(/^(also|lit\.?|fig\.?|figurative|literal|variant of|図\.?)\s+/i, '').trim()
-      )
-      .map((part) => normalizeGlossCandidate(part))
-      .filter(Boolean);
-
-    for (const part of parts) {
-      if (/^(surname|variant|classifier|see also|used in|Taiwan pr\.)/i.test(part)) {
-        continue;
-      }
-
-      if (isRejectedGlossCandidate(part)) {
-        continue;
-      }
-
-      candidates.push(part);
-    }
-  }
-
-  return candidates;
-};
-
-export const isRejectedJapaneseGlossCandidate = (candidate, source = 'ja') => {
-  if (!candidate) {
-    return true;
-  }
-
-  if (simplifiedChineseGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (untranslatedChineseGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (source !== 'ja' && allHanGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  return false;
-};
-
-const isClassifierLikeGloss = (trad, candidate) =>
-  [...trad].length > 1 && classifierLikeGlossPattern.test(candidate);
-
-export const scoreCandidate = (candidate, source = 'ja') => {
-  let score = 0;
-
-  if (isRejectedJapaneseGlossCandidate(candidate, source)) {
-    return Number.NEGATIVE_INFINITY;
-  }
-
-  if (/[ぁ-んァ-ヶ]/.test(candidate)) {
-    score += 6;
-  }
-
-  if (/[一-龯々]/u.test(candidate)) {
-    score += 2;
-  }
-
-  if (/^[A-Za-z0-9 ?!.,'":;()-]+$/.test(candidate)) {
-    score -= 2;
-  }
-
-  if (/CL:|surname|variant|classifier|abbr\.|old variant|Taiwan pr\./i.test(candidate)) {
-    score -= 6;
-  }
-
-  if (explanatoryGlossPattern.test(candidate)) {
-    score -= 5;
-  }
-
-  if (/\||\[|\]|pr\./.test(candidate)) {
-    score -= 4;
-  }
-
-  if (candidate.length <= 12) {
-    score += 2;
-  }
-
-  if (candidate.length > 18) {
-    score -= 6;
-  }
-
-  if (rejectionPatterns.some((pattern) => pattern.test(candidate))) {
-    score -= 8;
-  }
-
-  return score;
-};
-
-export const pickBestGloss = (glossPairs) => {
-  const candidates = [];
-
-  for (const [meansJa, means] of glossPairs) {
-    candidates.push(
-      ...extractCandidates(meansJa).map((candidate) => ({ candidate, source: 'ja' }))
-    );
-    candidates.push(
-      ...extractCandidates(means).map((candidate) => ({ candidate, source: 'fallback' }))
-    );
-  }
-
-  const candidateMap = new Map();
-
-  for (const entry of candidates) {
-    if (!candidateMap.has(entry.candidate) || entry.source === 'ja') {
-      candidateMap.set(entry.candidate, entry);
-    }
-  }
-
-  const uniqueCandidates = [...candidateMap.values()]
-    .map((entry) => ({
-      candidate: entry.candidate,
-      score: scoreCandidate(entry.candidate, entry.source),
-    }))
-    .filter((entry) => entry.score >= 1)
-    .sort(
-      (left, right) => right.score - left.score || left.candidate.length - right.candidate.length
-    );
-
-  return uniqueCandidates[0]?.candidate ?? null;
-};
-
-const determineLevel = (length) => {
-  if (length <= 2) {
-    return 1;
-  }
-
-  if (length <= 4) {
-    return 2;
-  }
-
-  return 3;
-};
-
 const buildLevelThreeCategory = (word) => {
   return `extended:${word[0]}`;
 };
 
-export const parseTocflSource = (sourceText) => {
-  const trimmed = sourceText.trim().replace(/^\uFEFF/, '');
-
-  if (!trimmed) {
-    return [];
-  }
-
-  if (trimmed.startsWith('[')) {
-    const parsed = JSON.parse(trimmed);
-
-    if (!Array.isArray(parsed)) {
-      throw new Error('TOCFL source must be a JSON array or JSONL.');
-    }
-
-    return parsed;
-  }
-
-  return trimmed
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => JSON.parse(line));
-};
-
 export const generateVocabulary = () => {
   const manualVocabulary = JSON.parse(fs.readFileSync(manualVocabularyPath, 'utf8'));
+  const editorialOverrides = fs.existsSync(editorialOverridesPath)
+    ? parseEditorialOverrides(JSON.parse(fs.readFileSync(editorialOverridesPath, 'utf8')))
+    : [];
 
   ensureFileExists(tocflSourcePath, 'TOCFL source');
   ensureFileExists(mjdicSourcePath, 'MJdic source');
   fs.mkdirSync(publicWordlistDir, { recursive: true });
 
-  const tocflRows = parseTocflSource(fs.readFileSync(tocflSourcePath, 'utf8'));
+  const tocflSourceText = fs.readFileSync(tocflSourcePath, 'utf8');
+  const tocflRows = parseJsonOrJsonl(tocflSourceText);
   const mjdicRows = fs
     .readFileSync(mjdicSourcePath, 'utf8')
     .split(/\r?\n/)
     .filter(Boolean)
     .slice(1);
+  const normalizedMjdicEntries = mjdicRows
+    .map((row, index) => [parseCsvLine(row.replace(/^\uFEFF/, '')), index + 1])
+    .map(([[trad, , pronunciation, means, meansJa], sourceIndex]) => ({
+      trad,
+      pronunciation: normalizeMjdicPronunciation(pronunciation) ?? undefined,
+      means,
+      meansJa,
+      sourceIndex,
+    }))
+    .filter((entry) => entry.trad);
   const validSyllables = buildValidSyllables(mjdicRows);
-  const dictionary = new Map();
+  const normalizedTocflRows = readTocflRows(tocflSourceText).map((row) => ({
+    ...row,
+    pronunciation: {
+      ...row.pronunciation,
+      pinyin:
+        normalizeTocflPronunciation(
+          row.pronunciation?.pinyin ?? '',
+          row.pronunciation?.zhuyin ?? '',
+          validSyllables
+        ) ??
+        row.pronunciation?.pinyin ??
+        '',
+    },
+  }));
+  const normalizedTbclRows = fs.existsSync(tbclSourcePath)
+    ? readTbclRows(fs.readFileSync(tbclSourcePath, 'utf8'))
+    : [];
   const tocflByTrad = new Map(tocflRows.map((item) => [String(item.text).trim(), item]));
   const mjdicPronunciationByTrad = new Map();
+  const mjdicSourceIndexByTrad = new Map();
 
-  for (const row of mjdicRows) {
-    const [trad, , pronunciation, means, meansJa] = parseCsvLine(row.replace(/^\uFEFF/, ''));
-
-    if (!trad) {
-      continue;
-    }
-
-    const normalizedPronunciation = normalizeMjdicPronunciation(pronunciation);
-
-    if (normalizedPronunciation) {
-      const exactKey = `${trad}\t${normalizedPronunciation}`;
-      const exactEntries = dictionary.get(exactKey) ?? [];
-      exactEntries.push([meansJa, means]);
-      dictionary.set(exactKey, exactEntries);
-    }
-
-    const fallbackKey = `${trad}\t`;
-    const fallbackEntries = dictionary.get(fallbackKey) ?? [];
-    fallbackEntries.push([meansJa, means]);
-    dictionary.set(fallbackKey, fallbackEntries);
+  for (const entry of normalizedMjdicEntries) {
+    const { trad, pronunciation: normalizedPronunciation, sourceIndex } = entry;
 
     if (!mjdicPronunciationByTrad.has(trad) && normalizedPronunciation) {
       mjdicPronunciationByTrad.set(trad, normalizedPronunciation);
     }
+
+    if (!mjdicSourceIndexByTrad.has(trad)) {
+      mjdicSourceIndexByTrad.set(trad, sourceIndex);
+    }
   }
 
-  const mergedVocabulary = [];
+  const manualEntries = [];
   const seenTrad = new Set();
 
   for (const entry of manualVocabulary) {
@@ -618,100 +316,54 @@ export const generateVocabulary = () => {
         : mjdicPronunciationByTrad.get(entry.trad));
 
     seenTrad.add(entry.trad);
-    mergedVocabulary.push({
+    manualEntries.push({
       ...entry,
       tocflLevel: entry.tocflLevel ?? tocflItem?.tocfl_level,
       pronunciation: normalizedPronunciation,
     });
   }
 
-  let tocflImported = 0;
+  const generatedCandidates = buildCandidates({
+    tocflRows: normalizedTocflRows,
+    tbclRows: normalizedTbclRows,
+    mjdicEntries: normalizedMjdicEntries,
+    editorialOverrides,
+  });
+  const publishedVocabulary = buildPublishedVocabulary({
+    candidates: generatedCandidates
+      .filter(
+        (candidate) =>
+          !seenTrad.has(candidate.trad) &&
+          ((candidate.level <= 2 &&
+            candidate.sources.some((source) => source === 'tocfl' || source === 'tbcl')) ||
+            (candidate.level === 3 && candidate.sources.includes('mjdic')))
+      )
+      .map((candidate) => {
+        const tocflItem = tocflByTrad.get(candidate.trad);
+        const candidateId = tocflItem
+          ? `tocfl-${String(tocflItem.id).padStart(5, '0')}`
+          : candidate.sources.includes('tbcl')
+            ? `tbcl-${candidate.trad}`
+            : `mjdic-${String(mjdicSourceIndexByTrad.get(candidate.trad) ?? 0).padStart(6, '0')}`;
 
-  for (const item of tocflRows) {
-    const trad = String(item.text).trim();
+        return {
+          ...candidate,
+          id: candidateId,
+          category:
+            candidate.category ??
+            (candidate.level === 3 ? buildLevelThreeCategory(candidate.trad) : 'uncategorized'),
+          taiwanPriority: true,
+          status: candidate.status ?? 'approved',
+          acceptedJa: candidate.acceptedJa ?? [],
+          senseTag: candidate.senseTag ?? null,
+          distractorTags: candidate.distractorTags ?? [],
+        };
+      }),
+    editorialRecords: editorialOverrides,
+    seedEntries: manualEntries,
+  });
 
-    if (seenTrad.has(trad) || !/^[\p{Script=Han}]+$/u.test(trad)) {
-      continue;
-    }
-
-    const length = [...trad].length;
-
-    if (length < 1 || length > 4) {
-      continue;
-    }
-
-    const normalizedPronunciation = normalizeTocflPronunciation(
-      item.pinyin,
-      item.zhuyin,
-      validSyllables
-    );
-    const exactMatches = normalizedPronunciation
-      ? (dictionary.get(`${trad}\t${normalizedPronunciation}`) ?? [])
-      : [];
-    const fallbackMatches = dictionary.get(`${trad}\t`) ?? [];
-    const bestGloss =
-      importOverrides.get(trad) ??
-      pickBestGloss(exactMatches.length > 0 ? exactMatches : fallbackMatches);
-
-    if (!bestGloss || isClassifierLikeGloss(trad, bestGloss)) {
-      continue;
-    }
-
-    seenTrad.add(trad);
-    tocflImported += 1;
-    mergedVocabulary.push({
-      id: `tocfl-${String(item.id).padStart(5, '0')}`,
-      trad,
-      ja: bestGloss,
-      level: determineLevel(length),
-      length,
-      category: `tocfl:${item.category}`,
-      taiwanPriority: true,
-      sources: ['tocfl', 'mjdic'],
-      tocflLevel: item.tocfl_level,
-      pronunciation: normalizedPronunciation ?? undefined,
-    });
-  }
-
-  let levelThreeImported = 0;
-
-  for (let index = 0; index < mjdicRows.length; index += 1) {
-    const [trad, , pronunciation, means, meansJa] = parseCsvLine(
-      mjdicRows[index].replace(/^\uFEFF/, '')
-    );
-
-    if (!trad || seenTrad.has(trad) || !/^[\p{Script=Han}]+$/u.test(trad)) {
-      continue;
-    }
-
-    const length = [...trad].length;
-
-    if (length < 5 || length > 6) {
-      continue;
-    }
-
-    const bestGloss = pickBestGloss([[meansJa, means]]);
-
-    if (!bestGloss || isClassifierLikeGloss(trad, bestGloss)) {
-      continue;
-    }
-
-    seenTrad.add(trad);
-    levelThreeImported += 1;
-    mergedVocabulary.push({
-      id: `mjdic-${String(index + 1).padStart(6, '0')}`,
-      trad,
-      ja: bestGloss,
-      level: 3,
-      length,
-      category: buildLevelThreeCategory(trad),
-      taiwanPriority: true,
-      sources: ['mjdic'],
-      pronunciation: normalizeMjdicPronunciation(pronunciation) ?? undefined,
-    });
-  }
-
-  const sortedVocabulary = mergedVocabulary.sort((left, right) => {
+  const sortedVocabulary = publishedVocabulary.sort((left, right) => {
     if (left.level !== right.level) {
       return left.level - right.level;
     }
@@ -723,6 +375,7 @@ export const generateVocabulary = () => {
     return left.trad.localeCompare(right.trad, 'zh-Hant');
   });
 
+  fs.writeFileSync(candidatesOutputPath, `${JSON.stringify(generatedCandidates, null, 2)}\n`);
   fs.writeFileSync(outputPath, `${JSON.stringify(sortedVocabulary, null, 2)}\n`);
 
   const metadata = {
@@ -743,6 +396,15 @@ export const generateVocabulary = () => {
 
   fs.writeFileSync(metadataOutputPath, `${JSON.stringify(metadata, null, 2)}\n`);
   fs.writeFileSync(publicMetadataOutputPath, `${JSON.stringify(metadata, null, 2)}\n`);
+
+  const publishedSeedTradSet = new Set(manualEntries.map((entry) => entry.trad));
+  const generatedEntries = sortedVocabulary.filter(
+    (entry) => !publishedSeedTradSet.has(entry.trad)
+  );
+  const tocflImported = generatedEntries.filter((entry) => entry.sources.includes('tocfl')).length;
+  const levelThreeImported = generatedEntries.filter(
+    (entry) => entry.level === 3 && entry.sources.includes('mjdic')
+  ).length;
 
   console.log(
     `Generated ${sortedVocabulary.length} entries (${manualVocabulary.length} manual, ${tocflImported} TOCFL, ${levelThreeImported} MJdic level-3).`

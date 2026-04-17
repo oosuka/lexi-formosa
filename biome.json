@@ -1,7 +1,8 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
   "files": {
     "ignoreUnknown": true,
+    "maxSize": 2097152,
     "includes": [
       "**",
       "!**/.nuxt",
@@ -11,6 +12,7 @@
       "!**/test-results",
       "!**/node_modules",
       "!**/data/source-snapshots",
+      "!**/data/vocabulary-candidates.json",
       "!**/data/vocabulary.json",
       "!**/data/vocabulary-metadata.json",
       "!**/data/vocabulary-level-1.json",

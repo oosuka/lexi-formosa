@@ -86,6 +86,38 @@ const uniqueByIdAndLabel = (items: VocabEntry[]): VocabEntry[] => {
   });
 };
 
+const getSharedDistractorTagCount = (correctEntry: VocabEntry, entry: VocabEntry): number => {
+  if (!correctEntry.distractorTags?.length || !entry.distractorTags?.length) {
+    return 0;
+  }
+
+  const correctTags = new Set(correctEntry.distractorTags);
+
+  return entry.distractorTags.filter((tag) => correctTags.has(tag)).length;
+};
+
+const getDistractorPriority = (correctEntry: VocabEntry, entry: VocabEntry): number => {
+  if (entry.senseTag && entry.senseTag === correctEntry.senseTag) {
+    return 4;
+  }
+
+  const sharedTagCount = getSharedDistractorTagCount(correctEntry, entry);
+
+  if (sharedTagCount > 0) {
+    return 3;
+  }
+
+  if (entry.category === correctEntry.category) {
+    return 2;
+  }
+
+  if (entry.length === correctEntry.length) {
+    return 1;
+  }
+
+  return 0;
+};
+
 export const buildQuestion = (
   pool: VocabEntry[],
   level: Level,
@@ -103,15 +135,18 @@ export const buildQuestion = (
     (entry) => entry.id !== correctEntry.id && entry.ja !== correctEntry.ja
   );
 
-  const prioritizedDistractors = [
-    allDistractors.filter((entry) => entry.category === correctEntry.category),
-    allDistractors.filter(
-      (entry) => entry.category !== correctEntry.category && entry.length === correctEntry.length
-    ),
-    allDistractors.filter(
-      (entry) => entry.category !== correctEntry.category && entry.length !== correctEntry.length
-    ),
-  ].flatMap((entries) => shuffle(entries));
+  const distractorsByPriority = new Map<number, VocabEntry[]>();
+
+  for (const entry of allDistractors) {
+    const priority = getDistractorPriority(correctEntry, entry);
+    const bucket = distractorsByPriority.get(priority) ?? [];
+    bucket.push(entry);
+    distractorsByPriority.set(priority, bucket);
+  }
+
+  const prioritizedDistractors = [...distractorsByPriority.entries()]
+    .sort(([left], [right]) => right - left)
+    .flatMap(([, entries]) => shuffle(entries));
 
   const distractors = uniqueByIdAndLabel(prioritizedDistractors).slice(0, 3);
 

@@ -6,6 +6,9 @@ export interface VocabEntry {
   id: string;
   trad: string;
   ja: string;
+  acceptedJa?: string[];
+  senseTag?: string;
+  distractorTags?: string[];
   level: Level;
   length: number;
   category: string;

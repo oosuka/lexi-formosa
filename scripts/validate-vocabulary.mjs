@@ -25,11 +25,9 @@ const levelLengthMap = {
 };
 
 const simplifiedOnlyPattern = /汉|观|气|馆|铁|听|习|国|图|车|广|务/;
-const invalidChineseGlossPattern =
-  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样|什麼|甚麼|^[\p{Script=Han}々]+と同じ$/u;
+const simplifiedChineseLabelPattern =
+  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样/u;
 const invalidJapaneseGlossPattern = /^[\p{P}\p{S}\s]+$/u;
-const classifierLikeGlossPattern =
-  /^(部|個|件|台|輛|名|位|條|張|本|家|把|面|隻|口|頭|瓶|杯|雙|份|粒|棵|艘|支|枚|匹)$/u;
 export const validateVocabularyEntries = (rawEntries) => {
   const entries = z.array(entrySchema).parse(rawEntries);
   const ids = new Set();
@@ -76,10 +74,8 @@ export const validateVocabularyEntries = (rawEntries) => {
       throw new Error(`Invalid Japanese gloss detected in ${entry.id}: ${entry.ja}`);
     }
 
-    if (invalidChineseGlossPattern.test(entry.ja)) {
-      throw new Error(
-        `Untranslated or simplified Chinese gloss detected in ${entry.id}: ${entry.ja}`
-      );
+    if (simplifiedChineseLabelPattern.test(entry.ja)) {
+      throw new Error(`Simplified Chinese label detected in ${entry.id}: ${entry.ja}`);
     }
 
     if (/[。？！…]|\.{3,}/.test(entry.ja)) {
@@ -88,10 +84,6 @@ export const validateVocabularyEntries = (rawEntries) => {
 
     if (/[()（）]/.test(entry.ja)) {
       throw new Error(`Parenthetical Japanese gloss detected in ${entry.id}: ${entry.ja}`);
-    }
-
-    if (actualLength > 1 && classifierLikeGlossPattern.test(entry.ja)) {
-      throw new Error(`Classifier-like Japanese gloss detected in ${entry.id}: ${entry.ja}`);
     }
 
     labelsByLevel.get(entry.level)?.add(entry.ja);

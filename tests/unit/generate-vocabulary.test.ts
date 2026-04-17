@@ -4,13 +4,6 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  isRejectedJapaneseGlossCandidate,
-  parseTocflSource,
-  pickBestGloss,
-  scoreCandidate,
-} from '../../scripts/generate-vocabulary.mjs';
-
 const tempDirectories = [];
 const generateVocabularyModuleUrl = new URL(
   '../../scripts/generate-vocabulary.mjs',
@@ -53,68 +46,6 @@ afterEach(() => {
 });
 
 describe('generate vocabulary script', () => {
-  it('簡体字のまま残っている候補を訳語に採用しない', () => {
-    expect(isRejectedJapaneseGlossCandidate('丝')).toBe(true);
-    expect(pickBestGloss([['丝', 'silk']])).toBeNull();
-  });
-
-  it('中国語の未翻訳候補より日本語候補を優先する', () => {
-    expect(
-      pickBestGloss([
-        ['东南亚国家联盟と同じ', 'same as ASEAN'],
-        ['東南アジア諸国連合', 'association of southeast asian nations'],
-      ])
-    ).toBe('東南アジア諸国連合');
-  });
-
-  it('自然な日本語候補は引き続き採用する', () => {
-    expect(pickBestGloss([['ありがとう', 'thanks']])).toBe('ありがとう');
-    expect(pickBestGloss([['国境', 'border']])).toBe('国境');
-  });
-
-  it('分類詞の断片を訳語として採用しない', () => {
-    expect(
-      pickBestGloss([
-        [
-          '(借用語) motorbike; motorcycle/CL:輛|辆[liang4],部[bu4]。',
-          '(loanword) motorbike; motorcycle/CL:輛|辆[liang4],部[bu4]',
-        ],
-      ])
-    ).toBeNull();
-  });
-
-  it('訳語スコアは自然な日本語を説明的な候補より高く評価する', () => {
-    expect(scoreCandidate('ありがとう')).toBeGreaterThan(scoreCandidate('thank you'));
-    expect(scoreCandidate('東南アジア諸国連合')).toBeGreaterThan(
-      scoreCandidate('same as ASEAN', 'fallback')
-    );
-  });
-
-  it('TOCFL ソースの JSON 配列を読み込める', () => {
-    expect(
-      parseTocflSource(
-        JSON.stringify([
-          { id: 1, text: '八' },
-          { id: 2, text: '爸爸' },
-        ])
-      )
-    ).toEqual([
-      { id: 1, text: '八' },
-      { id: 2, text: '爸爸' },
-    ]);
-  });
-
-  it('TOCFL ソースの JSONL も引き続き読み込める', () => {
-    expect(parseTocflSource('{"id":1,"text":"八"}\n{"id":2,"text":"爸爸"}\n')).toEqual([
-      { id: 1, text: '八' },
-      { id: 2, text: '爸爸' },
-    ]);
-  });
-
-  it('TOCFL ソースの空文字は空配列として扱う', () => {
-    expect(parseTocflSource('\n')).toEqual([]);
-  });
-
   it('手修正語彙・TOCFL・MJdic から配信用データとメタデータを生成する', async () => {
     const repoRoot = createTempRepo();
 
@@ -209,9 +140,11 @@ describe('generate vocabulary script', () => {
         '你好,你好,ni3 hao3,hello,こんにちは',
         '爸爸,爸爸,ba4 ba,dad,お父さん',
         '東西,东西,dong1 xi5,thing,何か',
+        '圍棋,围棋,wei2 qi2,go,囲碁',
         '便利商店,便利商店,bian4 li4 shang1 dian4,convenience store,コンビニ',
         '自助洗衣店,自助洗衣店,zi4 zhu4 xi3 yi1 dian4,laundromat,コインランドリー',
         '觀光夜市地圖,观光夜市地图,guan1 guang1 ye4 shi4 di4 tu2,night market map,観光夜市地図',
+        '巴彥淖爾市,巴彦淖尔市,ba1 yan4 nao4 er3 shi4,Bayan Nur prefecture-level city in Inner Mongolia,内モンゴル自治区バヤン・ヌール県級市',
         '摩托車,摩托车,mo2 tuo1 che1,motorbike,部',
       ].join('\n')
     );
@@ -222,7 +155,7 @@ describe('generate vocabulary script', () => {
     generateVocabulary();
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
-      'Generated 6 entries (4 manual, 2 TOCFL, 1 MJdic level-3).'
+      'Generated 7 entries (4 manual, 2 TOCFL, 2 MJdic level-3).'
     );
     consoleLogSpy.mockRestore();
 
@@ -232,11 +165,14 @@ describe('generate vocabulary script', () => {
     const metadata = JSON.parse(
       fs.readFileSync(path.join(repoRoot, 'public', 'wordlists', 'metadata.json'), 'utf8')
     );
+    const candidates = JSON.parse(
+      fs.readFileSync(path.join(repoRoot, 'data', 'vocabulary-candidates.json'), 'utf8')
+    );
     const levelOneVocabulary = JSON.parse(
       fs.readFileSync(path.join(repoRoot, 'public', 'wordlists', 'vocabulary-level-1.json'), 'utf8')
     );
 
-    expect(vocabulary).toHaveLength(6);
+    expect(vocabulary).toHaveLength(7);
     expect(vocabulary.find((entry) => entry.id === 'manual-hello')).toMatchObject({
       trad: '你好',
       tocflLevel: 1,
@@ -258,23 +194,33 @@ describe('generate vocabulary script', () => {
       ja: 'もの',
       level: 1,
     });
-    expect(vocabulary.find((entry) => entry.id === 'mjdic-000006')).toMatchObject({
+    expect(vocabulary.find((entry) => entry.trad === '觀光夜市地圖')).toMatchObject({
       trad: '觀光夜市地圖',
       ja: '観光夜市地図',
       level: 3,
       category: 'extended:觀',
       pronunciation: 'guan1 guang1 ye4 shi4 di4 tu2',
     });
+    expect(vocabulary.some((entry) => entry.trad === '圍棋')).toBe(false);
+    expect(vocabulary.some((entry) => entry.trad === '巴彥淖爾市')).toBe(true);
     expect(vocabulary.some((entry) => entry.trad === '摩托車')).toBe(false);
 
     expect(metadata).toEqual({
-      total: 6,
+      total: 7,
       counts: {
         1: 3,
         2: 1,
-        3: 2,
+        3: 3,
       },
     });
+    expect(candidates).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          trad: '爸爸',
+          canonicalJa: 'お父さん',
+        }),
+      ])
+    );
     expect(levelOneVocabulary.map((entry) => entry.trad)).toEqual(['你好', '東西', '爸爸']);
   });
 
@@ -285,5 +231,113 @@ describe('generate vocabulary script', () => {
     const { generateVocabulary } = await loadGenerateVocabularyModule(repoRoot);
 
     expect(() => generateVocabulary()).toThrow('TOCFL source not found');
+  });
+
+  it('editorial override で候補の採否と日本語ラベルを調整できる', async () => {
+    const repoRoot = createTempRepo();
+
+    writeJson(path.join(repoRoot, 'data', 'manual-vocabulary.json'), []);
+    writeJson(path.join(repoRoot, 'data', 'editorial-overrides.json'), [
+      {
+        trad: '爸爸',
+        status: 'approved',
+        canonicalJa: '父さん',
+        acceptedJa: ['お父さん'],
+        senseTag: 'people.family',
+      },
+      {
+        trad: '東西',
+        status: 'rejected',
+        canonicalJa: 'もの',
+      },
+    ]);
+    writeJson(path.join(repoRoot, 'data', 'source-snapshots', 'tocfl_words.json'), [
+      {
+        id: 2,
+        text: '爸爸',
+        pinyin: 'bà ba',
+        zhuyin: 'ㄅㄚˋ ㄅㄚ',
+        tocfl_level: 1,
+        category: 'people',
+      },
+      {
+        id: 3,
+        text: '東西',
+        pinyin: 'dōng xi',
+        zhuyin: 'ㄉㄨㄥ ㄒㄧ',
+        tocfl_level: 1,
+        category: 'noun',
+      },
+    ]);
+    writeText(
+      path.join(repoRoot, 'data', 'source-snapshots', 'mjdic.csv'),
+      [
+        'trad,simp,pronunciation,means,meansJa',
+        '爸爸,爸爸,ba4 ba,dad,お父さん',
+        '東西,东西,dong1 xi5,thing,何か',
+      ].join('\n')
+    );
+
+    const { generateVocabulary } = await loadGenerateVocabularyModule(repoRoot);
+
+    generateVocabulary();
+
+    const vocabulary = JSON.parse(
+      fs.readFileSync(path.join(repoRoot, 'data', 'vocabulary.json'), 'utf8')
+    );
+
+    expect(vocabulary).toEqual([
+      expect.objectContaining({
+        trad: '爸爸',
+        ja: '父さん',
+        acceptedJa: ['お父さん'],
+        senseTag: 'people.family',
+      }),
+    ]);
+  });
+
+  it('editorial override で参照ラベルしかない候補を教材ラベルへ救済できる', async () => {
+    const repoRoot = createTempRepo();
+
+    writeJson(path.join(repoRoot, 'data', 'manual-vocabulary.json'), []);
+    writeJson(path.join(repoRoot, 'data', 'editorial-overrides.json'), [
+      {
+        trad: '無稽之談',
+        status: 'approved',
+        canonicalJa: 'でたらめな話',
+      },
+    ]);
+    writeJson(path.join(repoRoot, 'data', 'source-snapshots', 'tocfl_words.json'), [
+      {
+        id: 13209,
+        text: '無稽之談',
+        pinyin: 'wú jī zhī tán',
+        zhuyin: 'ㄨˊ ㄐㄧ ㄓ ㄊㄢˊ',
+        tocfl_level: 7,
+        category: '精熟',
+      },
+    ]);
+    writeText(
+      path.join(repoRoot, 'data', 'source-snapshots', 'mjdic.csv'),
+      [
+        'trad,simp,pronunciation,means,meansJa',
+        '無稽之談,无稽之谈,wu2 ji1 zhi1 tan2,complete nonsense (idiom),珍糞漢糞',
+      ].join('\n')
+    );
+
+    const { generateVocabulary } = await loadGenerateVocabularyModule(repoRoot);
+
+    generateVocabulary();
+
+    const vocabulary = JSON.parse(
+      fs.readFileSync(path.join(repoRoot, 'data', 'vocabulary.json'), 'utf8')
+    );
+
+    expect(vocabulary).toEqual([
+      expect.objectContaining({
+        trad: '無稽之談',
+        ja: 'でたらめな話',
+      }),
+    ]);
   });
 });

@@ -35,10 +35,10 @@
 - Public リポジトリには生成済み辞書データを同梱しません。
 - 実行時は外部APIではなく、`public/wordlists/*.json` をレベル単位で遅延読み込みします。
 - `metadata.json` は補助表示用であり、取得失敗だけでゲーム本体を停止させないでください。
-- 語彙生成は `TOCFL + MJdic + 手修正語彙` を合成するスクリプト方式です。
+- 語彙生成は `TOCFL + TBCL + MJdic + 手修正語彙 + editorial override` を合成するスクリプト方式です。
+- 公開デッキは `Level 1-2` で `TOCFL/TBCL` を根拠にできる候補を優先し、`Level 3` は `MJdic` を根拠にできる 5-6文字候補を中心に組み立ててください。
 - clone 後の初回辞書セットアップは `npm run setup:data` で行います。
-- `setup:data` は validation 失敗で止めますが、`audit:data` の出力は品質確認用の警告として扱います。
-- 重要語や訳の修正は `data/manual-vocabulary.json` を優先して行います。
+- 重要語の seed 追加や発音補完は `data/manual-vocabulary.json`、自動候補の採否や日本語ラベル補正は `data/editorial-overrides.json` を優先して行います。
 - 問題カードには、可能な範囲でピンインとカタカナ補助を表示します。
 - 単語音声はブラウザの `SpeechSynthesis` を使います。外部TTSは前提にしません。
 - 回答時の効果音は `Web Audio API` を使います。
@@ -71,13 +71,19 @@
 - `scripts/generate-vocabulary.mjs`
   - 大規模辞書生成
 - `scripts/setup-data.mjs`
-  - Public リポジトリ向けの辞書取得・生成・監査セットアップ
+  - Public リポジトリ向けの辞書取得・生成・検証セットアップ
+- `scripts/lib/`
+  - 辞書ソース読み込み、候補合成、editorial record 統合、公開デッキ生成
 - `scripts/validate-vocabulary.mjs`
   - 語彙整合性チェック
 - `data/manual-vocabulary.json`
-  - 手修正・優先語彙
+  - seed deck と発音補完
+- `data/editorial-overrides.json`
+  - 自動候補の採否と教材ラベル補正
 - `data/source-snapshots/`
   - ローカル取得した外部辞書ソース
+- `data/vocabulary-candidates.json`
+  - 語彙生成時の中間候補
 - `data/vocabulary.json`
   - 統合済み全語彙
 - `data/vocabulary-metadata.json`
@@ -146,7 +152,7 @@
 - 台湾華語寄りの語彙を優先してください。
 - 日本語訳は「辞書として完璧」より「学習ゲームとして自然で分かりやすい」を優先します。
 - ただし、意味を誤らせる訳は避けてください。
-- 重要語で訳が不自然な場合は、自動生成ロジックだけで無理に直そうとせず、`data/manual-vocabulary.json` に補正を入れてください。
+- 重要語の追加や発音補完は `data/manual-vocabulary.json` に入れ、既存候補の採否や日本語ラベル補正は `data/editorial-overrides.json` に入れてください。
 - 生成スクリプトを変えた場合は、再生成後に必ず検証を実行してください。
 - コードのライセンスと辞書データの権利は分離してください。辞書生成や再配布に関わる変更では `NOTICE.md` も確認してください。
 
@@ -162,7 +168,9 @@
   - `scripts/`
   - `docs/`
   - `data/manual-vocabulary.json`
+  - `data/editorial-overrides.json`
 - 原則として手で編集しないファイル:
+  - `data/vocabulary-candidates.json`
   - `data/vocabulary.json`
   - `data/vocabulary-metadata.json`
   - `data/vocabulary-level-1.json`
@@ -230,12 +238,6 @@ npm run generate:data
 npm run check:data
 ```
 
-語彙監査:
-
-```bash
-npm run audit:data
-```
-
 外部ソースを個別指定して再生成する例:
 
 ```bash
@@ -254,7 +256,7 @@ npx playwright install chromium
 
 - 変更が UI なのか、ロジックなのか、辞書生成なのかを先に切り分ける
 - 生成物を直接直すべきか、元データやスクリプトを直すべきかを判断する
-- 語彙や訳の問題なら、まず `manual-vocabulary` で解決できるか確認する
+- 語彙や訳の問題なら、seed 追加は `manual-vocabulary`、既存候補の採否や訳修正は `editorial-overrides` で解決できるか確認する
 - metadata のような補助データが壊れても、ゲーム本体まで巻き込んで停止させない設計を優先する
 - Public 公開に関わる変更なら、生成済み辞書データをコミットしていないか確認する
 - パフォーマンスに影響する場合、バンドルへ大きいデータを直接含めていないか確認する
@@ -266,8 +268,6 @@ npx playwright install chromium
 - 対象は少なくとも `README.md`、`AGENTS.md`、`docs/` 配下の関連文書です。
 - すべての Markdown を毎回機械的に更新するのではなく、変更内容に影響する文書だけを更新してください。
 - 文書更新が不要と判断した場合は、その判断が妥当かを一度確認してください。
-- `docs/superpowers/` は作業計画と設計メモを置く場所であり、採用中の文書は現行仕様の一次情報として扱ってください。実装と挙動を変えた場合は、関連する `docs/superpowers/` 配下の文書も同じ作業内で更新し続けてください。
-- `docs/superpowers/` 配下に履歴文書や不採用案を残す場合は、各ファイル冒頭の `Status` 表記で `採用中` `実装済み` `履歴` `不採用` `revert 済み` などを明示し、現行文書と混同されないようにしてください。
 - ユーザー向けの使い方、セットアップ、コマンド、挙動が変わった場合は `README.md` を更新してください。
 - エージェント運用ルール、レビュー方針、検証手順が変わった場合は `AGENTS.md` を更新してください。
 - 辞書、生成、データソース、再生成手順が変わった場合は `docs/dictionary-sources.md` を更新してください。
@@ -289,7 +289,17 @@ npm run build
 ```bash
 npm run setup:data
 npm run check:data
-npm run audit:data
+npm run lint
+npm run test:unit
+npx tsc --noEmit -p .nuxt/tsconfig.json
+npm run build
+```
+
+語彙の手修正データだけを反映した場合:
+
+```bash
+npm run generate:data
+npm run check:data
 npm run lint
 npm run test:unit
 npx tsc --noEmit -p .nuxt/tsconfig.json
@@ -303,7 +313,6 @@ TOCFL_SOURCE_PATH=/path/to/tocfl_words.json \
 MJDIC_SOURCE_PATH=/path/to/mjdic.csv \
 npm run generate:data
 npm run check:data
-npm run audit:data
 ```
 
 UI の主要導線や操作フローを変えた場合:
@@ -375,6 +384,4 @@ npm run build
 ## 15. 補足
 
 - 辞書ソースの詳細は `docs/dictionary-sources.md` を参照してください。
-- 大量語彙化は実現済みですが、日本語訳の品質改善余地はまだあります。
 - 読み方表示と音声再生は実装済みですが、音声品質は利用ブラウザとOSの音声環境に依存します。
-- 今後の改善は、まず `manual-vocabulary` の拡充と生成ルールの改善で進めるのが安全です。

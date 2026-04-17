@@ -9,6 +9,7 @@ test-results
 .nuxtrc
 data/source-snapshots/*
 !data/source-snapshots/.gitkeep
+data/vocabulary-candidates.json
 data/vocabulary.json
 data/vocabulary-level-*.json
 data/vocabulary-metadata.json
@@ -16,3 +17,4 @@ public/wordlists/*.json
 !public/wordlists/.gitkeep
 .worktrees/
 .superpowers/
+docs/superpowers/
