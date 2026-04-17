@@ -9333,10 +9333,28 @@
     "acceptedJa": ["だいたい"]
   },
   {
+    "trad": "左右手",
+    "status": "approved",
+    "canonicalJa": "頼れる助手",
+    "acceptedJa": ["右腕"]
+  },
+  {
     "trad": "左右為難",
     "status": "approved",
     "canonicalJa": "板挟み",
     "acceptedJa": []
+  },
+  {
+    "trad": "左思右想",
+    "status": "approved",
+    "canonicalJa": "あれこれ考える",
+    "acceptedJa": ["熟考する"]
+  },
+  {
+    "trad": "左鄰右舍",
+    "status": "approved",
+    "canonicalJa": "隣近所",
+    "acceptedJa": ["近所の人々"]
   },
   {
     "trad": "巧",
@@ -16176,6 +16194,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "佐證",
+    "status": "approved",
+    "canonicalJa": "裏付け",
+    "acceptedJa": ["証拠"]
+  },
+  {
     "trad": "佔上風",
     "status": "approved",
     "canonicalJa": "優位に立つ",
@@ -16282,6 +16306,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "作物",
+    "status": "approved",
+    "canonicalJa": "作物",
+    "acceptedJa": ["農作物"]
+  },
+  {
     "trad": "作者",
     "status": "approved",
     "canonicalJa": "作家",
@@ -16312,6 +16342,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "作祟",
+    "status": "approved",
+    "canonicalJa": "祟る",
+    "acceptedJa": ["悪さをする"]
+  },
+  {
     "trad": "作畫",
     "status": "approved",
     "canonicalJa": "絵を描く",
@@ -16324,6 +16360,24 @@
     "acceptedJa": []
   },
   {
+    "trad": "作亂",
+    "status": "approved",
+    "canonicalJa": "反乱を起こす",
+    "acceptedJa": []
+  },
+  {
+    "trad": "作勢",
+    "status": "approved",
+    "canonicalJa": "身構える",
+    "acceptedJa": ["ポーズを取る"]
+  },
+  {
+    "trad": "作嘔",
+    "status": "approved",
+    "canonicalJa": "吐き気を催す",
+    "acceptedJa": ["嫌悪感を覚える"]
+  },
+  {
     "trad": "作對",
     "status": "approved",
     "canonicalJa": "敵対する",
@@ -16334,6 +16388,18 @@
     "status": "approved",
     "canonicalJa": "不正をする",
     "acceptedJa": []
+  },
+  {
+    "trad": "作樂",
+    "status": "approved",
+    "canonicalJa": "楽しむ",
+    "acceptedJa": ["陽気に騒ぐ"]
+  },
+  {
+    "trad": "作罷",
+    "status": "approved",
+    "canonicalJa": "取りやめる",
+    "acceptedJa": ["やめる"]
   },
   {
     "trad": "作戰",
@@ -17254,10 +17320,28 @@
     "acceptedJa": []
   },
   {
+    "trad": "坐立不安",
+    "status": "approved",
+    "canonicalJa": "そわそわする",
+    "acceptedJa": ["落ち着きがない"]
+  },
+  {
+    "trad": "坐立難安",
+    "status": "approved",
+    "canonicalJa": "居ても立ってもいられない",
+    "acceptedJa": []
+  },
+  {
     "trad": "坐牢",
     "status": "approved",
     "canonicalJa": "投獄される",
     "acceptedJa": []
+  },
+  {
+    "trad": "坐姿",
+    "status": "approved",
+    "canonicalJa": "座る姿勢",
+    "acceptedJa": ["座位"]
   },
   {
     "trad": "坑",
@@ -33754,6 +33838,12 @@
     "reviewReason": "classifier-like gloss in initial quality pass"
   },
   {
+    "trad": "座右銘",
+    "status": "approved",
+    "canonicalJa": "座右の銘",
+    "acceptedJa": ["モットー"]
+  },
+  {
     "trad": "座落",
     "status": "approved",
     "canonicalJa": "位置する",
@@ -38736,6 +38826,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "做工",
+    "status": "approved",
+    "canonicalJa": "手作業をする",
+    "acceptedJa": ["手仕事をする"]
+  },
+  {
     "trad": "做出",
     "status": "approved",
     "canonicalJa": "作り出す",
@@ -38746,6 +38842,12 @@
     "status": "approved",
     "canonicalJa": "ビジネス",
     "acceptedJa": []
+  },
+  {
+    "trad": "做作",
+    "status": "approved",
+    "canonicalJa": "わざとらしい",
+    "acceptedJa": ["不自然な"]
   },
   {
     "trad": "做到",
@@ -46920,6 +47022,12 @@
     "status": "approved",
     "canonicalJa": "尊敬される",
     "acceptedJa": []
+  },
+  {
+    "trad": "尊榮",
+    "status": "approved",
+    "canonicalJa": "栄誉",
+    "acceptedJa": ["栄光"]
   },
   {
     "trad": "尊稱",
@@ -67079,6 +67187,12 @@
     "status": "approved",
     "canonicalJa": "遵守する",
     "acceptedJa": []
+  },
+  {
+    "trad": "遵行",
+    "status": "approved",
+    "canonicalJa": "遵守する",
+    "acceptedJa": ["従う"]
   },
   {
     "trad": "遵從",
