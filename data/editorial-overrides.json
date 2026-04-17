@@ -11,6 +11,18 @@
     "acceptedJa": ["突然"]
   },
   {
+    "trad": "一千零一夜",
+    "status": "rejected",
+    "canonicalJa": "千夜一夜物語",
+    "acceptedJa": []
+  },
+  {
+    "trad": "一口吃個胖子",
+    "status": "approved",
+    "canonicalJa": "成功を焦る",
+    "acceptedJa": ["一足飛びを狙う"]
+  },
+  {
     "trad": "一口氣",
     "status": "approved",
     "canonicalJa": "一気に",
@@ -23,16 +35,46 @@
     "acceptedJa": []
   },
   {
+    "trad": "一山不容二虎",
+    "status": "approved",
+    "canonicalJa": "両雄並び立たず",
+    "acceptedJa": ["二人の強者は共存しない"]
+  },
+  {
     "trad": "一五一十",
     "status": "approved",
     "canonicalJa": "詳しく話す",
     "acceptedJa": []
   },
   {
+    "trad": "一分錢一分貨",
+    "status": "approved",
+    "canonicalJa": "値段相応",
+    "acceptedJa": ["安かろう悪かろう"]
+  },
+  {
+    "trad": "一分錢兩分貨",
+    "status": "approved",
+    "canonicalJa": "お買い得",
+    "acceptedJa": ["割安で高品質"]
+  },
+  {
     "trad": "一切",
     "status": "approved",
     "canonicalJa": "すべて",
     "acceptedJa": []
+  },
+  {
+    "trad": "一切向錢看",
+    "status": "approved",
+    "canonicalJa": "金を最優先する",
+    "acceptedJa": ["金銭第一"]
+  },
+  {
+    "trad": "一天一個樣",
+    "status": "approved",
+    "canonicalJa": "日々変わる",
+    "acceptedJa": ["日によって変わる"]
   },
   {
     "trad": "一天到晚",
@@ -71,6 +113,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "一日不如一日",
+    "status": "approved",
+    "canonicalJa": "日に日に悪くなる",
+    "acceptedJa": ["日に日に悪化する"]
+  },
+  {
     "trad": "一代不如一代",
     "status": "approved",
     "canonicalJa": "世代ごとに悪くなる",
@@ -80,6 +128,18 @@
     "trad": "一半",
     "status": "approved",
     "canonicalJa": "半分",
+    "acceptedJa": []
+  },
+  {
+    "trad": "一去不復返",
+    "status": "approved",
+    "canonicalJa": "二度と戻らない",
+    "acceptedJa": ["永久に失われる"]
+  },
+  {
+    "trad": "一去無影蹤",
+    "status": "approved",
+    "canonicalJa": "跡形もなく消える",
     "acceptedJa": []
   },
   {
@@ -132,6 +192,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "一回生二回熟",
+    "status": "approved",
+    "canonicalJa": "すぐ慣れる",
+    "acceptedJa": []
+  },
+  {
     "trad": "一回生兩回熟",
     "status": "rejected",
     "acceptedJa": []
@@ -165,6 +231,12 @@
     "status": "approved",
     "canonicalJa": "苦労して育てる",
     "acceptedJa": []
+  },
+  {
+    "trad": "一抓一大把",
+    "status": "approved",
+    "canonicalJa": "ありふれている",
+    "acceptedJa": ["簡単に手に入る"]
   },
   {
     "trad": "一見鍾情",
@@ -258,6 +330,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "一個中國政策",
+    "status": "approved",
+    "canonicalJa": "一つの中国政策",
+    "acceptedJa": []
+  },
+  {
+    "trad": "一個接一個",
+    "status": "approved",
+    "canonicalJa": "次から次へと",
+    "acceptedJa": ["一つずつ"]
+  },
+  {
     "trad": "一旁",
     "status": "approved",
     "canonicalJa": "そば",
@@ -268,6 +352,12 @@
     "status": "approved",
     "canonicalJa": "一時",
     "acceptedJa": []
+  },
+  {
+    "trad": "一時半會兒",
+    "status": "approved",
+    "canonicalJa": "しばらく",
+    "acceptedJa": ["少しの間"]
   },
   {
     "trad": "一氣呵成",
@@ -334,6 +424,12 @@
     "acceptedJa": []
   },
   {
+    "trad": "一問三不知",
+    "status": "approved",
+    "canonicalJa": "何も知らない",
+    "acceptedJa": ["完全な無知"]
+  },
+  {
     "trad": "一帶",
     "status": "approved",
     "canonicalJa": "地域",
@@ -346,6 +442,18 @@
     "acceptedJa": []
   },
   {
+    "trad": "一推六二五",
+    "status": "approved",
+    "canonicalJa": "責任を逃れる",
+    "acceptedJa": ["責任転嫁する"]
+  },
+  {
+    "trad": "一掬同情之淚",
+    "status": "approved",
+    "canonicalJa": "同情の涙を流す",
+    "acceptedJa": []
+  },
+  {
     "trad": "一敗塗地",
     "status": "approved",
     "canonicalJa": "完敗する",
@@ -355,6 +463,18 @@
     "trad": "一望無際",
     "status": "approved",
     "canonicalJa": "見渡す限り",
+    "acceptedJa": []
+  },
+  {
+    "trad": "一條路走到黑",
+    "status": "approved",
+    "canonicalJa": "自分の道に固執する",
+    "acceptedJa": []
+  },
+  {
+    "trad": "一條道走到黑",
+    "status": "approved",
+    "canonicalJa": "自分のやり方に固執する",
     "acceptedJa": []
   },
   {

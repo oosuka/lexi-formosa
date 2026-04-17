@@ -104,6 +104,7 @@ npm run generate:data
 npm run check:data
 npm run audit:data
 npm run review:vocab:export -- --level=3 --risk-only --limit=200
+npm run review:vocab:export -- --level=3 --limit=20
 npm run review:vocab:export -- --limit=500
 npm run review:vocab:apply -- /path/to/review-results.json
 ```
@@ -159,10 +160,11 @@ npm run review:vocab:apply -- /path/to/review-results.json
 - `public/wordlists/metadata.json` が欠けていても、件数表示だけを省略してゲーム本体は動作します
 - `npm run generate:data` で語彙を再生成し、`npm run check:data` で基本整合性を確認します
 - `npm run audit:data` で、不自然な日本語カード候補を監査できます
-- 語彙レビューを進める場合は、Level 3 の地名・組織名・説明文寄り候補を先に `npm run review:vocab:export -- --level=3 --risk-only --limit=200` で書き出し、その後に通常の Level 1-2 batch を `npm run review:vocab:export -- --limit=500` で書き出します
+- 語彙レビューを進める場合は、Level 3 の地名・組織名・説明文寄り候補を先に `npm run review:vocab:export -- --level=3 --risk-only --limit=200` で書き出し、その後に通常の Level 1-2 batch を `npm run review:vocab:export -- --limit=500` で書き出します。Level 1-2 の通常 queue が空なら、Level 3 の低リスク候補を `npm run review:vocab:export -- --level=3 --limit=20` で少量ずつ処理します
 - review 結果の反映には `npm run review:vocab:apply -- /path/to/review-results.json` を使います
-- `--limit=500` は上限ではありませんが、品質を落とさず確認する単位として推奨しています
+- `--limit=500` は上限ではありませんが、品質を落とさず確認する単位として推奨しています。Level 3 低リスク候補は正誤確認に時間がかかるため、20 件単位を推奨します
 - 既定の review batch は `Level 1-2` の未レビュー候補と低信頼候補を対象にし、既に `data/editorial-overrides.json` にある語は除外します
+- `data/manual-vocabulary.json` 由来の seed 語彙は curated seed として扱い、通常の review batch には出しません
 - Level 3 は Truth-first Challenge Deck として残し、`--level=3 --risk-only` では固有名詞・説明文ラベル・13文字以上のラベルを優先してレビューします
 - review batch、外部ソーススナップショット、生成済み wordlist は Git 管理対象にしません
 - 生成された辞書データはコードとは別の権利関係を持つため、再配布時は `NOTICE.md` を確認してください

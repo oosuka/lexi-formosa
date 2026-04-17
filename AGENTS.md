@@ -42,6 +42,7 @@
 - 重要語の seed 追加や発音補完は `data/manual-vocabulary.json`、自動候補の採否や日本語ラベル補正は `data/editorial-overrides.json` を優先して行います。
 - `npm run review:vocab:export -- --limit=500` は `Level 1-2` の未レビュー候補と低信頼候補をレビュー用 JSONL に書き出します。
 - `npm run review:vocab:export -- --level=3 --risk-only --limit=200` は `Level 3` の固有名詞・説明文・長すぎる日本語ラベルを優先してレビュー用 JSONL に書き出します。
+- `npm run review:vocab:export -- --level=3 --limit=20` は `Level 3` の低リスク Challenge 候補を少量ずつレビュー用 JSONL に書き出します。
 - `npm run review:vocab:apply -- /path/to/review-results.json` はレビュー結果を `data/editorial-overrides.json` に反映します。
 - 語彙品質改善の継続手順は `docs/superpowers/plans/2026-04-11-truth-first-vocabulary-quality.md` を参照してください。
 - 次回「改善を再開してください」と言われた場合は、古い plan ではなく現行 plan を読み、全レベルの言語品質改善を継続してください。Level 3 は Truth-first Challenge Deck として残してください。
@@ -262,6 +263,7 @@ npm run audit:data
 
 ```bash
 npm run review:vocab:export -- --level=3 --risk-only --limit=200
+npm run review:vocab:export -- --level=3 --limit=20
 npm run review:vocab:export -- --limit=500
 npm run review:vocab:apply -- /path/to/review-results.json
 ```

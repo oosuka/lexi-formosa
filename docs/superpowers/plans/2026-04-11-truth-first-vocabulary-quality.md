@@ -26,18 +26,19 @@
 ## Current State
 
 - 作業ブランチ: `feat/vocabulary-quality-pipeline`
-- 最新作業: `2026-04-17 Level 1-2 normal queue 残 19 件を処理（承認 19 件、却下 0 件）`
-- 公開語彙数: `15131`
-- `data/editorial-overrides.json`: `12549` 件
-- 内訳: `approved 11944`、`rejected 605`
+- 最新作業: `2026-04-17 Level 3 low-risk Challenge batch 20 件を処理（承認 19 件、却下 1 件）`
+- 公開語彙数: `15130`
+- `data/editorial-overrides.json`: `12569` 件
+- 内訳: `approved 11963`、`rejected 606`
 - Level 1: `10744` 件、reviewed `10699`、unreviewed `45`
 - Level 2: `1115` 件、reviewed `1075`、unreviewed `40`
-- Level 3: `3272` 件、reviewed `170`、unreviewed `3102`
-- Level 3 内訳: 5文字 `2327`、6文字 `945`
-- Level 3 MJdic 単独: `3253`
+- Level 1-2 の unreviewed `85` 件はすべて `manual-vocabulary` 由来の seed 語彙。通常 export queue には出さない curated seed として扱う。
+- Level 3: `3271` 件、reviewed `189`、unreviewed `3082`
+- Level 3 内訳: 5文字 `2326`、6文字 `945`
+- Level 3 MJdic 単独: `3252`
 - Level 3 の日本語ラベル 13文字以上: `0`
 - `audit:data` の現状: global guardrail はすべて `0`、Level 3 risk は `level3_proper_noun_risk: 0`、`level3_explanatory_risk: 0`、`level3_too_long_label: 0`
-- 次の推奨 batch: `npm run review:vocab:export -- --limit=500`（現時点の通常 queue は 0 行）
+- 次の推奨 batch: `npm run review:vocab:export -- --level=3 --limit=20`
 
 ## Operating Model
 
@@ -124,7 +125,8 @@ Level 3 は「長い繁体字を楽しむ」ために残す。ただし、嘘は
 2026-04-13 の追加継続改善サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `494` 件、却下 `6` 件。
 2026-04-14 の再開改善サイクルで Level 1-2 normal batch `500` 件を処理済み。承認 `491` 件、却下 `9` 件。
 2026-04-17 の再開改善サイクルで Level 1-2 normal queue 残 `19` 件を処理済み。承認 `19` 件、却下 `0` 件。
-Level 1-2 の通常 export queue は `0` になった。次に進めるのは、Level 1-2 の残 unreviewed 件が通常 queue に出ない理由の確認、または Level 3 low-risk Challenge Review の導線設計。
+Level 1-2 の通常 export queue は `0` になった。残 unreviewed `85` 件はすべて curated seed で、通常 export の対象外。
+2026-04-17 の Level 3 low-risk Challenge batch `20` 件を処理済み。承認 `19` 件、却下 `1` 件。次に進めるのは Level 3 low-risk Challenge Review の継続。
 
 最初の実装サイクルでは、以下を作る。
 
@@ -138,8 +140,9 @@ Level 1-2 の通常 export queue は `0` になった。次に進めるのは、
 1. Global Guardrail が `0` であることを確認
 2. Level 3 high-risk batch が非ゼロなら 200 件単位で処理
 3. Level 3 high-risk batch が `0` なら Level 1-2 通常 batch を 500 件単位で処理
-4. 再生成・検証
-5. この plan の Current State を更新
+4. Level 1-2 通常 batch が `0` なら、Level 3 low-risk batch を 20 件単位で処理
+5. 再生成・検証
+6. この plan の Current State を更新
 
 ## File Structure
 
