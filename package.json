@@ -28,17 +28,17 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.11",
+    "@biomejs/biome": "^2.4.12",
     "@nuxt/test-utils": "^4.0.2",
     "@playwright/test": "^1.59.1",
     "@vitest/coverage-v8": "^4.1.4",
     "@vue/test-utils": "^2.4.6",
-    "happy-dom": "^20.8.9",
+    "happy-dom": "^20.9.0",
     "typescript": "^5.9.3",
     "vitest": "^4.1.4"
   },
   "volta": {
-    "node": "24.13.1",
-    "npm": "11.10.1"
+    "node": "24.15.0",
+    "npm": "11.12.1"
   }
 }
