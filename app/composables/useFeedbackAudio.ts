@@ -1,5 +1,7 @@
 import { ref } from 'vue';
 
+import { isMobilePlaybackEnvironment } from '~/utils/playbackEnvironment';
+
 type ToneStep = {
   frequency: number;
   duration: number;
@@ -8,16 +10,32 @@ type ToneStep = {
 };
 
 type RecordCelebrationTone = 'single' | 'double';
+type AudioSessionLike = {
+  type: string;
+};
+type NavigatorWithAudioSession = Navigator & {
+  audioSession?: AudioSessionLike;
+};
+
+const MOBILE_FEEDBACK_GAIN_SCALE = 5.2;
+const MOBILE_LEVEL_SELECT_GAIN_SCALE = 3.6;
+const MAX_FEEDBACK_TONE_GAIN = 1.25;
+const MAX_TONE_GAIN = 1;
 
 const CORRECT_TONES: ToneStep[] = [
-  { frequency: 660, duration: 0.08, gain: 0.14, type: 'triangle' },
-  { frequency: 880, duration: 0.12, gain: 0.18, type: 'triangle' },
-  { frequency: 1108, duration: 0.18, gain: 0.14, type: 'sine' },
+  { frequency: 660, duration: 0.08, gain: 0.24, type: 'triangle' },
+  { frequency: 880, duration: 0.12, gain: 0.3, type: 'triangle' },
+  { frequency: 1108, duration: 0.18, gain: 0.24, type: 'sine' },
 ];
 
 const INCORRECT_TONES: ToneStep[] = [
-  { frequency: 320, duration: 0.11, gain: 0.16, type: 'sawtooth' },
-  { frequency: 240, duration: 0.16, gain: 0.13, type: 'sawtooth' },
+  { frequency: 320, duration: 0.11, gain: 0.26, type: 'sawtooth' },
+  { frequency: 240, duration: 0.16, gain: 0.22, type: 'sawtooth' },
+];
+
+const LEVEL_SELECT_TONES: ToneStep[] = [
+  { frequency: 523, duration: 0.06, gain: 0.16, type: 'triangle' },
+  { frequency: 659, duration: 0.08, gain: 0.18, type: 'triangle' },
 ];
 
 const GAME_OVER_TONES: ToneStep[] = [
@@ -43,6 +61,31 @@ const RECORD_CELEBRATION_TONES: Record<RecordCelebrationTone, ToneStep[]> = {
 export const useFeedbackAudio = () => {
   const audioEffectsSupported = ref(false);
   let audioContext: AudioContext | null = null;
+  let audioEffectsUnlocked = false;
+
+  const configureAudioSession = () => {
+    if (typeof navigator === 'undefined') {
+      return;
+    }
+
+    const audioSession = (navigator as NavigatorWithAudioSession).audioSession;
+
+    if (!audioSession) {
+      return;
+    }
+
+    try {
+      audioSession.type = 'playback';
+    } catch {
+      // Experimental API: unsupported values or platform policy failures should not break gameplay.
+    }
+  };
+
+  const getMobileGainScale = (mobileScale: number) =>
+    isMobilePlaybackEnvironment() ? mobileScale : 1;
+
+  const getScaledGain = (gain: number, scale: number, maxGain: number) =>
+    Math.min(gain * scale, maxGain);
 
   const setup = () => {
     if (typeof window === 'undefined') {
@@ -54,6 +97,10 @@ export const useFeedbackAudio = () => {
       window.AudioContext ||
         (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
     );
+
+    if (audioEffectsSupported.value) {
+      configureAudioSession();
+    }
   };
 
   const getAudioContext = async () => {
@@ -82,7 +129,35 @@ export const useFeedbackAudio = () => {
     return audioContext;
   };
 
-  const playToneSequence = async (tones: ToneStep[]) => {
+  const unlockAudioEffects = async () => {
+    if (!audioEffectsSupported.value || audioEffectsUnlocked) {
+      return;
+    }
+
+    const context = await getAudioContext();
+
+    if (!context || context.state !== 'running') {
+      return;
+    }
+
+    try {
+      const oscillator = context.createOscillator();
+      const gainNode = context.createGain();
+      const startAt = context.currentTime;
+      const stopAt = startAt + 0.01;
+
+      gainNode.gain.setValueAtTime(0.0001, startAt);
+      oscillator.connect(gainNode);
+      gainNode.connect(context.destination);
+      oscillator.start(startAt);
+      oscillator.stop(stopAt);
+      audioEffectsUnlocked = true;
+    } catch {
+      audioEffectsUnlocked = false;
+    }
+  };
+
+  const playToneSequence = async (tones: ToneStep[], gainScale = 1, maxGain = MAX_TONE_GAIN) => {
     const context = await getAudioContext();
 
     if (!context) {
@@ -101,7 +176,10 @@ export const useFeedbackAudio = () => {
       oscillator.type = tone.type ?? 'sine';
       oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
       gainNode.gain.setValueAtTime(0.0001, toneStart);
-      gainNode.gain.exponentialRampToValueAtTime(tone.gain, toneStart + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(
+        getScaledGain(tone.gain, gainScale, maxGain),
+        toneStart + 0.01
+      );
       gainNode.gain.exponentialRampToValueAtTime(0.0001, toneEnd);
 
       oscillator.connect(gainNode);
@@ -116,7 +194,19 @@ export const useFeedbackAudio = () => {
       return;
     }
 
-    await playToneSequence(correct ? CORRECT_TONES : INCORRECT_TONES);
+    await playToneSequence(
+      correct ? CORRECT_TONES : INCORRECT_TONES,
+      getMobileGainScale(MOBILE_FEEDBACK_GAIN_SCALE),
+      MAX_FEEDBACK_TONE_GAIN
+    );
+  };
+
+  const playLevelSelectSound = async () => {
+    if (!audioEffectsSupported.value) {
+      return;
+    }
+
+    await playToneSequence(LEVEL_SELECT_TONES, getMobileGainScale(MOBILE_LEVEL_SELECT_GAIN_SCALE));
   };
 
   const playGameOverSound = async () => {
@@ -124,7 +214,11 @@ export const useFeedbackAudio = () => {
       return;
     }
 
-    await playToneSequence(GAME_OVER_TONES);
+    await playToneSequence(
+      GAME_OVER_TONES,
+      getMobileGainScale(MOBILE_FEEDBACK_GAIN_SCALE),
+      MAX_FEEDBACK_TONE_GAIN
+    );
   };
 
   const playRecordCelebrationSound = async (tone: RecordCelebrationTone) => {
@@ -140,11 +234,14 @@ export const useFeedbackAudio = () => {
       void audioContext.close();
       audioContext = null;
     }
+    audioEffectsUnlocked = false;
   };
 
   return {
     audioEffectsSupported,
+    unlockAudioEffects,
     playFeedbackSound,
+    playLevelSelectSound,
     playGameOverSound,
     playRecordCelebrationSound,
     setup,

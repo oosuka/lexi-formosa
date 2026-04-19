@@ -7,6 +7,7 @@ class TestSpeechSynthesisUtterance {
   lang = '';
   rate = 1;
   pitch = 1;
+  volume = 1;
   voice: SpeechSynthesisVoice | null = null;
   onstart: ((event: SpeechSynthesisEvent) => void) | null = null;
   onend: ((event: SpeechSynthesisEvent) => void) | null = null;
@@ -18,6 +19,11 @@ class TestSpeechSynthesisUtterance {
 describe('useTrainerAudio', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    Reflect.deleteProperty(window as unknown as Record<string, unknown>, 'matchMedia');
+    Object.defineProperty(window.navigator, 'maxTouchPoints', {
+      configurable: true,
+      value: 0,
+    });
     Object.defineProperty(window, 'SpeechSynthesisUtterance', {
       configurable: true,
       value: TestSpeechSynthesisUtterance,
@@ -92,10 +98,46 @@ describe('useTrainerAudio', () => {
     expect(speechSynthesisMock.speak).toHaveBeenCalledTimes(1);
     const utterance = speechSynthesisMock.speak.mock.calls[0]?.[0] as SpeechSynthesisUtterance;
     expect(utterance.voice?.lang).toBe('zh-TW');
+    expect(utterance.volume).toBe(1);
 
     audio.clearPendingQuestionAudio();
     expect(speechSynthesisMock.cancel).toHaveBeenCalled();
     expect(audio.isSpeaking.value).toBe(false);
+  });
+
+  it('スマホ環境では発音音量を少し下げる', () => {
+    const speechSynthesisMock = {
+      speaking: false,
+      getVoices: vi.fn(
+        () => [{ lang: 'zh-TW', name: 'Taiwanese Mandarin' }] as SpeechSynthesisVoice[]
+      ),
+      cancel: vi.fn(),
+      speak: vi.fn(),
+    };
+
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: speechSynthesisMock,
+    });
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: vi.fn((query: string) => ({
+        matches: query === '(pointer: coarse)',
+      })),
+    });
+
+    const currentQuestionId = ref('q-mobile');
+    const currentQuestionText = ref('你好');
+    const audio = useTrainerAudio({
+      getQuestionId: () => currentQuestionId.value,
+      getQuestionText: () => currentQuestionText.value,
+      shouldReplayPending: () => true,
+    });
+
+    audio.requestCurrentQuestionAudio();
+
+    const utterance = speechSynthesisMock.speak.mock.calls[0]?.[0] as SpeechSynthesisUtterance;
+    expect(utterance.volume).toBe(0.82);
   });
 
   it('音声一覧が遅れて届いたら pending 中の問題を再生し直す', () => {
