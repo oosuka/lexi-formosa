@@ -16,14 +16,19 @@ type NavigatorWithAudioSession = Navigator & {
 };
 
 const CORRECT_TONES: ToneStep[] = [
-  { frequency: 660, duration: 0.08, gain: 0.14, type: 'triangle' },
-  { frequency: 880, duration: 0.12, gain: 0.18, type: 'triangle' },
-  { frequency: 1108, duration: 0.18, gain: 0.14, type: 'sine' },
+  { frequency: 660, duration: 0.08, gain: 0.24, type: 'triangle' },
+  { frequency: 880, duration: 0.12, gain: 0.3, type: 'triangle' },
+  { frequency: 1108, duration: 0.18, gain: 0.24, type: 'sine' },
 ];
 
 const INCORRECT_TONES: ToneStep[] = [
-  { frequency: 320, duration: 0.11, gain: 0.16, type: 'sawtooth' },
-  { frequency: 240, duration: 0.16, gain: 0.13, type: 'sawtooth' },
+  { frequency: 320, duration: 0.11, gain: 0.26, type: 'sawtooth' },
+  { frequency: 240, duration: 0.16, gain: 0.22, type: 'sawtooth' },
+];
+
+const LEVEL_SELECT_TONES: ToneStep[] = [
+  { frequency: 523, duration: 0.06, gain: 0.16, type: 'triangle' },
+  { frequency: 659, duration: 0.08, gain: 0.18, type: 'triangle' },
 ];
 
 const GAME_OVER_TONES: ToneStep[] = [
@@ -176,6 +181,14 @@ export const useFeedbackAudio = () => {
     await playToneSequence(correct ? CORRECT_TONES : INCORRECT_TONES);
   };
 
+  const playLevelSelectSound = async () => {
+    if (!audioEffectsSupported.value) {
+      return;
+    }
+
+    await playToneSequence(LEVEL_SELECT_TONES);
+  };
+
   const playGameOverSound = async () => {
     if (!audioEffectsSupported.value) {
       return;
@@ -204,6 +217,7 @@ export const useFeedbackAudio = () => {
     audioEffectsSupported,
     unlockAudioEffects,
     playFeedbackSound,
+    playLevelSelectSound,
     playGameOverSound,
     playRecordCelebrationSound,
     setup,

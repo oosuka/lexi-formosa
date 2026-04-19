@@ -16,6 +16,7 @@ const unlockAudioEffectsMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playFeedbackSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playGameOverSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playRecordCelebrationSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
+const playLevelSelectSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 
 vi.mock('@vueuse/core', () => ({
   usePreferredReducedMotion: () => preferredReducedMotion,
@@ -28,6 +29,7 @@ vi.mock('~/composables/useFeedbackAudio', () => ({
     playFeedbackSound: playFeedbackSoundMock,
     playGameOverSound: playGameOverSoundMock,
     playRecordCelebrationSound: playRecordCelebrationSoundMock,
+    playLevelSelectSound: playLevelSelectSoundMock,
     setup: vi.fn(),
     cleanup: vi.fn(),
   }),
@@ -149,6 +151,7 @@ describe('index page', () => {
     playFeedbackSoundMock.mockReset();
     playGameOverSoundMock.mockReset();
     playRecordCelebrationSoundMock.mockReset();
+    playLevelSelectSoundMock.mockReset();
     useTraditionalTrainerMock.mockReset();
     useTraditionalTrainerMock.mockReturnValue(createTrainerStub());
     loadVocabularyMetadataMock.mockReset();
@@ -174,6 +177,8 @@ describe('index page', () => {
     expect(wrapper.get('.record-grid').classes()).toContain('record-grid--start-screen');
     expect(wrapper.findAll('.record-grid .record-card')).toHaveLength(3);
     expect(wrapper.findAll('.record-grid .record-stats--start-screen')).toHaveLength(3);
+    expect(wrapper.get('.eyebrow').text()).toBe('Taiwanese Trainer');
+    expect(wrapper.text()).not.toContain('Taiwan Traditional Chinese Trainer');
     expect(wrapper.find('.question-stage').exists()).toBe(false);
   });
 
@@ -192,12 +197,43 @@ describe('index page', () => {
     expect(wrapper.get('.quiz-panel').text()).toContain('Miss');
   });
 
-  it('開始操作で正誤効果音の AudioContext をアンロックする', async () => {
+  it('開始操作では AudioContext のアンロックだけを行い効果音は鳴らさない', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
     await startGame(wrapper);
 
     expect(unlockAudioEffectsMock).toHaveBeenCalledTimes(1);
+    expect(playLevelSelectSoundMock).not.toHaveBeenCalled();
+    expect(playFeedbackSoundMock).not.toHaveBeenCalled();
+    expect(playGameOverSoundMock).not.toHaveBeenCalled();
+    expect(playRecordCelebrationSoundMock).not.toHaveBeenCalled();
+  });
+
+  it('TOP のレベル選択時に選択効果音を鳴らす', async () => {
+    const trainer = createTrainerStub();
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    const levelButton = wrapper
+      .findAll('.level-card')
+      .find((candidate) => candidate.text().includes('Level 2'));
+
+    await levelButton?.trigger('click');
+    await flushPromises();
+
+    expect(trainer.setLevel).toHaveBeenCalledWith(2);
+    expect(playLevelSelectSoundMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('開始パネルにはルールを残す', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    expect(wrapper.findAll('.session-start-list li').map((item) => item.text())).toEqual([
+      '4択から1つ選ぶ',
+      '正解で10点',
+      '3連続正解からボーナス',
+      '3回連続ミスで終了',
+    ]);
   });
 
   it('開始画面では説明見出しなしでレベルごとの記録を表示する', async () => {
@@ -556,7 +592,8 @@ describe('index page', () => {
     await wrongChoice?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('不正解。正解は「こんにちは」。残り2回で終了します。');
+    expect(wrapper.text()).toContain('不正解。正解は「こんにちは」残り2回で終了します。');
+    expect(wrapper.text()).not.toContain('正解は「こんにちは」。');
   });
 
   it('旧形式の最高記録も読み込める', async () => {

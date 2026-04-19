@@ -96,7 +96,7 @@ describe('useFeedbackAudio', () => {
     expect(audioSession.type).toBe('playback');
   });
 
-  it('効果音は読み上げに埋もれにくいよう少し強めの gain を使う', async () => {
+  it('正誤効果音はスマホの読み上げ音に埋もれにくい gain を使う', async () => {
     Object.defineProperty(window, 'AudioContext', {
       configurable: true,
       value: TestAudioContext,
@@ -114,9 +114,27 @@ describe('useFeedbackAudio', () => {
     const gainNodes = TestAudioContext.instances[0]?.gainNodes ?? [];
 
     expect(gainNodes).toHaveLength(3);
-    expect(gainNodes[0]?.gain.exponentialRampToValueAtTime).toHaveBeenCalledWith(0.14, 0.03);
-    expect(gainNodes[1]?.gain.exponentialRampToValueAtTime).toHaveBeenCalledWith(0.18, 0.11);
-    expect(gainNodes[2]?.gain.exponentialRampToValueAtTime).toHaveBeenCalledWith(0.14, 0.23);
+    expect(gainNodes[0]?.gain.exponentialRampToValueAtTime).toHaveBeenCalledWith(0.24, 0.03);
+    expect(gainNodes[1]?.gain.exponentialRampToValueAtTime).toHaveBeenCalledWith(0.3, 0.11);
+    expect(gainNodes[2]?.gain.exponentialRampToValueAtTime).toHaveBeenCalledWith(0.24, 0.23);
+  });
+
+  it('TOP のレベル選択で短い効果音を鳴らす', async () => {
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(globalThis, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    await feedbackAudio.playLevelSelectSound();
+    expect(TestAudioContext.instances).toHaveLength(1);
+    expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(2);
   });
 
   it('ゲームオーバー時は下降する3音で終了感を出す', async () => {

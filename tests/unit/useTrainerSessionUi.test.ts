@@ -109,14 +109,14 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.feedbackTone.value).toBe('incorrect');
     expect(sessionUi.answerMessage.value).toContain(
-      '不正解。正解は「こんにちは」。残り2回で終了します。'
+      '不正解。正解は「こんにちは」残り2回で終了します。'
     );
     expect(sessionUi.feedbackBadge.value).toBe('Miss');
     expect(sessionUi.feedbackView.value).toEqual({
       variant: 'banner',
       tone: 'incorrect',
       badge: 'Miss',
-      message: '不正解。正解は「こんにちは」。残り2回で終了します。',
+      message: '不正解。正解は「こんにちは」残り2回で終了します。',
       uiError: null,
     });
   });

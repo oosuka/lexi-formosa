@@ -84,7 +84,6 @@ const isSpeaking = trainerAudio.isSpeaking;
 const canPlayAudio = computed(
   () => trainerAudio.speechSupported.value && Boolean(currentQuestionTrad.value)
 );
-const currentLevelCard = computed(() => LEVEL_COPY[trainer.game.value.level]);
 const missesInRow = computed(() => trainer.game.value.missesInRow);
 const sessionStartSummaryItems = computed(() => [
   '4択から1つ選ぶ',
@@ -222,6 +221,7 @@ const applyUiError = (error: unknown, fallback: string) => {
 const selectLevel = async (level: Level) => {
   fatalError.value = null;
   clearUiError();
+  void feedbackAudio.playLevelSelectSound();
 
   try {
     await trainer.setLevel(level);
@@ -435,7 +435,7 @@ useSeoMeta({
         class="hero-brand surface-card hero-brand--start-screen"
       >
         <div class="hero-topline">
-          <p class="eyebrow">Taiwan Traditional Chinese Trainer</p>
+          <p class="eyebrow">Taiwanese Trainer</p>
           <span class="app-version">v{{ appVersion }}</span>
         </div>
         <h1>LexiFormosa</h1>
@@ -507,8 +507,6 @@ useSeoMeta({
         </aside>
 
         <SessionStartPanel
-          :level-label="currentLevelCard.label"
-          :level-summary="currentLevelCard.summary"
           :summary-items="sessionStartSummaryItems"
           :can-start-session="canStartSession"
           :load-error="uiError"
