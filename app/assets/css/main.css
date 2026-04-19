@@ -264,11 +264,36 @@ button {
   border: 1px solid var(--border);
   background: var(--card-surface);
   box-shadow: var(--shadow-rest);
+  color: var(--ink);
+  text-align: left;
+}
+
+.record-card--desktop {
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.record-card--desktop:hover:enabled {
+  transform: translateY(-1px);
+  border-color: rgba(15, 118, 110, 0.22);
+}
+
+.record-card--desktop:disabled {
+  cursor: wait;
+  opacity: 0.72;
 }
 
 .record-card--active {
   border-color: rgba(15, 118, 110, 0.24);
   box-shadow: var(--shadow-rest);
+}
+
+.record-card--mobile-summary {
+  display: none;
 }
 
 .record-card-topline,
@@ -294,18 +319,6 @@ button {
 
 .record-stat-label {
   text-transform: none;
-}
-
-.record-current {
-  display: inline-flex;
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: rgba(15, 118, 110, 0.1);
-  color: var(--accent-strong);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 .record-stat {
@@ -1662,7 +1675,8 @@ button {
 .ghost-button:focus-visible,
 .level-card:focus-visible,
 .lookup-link:focus-visible,
-.primary-button:focus-visible {
+.primary-button:focus-visible,
+.record-card:focus-visible {
   outline: none;
   box-shadow:
     0 0 0 3px rgba(255, 255, 255, 0.94),
@@ -1732,7 +1746,7 @@ button {
 @media (max-width: 720px) {
   .page-shell {
     width: min(100vw - 20px, 1120px);
-    padding: 28px 0 36px;
+    padding: 14px 0 30px;
   }
 
   .surface-card,
@@ -1767,6 +1781,126 @@ button {
   .question-stage__readings-bar {
     flex-direction: column;
     align-items: flex-end;
+  }
+
+  .hero-panel--start-screen .eyebrow,
+  .hero-panel--start-screen .panel-kicker,
+  .session-module__header .panel-kicker {
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .hero-panel--start-screen {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .hero-panel--start-screen .hero-brand,
+  .hero-brand--start-screen {
+    gap: 7px;
+    min-height: auto;
+    padding: 12px 16px;
+    border-radius: 24px;
+  }
+
+  .hero-panel--start-screen .hero-brand h1,
+  .hero-brand--start-screen h1 {
+    font-size: clamp(2.8rem, 15vw, 4rem);
+    line-height: 0.9;
+  }
+
+  .hero-panel--start-screen .hero-text {
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .hero-panel--start-screen .hero-meta span {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-panel--start-screen .hero-stats-panel,
+  .hero-stats-panel--start-screen {
+    gap: 7px;
+    min-height: auto;
+    padding: 10px 14px 12px;
+    border-radius: 20px;
+  }
+
+  .hero-panel--start-screen .hero-stats-panel .panel-heading {
+    display: block;
+  }
+
+  .hero-panel--start-screen .record-grid--start-screen {
+    display: none;
+  }
+
+  .hero-panel--start-screen .record-card--mobile-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "score streak";
+    gap: 0 8px;
+    align-items: end;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .hero-panel--start-screen .record-mobile-score,
+  .hero-panel--start-screen .record-mobile-streak {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+    align-content: end;
+    justify-items: center;
+    padding: 7px 8px 8px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(15, 118, 110, 0.1);
+  }
+
+  .hero-panel--start-screen .record-mobile-score {
+    grid-area: score;
+  }
+
+  .hero-panel--start-screen .record-mobile-streak {
+    grid-area: streak;
+  }
+
+  .hero-panel--start-screen .record-card--mobile-summary .record-stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .hero-panel--start-screen .record-mobile-score strong,
+  .hero-panel--start-screen .record-mobile-streak strong {
+    width: 100%;
+    font-size: 2.24rem;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    text-align: center;
+  }
+
+  .session-module {
+    gap: 8px;
+  }
+
+  .session-module.surface-card {
+    padding: 14px 16px 16px;
+    border-radius: 24px;
+  }
+
+  .level-list {
+    gap: 8px;
+    margin-top: 0;
+  }
+
+  .level-card {
+    min-height: 92px;
+    padding: 14px 16px;
   }
 
   .page-shell--play {
@@ -1869,6 +2003,10 @@ button {
     padding: 4px 8px;
     font-size: 0.68rem;
     letter-spacing: 0;
+  }
+
+  .page-shell--play .choice-card--muted {
+    display: none;
   }
 
   .question-stage__footer {

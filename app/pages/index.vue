@@ -156,6 +156,9 @@ const levelCards = computed(() =>
     ),
   }))
 );
+const activeHighScoreCard = computed(
+  () => highScoreCards.value.find((item) => item.active) ?? highScoreCards.value[0] ?? null
+);
 
 const choiceClass = (choice: QuestionChoice) => {
   if (!revealAnswer.value) {
@@ -216,6 +219,14 @@ const applyFatalError = (error: unknown, fallback: string) => {
 const applyUiError = (error: unknown, fallback: string) => {
   uiError.value = getErrorMessage(error, fallback);
   trainerAudio.clearPendingQuestionAudio();
+};
+
+const scrollPageToTop = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
 };
 
 const selectLevel = async (level: Level) => {
@@ -279,6 +290,7 @@ const startSession = () => {
   sessionStartPending.value = false;
   void feedbackAudio.unlockAudioEffects();
   trainerAudio.requestCurrentQuestionAudio();
+  void nextTick(scrollPageToTop);
 };
 
 const moveToNextQuestion = async () => {
@@ -288,6 +300,7 @@ const moveToNextQuestion = async () => {
     trainer.nextQuestion();
     await nextTick();
     trainerAudio.requestCurrentQuestionAudio();
+    scrollPageToTop();
   } catch (error) {
     applyUiError(error, '次の問題への切り替えに失敗しました。');
   }
@@ -352,6 +365,7 @@ const resetSession = async () => {
   try {
     await trainer.resetSession();
     await nextTick();
+    scrollPageToTop();
   } catch (error) {
     sessionStartPending.value = previousSessionStartPending;
     applyUiError(error, '最初からのやり直しに失敗しました。');
@@ -368,6 +382,7 @@ const restartSession = async () => {
     syncSessionRecordBaseline();
     sessionStartPending.value = false;
     trainerAudio.requestCurrentQuestionAudio();
+    scrollPageToTop();
   } catch (error) {
     applyUiError(error, 'ゲームの再開に失敗しました。');
   }
@@ -443,7 +458,6 @@ useSeoMeta({
           台湾で使われる繁体字の意味を、日本語4択でテンポよく見抜いていく単語ゲーム。
         </p>
         <div class="hero-meta">
-          <span>繁体字のみ</span>
           <span>{{ vocabularyMetadata?.total?.toLocaleString() ?? '...' }}語収録</span>
           <span>ローカル動作</span>
         </div>
@@ -454,11 +468,15 @@ useSeoMeta({
           <p class="panel-kicker">RECORDS</p>
         </div>
         <div class="record-grid record-grid--start-screen">
-          <article
+          <button
             v-for="item in highScoreCards"
             :key="item.level"
-            class="record-card"
+            class="record-card record-card--desktop"
             :class="{ 'record-card--active': item.active }"
+            type="button"
+            :aria-pressed="item.active"
+            :disabled="trainer.isLoading.value"
+            @click="selectLevel(item.level)"
           >
             <div class="record-card-topline">
               <span class="record-level">{{ item.label }}</span>
@@ -473,8 +491,18 @@ useSeoMeta({
                 <strong>{{ item.streak }}</strong>
               </div>
             </div>
-          </article>
+          </button>
         </div>
+        <article v-if="activeHighScoreCard" class="record-card record-card--mobile-summary" aria-live="polite">
+          <div class="record-mobile-score">
+            <span class="record-stat-label">Best Score</span>
+            <strong>{{ activeHighScoreCard.score }}</strong>
+          </div>
+          <div class="record-mobile-streak">
+            <span class="record-stat-label">Best Streak</span>
+            <strong>{{ activeHighScoreCard.streak }}</strong>
+          </div>
+        </article>
       </div>
     </section>
 

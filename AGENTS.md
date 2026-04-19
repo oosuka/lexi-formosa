@@ -15,7 +15,7 @@
 
 - フレームワーク: Nuxt 4 / Vue 3
 - ランタイム: Node.js 24 LTS / npm
-- ツール: Volta / Biome 2 / TypeScript / Zod / Vitest / Playwright
+- ツール: Volta / Biome 2 / TypeScript 5 / Zod / Vitest / Playwright
 - 主要画面: `app/pages/index.vue`
 - ゲーム状態: `app/composables/useTraditionalTrainer.ts`
 - UI 派生状態: `app/composables/useTrainerSessionUi.ts`
@@ -31,9 +31,13 @@
 - 正解で基本点を加算し、3連続正解以降はボーナスを加算します。
 - 3回連続で不正解になるとセッションを終了します。
 - 不正解時の結果帯は `正解は「xxx」です。残りn回で終了します。` の形にします。
-- 開始画面にはレベル選択、ゲーム開始ボタン、ルール要約、Level 1-3 ごとの最高 `Score / Streak` を表示し、最高記録は `localStorage` に保存します。
+- 開始画面にはレベル選択、ゲーム開始ボタン、ルール要約、最高 `Score / Streak` を表示し、最高記録は `localStorage` に保存します。
+- PC 版の最高記録カードはクリックでレベル選択と連動させ、レベル選択時と同じ効果音を使います。
+- スマホ版の最高記録は選択中レベルの `Best Score / Best Streak` だけを省スペース表示し、レベル表記や「選択中」のような重複情報は出しません。
 - ゲーム終了後は `もう一度始める` と `トップへ戻る` を表示します。
+- `ゲームを始める`、`次の問題`、`もう一度始める`、`トップへ戻る` の主要遷移後はページ上部へ戻します。
 - Google 翻訳と Weblio の外部確認リンクは、回答後に別タブで開きます。
+- スマホ版では回答後に選択肢のうち選択したものと正解以外を非表示にして縦幅を節約します。PC 版は4択カードを表示したままにします。
 - 単語音声はブラウザの `SpeechSynthesis`、効果音は `Web Audio API` を使います。外部 TTS は前提にしません。
 
 ## UI 方針
@@ -43,6 +47,7 @@
 - `focus-visible`、十分なコントラスト、44px 以上の操作領域、`prefers-reduced-motion` を前提にしてください。
 - 正誤フィードバックは通常状態より強くしてよいですが、通常時の文法を壊さない範囲に留めてください。
 - UI 変更では Apple Human Interface Guidelines と Apple Design の考え方を参照してください。
+- `public/apple-touch-icon*.png` はスマホブラウザが自動取得するため、欠落させないでください。
 
 ## 開発ルール
 
