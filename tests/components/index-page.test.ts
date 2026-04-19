@@ -184,6 +184,37 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('nǐ hǎo');
   });
 
+  it('TOP の補助情報には繁体字のみを表示しない', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+    await flushPromises();
+
+    expect(wrapper.find('.hero-meta').text()).not.toContain('繁体字のみ');
+  });
+
+  it('開始前のルール見出しは表示しない', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+    await flushPromises();
+
+    expect(wrapper.find('.session-start-rules').exists()).toBe(true);
+    expect(wrapper.text()).not.toContain('ルール');
+  });
+
+  it('TOP のレコードカードを押すと同じ効果音でレベルを切り替える', async () => {
+    const trainer = createTrainerStub();
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    const recordButton = wrapper
+      .findAll('button.record-card')
+      .find((candidate) => candidate.text().includes('Level 2'));
+
+    await recordButton?.trigger('click');
+    await flushPromises();
+
+    expect(trainer.setLevel).toHaveBeenCalledWith(2);
+    expect(playLevelSelectSoundMock).toHaveBeenCalledTimes(1);
+  });
+
   it('正解時にそのレベルの最高記録を保存する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 

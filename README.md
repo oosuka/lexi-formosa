@@ -1,6 +1,6 @@
 # LexiFormosa
 
-`LexiFormosa` は、台湾で使われる繁体字の単語を日本語4択で学ぶローカル向け Nuxt 4 ゲームです。公開リポジトリ名と npm package 名は `lexi-formosa`、現在のアプリバージョンは `v1.2.1` です。
+`LexiFormosa` は、台湾で使われる繁体字の単語を日本語4択で学ぶローカル向け Nuxt 4 ゲームです。公開リポジトリ名と npm package 名は `lexi-formosa`、現在のアプリバージョンは `v1.2.2` です。
 
 簡体字は表示せず、1問につき繁体字の単語を1つだけ出題します。ピンイン、カタカナ補助、ブラウザ音声による読み上げを使いながら、Level 1 から Level 3 まで段階的に練習できます。
 
@@ -13,15 +13,18 @@
 - 3回連続で不正解になるとセッション終了
 - Level 1-3 ごとの最高 `Score / Streak` を `localStorage` に保存
 - 開始画面でレベル選択、最高記録、ゲーム開始、ルール要約をまとめて表示
+- PC 版の最高記録カードはクリックでレベル選択と連動し、スマホ版は選択中レベルの最高 `Score / Streak` を省スペース表示
 - 不正解時は `正解は「xxx」です。残りn回で終了します。` の形で正解と残り回数を表示
-- 回答後に次の操作と Google 翻訳 / Weblio の外部確認リンクを表示
+- 回答後に次の操作と Google 翻訳 / Weblio の外部確認リンクを表示。スマホ版では回答後に不要な選択肢を隠して縦幅を節約
+- ゲーム開始、次の問題、再開、トップ復帰の主要遷移ではページ上部へ戻る
+- Apple touch icon を同梱し、スマホブラウザの自動アイコン取得にも対応
 - `metadata.json` の取得に失敗しても、語彙本体があればゲームは継続
 
 ## Stack
 
 - Nuxt 4 / Vue 3
 - Node.js 24 LTS / npm / Volta
-- TypeScript / Zod
+- TypeScript 5 / Zod
 - Biome 2
 - Vitest / Playwright
 
