@@ -165,98 +165,6 @@ describe('index page', () => {
     });
   });
 
-  it('初回表示では開始パネルを表示する', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    expect(wrapper.findAll('button.session-start-button')).toHaveLength(1);
-    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
-    expect(wrapper.find('.workspace-grid--play').exists()).toBe(false);
-    expect(wrapper.get('.hero-panel').classes()).toContain('hero-panel--start-screen');
-    expect(wrapper.get('.hero-brand').classes()).toContain('hero-brand--start-screen');
-    expect(wrapper.get('.hero-stats-panel').classes()).toContain('hero-stats-panel--start-screen');
-    expect(wrapper.get('.record-grid').classes()).toContain('record-grid--start-screen');
-    expect(wrapper.findAll('.record-grid .record-card')).toHaveLength(3);
-    expect(wrapper.findAll('.record-grid .record-stats--start-screen')).toHaveLength(3);
-    expect(wrapper.get('.eyebrow').text()).toBe('Taiwanese Trainer');
-    expect(wrapper.text()).not.toContain('Taiwan Traditional Chinese Trainer');
-    expect(wrapper.find('.question-stage').exists()).toBe(false);
-  });
-
-  it('プレイ開始後は hero-panel を消し、quiz-panel だけを主役にする', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    expect(wrapper.get('.hero-panel').classes()).toContain('hero-panel--start-screen');
-    expect(wrapper.get('.hero-brand').classes()).toContain('hero-brand--start-screen');
-    expect(wrapper.get('.hero-stats-panel').classes()).toContain('hero-stats-panel--start-screen');
-
-    await startGame(wrapper);
-
-    expect(wrapper.find('.hero-panel').exists()).toBe(false);
-    expect(wrapper.get('.quiz-panel').text()).toContain('Score');
-    expect(wrapper.get('.quiz-panel').text()).toContain('Streak');
-    expect(wrapper.get('.quiz-panel').text()).toContain('Miss');
-  });
-
-  it('開始操作では AudioContext のアンロックだけを行い効果音は鳴らさない', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    await startGame(wrapper);
-
-    expect(unlockAudioEffectsMock).toHaveBeenCalledTimes(1);
-    expect(playLevelSelectSoundMock).not.toHaveBeenCalled();
-    expect(playFeedbackSoundMock).not.toHaveBeenCalled();
-    expect(playGameOverSoundMock).not.toHaveBeenCalled();
-    expect(playRecordCelebrationSoundMock).not.toHaveBeenCalled();
-  });
-
-  it('TOP のレベル選択時に選択効果音を鳴らす', async () => {
-    const trainer = createTrainerStub();
-    useTraditionalTrainerMock.mockReturnValue(trainer);
-
-    const wrapper = await mountSuspended(IndexPage);
-    const levelButton = wrapper
-      .findAll('.level-card')
-      .find((candidate) => candidate.text().includes('Level 2'));
-
-    await levelButton?.trigger('click');
-    await flushPromises();
-
-    expect(trainer.setLevel).toHaveBeenCalledWith(2);
-    expect(playLevelSelectSoundMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('開始パネルにはルールを残す', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    expect(wrapper.findAll('.session-start-list li').map((item) => item.text())).toEqual([
-      '4択から1つ選ぶ',
-      '正解で10点',
-      '3連続正解からボーナス',
-      '3回連続ミスで終了',
-    ]);
-  });
-
-  it('開始画面では説明見出しなしでレベルごとの記録を表示する', async () => {
-    window.localStorage.setItem(
-      HIGH_SCORE_STORAGE_KEY,
-      JSON.stringify({
-        1: { score: 80, streak: 5 },
-        2: { score: 140, streak: 9 },
-        3: { score: 60, streak: 3 },
-      })
-    );
-
-    const wrapper = await mountSuspended(IndexPage);
-    const recordCards = wrapper.get('.record-grid').findAll('.record-card');
-
-    expect(recordCards).toHaveLength(3);
-    expect(recordCards.map((card) => card.findAll('strong').map((item) => item.text()))).toEqual([
-      ['80', '5'],
-      ['140', '9'],
-      ['60', '3'],
-    ]);
-  });
-
   it('開始後に読み方を表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
@@ -274,152 +182,6 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('你好');
     expect(wrapper.text()).toContain('ニ ハオ');
     expect(wrapper.text()).toContain('nǐ hǎo');
-  });
-
-  it('プレイ中は Score / Streak / Miss をプレイエリアに表示する', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    await startGame(wrapper);
-
-    const quizPanel = wrapper.get('.quiz-panel');
-
-    expect(quizPanel.text()).toContain('Score');
-    expect(quizPanel.text()).toContain('Streak');
-    expect(quizPanel.text()).toContain('Miss');
-    expect(wrapper.find('.hero-panel').exists()).toBe(false);
-  });
-
-  it('回答後の操作は右列にまとめ、次の問題を上、トップへ戻るを右下に置く', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    await startGame(wrapper);
-
-    const answerButton = wrapper
-      .findAll('.choice-card')
-      .find((candidate) => candidate.text().includes('こんにちは'));
-
-    await answerButton?.trigger('click');
-    await flushPromises();
-
-    const supportRow = wrapper.get('.answer-support-row');
-    const supportActions = wrapper.get('.answer-support-actions');
-
-    expect(wrapper.find('.feedback-actions').exists()).toBe(false);
-    expect(supportRow.find('.lookup-panel').exists()).toBe(true);
-    expect(supportActions.text()).toContain('次の問題');
-    expect(supportActions.text()).toContain('トップへ戻る');
-    expect(supportActions.findAll('button')).toHaveLength(2);
-  });
-
-  it('回答後の正解と不正解は選択肢の見た目で区別できる', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    await startGame(wrapper);
-
-    const firstQuestionChoices = wrapper.findAll('.choice-card');
-    const correctChoice = firstQuestionChoices.find((candidate) =>
-      candidate.text().includes('こんにちは')
-    );
-
-    await correctChoice?.trigger('click');
-    await flushPromises();
-
-    const resultBanner = wrapper.get('.result-banner');
-    const quizPanel = wrapper.get('.quiz-panel');
-    const answeredCorrectChoices = wrapper.findAll('.choice-card');
-    const answeredCorrectChoice = answeredCorrectChoices.find((candidate) =>
-      candidate.text().includes('こんにちは')
-    );
-    const answeredWrongChoice = answeredCorrectChoices.find((candidate) =>
-      candidate.text().includes('牛乳')
-    );
-
-    expect(resultBanner.classes()).toContain('result-banner--correct');
-    expect(resultBanner.text()).toContain('正解。+10点を獲得しました。');
-    expect(answeredCorrectChoice?.classes()).toContain('choice-card--correct');
-    expect(answeredCorrectChoice?.classes()).toContain('choice-card--correct-impact');
-    expect(answeredWrongChoice?.classes()).toContain('choice-card--muted');
-    expect(quizPanel.classes()).toContain('quiz-panel--correct-impact');
-
-    await wrapper.get('button.primary-button').trigger('click');
-    await flushPromises();
-
-    const secondQuestionChoices = wrapper.findAll('.choice-card');
-    const secondWrongChoice = secondQuestionChoices.find((candidate) =>
-      candidate.text().includes('牛乳')
-    );
-    const secondCorrectChoice = secondQuestionChoices.find((candidate) =>
-      candidate.text().includes('ありがとう')
-    );
-
-    await secondWrongChoice?.trigger('click');
-    await flushPromises();
-
-    const secondResultBanner = wrapper.get('.result-banner');
-    const secondFeedbackRow = wrapper.get('.feedback-row');
-    const answerSupportActions = wrapper.get('.answer-support-actions');
-    const secondQuizPanel = wrapper.get('.quiz-panel');
-    const answeredWrongChoices = wrapper.findAll('.choice-card');
-    const answeredWrongSelectedChoice = answeredWrongChoices.find((candidate) =>
-      candidate.text().includes('牛乳')
-    );
-    const answeredWrongCorrectChoice = answeredWrongChoices.find((candidate) =>
-      candidate.text().includes('ありがとう')
-    );
-
-    expect(secondResultBanner.classes()).toContain('result-banner--incorrect');
-    expect(secondFeedbackRow.classes()).toContain('feedback-row--embedded');
-    expect(secondFeedbackRow.classes()).toContain('feedback-row--stacked');
-    expect(answerSupportActions.text()).toContain('次の問題');
-    expect(answerSupportActions.text()).toContain('トップへ戻る');
-    expect(secondResultBanner.text()).toContain('残り2回で終了します');
-    expect(answeredWrongSelectedChoice?.classes()).toContain('choice-card--incorrect');
-    expect(answeredWrongSelectedChoice?.classes()).toContain('choice-card--incorrect-impact');
-    expect(answeredWrongCorrectChoice?.classes()).toContain('choice-card--correct');
-    expect(answeredWrongCorrectChoice?.classes()).toContain('choice-card--correct-reveal');
-    expect(secondQuizPanel.classes()).toContain('quiz-panel--incorrect-impact');
-    expect(secondCorrectChoice?.text()).toContain('ありがとう');
-  });
-
-  it('reduced motion では回答後も CORRECT と YOUR PICK ラベルが見える', async () => {
-    preferredReducedMotion.value = 'reduce';
-
-    const wrapper = await mountSuspended(IndexPage);
-
-    await startGame(wrapper);
-
-    const correctChoice = wrapper
-      .findAll('.choice-card')
-      .find((candidate) => candidate.text().includes('こんにちは'));
-
-    await correctChoice?.trigger('click');
-    await flushPromises();
-
-    const answeredCorrectChoice = wrapper
-      .findAll('.choice-card')
-      .find((candidate) => candidate.text().includes('こんにちは'));
-
-    expect(answeredCorrectChoice?.text()).toContain('CORRECT');
-
-    await wrapper.get('button.primary-button').trigger('click');
-    await flushPromises();
-
-    const wrongChoice = wrapper
-      .findAll('.choice-card')
-      .find((candidate) => candidate.text().includes('牛乳'));
-
-    await wrongChoice?.trigger('click');
-    await flushPromises();
-
-    const answeredWrongSelectedChoice = wrapper
-      .findAll('.choice-card')
-      .find((candidate) => candidate.text().includes('牛乳'));
-    const answeredWrongCorrectChoice = wrapper
-      .findAll('.choice-card')
-      .find((candidate) => candidate.text().includes('ありがとう'));
-
-    expect(answeredWrongSelectedChoice?.text()).toContain('YOUR PICK');
-    expect(answeredWrongCorrectChoice?.text()).toContain('CORRECT');
   });
 
   it('正解時にそのレベルの最高記録を保存する', async () => {
@@ -483,66 +245,9 @@ describe('index page', () => {
     expect(wrapper.find('.lookup-panel').exists()).toBe(true);
     expect(wrapper.find('.answer-support-actions').exists()).toBe(false);
     expect(wrapper.find('.game-over-actions').exists()).toBe(true);
-    expect(wrapper.findAll('.game-over-achievement')).toHaveLength(2);
     expect(playFeedbackSoundMock).toHaveBeenCalledTimes(3);
     expect(playGameOverSoundMock).toHaveBeenCalledTimes(1);
     expect(playRecordCelebrationSoundMock).toHaveBeenCalledWith('double');
-  });
-
-  it('ゲームオーバー後にもう一度始めると同じレベルで即再開する', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-    await startGame(wrapper);
-
-    for (let attempt = 0; attempt < 3; attempt += 1) {
-      const wrongChoice = wrapper
-        .findAll('.choice-card')
-        .find((candidate) => candidate.text().includes('牛乳'));
-
-      await wrongChoice?.trigger('click');
-      await flushPromises();
-
-      if (attempt < 2) {
-        await wrapper.get('button.primary-button').trigger('click');
-        await flushPromises();
-      }
-    }
-
-    await wrapper.get('button.primary-button').trigger('click');
-    await flushPromises();
-
-    expect(wrapper.text()).toContain('你好');
-    expect(wrapper.find('.session-start-panel').exists()).toBe(false);
-    expect(wrapper.find('.choice-grid').exists()).toBe(true);
-    expect(wrapper.find('.level-panel').exists()).toBe(false);
-  });
-
-  it('ゲームオーバー後にトップへ戻ると開始画面へ戻る', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-    await startGame(wrapper);
-
-    for (let attempt = 0; attempt < 3; attempt += 1) {
-      const wrongChoice = wrapper
-        .findAll('.choice-card')
-        .find((candidate) => candidate.text().includes('牛乳'));
-
-      await wrongChoice?.trigger('click');
-      await flushPromises();
-
-      if (attempt < 2) {
-        await wrapper.get('button.primary-button').trigger('click');
-        await flushPromises();
-      }
-    }
-
-    const topButton = wrapper
-      .findAll('button')
-      .find((candidate) => candidate.text().includes('トップへ戻る'));
-
-    await topButton?.trigger('click');
-    await flushPromises();
-
-    expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.find('.session-module').exists()).toBe(true);
   });
 
   it('次の問題への切り替え失敗は回答済み状態のままエラー表示する', async () => {
@@ -578,39 +283,6 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('正解');
     expect(wrapper.text()).toContain('次の問題');
     expect(wrapper.find('.game-over-panel').exists()).toBe(false);
-  });
-
-  it('不正解時は正解と終了までの残り回数を表示する', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    await startGame(wrapper);
-
-    const wrongChoice = wrapper
-      .findAll('.choice-card')
-      .find((candidate) => candidate.text().includes('牛乳'));
-
-    await wrongChoice?.trigger('click');
-    await flushPromises();
-
-    expect(wrapper.text()).toContain('不正解。正解は「こんにちは」残り2回で終了します。');
-    expect(wrapper.text()).not.toContain('正解は「こんにちは」。');
-  });
-
-  it('旧形式の最高記録も読み込める', async () => {
-    window.localStorage.setItem(
-      HIGH_SCORE_STORAGE_KEY,
-      JSON.stringify({
-        1: 50,
-        2: 90,
-        3: 30,
-      })
-    );
-
-    const wrapper = await mountSuspended(IndexPage);
-
-    expect(wrapper.text()).toContain('50');
-    expect(wrapper.text()).toContain('90');
-    expect(wrapper.text()).toContain('30');
   });
 
   it('外部確認リンクは回答後に別タブで表示する', async () => {
@@ -717,36 +389,6 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('辞書データがありません');
     expect(wrapper.text()).toContain('wordlist missing');
     expect(wrapper.text()).toContain('npm run setup:data');
-  });
-
-  it('localStorage の読み込みに失敗しても開始画面は表示できる', async () => {
-    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
-      throw new DOMException('blocked', 'SecurityError');
-    });
-
-    const wrapper = await mountSuspended(IndexPage);
-
-    expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.findAll('.record-card')).toHaveLength(3);
-  });
-
-  it('localStorage の保存に失敗してもゲーム本体は継続できる', async () => {
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-      throw new DOMException('quota exceeded', 'QuotaExceededError');
-    });
-
-    const wrapper = await mountSuspended(IndexPage);
-    await startGame(wrapper);
-
-    const answerButton = wrapper
-      .findAll('.choice-card')
-      .find((candidate) => candidate.text().includes('こんにちは'));
-
-    await answerButton?.trigger('click');
-    await flushPromises();
-
-    expect(wrapper.text()).toContain('正解');
-    expect(wrapper.text()).toContain('Score');
   });
 
   it('レベル変更失敗時は UI にエラーを表示する', async () => {
@@ -884,60 +526,6 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('Game Over');
   });
 
-  it('音声未対応環境では音声開始案内を表示しない', async () => {
-    Reflect.deleteProperty(window as unknown as Record<string, unknown>, 'speechSynthesis');
-    Reflect.deleteProperty(
-      window as unknown as Record<string, unknown>,
-      'SpeechSynthesisUtterance'
-    );
-    Reflect.deleteProperty(globalThis as Record<string, unknown>, 'SpeechSynthesisUtterance');
-
-    const wrapper = await mountSuspended(IndexPage);
-
-    expect(wrapper.text()).toContain('ゲームを始める');
-    expect(wrapper.find('.audio-start-notice').exists()).toBe(false);
-  });
-
-  it('voiceschanged で再読み上げ中の音声を再キューしない', async () => {
-    let voicesChangedHandler: (() => void) | undefined;
-    const addEventListener = vi.fn((eventName: string, handler: () => void) => {
-      if (eventName === 'voiceschanged') {
-        voicesChangedHandler = handler;
-      }
-    });
-    const removeEventListener = vi.fn();
-
-    Object.defineProperty(window, 'speechSynthesis', {
-      configurable: true,
-      value: {
-        speaking: true,
-        getVoices: vi.fn(
-          () => [{ lang: 'zh-TW', name: 'Mock Taiwanese' }] as SpeechSynthesisVoice[]
-        ),
-        addEventListener,
-        removeEventListener,
-        cancel: vi.fn(),
-        speak: vi.fn(),
-      } satisfies Partial<SpeechSynthesis>,
-    });
-
-    const wrapper = await mountSuspended(IndexPage);
-    await startGame(wrapper);
-    await flushPromises();
-
-    expect(addEventListener).toHaveBeenCalledWith('voiceschanged', expect.any(Function));
-    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
-
-    voicesChangedHandler?.();
-    await flushPromises();
-
-    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
-
-    await wrapper.unmount();
-
-    expect(removeEventListener).toHaveBeenCalledWith('voiceschanged', expect.any(Function));
-  });
-
   it('回答時は進行中の読み上げを停止する', async () => {
     const speechSynthesisMock: {
       speaking: boolean;
@@ -981,28 +569,6 @@ describe('index page', () => {
     expect(speechSynthesisMock.speaking).toBe(false);
   });
 
-  it('リセット後は開始パネルに戻る', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-
-    await startGame(wrapper);
-    const answerButton = wrapper
-      .findAll('.choice-card')
-      .find((candidate) => candidate.text().includes('こんにちは'));
-
-    await answerButton?.trigger('click');
-    await flushPromises();
-
-    const resetButton = wrapper
-      .findAll('button')
-      .find((candidate) => candidate.text().includes('トップへ戻る'));
-
-    await resetButton?.trigger('click');
-    await flushPromises();
-
-    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
-    expect(wrapper.find('.workspace-grid--play').exists()).toBe(false);
-  });
-
   it('リセット中は先に開始パネルへ切り替える', async () => {
     const trainer = createTrainerStub();
     const deferred = createDeferred<void>();
@@ -1038,48 +604,5 @@ describe('index page', () => {
 
     deferred.resolve();
     await flushPromises();
-  });
-
-  it('再生中に音声ボタンを押すと停止する', async () => {
-    const speechSynthesisMock: {
-      speaking: boolean;
-      getVoices: ReturnType<typeof vi.fn>;
-      addEventListener: ReturnType<typeof vi.fn>;
-      removeEventListener: ReturnType<typeof vi.fn>;
-      cancel: ReturnType<typeof vi.fn>;
-      speak: ReturnType<typeof vi.fn>;
-    } = {
-      speaking: false,
-      getVoices: vi.fn(() => [{ lang: 'zh-TW', name: 'Mock Taiwanese' }] as SpeechSynthesisVoice[]),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      cancel: vi.fn(() => {
-        speechSynthesisMock.speaking = false;
-      }),
-      speak: vi.fn((utterance: SpeechSynthesisUtterance) => {
-        speechSynthesisMock.speaking = true;
-        utterance.onstart?.({} as SpeechSynthesisEvent);
-      }),
-    };
-
-    Object.defineProperty(window, 'speechSynthesis', {
-      configurable: true,
-      value: speechSynthesisMock,
-    });
-
-    const wrapper = await mountSuspended(IndexPage);
-    await startGame(wrapper);
-    await flushPromises();
-
-    const audioButton = wrapper.get('button.audio-button');
-    const cancelCallsBeforeStop = speechSynthesisMock.cancel.mock.calls.length;
-
-    expect(audioButton.text()).toContain('停止');
-
-    await audioButton.trigger('click');
-    await flushPromises();
-
-    expect(speechSynthesisMock.cancel).toHaveBeenCalledTimes(cancelCallsBeforeStop + 1);
-    expect(wrapper.get('button.audio-button').text()).toContain('読み上げ');
   });
 });

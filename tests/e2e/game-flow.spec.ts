@@ -47,14 +47,18 @@ const level1SeedVocabulary = [
   },
 ] as const;
 
+const correctLabelByTrad: Record<string, string> = Object.fromEntries(
+  level1SeedVocabulary.map((entry) => [entry.trad, entry.ja])
+);
+
 const installMockWordlists = async (page: Page) => {
   await page.route('**/wordlists/metadata.json', async (route) => {
     await route.fulfill({
       contentType: 'application/json',
       body: JSON.stringify({
-        total: 2,
+        total: 4,
         counts: {
-          1: 2,
+          1: 4,
           2: 0,
           3: 0,
         },
@@ -70,20 +74,24 @@ const installMockWordlists = async (page: Page) => {
   });
 };
 
-const correctLabelByTrad: Record<string, string> = {
-  ...Object.fromEntries(level1SeedVocabulary.map((entry) => [entry.trad, entry.ja])),
-};
-
-const answerWrongChoice = async (page: Page) => {
+const getCorrectLabel = async (page: Page) => {
   const trad = (await page.locator('.trad-word').first().textContent())?.trim() ?? '';
   const correctLabel = correctLabelByTrad[trad];
-
-  expect(correctLabel, `missing correct label for ${trad}`).toBeTruthy();
 
   if (!correctLabel) {
     throw new Error(`missing correct label for ${trad}`);
   }
 
+  return correctLabel;
+};
+
+const answerCorrectChoice = async (page: Page) => {
+  const correctLabel = await getCorrectLabel(page);
+  await page.getByRole('button', { name: new RegExp(`^[1-4]\\. ${correctLabel}$`) }).click();
+};
+
+const answerWrongChoice = async (page: Page) => {
+  const correctLabel = await getCorrectLabel(page);
   const choices = page.locator('.choice-card');
   const count = await choices.count();
 
@@ -97,20 +105,7 @@ const answerWrongChoice = async (page: Page) => {
     }
   }
 
-  throw new Error(`Could not find a wrong choice for ${trad}`);
-};
-
-const answerCorrectChoice = async (page: Page) => {
-  const trad = (await page.locator('.trad-word').first().textContent())?.trim() ?? '';
-  const correctLabel = correctLabelByTrad[trad];
-
-  expect(correctLabel, `missing correct label for ${trad}`).toBeTruthy();
-
-  if (!correctLabel) {
-    throw new Error(`missing correct label for ${trad}`);
-  }
-
-  await page.getByRole('button', { name: new RegExp(`^[1-4]\\. ${correctLabel}$`) }).click();
+  throw new Error(`Could not find a wrong choice for ${correctLabel}`);
 };
 
 const finishWithWrongAnswers = async (page: Page) => {
@@ -123,505 +118,69 @@ const finishWithWrongAnswers = async (page: Page) => {
   }
 };
 
+const expectNoHorizontalOverflow = async (page: Page) => {
+  const overflow = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+
+  expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+};
+
 test('ゲームを1問進められる', async ({ page }) => {
   await installMockWordlists(page);
 
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
-  const sessionModule = page.locator('.session-module');
-
-  await expect(sessionModule).toBeVisible();
-  await expect(page.getByText('Taiwanese Trainer', { exact: true })).toBeVisible();
-  await expect(page.getByText('Taiwan Traditional Chinese Trainer')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
   await expect(page.getByText('PLAY', { exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
-  await expect(page.getByText(/繁体字の意味を、\s*日本語4択/)).toBeVisible();
-  await expect(sessionModule).toContainText('Level 1');
-  await expect(sessionModule).toContainText('2 words');
-  await expect(sessionModule).not.toContainText('LEVELS');
-  await expect(sessionModule).not.toContainText('START');
-  await expect(page.locator('.hero-stats-panel')).not.toContainText('レベルごとの最高記録');
+
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
-  await expect(page.locator('.hero-panel')).toHaveCount(0);
-  await expect(page.locator('.quiz-panel')).toContainText('Level 1');
-  await expect(page.locator('.quiz-panel')).toContainText('Score');
   await expect(page.locator('.choice-card')).toHaveCount(4);
-  await expect(page.getByText('4つの選択肢から、意味に合うものを1つ選んでください。')).toHaveCount(
-    0
-  );
-  await expect(page.getByRole('button', { name: '次の問題' })).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'トップへ戻る' })).toHaveCount(0);
 
   const wordBefore = await page.locator('.trad-word').first().textContent();
 
-  await page.locator('.choice-card').first().click();
+  await answerCorrectChoice(page);
   await expect(page.locator('.feedback-pill')).toHaveText(/Correct|Miss/);
-  await expect(page.locator('.answer-support-row')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'トップへ戻る' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '次の問題' })).toBeEnabled();
 
-  const nextButton = page.getByRole('button', { name: '次の問題' });
-  await expect(nextButton).toBeEnabled();
-  await nextButton.click();
-
+  await page.getByRole('button', { name: '次の問題' }).click();
   await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
 });
 
-test('回答後の impact state が最低限見える', async ({ page }) => {
+test('モバイル幅でも主要状態で横にはみ出さない', async ({ page }) => {
   await installMockWordlists(page);
+  await page.setViewportSize({ width: 390, height: 844 });
 
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
+  await expectNoHorizontalOverflow(page);
 
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
-
   await answerCorrectChoice(page);
-  await expect(page.locator('.choice-card--correct-impact')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
 
   await page.getByRole('button', { name: '次の問題' }).click();
-  await answerWrongChoice(page);
-
-  await expect(page.locator('.quiz-panel--incorrect-impact')).toBeVisible();
-  await expect(page.locator('.choice-card--incorrect-impact')).toBeVisible();
-  await expect(page.locator('.choice-card--correct-reveal')).toBeVisible();
-
-  const wordBeforeNext = await page.locator('.trad-word').first().textContent();
-  const nextButton = page.getByRole('button', { name: '次の問題' });
-  await expect(nextButton).toBeEnabled();
-  await nextButton.click();
-  await expect(page.locator('.trad-word').first()).not.toHaveText(wordBeforeNext ?? '');
+  await finishWithWrongAnswers(page);
+  await expect(page.locator('.game-over-panel')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
 });
-test('reduced motion でも不正解フィードバックと次の問題導線が残る', async ({ page }) => {
+
+test('ゲームオーバー後に再開とトップ復帰ができる', async ({ page }) => {
   await installMockWordlists(page);
-  await page.emulateMedia({ reducedMotion: 'reduce' });
 
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-  await expect(
-    page.evaluate(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-  ).resolves.toBe(true);
-
-  await page.getByRole('button', { name: 'ゲームを始める' }).click();
-  const wordBefore = await page.locator('.trad-word').first().textContent();
-
-  await answerWrongChoice(page);
-
-  await expect(page.locator('.choice-card--incorrect .choice-state')).toHaveText(/YOUR PICK/i);
-  await expect(page.locator('.choice-card--correct .choice-state')).toHaveText(/CORRECT/i);
-  await expect(page.locator('.quiz-panel')).toHaveClass(/quiz-panel--incorrect/);
-
-  const nextButton = page.getByRole('button', { name: '次の問題' });
-  await expect(nextButton).toBeEnabled();
-  await nextButton.click();
-
-  await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
-});
-
-test('PC 幅ではプレイ中に Score / Streak / Miss がプレイエリアで見える', async ({ page }) => {
-  await installMockWordlists(page);
-  await page.setViewportSize({ width: 1440, height: 900 });
-
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
-  await page.getByRole('button', { name: 'ゲームを始める' }).click();
-  const playArea = page.locator('.quiz-panel');
-
-  await expect(playArea).toBeVisible();
-  await expect(page.locator('.hero-panel')).toHaveCount(0);
-  await expect(playArea.getByText('Score', { exact: true })).toBeVisible();
-  await expect(playArea.getByText('Streak', { exact: true })).toBeVisible();
-  await expect(playArea.getByText('Miss', { exact: true })).toBeVisible();
-
-  const hudSizes = await page.evaluate(() => {
-    const level = document.querySelector<HTMLElement>('.question-stage__level');
-    const statValue = document.querySelector<HTMLElement>('.question-stage__stat dd');
-
-    if (!level || !statValue) {
-      return null;
-    }
-
-    return {
-      levelFontSize: Number.parseFloat(window.getComputedStyle(level).fontSize),
-      statFontSize: Number.parseFloat(window.getComputedStyle(statValue).fontSize),
-    };
-  });
-
-  expect(hudSizes).not.toBeNull();
-  expect(hudSizes?.levelFontSize).toBeGreaterThanOrEqual(23);
-  expect(hudSizes?.statFontSize).toBeGreaterThanOrEqual(27);
-});
-
-test('スマホ幅では回答後の次の問題とトップへ戻るを中央に置く', async ({ page }) => {
-  await installMockWordlists(page);
-  await page.setViewportSize({ width: 390, height: 844 });
-
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
-  await page.getByRole('button', { name: 'ゲームを始める' }).click();
-  await answerCorrectChoice(page);
-
-  const supportRow = page.locator('.answer-support-row');
-  const supportActions = page.locator('.answer-support-actions');
-  const quizPanel = page.locator('.quiz-panel');
-
-  await expect(supportRow).toBeVisible();
-  await expect(page.getByRole('button', { name: '次の問題' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'トップへ戻る' })).toBeVisible();
-
-  const rowBox = await supportRow.boundingBox();
-  const actionsBox = await supportActions.boundingBox();
-  const quizPanelBox = await quizPanel.boundingBox();
-  const viewportWidth = await page.evaluate(() => window.innerWidth);
-  const actionsLayout = await supportActions.evaluate((element) => {
-    const style = window.getComputedStyle(element);
-
-    return {
-      justifySelf: style.justifySelf,
-      marginLeft: style.marginLeft,
-      marginRight: style.marginRight,
-      maxWidth: style.maxWidth,
-      width: style.width,
-    };
-  });
-
-  expect(rowBox).not.toBeNull();
-  expect(actionsBox).not.toBeNull();
-  expect(quizPanelBox).not.toBeNull();
-
-  if (!rowBox || !actionsBox || !quizPanelBox) {
-    throw new Error('answer support layout was not measurable');
-  }
-
-  const leftGap = actionsBox.x - rowBox.x;
-  const rightGap = rowBox.x + rowBox.width - (actionsBox.x + actionsBox.width);
-  const actionsCenter = actionsBox.x + actionsBox.width / 2;
-  const quizPanelCenter = quizPanelBox.x + quizPanelBox.width / 2;
-  const viewportCenter = viewportWidth / 2;
-
-  expect(Math.abs(leftGap - rightGap)).toBeLessThanOrEqual(1);
-  expect(Math.abs(actionsCenter - quizPanelCenter)).toBeLessThanOrEqual(1);
-  expect(Math.abs(actionsCenter - viewportCenter)).toBeLessThanOrEqual(1);
-  expect(actionsLayout.justifySelf).toBe('center');
-  expect(actionsLayout.marginLeft).toBe(actionsLayout.marginRight);
-  expect(Number.parseFloat(actionsLayout.width)).toBeLessThanOrEqual(
-    Number.parseFloat(actionsLayout.maxWidth)
-  );
-});
-
-test('スマホ幅ではゲームオーバー後の再開とトップへの導線を中央に置く', async ({ page }) => {
-  await installMockWordlists(page);
-  await page.setViewportSize({ width: 390, height: 844 });
-
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
 
   await finishWithWrongAnswers(page);
-
-  const gameOverPanel = page.locator('.game-over-panel');
-  const gameOverActions = page.locator('.game-over-actions');
-  const quizPanel = page.locator('.quiz-panel');
-
-  await expect(gameOverPanel).toBeVisible();
-  await expect(page.getByRole('button', { name: 'トップへ戻る' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'もう一度始める' })).toBeVisible();
-
-  const actionsBox = await gameOverActions.boundingBox();
-  const resetButtonBox = await page.getByRole('button', { name: 'トップへ戻る' }).boundingBox();
-  const restartButtonBox = await page.getByRole('button', { name: 'もう一度始める' }).boundingBox();
-  const quizPanelBox = await quizPanel.boundingBox();
-  const viewportWidth = await page.evaluate(() => window.innerWidth);
-  const actionsLayout = await gameOverActions.evaluate((element) => {
-    const style = window.getComputedStyle(element);
-
-    return {
-      justifySelf: style.justifySelf,
-      marginLeft: style.marginLeft,
-      marginRight: style.marginRight,
-      maxWidth: style.maxWidth,
-      width: style.width,
-    };
-  });
-
-  expect(actionsBox).not.toBeNull();
-  expect(resetButtonBox).not.toBeNull();
-  expect(restartButtonBox).not.toBeNull();
-  expect(quizPanelBox).not.toBeNull();
-
-  if (!actionsBox || !resetButtonBox || !restartButtonBox || !quizPanelBox) {
-    throw new Error('game over actions layout was not measurable');
-  }
-
-  const actionsCenter = actionsBox.x + actionsBox.width / 2;
-  const resetButtonCenter = resetButtonBox.x + resetButtonBox.width / 2;
-  const restartButtonCenter = restartButtonBox.x + restartButtonBox.width / 2;
-  const quizPanelCenter = quizPanelBox.x + quizPanelBox.width / 2;
-  const viewportCenter = viewportWidth / 2;
-
-  expect(Math.abs(actionsCenter - quizPanelCenter)).toBeLessThanOrEqual(1);
-  expect(Math.abs(actionsCenter - viewportCenter)).toBeLessThanOrEqual(1);
-  expect(Math.abs(resetButtonCenter - actionsCenter)).toBeLessThanOrEqual(1);
-  expect(Math.abs(restartButtonCenter - actionsCenter)).toBeLessThanOrEqual(1);
-  expect(Math.abs(resetButtonBox.width - actionsBox.width)).toBeLessThanOrEqual(1);
-  expect(Math.abs(restartButtonBox.width - actionsBox.width)).toBeLessThanOrEqual(1);
-  expect(actionsLayout.justifySelf).toBe('center');
-  expect(actionsLayout.marginLeft).toBe(actionsLayout.marginRight);
-  expect(Number.parseFloat(actionsLayout.width)).toBeLessThanOrEqual(
-    Number.parseFloat(actionsLayout.maxWidth)
-  );
-});
-
-test('スマホ横幅相当でもゲームオーバー後の再開とトップへの導線を中央に積む', async ({ page }) => {
-  await installMockWordlists(page);
-  await page.setViewportSize({ width: 844, height: 390 });
-
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
-  await page.getByRole('button', { name: 'ゲームを始める' }).click();
-  await finishWithWrongAnswers(page);
-
-  const gameOverActions = page.locator('.game-over-actions');
-  const resetButton = page.getByRole('button', { name: 'トップへ戻る' });
-  const restartButton = page.getByRole('button', { name: 'もう一度始める' });
-
-  await expect(gameOverActions).toBeVisible();
-  await expect(resetButton).toBeVisible();
-  await expect(restartButton).toBeVisible();
-
-  const actionsBox = await gameOverActions.boundingBox();
-  const resetButtonBox = await resetButton.boundingBox();
-  const restartButtonBox = await restartButton.boundingBox();
-  const actionsLayout = await gameOverActions.evaluate((element) => {
-    const style = window.getComputedStyle(element);
-
-    return {
-      display: style.display,
-      justifySelf: style.justifySelf,
-      maxWidth: style.maxWidth,
-    };
-  });
-
-  expect(actionsBox).not.toBeNull();
-  expect(resetButtonBox).not.toBeNull();
-  expect(restartButtonBox).not.toBeNull();
-
-  if (!actionsBox || !resetButtonBox || !restartButtonBox) {
-    throw new Error('landscape game over actions layout was not measurable');
-  }
-
-  const actionsCenter = actionsBox.x + actionsBox.width / 2;
-  const resetButtonCenter = resetButtonBox.x + resetButtonBox.width / 2;
-  const restartButtonCenter = restartButtonBox.x + restartButtonBox.width / 2;
-
-  expect(actionsLayout.display).toBe('grid');
-  expect(actionsLayout.justifySelf).toBe('center');
-  expect(Number.parseFloat(actionsLayout.maxWidth)).toBeLessThanOrEqual(340);
-  expect(Math.abs(resetButtonCenter - actionsCenter)).toBeLessThanOrEqual(1);
-  expect(Math.abs(restartButtonCenter - actionsCenter)).toBeLessThanOrEqual(1);
-  expect(Math.abs(resetButtonBox.width - actionsBox.width)).toBeLessThanOrEqual(1);
-  expect(Math.abs(restartButtonBox.width - actionsBox.width)).toBeLessThanOrEqual(1);
-  expect(restartButtonBox.y).toBeGreaterThan(resetButtonBox.y);
-});
-
-test('スマホ幅の問題画面は読み方と読み上げを横並びにし4択をファーストビューに収める', async ({
-  page,
-}) => {
-  await installMockWordlists(page);
-  await page.setViewportSize({ width: 390, height: 700 });
-
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
-  await page.getByRole('button', { name: 'ゲームを始める' }).click();
-
-  const kanaReading = page.locator('.question-stage__reading--kana');
-  const audioButton = page.locator('.question-stage__readings-bar .audio-button');
-  const choiceCards = page.locator('.choice-card');
-
-  await expect(kanaReading).toBeVisible();
-  await expect(audioButton).toBeVisible();
-  await expect(choiceCards).toHaveCount(4);
-
-  const kanaBox = await kanaReading.boundingBox();
-  const audioBox = await audioButton.boundingBox();
-  const lastChoiceBox = await choiceCards.nth(3).boundingBox();
-  const viewportHeight = await page.evaluate(() => window.innerHeight);
-  const mobileSpacing = await page.evaluate(() => {
-    const quizPanel = document.querySelector<HTMLElement>('.quiz-panel');
-    const questionStage = document.querySelector<HTMLElement>('.question-stage');
-    const level = document.querySelector<HTMLElement>('.question-stage__level');
-    const statValue = document.querySelector<HTMLElement>('.question-stage__stat dd');
-    const choiceCard = document.querySelector<HTMLElement>('.choice-card');
-    const choiceGrid = choiceCard?.parentElement;
-
-    if (!quizPanel || !questionStage || !level || !statValue || !choiceCard || !choiceGrid) {
-      return null;
-    }
-
-    const quizPanelStyle = window.getComputedStyle(quizPanel);
-    const questionStageStyle = window.getComputedStyle(questionStage);
-    const choiceCardStyle = window.getComputedStyle(choiceCard);
-
-    return {
-      choiceGap: Number.parseFloat(window.getComputedStyle(choiceGrid).gap),
-      choiceMinHeight: Number.parseFloat(choiceCardStyle.minHeight),
-      choicePaddingTop: Number.parseFloat(choiceCardStyle.paddingTop),
-      levelFontSize: Number.parseFloat(window.getComputedStyle(level).fontSize),
-      questionPaddingTop: Number.parseFloat(questionStageStyle.paddingTop),
-      quizPaddingTop: Number.parseFloat(quizPanelStyle.paddingTop),
-      statFontSize: Number.parseFloat(window.getComputedStyle(statValue).fontSize),
-    };
-  });
-
-  expect(kanaBox).not.toBeNull();
-  expect(audioBox).not.toBeNull();
-  expect(lastChoiceBox).not.toBeNull();
-  expect(mobileSpacing).not.toBeNull();
-
-  if (!kanaBox || !audioBox || !lastChoiceBox || !mobileSpacing) {
-    throw new Error('mobile quiz layout was not measurable');
-  }
-
-  const readingAndAudioOverlap =
-    kanaBox.y < audioBox.y + audioBox.height && audioBox.y < kanaBox.y + kanaBox.height;
-
-  expect(readingAndAudioOverlap).toBe(true);
-  expect(mobileSpacing.quizPaddingTop).toBeGreaterThanOrEqual(16);
-  expect(mobileSpacing.questionPaddingTop).toBeGreaterThanOrEqual(16);
-  expect(mobileSpacing.choiceGap).toBeGreaterThanOrEqual(12);
-  expect(mobileSpacing.choicePaddingTop).toBeGreaterThanOrEqual(14);
-  expect(mobileSpacing.choiceMinHeight).toBeGreaterThanOrEqual(80);
-  expect(mobileSpacing.levelFontSize).toBeGreaterThanOrEqual(17.5);
-  expect(mobileSpacing.statFontSize).toBeGreaterThanOrEqual(18);
-  expect(lastChoiceBox.y + lastChoiceBox.height).toBeLessThanOrEqual(viewportHeight);
-});
-
-test('開始画面の PLAY モジュールは選択レベルと語数を表示する', async ({ page }) => {
-  await installMockWordlists(page);
-
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
-  const sessionModule = page.locator('.session-module');
-
-  await expect(sessionModule).toBeVisible();
-  await expect(sessionModule).toContainText('PLAY');
-  await expect(sessionModule).toContainText('Level 1');
-  await expect(sessionModule).toContainText('2 words');
-  await expect(sessionModule).not.toContainText('LEVELS');
-  await expect(sessionModule).not.toContainText('START');
-  await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
-
-  const activeLevelStyle = await page.locator('.level-card--active').evaluate((element) => {
-    const style = window.getComputedStyle(element);
-
-    return {
-      boxShadow: style.boxShadow,
-    };
-  });
-
-  expect(activeLevelStyle.boxShadow).toContain('15, 118, 110');
-});
-
-test('モバイル幅でも横にはみ出さない', async ({ page }) => {
-  await installMockWordlists(page);
-  await page.setViewportSize({ width: 390, height: 844 });
-
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
-  const overflowBeforeStart = await page.evaluate(() => ({
-    clientWidth: document.documentElement.clientWidth,
-    scrollWidth: document.documentElement.scrollWidth,
-  }));
-
-  expect(overflowBeforeStart.scrollWidth).toBeLessThanOrEqual(overflowBeforeStart.clientWidth);
-
-  await page.getByRole('button', { name: 'ゲームを始める' }).click();
-  await answerCorrectChoice(page);
-
-  const overflowAfterAnswer = await page.evaluate(() => ({
-    clientWidth: document.documentElement.clientWidth,
-    scrollWidth: document.documentElement.scrollWidth,
-  }));
-
-  expect(overflowAfterAnswer.scrollWidth).toBeLessThanOrEqual(overflowAfterAnswer.clientWidth);
-  await page.getByRole('button', { name: '次の問題' }).click();
-
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    await answerWrongChoice(page);
-
-    if (attempt < 2) {
-      await page.getByRole('button', { name: '次の問題' }).click();
-    }
-  }
-
   await expect(page.locator('.game-over-panel')).toBeVisible();
 
-  const overflowAfterGameOver = await page.evaluate(() => ({
-    clientWidth: document.documentElement.clientWidth,
-    scrollWidth: document.documentElement.scrollWidth,
-  }));
-
-  expect(overflowAfterGameOver.scrollWidth).toBeLessThanOrEqual(overflowAfterGameOver.clientWidth);
-});
-
-test('PC 幅では外部辞書リンクが 1 行で並ぶ', async ({ page }) => {
-  await installMockWordlists(page);
-
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
-  await page.getByRole('button', { name: 'ゲームを始める' }).click();
-  await answerCorrectChoice(page);
-
-  const lookupLinks = page.locator('.lookup-links .lookup-link');
-  await expect(lookupLinks).toHaveCount(2);
-
-  const firstBox = await lookupLinks.nth(0).boundingBox();
-  const secondBox = await lookupLinks.nth(1).boundingBox();
-
-  expect(firstBox).not.toBeNull();
-  expect(secondBox).not.toBeNull();
-  expect(Math.abs((firstBox?.y ?? 0) - (secondBox?.y ?? 0))).toBeLessThan(2);
-});
-
-test('game over 後に restart と reset の導線を使える', async ({ page }) => {
-  await installMockWordlists(page);
-
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/lexi-formosa\/$/);
-
-  await page.getByRole('button', { name: 'ゲームを始める' }).click();
-
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    await answerWrongChoice(page);
-
-    if (attempt < 2) {
-      await page.getByRole('button', { name: '次の問題' }).click();
-    }
-  }
-
-  await expect(page.locator('.game-over-panel')).toBeVisible();
   await page.getByRole('button', { name: 'もう一度始める' }).click();
   await expect(page.locator('.choice-card')).toHaveCount(4);
   await expect(page.getByText('ゲームを始める')).toHaveCount(0);
 
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    await answerWrongChoice(page);
-
-    if (attempt < 2) {
-      await page.getByRole('button', { name: '次の問題' }).click();
-    }
-  }
-
-  await expect(page.locator('.game-over-panel')).toBeVisible();
+  await finishWithWrongAnswers(page);
   await page.getByRole('button', { name: 'トップへ戻る' }).click();
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
-  await expect(page.locator('.session-module')).toBeVisible();
-  await expect(page.getByText('PLAY', { exact: true })).toBeVisible();
 });

@@ -233,7 +233,7 @@ export const useTrainerSessionUi = ({
         variant: 'banner',
         tone: 'incorrect',
         badge: 'Miss',
-        message: `不正解。正解は「${correctChoiceLabel.value ?? '不明'}」残り${remainingMisses.value}回で終了します。`,
+        message: `不正解。正解は「${correctChoiceLabel.value ?? '不明'}」です。残り${remainingMisses.value}回で終了します。`,
         uiError: uiError.value,
       };
     }
