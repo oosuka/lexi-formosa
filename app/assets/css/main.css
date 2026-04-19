@@ -799,7 +799,7 @@ button {
 
 .session-start-panel {
   display: grid;
-  gap: 16px;
+  gap: 28px;
   place-items: center;
   align-content: center;
   min-height: 100%;
@@ -825,8 +825,22 @@ button {
   box-shadow: var(--shadow-raised);
 }
 
-.session-start-list {
+.session-start-rules {
+  display: grid;
+  gap: 10px;
   width: min(360px, 100%);
+}
+
+.session-start-rules-label {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.session-start-list {
+  width: 100%;
   margin: 0;
   padding: 16px 0 0;
   border-top: 1px solid var(--line-soft);
@@ -840,7 +854,20 @@ button {
 }
 
 .session-start-list li {
+  position: relative;
+  padding-left: 16px;
   line-height: 1.45;
+}
+
+.session-start-list li::before {
+  content: "";
+  position: absolute;
+  top: 0.66em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.42);
 }
 
 .session-start-error {
@@ -848,6 +875,47 @@ button {
   color: #b42318;
   font-size: 0.92rem;
   line-height: 1.5;
+}
+
+@media (min-width: 961px) {
+  .session-module__grid {
+    grid-template-columns: minmax(320px, 0.92fr) minmax(380px, 1.08fr);
+    gap: 24px;
+  }
+
+  .session-start-panel {
+    gap: 34px;
+    place-items: stretch;
+    align-content: center;
+    padding: 8px 0 0 24px;
+  }
+
+  .session-start-panel__actions,
+  .session-start-rules {
+    width: 100%;
+  }
+
+  .session-start-button {
+    min-height: 88px;
+  }
+
+  .session-start-rules {
+    gap: 12px;
+    max-width: 420px;
+  }
+
+  .session-start-list {
+    padding: 0;
+    border-top: 0;
+    gap: 8px 18px;
+  }
+
+  .session-start-list li {
+    min-height: 0;
+    padding: 0 0 0 18px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
 }
 
 .quiz-panel--lobby .panel-heading h2 {
@@ -1648,6 +1716,11 @@ button {
     text-align: center;
   }
 
+  .answer-support-actions {
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
   .session-start-panel {
     padding: 24px 0 0;
     border-left: 0;
@@ -1847,6 +1920,7 @@ button {
   }
 
   .answer-support-actions {
+    order: -1;
     justify-content: stretch;
     align-items: stretch;
     justify-self: center;

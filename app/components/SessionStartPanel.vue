@@ -26,9 +26,12 @@ const emit = defineEmits<{
       </button>
     </div>
 
-    <ul class="session-start-list" aria-label="ゲームルール">
-      <li v-for="item in props.summaryItems" :key="item">{{ item }}</li>
-    </ul>
+    <div class="session-start-rules">
+      <p class="session-start-rules-label">ルール</p>
+      <ul class="session-start-list" aria-label="ゲームルール">
+        <li v-for="item in props.summaryItems" :key="item">{{ item }}</li>
+      </ul>
+    </div>
 
     <p v-if="props.loadError" class="session-start-error">{{ props.loadError }}</p>
   </section>
