@@ -44,6 +44,11 @@ describe('useFeedbackAudio', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     TestAudioContext.instances = [];
+    Reflect.deleteProperty(window as unknown as Record<string, unknown>, 'matchMedia');
+    Object.defineProperty(window.navigator, 'maxTouchPoints', {
+      configurable: true,
+      value: 0,
+    });
     Reflect.deleteProperty(
       window.navigator as Navigator & { audioSession?: unknown },
       'audioSession'
@@ -77,6 +82,10 @@ describe('useFeedbackAudio', () => {
     await feedbackAudio.playFeedbackSound(true);
     expect(TestAudioContext.instances).toHaveLength(1);
     expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(3);
+    expect(
+      TestAudioContext.instances[0]?.gainNodes[0]?.gain.exponentialRampToValueAtTime.mock
+        .calls[0]?.[0]
+    ).toBe(0.24);
 
     await feedbackAudio.playFeedbackSound(false);
     expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(5);
@@ -112,6 +121,102 @@ describe('useFeedbackAudio', () => {
     await feedbackAudio.playLevelSelectSound();
     expect(TestAudioContext.instances).toHaveLength(1);
     expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(2);
+  });
+
+  it('スマホ環境では正誤とレベル選択の効果音ゲインを上げる', async () => {
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(globalThis, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: vi.fn((query: string) => ({
+        matches: query === '(pointer: coarse)',
+      })),
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    await feedbackAudio.playFeedbackSound(true);
+    await feedbackAudio.playFeedbackSound(false);
+    await feedbackAudio.playLevelSelectSound();
+
+    const context = TestAudioContext.instances[0];
+    const correctFirstGain =
+      context?.gainNodes[0]?.gain.exponentialRampToValueAtTime.mock.calls[0]?.[0];
+    const incorrectFirstGain =
+      context?.gainNodes[3]?.gain.exponentialRampToValueAtTime.mock.calls[0]?.[0];
+    const levelSelectFirstGain =
+      context?.gainNodes[5]?.gain.exponentialRampToValueAtTime.mock.calls[0]?.[0];
+
+    expect(correctFirstGain).toBeCloseTo(1.25);
+    expect(incorrectFirstGain).toBeCloseTo(1.25);
+    expect(levelSelectFirstGain).toBeCloseTo(0.58);
+  });
+
+  it('pointer 判定が外れてもタッチ端末では効果音ゲインを上げる', async () => {
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(globalThis, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: vi.fn((query: string) => ({
+        matches: query === '(hover: none)',
+      })),
+    });
+    Object.defineProperty(window.navigator, 'maxTouchPoints', {
+      configurable: true,
+      value: 5,
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    await feedbackAudio.playFeedbackSound(false);
+
+    const boostedGain =
+      TestAudioContext.instances[0]?.gainNodes[0]?.gain.exponentialRampToValueAtTime.mock
+        .calls[0]?.[0];
+
+    expect(boostedGain).toBeCloseTo(1.25);
+  });
+
+  it('スマホ環境ではゲームオーバー音を正誤音と同じ大きさで鳴らす', async () => {
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(globalThis, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: vi.fn((query: string) => ({
+        matches: query === '(pointer: coarse)',
+      })),
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    await feedbackAudio.playGameOverSound();
+
+    const gameOverFirstGain =
+      TestAudioContext.instances[0]?.gainNodes[0]?.gain.exponentialRampToValueAtTime.mock
+        .calls[0]?.[0];
+
+    expect(gameOverFirstGain).toBeCloseTo(1.25);
   });
 
   it('resume 失敗時も例外を外へ漏らさない', async () => {

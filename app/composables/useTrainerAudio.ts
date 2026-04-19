@@ -1,10 +1,15 @@
 import { type Ref, ref } from 'vue';
 
+import { isMobilePlaybackEnvironment } from '~/utils/playbackEnvironment';
+
 type TrainerAudioOptions = {
   getQuestionId: () => string | null;
   getQuestionText: () => string | null;
   shouldReplayPending: () => boolean;
 };
+
+const DESKTOP_PRONUNCIATION_VOLUME = 1;
+const MOBILE_PRONUNCIATION_VOLUME = 0.82;
 
 const getSpeechSynthesis = () => {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
@@ -35,6 +40,9 @@ const pickPreferredVoice = (voices: SpeechSynthesisVoice[]) =>
   voices.find((voice) => voice.lang.toLowerCase().startsWith('zh-hk')) ??
   voices.find((voice) => voice.lang.toLowerCase().startsWith('zh')) ??
   null;
+
+const getPronunciationVolume = () =>
+  isMobilePlaybackEnvironment() ? MOBILE_PRONUNCIATION_VOLUME : DESKTOP_PRONUNCIATION_VOLUME;
 
 export const useTrainerAudio = (options: TrainerAudioOptions) => {
   const speechSupported = ref(false);
@@ -107,6 +115,7 @@ export const useTrainerAudio = (options: TrainerAudioOptions) => {
     utterance.lang = preferredVoice.value?.lang ?? 'zh-TW';
     utterance.rate = 0.82;
     utterance.pitch = 1;
+    utterance.volume = getPronunciationVolume();
 
     if (preferredVoice.value) {
       utterance.voice = preferredVoice.value;

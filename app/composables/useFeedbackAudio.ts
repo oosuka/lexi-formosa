@@ -1,5 +1,7 @@
 import { ref } from 'vue';
 
+import { isMobilePlaybackEnvironment } from '~/utils/playbackEnvironment';
+
 type ToneStep = {
   frequency: number;
   duration: number;
@@ -14,6 +16,11 @@ type AudioSessionLike = {
 type NavigatorWithAudioSession = Navigator & {
   audioSession?: AudioSessionLike;
 };
+
+const MOBILE_FEEDBACK_GAIN_SCALE = 5.2;
+const MOBILE_LEVEL_SELECT_GAIN_SCALE = 3.6;
+const MAX_FEEDBACK_TONE_GAIN = 1.25;
+const MAX_TONE_GAIN = 1;
 
 const CORRECT_TONES: ToneStep[] = [
   { frequency: 660, duration: 0.08, gain: 0.24, type: 'triangle' },
@@ -73,6 +80,12 @@ export const useFeedbackAudio = () => {
       // Experimental API: unsupported values or platform policy failures should not break gameplay.
     }
   };
+
+  const getMobileGainScale = (mobileScale: number) =>
+    isMobilePlaybackEnvironment() ? mobileScale : 1;
+
+  const getScaledGain = (gain: number, scale: number, maxGain: number) =>
+    Math.min(gain * scale, maxGain);
 
   const setup = () => {
     if (typeof window === 'undefined') {
@@ -144,7 +157,7 @@ export const useFeedbackAudio = () => {
     }
   };
 
-  const playToneSequence = async (tones: ToneStep[]) => {
+  const playToneSequence = async (tones: ToneStep[], gainScale = 1, maxGain = MAX_TONE_GAIN) => {
     const context = await getAudioContext();
 
     if (!context) {
@@ -163,7 +176,10 @@ export const useFeedbackAudio = () => {
       oscillator.type = tone.type ?? 'sine';
       oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
       gainNode.gain.setValueAtTime(0.0001, toneStart);
-      gainNode.gain.exponentialRampToValueAtTime(tone.gain, toneStart + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(
+        getScaledGain(tone.gain, gainScale, maxGain),
+        toneStart + 0.01
+      );
       gainNode.gain.exponentialRampToValueAtTime(0.0001, toneEnd);
 
       oscillator.connect(gainNode);
@@ -178,7 +194,11 @@ export const useFeedbackAudio = () => {
       return;
     }
 
-    await playToneSequence(correct ? CORRECT_TONES : INCORRECT_TONES);
+    await playToneSequence(
+      correct ? CORRECT_TONES : INCORRECT_TONES,
+      getMobileGainScale(MOBILE_FEEDBACK_GAIN_SCALE),
+      MAX_FEEDBACK_TONE_GAIN
+    );
   };
 
   const playLevelSelectSound = async () => {
@@ -186,7 +206,7 @@ export const useFeedbackAudio = () => {
       return;
     }
 
-    await playToneSequence(LEVEL_SELECT_TONES);
+    await playToneSequence(LEVEL_SELECT_TONES, getMobileGainScale(MOBILE_LEVEL_SELECT_GAIN_SCALE));
   };
 
   const playGameOverSound = async () => {
@@ -194,7 +214,11 @@ export const useFeedbackAudio = () => {
       return;
     }
 
-    await playToneSequence(GAME_OVER_TONES);
+    await playToneSequence(
+      GAME_OVER_TONES,
+      getMobileGainScale(MOBILE_FEEDBACK_GAIN_SCALE),
+      MAX_FEEDBACK_TONE_GAIN
+    );
   };
 
   const playRecordCelebrationSound = async (tone: RecordCelebrationTone) => {
