@@ -7,7 +7,7 @@
 ## Features
 
 - 繁体字の単語を日本語4択で回答
-- Level 1 は 1-2文字、Level 2 は 3-4文字、Level 3 は 5-6文字が中心
+- Level 1 は 1文字、Level 2 は 2文字、Level 3 は 3文字以上の実用語を扱う
 - ピンイン、カタカナ補助、`SpeechSynthesis` による単語読み上げ
 - 正解で加点し、3連続正解からボーナスを加算
 - 3回連続で不正解になるとセッション終了
@@ -59,12 +59,15 @@ npm run check:data
 
 ## Data
 
-生成済み辞書データは Public リポジトリに同梱しません。語彙は `TOCFL + TBCL + MJdic + data/manual-vocabulary.json + data/editorial-overrides.json` からローカル生成します。
+生成済み辞書データは Public リポジトリに同梱しません。語彙は `TOCFL + TBCL + data/manual-vocabulary.json` を土台にローカル生成し、`MJdic` は日本語候補と発音補完の補助に使います。
 
 - 実行時は `public/wordlists/vocabulary-level-*.json` を必要なレベルだけ遅延読み込みします
 - `public/wordlists/metadata.json` は件数表示用の補助データです
-- 重要語の追加や発音補完は `data/manual-vocabulary.json` に入れます
-- 自動候補の採否や日本語ラベル補正は `data/editorial-overrides.json` に入れます
+- `data/manual-vocabulary.json` は必ず入れたい高品質語の seed と発音補完に使います
+- `data/manual-vocabulary.json` に持たせるのは `id / trad / ja / category / pronunciation?` だけで、`level / length / sources / taiwanPriority` は生成時に再計算します
+- 自動生成で拾いにくいが教材として入れたい語は `data/manual-vocabulary.json` に追加します
+- それとは別に、ごく少数の基礎語だけ [scripts/lib/vocabulary-candidate-pipeline.mjs](scripts/lib/vocabulary-candidate-pipeline.mjs) の preferred-label map で日本語ラベルを固定しています
+- 生成時は `data/vocabulary-candidates.json` に publishable 判定と却下理由を残します
 - 生成物と外部ソーススナップショットは Git 管理対象にしません
 
 辞書ソースと再生成手順の詳細は [docs/dictionary-sources.md](docs/dictionary-sources.md)、権利上の注意は [NOTICE.md](NOTICE.md) を参照してください。

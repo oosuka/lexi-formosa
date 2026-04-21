@@ -1,15 +1,7 @@
-import { mergeEditorialState } from './vocabulary-editorial-records.mjs';
-
-const toEditorialMap = (editorialRecords) =>
-  editorialRecords instanceof Map
-    ? editorialRecords
-    : new Map(editorialRecords.map((record) => [record.trad, record]));
-
 const toPublishedVocabularyEntry = (candidate) => ({
   id: candidate.id,
   trad: candidate.trad,
   ja: candidate.canonicalJa,
-  acceptedJa: candidate.acceptedJa?.length ? candidate.acceptedJa : undefined,
   senseTag: candidate.senseTag ?? undefined,
   distractorTags: candidate.distractorTags?.length ? candidate.distractorTags : undefined,
   level: candidate.level,
@@ -24,7 +16,7 @@ const toPublishedVocabularyEntry = (candidate) => ({
 
 const toPublishedSeedEntry = (entry) => ({
   ...entry,
-  acceptedJa: entry.acceptedJa?.length ? entry.acceptedJa : undefined,
+  taiwanPriority: true,
   senseTag: entry.senseTag ?? undefined,
   distractorTags: entry.distractorTags?.length ? entry.distractorTags : undefined,
 });
@@ -42,16 +34,10 @@ const dedupePublishedEntries = (entries) => {
   });
 };
 
-export const buildPublishedVocabulary = ({ candidates, editorialRecords, seedEntries }) => {
-  const editorialMap = toEditorialMap(editorialRecords);
-  const approvedCandidates = candidates
-    .map((candidate) =>
-      mergeEditorialState({
-        candidate,
-        override: editorialMap.get(candidate.trad),
-      })
-    )
-    .filter((candidate) => candidate.status === 'approved');
+export const buildPublishedVocabulary = ({ candidates, seedEntries }) => {
+  const approvedCandidates = candidates.filter(
+    (candidate) => candidate.status === 'approved' && candidate.publishable !== false
+  );
 
   return dedupePublishedEntries([
     ...seedEntries.map(toPublishedSeedEntry),

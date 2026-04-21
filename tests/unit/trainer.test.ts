@@ -1,12 +1,29 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildQuestion, getCorrectChoice } from '~/utils/trainer';
+import { buildQuestion, getCorrectChoice, LEVEL_COPY } from '~/utils/trainer';
 
 import { createEntry, level1Vocabulary } from '../fixtures/vocabulary';
 
 describe('trainer utilities', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  it('開始画面のレベル説明は 1文字 / 2文字 / 3文字以上 に合わせる', () => {
+    expect(LEVEL_COPY).toEqual({
+      1: {
+        label: 'Level 1',
+        summary: '1文字。基礎の単語から始める。',
+      },
+      2: {
+        label: 'Level 2',
+        summary: '2文字。日常でよく見る単語。',
+      },
+      3: {
+        label: 'Level 3',
+        summary: '3文字以上。実用的な複合語。',
+      },
+    });
   });
 
   it('4択を生成し、正解を1件だけ含める', () => {

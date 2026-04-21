@@ -2,8 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { parseManualVocabularySeeds } from './lib/manual-vocabulary-seeds.mjs';
 import { buildCandidates } from './lib/vocabulary-candidate-pipeline.mjs';
-import { parseEditorialOverrides } from './lib/vocabulary-editorial-records.mjs';
+import { determineLevel } from './lib/vocabulary-levels.mjs';
 import { buildPublishedVocabulary } from './lib/vocabulary-publish.mjs';
 import { parseJsonOrJsonl, readTbclRows, readTocflRows } from './lib/vocabulary-source-readers.mjs';
 
@@ -12,7 +13,6 @@ const defaultTocflPath = path.join(repoRoot, 'data', 'source-snapshots', 'tocfl_
 const defaultMjdicPath = path.join(repoRoot, 'data', 'source-snapshots', 'mjdic.csv');
 const defaultTbclPath = path.join(repoRoot, 'data', 'source-snapshots', 'tbcl_words.json');
 const manualVocabularyPath = path.join(repoRoot, 'data', 'manual-vocabulary.json');
-const editorialOverridesPath = path.join(repoRoot, 'data', 'editorial-overrides.json');
 const candidatesOutputPath = path.join(repoRoot, 'data', 'vocabulary-candidates.json');
 const outputPath = path.join(repoRoot, 'data', 'vocabulary.json');
 const publicWordlistDir = path.join(repoRoot, 'public', 'wordlists');
@@ -234,15 +234,10 @@ const normalizeMjdicPronunciation = (pronunciation) => {
   return normalized || null;
 };
 
-const buildLevelThreeCategory = (word) => {
-  return `extended:${word[0]}`;
-};
-
 export const generateVocabulary = () => {
-  const manualVocabulary = JSON.parse(fs.readFileSync(manualVocabularyPath, 'utf8'));
-  const editorialOverrides = fs.existsSync(editorialOverridesPath)
-    ? parseEditorialOverrides(JSON.parse(fs.readFileSync(editorialOverridesPath, 'utf8')))
-    : [];
+  const manualVocabulary = parseManualVocabularySeeds(
+    JSON.parse(fs.readFileSync(manualVocabularyPath, 'utf8'))
+  );
 
   ensureFileExists(tocflSourcePath, 'TOCFL source');
   ensureFileExists(mjdicSourcePath, 'MJdic source');
@@ -308,6 +303,7 @@ export const generateVocabulary = () => {
     }
 
     const tocflItem = tocflByTrad.get(entry.trad);
+    const length = [...entry.trad].length;
     const normalizedPronunciation =
       entry.pronunciation ||
       (tocflItem
@@ -318,6 +314,9 @@ export const generateVocabulary = () => {
     seenTrad.add(entry.trad);
     manualEntries.push({
       ...entry,
+      level: determineLevel(length),
+      length,
+      sources: ['seed'],
       tocflLevel: entry.tocflLevel ?? tocflItem?.tocfl_level,
       pronunciation: normalizedPronunciation,
     });
@@ -327,39 +326,30 @@ export const generateVocabulary = () => {
     tocflRows: normalizedTocflRows,
     tbclRows: normalizedTbclRows,
     mjdicEntries: normalizedMjdicEntries,
-    editorialOverrides,
   });
-  const publishedVocabulary = buildPublishedVocabulary({
-    candidates: generatedCandidates
-      .filter(
-        (candidate) =>
-          !seenTrad.has(candidate.trad) &&
-          ((candidate.level <= 2 &&
-            candidate.sources.some((source) => source === 'tocfl' || source === 'tbcl')) ||
-            (candidate.level === 3 && candidate.sources.includes('mjdic')))
-      )
-      .map((candidate) => {
-        const tocflItem = tocflByTrad.get(candidate.trad);
-        const candidateId = tocflItem
-          ? `tocfl-${String(tocflItem.id).padStart(5, '0')}`
-          : candidate.sources.includes('tbcl')
-            ? `tbcl-${candidate.trad}`
-            : `mjdic-${String(mjdicSourceIndexByTrad.get(candidate.trad) ?? 0).padStart(6, '0')}`;
+  const generatedDeckCandidates = generatedCandidates
+    .filter((candidate) => !seenTrad.has(candidate.trad))
+    .map((candidate) => {
+      const tocflItem = tocflByTrad.get(candidate.trad);
+      const candidateId = tocflItem
+        ? `tocfl-${String(tocflItem.id).padStart(5, '0')}`
+        : candidate.sources.includes('tbcl')
+          ? `tbcl-${candidate.trad}`
+          : `mjdic-${String(mjdicSourceIndexByTrad.get(candidate.trad) ?? 0).padStart(6, '0')}`;
 
-        return {
-          ...candidate,
-          id: candidateId,
-          category:
-            candidate.category ??
-            (candidate.level === 3 ? buildLevelThreeCategory(candidate.trad) : 'uncategorized'),
-          taiwanPriority: true,
-          status: candidate.status ?? 'approved',
-          acceptedJa: candidate.acceptedJa ?? [],
-          senseTag: candidate.senseTag ?? null,
-          distractorTags: candidate.distractorTags ?? [],
-        };
-      }),
-    editorialRecords: editorialOverrides,
+      return {
+        ...candidate,
+        id: candidateId,
+        category: candidate.category ?? 'uncategorized',
+        taiwanPriority: true,
+        status: candidate.status ?? 'approved',
+        senseTag: candidate.senseTag ?? null,
+        distractorTags: candidate.distractorTags ?? [],
+      };
+    });
+
+  const publishedVocabulary = buildPublishedVocabulary({
+    candidates: generatedDeckCandidates,
     seedEntries: manualEntries,
   });
 
@@ -401,13 +391,12 @@ export const generateVocabulary = () => {
   const generatedEntries = sortedVocabulary.filter(
     (entry) => !publishedSeedTradSet.has(entry.trad)
   );
-  const tocflImported = generatedEntries.filter((entry) => entry.sources.includes('tocfl')).length;
-  const levelThreeImported = generatedEntries.filter(
-    (entry) => entry.level === 3 && entry.sources.includes('mjdic')
+  const rejectedCandidates = generatedDeckCandidates.filter(
+    (candidate) => candidate.publishable === false
   ).length;
 
   console.log(
-    `Generated ${sortedVocabulary.length} entries (${manualVocabulary.length} manual, ${tocflImported} TOCFL, ${levelThreeImported} MJdic level-3).`
+    `Generated ${sortedVocabulary.length} entries (${manualEntries.length} manual seeds, ${generatedEntries.length} publishable candidates, ${rejectedCandidates} rejected candidates).`
   );
 };
 

@@ -15,15 +15,14 @@ const vocabEntrySchema = z.object({
   tocflLevel: z.number().int().positive().optional(),
   pronunciation: z.string().min(1).optional(),
   notes: z.string().optional(),
-  acceptedJa: z.array(z.string().min(1)).optional(),
   senseTag: z.string().min(1).optional(),
   distractorTags: z.array(z.string().min(1)).optional(),
 });
 
 const levelLengthMap: Record<Level, [number, number]> = {
-  1: [1, 2],
-  2: [3, 4],
-  3: [5, 6],
+  1: [1, 1],
+  2: [2, 2],
+  3: [3, Number.POSITIVE_INFINITY],
 };
 
 const vocabularyCache = new Map<Level, VocabEntry[]>();

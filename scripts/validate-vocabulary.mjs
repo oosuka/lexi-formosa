@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
 
+import { levelLengthMap } from './lib/vocabulary-levels.mjs';
+
 const levelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
 
 const entrySchema = z.object({
@@ -17,12 +19,6 @@ const entrySchema = z.object({
   pronunciation: z.string().min(1).optional(),
   notes: z.string().optional(),
 });
-
-const levelLengthMap = {
-  1: [1, 2],
-  2: [3, 4],
-  3: [5, 6],
-};
 
 const simplifiedOnlyPattern = /汉|观|气|馆|铁|听|习|国|图|车|广|务/;
 const simplifiedChineseLabelPattern =

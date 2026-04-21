@@ -6,7 +6,8 @@
 
 - 生成済み辞書データは再配布リスクを避けるため同梱しません。
 - 利用者は `npm run setup:data` を実行し、外部ソースを各自の環境で取得して語彙データを生成します。
-- `data/manual-vocabulary.json` と `data/editorial-overrides.json` は、このリポジトリ側で管理する手修正データです。
+- `data/manual-vocabulary.json` は、このリポジトリ側で管理する手入力 seed データです。保持するのは `id / trad / ja / category / pronunciation?` のみで、再計算可能な項目は含めません。
+- `MJdic` は日本語候補と発音補完の補助に使いますが、公開デッキの単独採用根拠にはしません。
 
 ## Referenced Sources
 

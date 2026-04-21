@@ -26,8 +26,7 @@
 
 ## ゲーム仕様
 
-- Level 1 は 1-2文字、Level 2 は 3-4文字、Level 3 は 5-6文字を中心にします。
-- Level 1 では 1文字語も対象に含めます。
+- Level 1 は 1文字、Level 2 は 2文字、Level 3 は 3文字以上の実用語を対象にします。
 - 正解で基本点を加算し、3連続正解以降はボーナスを加算します。
 - 3回連続で不正解になるとセッションを終了します。
 - 不正解時の結果帯は `正解は「xxx」です。残りn回で終了します。` の形にします。
@@ -71,9 +70,11 @@
 
 ## 語彙データ
 
-- 語彙生成は `TOCFL + TBCL + MJdic + manual vocabulary + editorial override` を合成する方式です。
-- `data/manual-vocabulary.json` は seed deck と発音補完に使います。
-- `data/editorial-overrides.json` は自動候補の採否と教材用日本語ラベル補正に使います。
+- 語彙生成は `TOCFL + TBCL + manual vocabulary` を土台にし、`MJdic` は日本語候補と発音補完の補助に使います。
+- `data/manual-vocabulary.json` は必ず入れたい高品質語の seed deck と発音補完に使います。
+- `data/manual-vocabulary.json` には `id / trad / ja / category / pronunciation?` だけを持たせ、`level / length / sources / taiwanPriority` は生成時に再計算します。
+- 自動生成で拾いにくいが教材として必ず入れたい語は `data/manual-vocabulary.json` に追加してください。
+- `scripts/lib/vocabulary-candidate-pipeline.mjs` には、ごく少数の基礎語に対する preferred-label map が残っています。`data/manual-vocabulary.json` 以外の静的語彙要素は、現状ここだけです。
 - 日本語訳は、辞書としての完全性より学習ゲームとして自然で分かりやすいことを優先します。ただし誤解を招く訳は避けてください。
 - 生成物の直接手編集は避け、`npm run setup:data` または `npm run generate:data` で再生成してください。
 - 辞書や再配布に関わる変更では [NOTICE.md](NOTICE.md) と [docs/dictionary-sources.md](docs/dictionary-sources.md) を確認してください。

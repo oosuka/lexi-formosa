@@ -1,3 +1,6 @@
+import { classifierOnlyGlosses, pickBestJapaneseLabel } from './vocabulary-ja-quality.mjs';
+import { determineLevel } from './vocabulary-levels.mjs';
+
 const importOverrides = new Map([
   ['爸爸', 'お父さん'],
   ['大家', 'みんな'],
@@ -65,287 +68,38 @@ const importOverrides = new Map([
   ['再見', 'さようなら'],
 ]);
 
-const rejectionPatterns = [
-  /謙譲表現/,
-  /概念/,
-  /御前方/,
-  /人妻/,
-  /長さ/,
-  /質問に対する否定的な答え/,
-  /台湾のpr\./i,
-  /^\(/,
-];
-const allHanGlossPattern = /^[\p{Script=Han}々]+$/u;
-const simplifiedChineseGlossPattern =
-  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样/u;
-const untranslatedChineseGlossPattern = /什麼|甚麼|東南亞|山東|^[\p{Script=Han}々]+と同じ$/u;
-const repeatedGlossPattern = /^(.{1,16}?)(?:[、，,]\1){1,}$/u;
-const explanatoryGlossPattern =
-  /に相当|を表す|の一種|の段階|仏教|旧暦|分類子|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために/;
-const classifierOnlyGlosses = new Set([
-  '部',
-  '個',
-  '件',
-  '台',
-  '輛',
-  '名',
-  '位',
-  '條',
-  '張',
-  '本',
-  '家',
-  '把',
-  '面',
-  '隻',
-  '口',
-  '頭',
-  '瓶',
-  '杯',
-  '雙',
-  '份',
-  '粒',
-  '棵',
-  '艘',
-  '支',
-  '枚',
-  '匹',
-]);
-const determineLevel = (length) => {
-  if (length <= 2) {
-    return 1;
-  }
+const trackedTradPattern = /^[\p{Script=Han}]+$/u;
+const publicSourceNames = new Set(['tocfl', 'tbcl']);
+const advancedTopicPattern =
+  /chemical|chemistry|biology|physics|politics|political|administrative|juridical|academic|prefecture|province|county|district|自治區|県級市|地級市|行政|政治|化學|医学|學術|法律/i;
+const properNounGlossPattern =
+  /city|province|county|district|prefecture|capital|bay|river|mountain|island|自治區|県級市|地級市|地名|行政区/i;
+const idiomGlossPattern = /\bidiom\b|成語|ことわざ|故事/u;
 
-  if (length <= 4) {
-    return 2;
-  }
+const createEmptyCandidate = (trad) => {
+  const length = [...trad].length;
 
-  return 3;
+  return {
+    trad,
+    length,
+    level: determineLevel(length),
+    category: null,
+    sources: [],
+    tocflLevel: undefined,
+    tbclLevel: undefined,
+    rawGlosses: [],
+    pronunciation: undefined,
+    canonicalJa: null,
+    senseTag: null,
+    distractorTags: null,
+    sourceQualityScore: 0,
+    jaQualityScore: Number.NEGATIVE_INFINITY,
+    qualityScore: Number.NEGATIVE_INFINITY,
+    publishable: false,
+    rejectionReasons: [],
+    status: 'approved',
+  };
 };
-
-const collapseRepeatedSegments = (candidate) => {
-  const segments = candidate
-    .split(/[、，,]/)
-    .map((segment) => segment.trim())
-    .filter(Boolean);
-
-  if (segments.length > 1 && new Set(segments).size === 1) {
-    return segments[0];
-  }
-
-  return candidate;
-};
-
-const normalizeGlossCandidate = (candidate) =>
-  collapseRepeatedSegments(candidate)
-    .replace(/\u3000/g, ' ')
-    .replace(/\{[^{}]*\}/g, ' ')
-    .replace(/<[^<>]*>/g, ' ')
-    .replace(/\bI\.D\.\b/gi, 'ID')
-    .replace(/\bD\.C\b/gi, 'DC')
-    .replace(/\.com\b/gi, '')
-    .replace(/\s*[（(][^()（）]{1,24}[)）]\s*/g, ' ')
-    .replace(/\s*[（(][^()（）]{0,24}$/g, ' ')
-    .replace(/^[^()（）]{1,24}[)）]\s*/g, ' ')
-    .replace(/^[()（）]+|[()（）]+$/g, '')
-    .replace(/^[「『"'“”]+|[」』"'“”]+$/g, '')
-    .replace(/^(fig\.?|lit\.?|figurative|literal|図\.?|フィグ\.?|リット?\.?|比喩的に)\s*/i, '')
-    .replace(/^[\s\-–—:：,，;；/／]+|[\s\-–—:：,，;；/／]+$/g, '')
-    .replace(/[。．.!！?？]+$/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-const stripClassifierNotes = (gloss) =>
-  gloss
-    .replace(/\bCL:[^/／;；。]+/gi, '')
-    .replace(/\b(?:classifier|measure words?|count(?:er| word)s?)\s*:[^/／;；。]+/gi, '');
-
-const isRejectedGlossCandidate = (candidate) => {
-  if (!candidate) {
-    return true;
-  }
-
-  if (/^[\p{P}\p{S}\s]+$/u.test(candidate)) {
-    return true;
-  }
-
-  if (/[。{}<>|()（）]|\.\.\.|…|[?？!！]/.test(candidate) || /\(や\)|（や）/.test(candidate)) {
-    return true;
-  }
-
-  if (repeatedGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (candidate.length > 18) {
-    return true;
-  }
-
-  if (explanatoryGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  return false;
-};
-
-const extractCandidates = (...glosses) => {
-  const candidates = [];
-
-  for (const gloss of glosses) {
-    if (!gloss) {
-      continue;
-    }
-
-    const parts = stripClassifierNotes(gloss.replace(/\uFEFF/g, ''))
-      .replace(/\[[^\]]*\]/g, '')
-      .replace(/\{[^{}]*\}/g, '')
-      .split(/[／/]/)
-      .flatMap((part) => part.split(/[;；]/))
-      .flatMap((part) => part.split(/[、，,]/))
-      .flatMap((part) => part.split(/\.{3,}|…+/))
-      .flatMap((part) => part.split('|'))
-      .flatMap((part) => part.split(/\(や\)|（や）/))
-      .map((part) => part.replace(/^\([^)]*\)/, '').trim())
-      .map((part) =>
-        part.replace(/^(also|lit\.?|fig\.?|figurative|literal|variant of|図\.?)\s+/i, '').trim()
-      )
-      .map((part) => normalizeGlossCandidate(part))
-      .filter(Boolean);
-
-    for (const part of parts) {
-      if (/^(surname|variant|classifier|see also|used in|Taiwan pr\.)/i.test(part)) {
-        continue;
-      }
-
-      if (isRejectedGlossCandidate(part)) {
-        continue;
-      }
-
-      candidates.push(part);
-    }
-  }
-
-  return candidates;
-};
-
-const isRejectedJapaneseGlossCandidate = (candidate, source = 'ja') => {
-  if (!candidate) {
-    return true;
-  }
-
-  if (simplifiedChineseGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (untranslatedChineseGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (source !== 'ja' && allHanGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  return false;
-};
-
-const scoreCandidate = (candidate, source = 'ja') => {
-  let score = 0;
-
-  if (isRejectedJapaneseGlossCandidate(candidate, source)) {
-    return Number.NEGATIVE_INFINITY;
-  }
-
-  if (/[ぁ-んァ-ヶ]/.test(candidate)) {
-    score += 6;
-  }
-
-  if (/[一-龯々]/u.test(candidate)) {
-    score += 2;
-  }
-
-  if (/^[A-Za-z0-9 ?!.,'":;()-]+$/.test(candidate)) {
-    score -= 2;
-  }
-
-  if (/CL:|surname|variant|classifier|abbr\.|old variant|Taiwan pr\./i.test(candidate)) {
-    score -= 6;
-  }
-
-  if (explanatoryGlossPattern.test(candidate)) {
-    score -= 5;
-  }
-
-  if (/\||\[|\]|pr\./.test(candidate)) {
-    score -= 4;
-  }
-
-  if (candidate.length <= 12) {
-    score += 2;
-  }
-
-  if (candidate.length > 18) {
-    score -= 6;
-  }
-
-  if (rejectionPatterns.some((pattern) => pattern.test(candidate))) {
-    score -= 8;
-  }
-
-  return score;
-};
-
-const pickBestGloss = (rawGlosses) => {
-  const candidates = [];
-
-  for (const { meansJa, means } of rawGlosses) {
-    candidates.push(
-      ...extractCandidates(meansJa).map((candidate) => ({ candidate, source: 'ja' }))
-    );
-    candidates.push(
-      ...extractCandidates(means).map((candidate) => ({ candidate, source: 'fallback' }))
-    );
-  }
-
-  const candidateMap = new Map();
-
-  for (const entry of candidates) {
-    if (!candidateMap.has(entry.candidate) || entry.source === 'ja') {
-      candidateMap.set(entry.candidate, entry);
-    }
-  }
-
-  const uniqueCandidates = [...candidateMap.values()]
-    .map((entry) => ({
-      candidate: entry.candidate,
-      score: scoreCandidate(entry.candidate, entry.source),
-    }))
-    .filter((entry) => entry.score >= 1)
-    .sort(
-      (left, right) => right.score - left.score || left.candidate.length - right.candidate.length
-    );
-
-  return uniqueCandidates[0]?.candidate ?? null;
-};
-
-const createEmptyCandidate = (trad) => ({
-  trad,
-  length: [...trad].length,
-  level: determineLevel([...trad].length),
-  category: null,
-  sources: [],
-  tocflLevel: undefined,
-  tbclLevel: undefined,
-  rawGlosses: [],
-  pronunciation: undefined,
-  canonicalJa: null,
-});
-
-const toEditorialMap = (editorialOverrides) =>
-  editorialOverrides instanceof Map
-    ? editorialOverrides
-    : new Map(editorialOverrides.map((record) => [record.trad, record]));
-
-const isApprovedLabelOverride = (override) =>
-  override?.status === 'approved' && typeof override.canonicalJa === 'string';
 
 const mergeSourceRow = (candidate, row) => {
   const next = {
@@ -365,45 +119,173 @@ const mergeSourceRow = (candidate, row) => {
   return next;
 };
 
-const shouldRejectCandidate = (candidate) => {
-  if (candidate.status === 'rejected') {
-    return true;
+const getRawGlossText = (candidate) =>
+  candidate.rawGlosses
+    .flatMap((gloss) => [gloss.meansJa ?? '', gloss.means ?? ''])
+    .filter(Boolean)
+    .join(' | ');
+
+const getSourceQualityScore = (candidate) => {
+  let score = 0;
+
+  if (candidate.sources.includes('tocfl')) {
+    score += 5;
   }
 
-  if (!candidate.trad || !/^[\p{Script=Han}]+$/u.test(candidate.trad)) {
-    return true;
+  if (candidate.sources.includes('tbcl')) {
+    score += 4;
   }
 
-  if (candidate.length < 1 || candidate.length > 6) {
-    return true;
+  if (candidate.sources.includes('tocfl') && candidate.sources.includes('tbcl')) {
+    score += 2;
   }
 
-  if (!candidate.canonicalJa) {
-    return true;
+  if (!candidate.sources.some((source) => publicSourceNames.has(source))) {
+    score -= 6;
   }
 
-  if (candidate.length > 1 && classifierOnlyGlosses.has(candidate.canonicalJa)) {
-    return true;
+  if (typeof candidate.tocflLevel === 'number') {
+    if (candidate.tocflLevel <= 2) {
+      score += 2;
+    } else if (candidate.tocflLevel <= 4) {
+      score += 1;
+    } else {
+      score -= 3;
+    }
   }
 
-  return false;
+  if (typeof candidate.tbclLevel === 'number') {
+    if (candidate.tbclLevel <= 2) {
+      score += 2;
+    } else if (candidate.tbclLevel <= 4) {
+      score += 1;
+    } else {
+      score -= 2;
+    }
+  }
+
+  return score;
 };
 
-export const buildCandidates = ({
-  tocflRows = [],
-  tbclRows = [],
-  mjdicEntries = [],
-  editorialOverrides = [],
-}) => {
+const isProperNounLike = (candidate) => {
+  if (candidate.length >= 4 && /(市|省|縣|區|州)$/.test(candidate.trad)) {
+    return true;
+  }
+
+  return properNounGlossPattern.test(getRawGlossText(candidate));
+};
+
+const isIdiomLike = (candidate) => {
+  if (idiomGlossPattern.test(getRawGlossText(candidate))) {
+    return true;
+  }
+
+  return candidate.length >= 4 && /之/.test(candidate.trad);
+};
+
+const isSpecializedLike = (candidate) => advancedTopicPattern.test(getRawGlossText(candidate));
+
+const deriveSenseTag = (candidate) => {
+  const category = candidate.category?.split(':').at(-1)?.trim();
+
+  if (!category) {
+    return null;
+  }
+
+  return `category.${category}`;
+};
+
+const deriveDistractorTags = (candidate) => {
+  const tags = new Set();
+
+  const category = candidate.category?.split(':').at(-1)?.trim();
+
+  if (category) {
+    tags.add(`category.${category}`);
+  }
+
+  tags.add(candidate.level === 3 ? 'length.3plus' : `length.${candidate.level}`);
+  return [...tags];
+};
+
+const hasClassifierOnlyJapaneseGloss = (candidate) =>
+  candidate.rawGlosses.some((gloss) =>
+    String(gloss.meansJa ?? '')
+      .split(/[／/、，,;；]/)
+      .map((part) => part.trim())
+      .some((part) => classifierOnlyGlosses.has(part))
+  );
+
+const evaluateCandidate = (candidate) => {
+  const preferredLabel = importOverrides.get(candidate.trad);
+  const { canonicalJa, jaQualityScore } = pickBestJapaneseLabel({
+    rawGlosses: candidate.rawGlosses,
+    preferredLabel,
+  });
+  const sourceQualityScore = getSourceQualityScore(candidate);
+  const next = {
+    ...candidate,
+    status: candidate.status ?? 'approved',
+    canonicalJa,
+    senseTag: candidate.senseTag ?? deriveSenseTag(candidate),
+    distractorTags: candidate.distractorTags ?? deriveDistractorTags(candidate),
+    sourceQualityScore,
+    jaQualityScore,
+    qualityScore:
+      sourceQualityScore +
+      (Number.isFinite(jaQualityScore) ? jaQualityScore : Number.NEGATIVE_INFINITY),
+    rejectionReasons: [],
+  };
+
+  if (!next.sources.some((source) => publicSourceNames.has(source))) {
+    next.rejectionReasons.push('source:mjdic-only');
+  }
+
+  if (!next.canonicalJa) {
+    next.rejectionReasons.push('ja:missing');
+  } else if (classifierOnlyGlosses.has(next.canonicalJa) || hasClassifierOnlyJapaneseGloss(next)) {
+    next.rejectionReasons.push('ja:classifier-only');
+  } else if (!Number.isFinite(next.jaQualityScore) || next.jaQualityScore < 4) {
+    next.rejectionReasons.push('ja:low-quality');
+  }
+
+  if (next.level === 3 && typeof next.tocflLevel === 'number' && next.tocflLevel > 4) {
+    next.rejectionReasons.push('level:too-advanced');
+  }
+
+  if (isProperNounLike(next)) {
+    next.rejectionReasons.push('word:proper-noun');
+  }
+
+  if (isIdiomLike(next)) {
+    next.rejectionReasons.push('word:idiom-like');
+  }
+
+  if (isSpecializedLike(next)) {
+    next.rejectionReasons.push('word:specialized');
+  }
+
+  next.publishable = next.rejectionReasons.length === 0;
+  return next;
+};
+
+export const buildCandidates = ({ tocflRows = [], tbclRows = [], mjdicEntries = [] }) => {
   const candidatesByTrad = new Map();
-  const editorialMap = toEditorialMap(editorialOverrides);
 
   for (const row of [...tocflRows, ...tbclRows]) {
+    if (!trackedTradPattern.test(row.trad ?? '')) {
+      continue;
+    }
+
     const current = candidatesByTrad.get(row.trad) ?? createEmptyCandidate(row.trad);
     candidatesByTrad.set(row.trad, mergeSourceRow(current, row));
   }
 
   for (const entry of mjdicEntries) {
+    if (!trackedTradPattern.test(entry.trad ?? '')) {
+      continue;
+    }
+
     const current = candidatesByTrad.get(entry.trad) ?? createEmptyCandidate(entry.trad);
     current.rawGlosses.push({
       source: 'mjdic',
@@ -418,22 +300,11 @@ export const buildCandidates = ({
   }
 
   return [...candidatesByTrad.values()]
-    .map((candidate) => {
-      const override = editorialMap.get(candidate.trad);
-      const canonicalJa =
-        (isApprovedLabelOverride(override) ? override.canonicalJa : undefined) ??
-        importOverrides.get(candidate.trad) ??
-        pickBestGloss(candidate.rawGlosses);
-      return {
-        candidate: {
-          ...candidate,
-          status: override?.status ?? candidate.status ?? 'approved',
-          canonicalJa,
-          acceptedJa: override?.acceptedJa ?? candidate.acceptedJa ?? [],
-          senseTag: override?.senseTag ?? candidate.senseTag ?? null,
-        },
-      };
-    })
-    .filter(({ candidate }) => !shouldRejectCandidate(candidate))
-    .map(({ candidate }) => candidate);
+    .map((candidate) => evaluateCandidate(candidate))
+    .sort(
+      (left, right) =>
+        left.level - right.level ||
+        left.length - right.length ||
+        left.trad.localeCompare(right.trad, 'zh-Hant')
+    );
 };

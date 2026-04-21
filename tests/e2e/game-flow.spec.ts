@@ -3,9 +3,56 @@ import { expect, type Page, test } from '@playwright/test';
 const level1SeedVocabulary = [
   {
     id: 'seed-001',
+    trad: '茶',
+    ja: 'お茶',
+    level: 1,
+    length: 1,
+    category: 'food',
+    taiwanPriority: true,
+    sources: ['seed'],
+    pronunciation: 'cha2',
+  },
+  {
+    id: 'seed-002',
+    trad: '書',
+    ja: '本',
+    level: 1,
+    length: 1,
+    category: 'object',
+    taiwanPriority: true,
+    sources: ['seed'],
+    pronunciation: 'shu1',
+  },
+  {
+    id: 'seed-003',
+    trad: '雨',
+    ja: '雨',
+    level: 1,
+    length: 1,
+    category: 'weather',
+    taiwanPriority: true,
+    sources: ['seed'],
+    pronunciation: 'yu3',
+  },
+  {
+    id: 'seed-004',
+    trad: '魚',
+    ja: '魚',
+    level: 1,
+    length: 1,
+    category: 'food',
+    taiwanPriority: true,
+    sources: ['seed'],
+    pronunciation: 'yu2',
+  },
+] as const;
+
+const level2SeedVocabulary = [
+  {
+    id: 'seed-101',
     trad: '你好',
     ja: 'こんにちは',
-    level: 1,
+    level: 2,
     length: 2,
     category: 'greeting',
     taiwanPriority: true,
@@ -13,10 +60,10 @@ const level1SeedVocabulary = [
     pronunciation: 'ni3 hao3',
   },
   {
-    id: 'seed-002',
+    id: 'seed-102',
     trad: '謝謝',
     ja: 'ありがとう',
-    level: 1,
+    level: 2,
     length: 2,
     category: 'greeting',
     taiwanPriority: true,
@@ -24,10 +71,10 @@ const level1SeedVocabulary = [
     pronunciation: 'xie4 xie5',
   },
   {
-    id: 'seed-003',
+    id: 'seed-103',
     trad: '老師',
     ja: '先生',
-    level: 1,
+    level: 2,
     length: 2,
     category: 'people',
     taiwanPriority: true,
@@ -35,62 +82,15 @@ const level1SeedVocabulary = [
     pronunciation: 'lao3 shi1',
   },
   {
-    id: 'seed-004',
+    id: 'seed-104',
     trad: '學生',
     ja: '学生',
-    level: 1,
+    level: 2,
     length: 2,
     category: 'people',
     taiwanPriority: true,
     sources: ['seed'],
     pronunciation: 'xue2 sheng1',
-  },
-] as const;
-
-const level2SeedVocabulary = [
-  {
-    id: 'seed-101',
-    trad: '便利商店',
-    ja: 'コンビニ',
-    level: 2,
-    length: 4,
-    category: 'place',
-    taiwanPriority: true,
-    sources: ['seed'],
-    pronunciation: 'bian4 li4 shang1 dian4',
-  },
-  {
-    id: 'seed-102',
-    trad: '悠遊卡片',
-    ja: 'ICカード',
-    level: 2,
-    length: 4,
-    category: 'object',
-    taiwanPriority: true,
-    sources: ['seed'],
-    pronunciation: 'you1 you2 ka3 pian4',
-  },
-  {
-    id: 'seed-103',
-    trad: '咖啡杯套',
-    ja: 'カップスリーブ',
-    level: 2,
-    length: 4,
-    category: 'object',
-    taiwanPriority: true,
-    sources: ['seed'],
-    pronunciation: 'ka1 fei1 bei1 tao4',
-  },
-  {
-    id: 'seed-104',
-    trad: '週末行程',
-    ja: '週末の予定',
-    level: 2,
-    length: 4,
-    category: 'schedule',
-    taiwanPriority: true,
-    sources: ['seed'],
-    pronunciation: 'zhou1 mo4 xing2 cheng2',
   },
 ] as const;
 
@@ -286,6 +286,9 @@ test('ゲームを1問進められる', async ({ page }) => {
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
   await expect(page.getByText('PLAY', { exact: true })).toBeVisible();
+  await expect(page.getByText('1文字。基礎の単語から始める。')).toBeVisible();
+  await expect(page.getByText('2文字。日常でよく見る単語。')).toBeVisible();
+  await expect(page.getByText('3文字以上。実用的な複合語。')).toBeVisible();
 
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
   await expect(page.locator('.choice-card')).toHaveCount(4);

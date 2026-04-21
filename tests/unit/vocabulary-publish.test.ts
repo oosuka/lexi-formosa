@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 
 describe('vocabulary publish', () => {
-  it('Level 1-2 は approved の候補だけを公開デッキへ出す', async () => {
+  it('publishable かつ approved の候補だけを公開デッキへ出し、unused な acceptedJa は公開しない', async () => {
     const { buildPublishedVocabulary } = await import('../../scripts/lib/vocabulary-publish.mjs');
 
     const published = buildPublishedVocabulary({
@@ -15,6 +15,8 @@ describe('vocabulary publish', () => {
           category: 'people',
           status: 'approved',
           canonicalJa: 'お父さん',
+          acceptedJa: ['父親'],
+          publishable: true,
           sources: ['tocfl', 'mjdic'],
           taiwanPriority: true,
         },
@@ -26,18 +28,31 @@ describe('vocabulary publish', () => {
           category: 'number',
           status: 'pending',
           canonicalJa: '三',
+          publishable: true,
+          sources: ['tocfl', 'mjdic'],
+          taiwanPriority: true,
+        },
+        {
+          id: 'cand-3',
+          trad: '便利商店',
+          level: 3,
+          length: 4,
+          category: 'place',
+          status: 'approved',
+          canonicalJa: 'コンビニ',
+          publishable: false,
           sources: ['tocfl', 'mjdic'],
           taiwanPriority: true,
         },
       ],
-      editorialRecords: [],
       seedEntries: [],
     });
 
     expect(published.map((entry) => entry.trad)).toEqual(['爸爸']);
+    expect(published[0]).not.toHaveProperty('acceptedJa');
   });
 
-  it('Level 3 でも rejected override の候補は公開デッキへ出さない', async () => {
+  it('publishable な候補は override なしでも公開デッキへ残る', async () => {
     const { buildPublishedVocabulary } = await import('../../scripts/lib/vocabulary-publish.mjs');
 
     const published = buildPublishedVocabulary({
@@ -50,14 +65,40 @@ describe('vocabulary publish', () => {
           category: 'extended:八',
           status: 'approved',
           canonicalJa: '建軍節を参照',
+          publishable: true,
           sources: ['mjdic'],
           taiwanPriority: true,
         },
       ],
-      editorialRecords: [{ trad: '八一建軍節', status: 'rejected' }],
       seedEntries: [],
     });
 
-    expect(published).toEqual([]);
+    expect(published).toHaveLength(1);
+  });
+
+  it('manual seed は公開時に taiwanPriority を補完する', async () => {
+    const { buildPublishedVocabulary } = await import('../../scripts/lib/vocabulary-publish.mjs');
+
+    const published = buildPublishedVocabulary({
+      candidates: [],
+      seedEntries: [
+        {
+          id: 'seed-1',
+          trad: '你好',
+          ja: 'こんにちは',
+          level: 2,
+          length: 2,
+          category: 'greeting',
+          sources: ['seed'],
+        },
+      ],
+    });
+
+    expect(published).toEqual([
+      expect.objectContaining({
+        trad: '你好',
+        taiwanPriority: true,
+      }),
+    ]);
   });
 });
