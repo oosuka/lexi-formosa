@@ -62,4 +62,10 @@ describe('manual vocabulary', () => {
 
     expect(collisions).toEqual([]);
   });
+
+  it('Level 3 の手動 seed を約300語到達に必要な件数まで持つ', () => {
+    const levelThreeEntries = manualVocabulary.filter((entry) => determineLevel(entry.trad) === 3);
+
+    expect(levelThreeEntries.length).toBeGreaterThanOrEqual(196);
+  });
 });
