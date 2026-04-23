@@ -54,7 +54,7 @@ const formatVocabularyWordsLabel = (
 const sessionStartPending = ref(true);
 const fatalError = ref<string | null>(null);
 const uiError = ref<string | null>(null);
-const lowLifePulseSequence = ref(0);
+const lowLifeShakeSequence = ref(0);
 const { highScores, loadHighScores, updateLevelRecord } = useHighScores();
 const vocabularyMetadata = ref<VocabularyMetadata | null>(null);
 const metadataStatus = ref<MetadataStatus>('loading');
@@ -306,14 +306,14 @@ const startSession = () => {
 
 const moveToNextQuestion = async () => {
   clearUiError();
-  const shouldTriggerLowLifePulse = remainingMisses.value === 1;
+  const shouldTriggerLowLifeShake = remainingMisses.value === 1;
 
   try {
+    if (shouldTriggerLowLifeShake) {
+      lowLifeShakeSequence.value += 1;
+    }
     trainer.nextQuestion();
     await nextTick();
-    if (shouldTriggerLowLifePulse) {
-      lowLifePulseSequence.value += 1;
-    }
     trainerAudio.requestCurrentQuestionAudio();
     scrollPageToTop();
   } catch (error) {
@@ -602,7 +602,7 @@ useSeoMeta({
             :can-play-audio="canPlayAudio"
             :is-speaking="isSpeaking"
             :reduced-motion="reducedMotion"
-            :low-life-pulse-sequence="lowLifePulseSequence"
+            :low-life-shake-sequence="lowLifeShakeSequence"
             @toggle-audio="togglePronunciationAudio()"
           />
         </template>

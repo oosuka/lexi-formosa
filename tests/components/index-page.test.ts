@@ -461,7 +461,7 @@ describe('index page', () => {
     expect(remainingStat.classes()).not.toContain('question-stage__stat--alert');
   });
 
-  it('Life が 1 の状態で次の問題に切り替わった直後だけ単語カードを弱く pulse する', async () => {
+  it('Life が 1 の状態では次の問題を押した瞬間に単語カードを細かく shake する', async () => {
     vi.useFakeTimers();
 
     const wrapper = await mountSuspended(IndexPage);
@@ -479,25 +479,27 @@ describe('index page', () => {
     await wrongChoice()?.trigger('click');
     await flushPromises();
 
-    const questionStage = wrapper.get('.question-stage');
-
-    expect(questionStage.classes()).not.toContain('question-stage--low-life-pulse');
+    expect(wrapper.get('.question-stage').classes()).not.toContain(
+      'question-stage--low-life-shake'
+    );
 
     await wrapper.get('button.primary-button').trigger('click');
+
+    expect(wrapper.get('.question-stage').classes()).toContain('question-stage--low-life-shake');
+
     await flushPromises();
 
     expect(wrapper.text()).toContain('謝謝');
-    expect(wrapper.get('.question-stage').classes()).toContain('question-stage--low-life-pulse');
 
-    await vi.advanceTimersByTimeAsync(1400);
+    await vi.advanceTimersByTimeAsync(460);
     await flushPromises();
 
     expect(wrapper.get('.question-stage').classes()).not.toContain(
-      'question-stage--low-life-pulse'
+      'question-stage--low-life-shake'
     );
   });
 
-  it('reduced motion では Life が 1 の状態で次の問題に切り替わっても pulse しない', async () => {
+  it('reduced motion では Life が 1 の状態で次の問題を押しても shake しない', async () => {
     preferredReducedMotion.value = 'reduce';
 
     const wrapper = await mountSuspended(IndexPage);
@@ -516,16 +518,17 @@ describe('index page', () => {
     await flushPromises();
 
     expect(wrapper.get('.question-stage').classes()).not.toContain(
-      'question-stage--low-life-pulse'
+      'question-stage--low-life-shake'
     );
 
     await wrapper.get('button.primary-button').trigger('click');
+    expect(wrapper.get('.question-stage').classes()).not.toContain(
+      'question-stage--low-life-shake'
+    );
+
     await flushPromises();
 
     expect(wrapper.text()).toContain('謝謝');
-    expect(wrapper.get('.question-stage').classes()).not.toContain(
-      'question-stage--low-life-pulse'
-    );
   });
 
   it('数字キーで回答し Enter で次の問題へ進める', async () => {

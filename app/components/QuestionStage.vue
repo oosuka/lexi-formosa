@@ -12,7 +12,7 @@ const props = defineProps<{
   canPlayAudio: boolean;
   isSpeaking: boolean;
   reducedMotion: boolean;
-  lowLifePulseSequence: number;
+  lowLifeShakeSequence: number;
 }>();
 
 const emit = defineEmits<{
@@ -20,45 +20,45 @@ const emit = defineEmits<{
 }>();
 
 const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声を再生');
-const lowLifePulseActive = ref(false);
-let lowLifePulseTimeout: ReturnType<typeof setTimeout> | null = null;
-const LOW_LIFE_PULSE_DURATION_MS = 1320;
+const lowLifeShakeActive = ref(false);
+let lowLifeShakeTimeout: ReturnType<typeof setTimeout> | null = null;
+const LOW_LIFE_SHAKE_DURATION_MS = 420;
 
-const clearLowLifePulse = () => {
-  if (lowLifePulseTimeout) {
-    clearTimeout(lowLifePulseTimeout);
-    lowLifePulseTimeout = null;
+const clearLowLifeShake = () => {
+  if (lowLifeShakeTimeout) {
+    clearTimeout(lowLifeShakeTimeout);
+    lowLifeShakeTimeout = null;
   }
 
-  lowLifePulseActive.value = false;
+  lowLifeShakeActive.value = false;
 };
 
-const triggerLowLifePulse = () => {
+const triggerLowLifeShake = () => {
   if (props.reducedMotion) {
-    clearLowLifePulse();
+    clearLowLifeShake();
     return;
   }
 
-  clearLowLifePulse();
-  lowLifePulseActive.value = true;
-  lowLifePulseTimeout = setTimeout(() => {
-    lowLifePulseActive.value = false;
-    lowLifePulseTimeout = null;
-  }, LOW_LIFE_PULSE_DURATION_MS);
+  clearLowLifeShake();
+  lowLifeShakeActive.value = true;
+  lowLifeShakeTimeout = setTimeout(() => {
+    lowLifeShakeActive.value = false;
+    lowLifeShakeTimeout = null;
+  }, LOW_LIFE_SHAKE_DURATION_MS);
 };
 
 watch(
-  () => props.lowLifePulseSequence,
-  (nextLowLifePulseSequence, previousLowLifePulseSequence) => {
+  () => props.lowLifeShakeSequence,
+  (nextLowLifeShakeSequence, previousLowLifeShakeSequence) => {
     if (
-      nextLowLifePulseSequence === previousLowLifePulseSequence ||
-      nextLowLifePulseSequence === 0 ||
+      nextLowLifeShakeSequence === previousLowLifeShakeSequence ||
+      nextLowLifeShakeSequence === 0 ||
       props.remainingMisses !== 1
     ) {
       return;
     }
 
-    triggerLowLifePulse();
+    triggerLowLifeShake();
   },
   {
     immediate: true,
@@ -69,7 +69,7 @@ watch(
   () => props.remainingMisses,
   (nextRemainingMisses) => {
     if (nextRemainingMisses !== 1) {
-      clearLowLifePulse();
+      clearLowLifeShake();
     }
   }
 );
@@ -78,18 +78,18 @@ watch(
   () => props.reducedMotion,
   (nextReducedMotion) => {
     if (nextReducedMotion) {
-      clearLowLifePulse();
+      clearLowLifeShake();
     }
   }
 );
 
 onBeforeUnmount(() => {
-  clearLowLifePulse();
+  clearLowLifeShake();
 });
 </script>
 
 <template>
-  <article class="question-stage" :class="{ 'question-stage--low-life-pulse': lowLifePulseActive }">
+  <article class="question-stage" :class="{ 'question-stage--low-life-shake': lowLifeShakeActive }">
     <div class="question-stage__hud">
       <div class="question-stage__meta">
         <span class="question-stage__level">{{ props.levelLabel }}</span>
