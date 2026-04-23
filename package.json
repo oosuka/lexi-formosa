@@ -24,18 +24,18 @@
   "dependencies": {
     "@vueuse/core": "^14.2.1",
     "nuxt": "^4.4.2",
-    "vue": "^3.5.32",
+    "vue": "^3.5.33",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",
     "@nuxt/test-utils": "^4.0.2",
     "@playwright/test": "^1.59.1",
-    "@vitest/coverage-v8": "^4.1.4",
+    "@vitest/coverage-v8": "^4.1.5",
     "@vue/test-utils": "^2.4.6",
     "happy-dom": "^20.9.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.5"
   },
   "volta": {
     "node": "24.15.0",
