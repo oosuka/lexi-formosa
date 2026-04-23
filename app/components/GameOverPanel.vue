@@ -60,7 +60,10 @@ const emit = defineEmits<{
       </div>
     </div>
 
-    <div class="game-over-level-best">
+    <div
+      v-if="props.gameOverAchievements.length > 0"
+      class="game-over-level-best"
+    >
       <p class="game-over-section-label">Level Best</p>
       <div class="game-over-stats">
         <div class="game-over-stat game-over-stat--subtle">
@@ -71,6 +74,13 @@ const emit = defineEmits<{
           <span>Streak</span>
           <strong>{{ props.currentLevelHighScore.streak }}</strong>
         </div>
+      </div>
+    </div>
+    <div v-else class="game-over-level-best game-over-level-best--compact">
+      <p class="game-over-section-label">Level Best</p>
+      <div class="game-over-compact-best">
+        <span>Score {{ props.currentLevelHighScore.score }}</span>
+        <span>Streak {{ props.currentLevelHighScore.streak }}</span>
       </div>
     </div>
 

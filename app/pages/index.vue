@@ -3,7 +3,7 @@ import { usePreferredReducedMotion } from '@vueuse/core';
 
 import { useFeedbackAudio } from '~/composables/useFeedbackAudio';
 import { type LevelHighScore, useHighScores } from '~/composables/useHighScores';
-import { MAX_MISSES_IN_ROW, useTraditionalTrainer } from '~/composables/useTraditionalTrainer';
+import { useTraditionalTrainer } from '~/composables/useTraditionalTrainer';
 import { useTrainerAudio } from '~/composables/useTrainerAudio';
 import { useTrainerSessionUi } from '~/composables/useTrainerSessionUi';
 import { formatKatakanaReading, formatPinyinReading } from '~/utils/pronunciation';
@@ -54,6 +54,7 @@ const formatVocabularyWordsLabel = (
 const sessionStartPending = ref(true);
 const fatalError = ref<string | null>(null);
 const uiError = ref<string | null>(null);
+const lowLifePulseSequence = ref(0);
 const { highScores, loadHighScores, updateLevelRecord } = useHighScores();
 const vocabularyMetadata = ref<VocabularyMetadata | null>(null);
 const metadataStatus = ref<MetadataStatus>('loading');
@@ -73,7 +74,6 @@ const selectedChoiceId = computed(() => trainer.game.value.selectedChoiceId);
 const currentQuestionId = computed(() => currentQuestion.value?.questionId ?? null);
 const pinyinReading = computed(() => formatPinyinReading(currentQuestion.value?.pronunciation));
 const katakanaReading = computed(() => formatKatakanaReading(currentQuestion.value?.pronunciation));
-const maxMisses = MAX_MISSES_IN_ROW;
 const trainerAudio = useTrainerAudio({
   getQuestionId: () => currentQuestionId.value,
   getQuestionText: () => currentQuestionTrad.value,
@@ -84,7 +84,6 @@ const isSpeaking = trainerAudio.isSpeaking;
 const canPlayAudio = computed(
   () => trainerAudio.speechSupported.value && Boolean(currentQuestionTrad.value)
 );
-const missesInRow = computed(() => trainer.game.value.missesInRow);
 const sessionStartSummaryItems = computed(() => [
   '4択から1つ選ぶ',
   '正解で10点',
@@ -158,6 +157,18 @@ const levelCards = computed(() =>
 );
 const activeHighScoreCard = computed(
   () => highScoreCards.value.find((item) => item.active) ?? highScoreCards.value[0] ?? null
+);
+const selectedLevelCard = computed(
+  () =>
+    levelCards.value.find((item) => item.level === trainer.game.value.level) ??
+    levelCards.value[0] ??
+    null
+);
+const selectedLevelWordCountLabel = computed(() =>
+  formatVocabularyWordsLabel(
+    vocabularyMetadata.value?.counts[trainer.game.value.level],
+    metadataStatus.value
+  )
 );
 
 const choiceClass = (choice: QuestionChoice) => {
@@ -295,10 +306,14 @@ const startSession = () => {
 
 const moveToNextQuestion = async () => {
   clearUiError();
+  const shouldTriggerLowLifePulse = remainingMisses.value === 1;
 
   try {
     trainer.nextQuestion();
     await nextTick();
+    if (shouldTriggerLowLifePulse) {
+      lowLifePulseSequence.value += 1;
+    }
     trainerAudio.requestCurrentQuestionAudio();
     scrollPageToTop();
   } catch (error) {
@@ -538,6 +553,12 @@ useSeoMeta({
           :summary-items="sessionStartSummaryItems"
           :can-start-session="canStartSession"
           :load-error="uiError"
+          :selected-level-label="
+            selectedLevelCard?.label ?? LEVEL_COPY[trainer.game.value.level].label
+          "
+          :selected-level-count-label="selectedLevelWordCountLabel"
+          :selected-level-score="currentLevelHighScore.score"
+          :selected-level-streak="currentLevelHighScore.streak"
           @start="startSession()"
         />
       </div>
@@ -574,13 +595,14 @@ useSeoMeta({
             :level-label="LEVEL_COPY[currentQuestion.level].label"
             :score="score"
             :streak="streak"
-            :misses-in-row="missesInRow"
-            :max-misses="maxMisses"
+            :remaining-misses="remainingMisses"
             :trad="currentQuestion.trad"
             :katakana-reading="katakanaReading"
             :pinyin-reading="pinyinReading"
             :can-play-audio="canPlayAudio"
             :is-speaking="isSpeaking"
+            :reduced-motion="reducedMotion"
+            :low-life-pulse-sequence="lowLifePulseSequence"
             @toggle-audio="togglePronunciationAudio()"
           />
         </template>

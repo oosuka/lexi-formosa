@@ -182,6 +182,49 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('你好');
     expect(wrapper.text()).toContain('ニ ハオ');
     expect(wrapper.text()).toContain('nǐ hǎo');
+    expect(wrapper.get('button.audio-button').text()).toContain('音声を再生');
+  });
+
+  it('開始前パネルに選択中レベルの要約と記録をまとめて表示し、レベル変更で追従する', async () => {
+    window.localStorage.setItem(
+      HIGH_SCORE_STORAGE_KEY,
+      JSON.stringify({
+        1: { score: 11, streak: 1 },
+        2: { score: 22, streak: 2 },
+        3: { score: 33, streak: 3 },
+      })
+    );
+
+    const trainer = createTrainerStub();
+    trainer.setLevel.mockImplementation(async (level: 1 | 2 | 3) => {
+      trainer.game.value = {
+        ...trainer.game.value,
+        level,
+      };
+    });
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    await flushPromises();
+
+    const currentLevelPanel = () => wrapper.get('.session-start-current-level');
+
+    expect(currentLevelPanel().text()).toContain('Level 1');
+    expect(currentLevelPanel().text()).toContain('45 words');
+    expect(currentLevelPanel().text()).toContain('11');
+    expect(currentLevelPanel().text()).not.toContain('22');
+
+    const levelButton = wrapper
+      .findAll('.level-card')
+      .find((candidate) => candidate.text().includes('Level 2'));
+
+    await levelButton?.trigger('click');
+    await flushPromises();
+
+    expect(currentLevelPanel().text()).toContain('Level 2');
+    expect(currentLevelPanel().text()).toContain('38 words');
+    expect(currentLevelPanel().text()).toContain('22');
+    expect(currentLevelPanel().text()).not.toContain('11');
   });
 
   it('TOP の補助情報には繁体字のみを表示しない', async () => {
@@ -395,6 +438,96 @@ describe('index page', () => {
     expect(window.speechSynthesis.speak).toHaveBeenCalled();
   });
 
+  it('残りミスが少なくなっても HUD では Life を静的に表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const wrongChoice = () =>
+      wrapper.findAll('.choice-card').find((candidate) => candidate.text().includes('牛乳'));
+
+    await wrongChoice()?.trigger('click');
+    await flushPromises();
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    await wrongChoice()?.trigger('click');
+    await flushPromises();
+
+    const remainingStat = wrapper.get('.question-stage__stat--remaining');
+
+    expect(remainingStat.text()).toContain('Life');
+    expect(remainingStat.text()).toContain('1');
+    expect(remainingStat.classes()).not.toContain('question-stage__stat--alert');
+  });
+
+  it('Life が 1 の状態で次の問題に切り替わった直後だけ単語カードを弱く pulse する', async () => {
+    vi.useFakeTimers();
+
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const wrongChoice = () =>
+      wrapper.findAll('.choice-card').find((candidate) => candidate.text().includes('牛乳'));
+
+    await wrongChoice()?.trigger('click');
+    await flushPromises();
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    await wrongChoice()?.trigger('click');
+    await flushPromises();
+
+    const questionStage = wrapper.get('.question-stage');
+
+    expect(questionStage.classes()).not.toContain('question-stage--low-life-pulse');
+
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('謝謝');
+    expect(wrapper.get('.question-stage').classes()).toContain('question-stage--low-life-pulse');
+
+    await vi.advanceTimersByTimeAsync(1400);
+    await flushPromises();
+
+    expect(wrapper.get('.question-stage').classes()).not.toContain(
+      'question-stage--low-life-pulse'
+    );
+  });
+
+  it('reduced motion では Life が 1 の状態で次の問題に切り替わっても pulse しない', async () => {
+    preferredReducedMotion.value = 'reduce';
+
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const wrongChoice = () =>
+      wrapper.findAll('.choice-card').find((candidate) => candidate.text().includes('牛乳'));
+
+    await wrongChoice()?.trigger('click');
+    await flushPromises();
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    await wrongChoice()?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get('.question-stage').classes()).not.toContain(
+      'question-stage--low-life-pulse'
+    );
+
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('謝謝');
+    expect(wrapper.get('.question-stage').classes()).not.toContain(
+      'question-stage--low-life-pulse'
+    );
+  });
+
   it('数字キーで回答し Enter で次の問題へ進める', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
@@ -579,6 +712,39 @@ describe('index page', () => {
     expect(trainer.resetSession).toHaveBeenCalled();
     expect(wrapper.text()).toContain('restart failed');
     expect(wrapper.text()).toContain('Game Over');
+  });
+
+  it('記録更新がないゲームオーバーでは自己ベストを簡潔表示する', async () => {
+    window.localStorage.setItem(
+      HIGH_SCORE_STORAGE_KEY,
+      JSON.stringify({
+        1: { score: 100, streak: 8 },
+        2: { score: 0, streak: 0 },
+        3: { score: 0, streak: 0 },
+      })
+    );
+
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    expect(wrapper.find('.game-over-level-best--compact').exists()).toBe(true);
+    expect(wrapper.find('.game-over-stats').exists()).toBe(false);
+    expect(wrapper.text()).toContain('100');
+    expect(wrapper.text()).toContain('8');
   });
 
   it('回答時は進行中の読み上げを停止する', async () => {

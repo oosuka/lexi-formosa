@@ -1,29 +1,95 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { onBeforeUnmount, ref, watch } from 'vue';
 
 const props = defineProps<{
   levelLabel: string;
   score: number;
   streak: number;
-  missesInRow: number;
-  maxMisses: number;
+  remainingMisses: number;
   trad: string;
   katakanaReading: string;
   pinyinReading: string;
   canPlayAudio: boolean;
   isSpeaking: boolean;
+  reducedMotion: boolean;
+  lowLifePulseSequence: number;
 }>();
 
 const emit = defineEmits<{
   toggleAudio: [];
 }>();
 
-const audioButtonLabel = computed(() => (props.isSpeaking ? '停止' : '読み上げ'));
-const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
+const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声を再生');
+const lowLifePulseActive = ref(false);
+let lowLifePulseTimeout: ReturnType<typeof setTimeout> | null = null;
+const LOW_LIFE_PULSE_DURATION_MS = 1320;
+
+const clearLowLifePulse = () => {
+  if (lowLifePulseTimeout) {
+    clearTimeout(lowLifePulseTimeout);
+    lowLifePulseTimeout = null;
+  }
+
+  lowLifePulseActive.value = false;
+};
+
+const triggerLowLifePulse = () => {
+  if (props.reducedMotion) {
+    clearLowLifePulse();
+    return;
+  }
+
+  clearLowLifePulse();
+  lowLifePulseActive.value = true;
+  lowLifePulseTimeout = setTimeout(() => {
+    lowLifePulseActive.value = false;
+    lowLifePulseTimeout = null;
+  }, LOW_LIFE_PULSE_DURATION_MS);
+};
+
+watch(
+  () => props.lowLifePulseSequence,
+  (nextLowLifePulseSequence, previousLowLifePulseSequence) => {
+    if (
+      nextLowLifePulseSequence === previousLowLifePulseSequence ||
+      nextLowLifePulseSequence === 0 ||
+      props.remainingMisses !== 1
+    ) {
+      return;
+    }
+
+    triggerLowLifePulse();
+  },
+  {
+    immediate: true,
+  }
+);
+
+watch(
+  () => props.remainingMisses,
+  (nextRemainingMisses) => {
+    if (nextRemainingMisses !== 1) {
+      clearLowLifePulse();
+    }
+  }
+);
+
+watch(
+  () => props.reducedMotion,
+  (nextReducedMotion) => {
+    if (nextReducedMotion) {
+      clearLowLifePulse();
+    }
+  }
+);
+
+onBeforeUnmount(() => {
+  clearLowLifePulse();
+});
 </script>
 
 <template>
-  <article class="question-stage">
+  <article class="question-stage" :class="{ 'question-stage--low-life-pulse': lowLifePulseActive }">
     <div class="question-stage__hud">
       <div class="question-stage__meta">
         <span class="question-stage__level">{{ props.levelLabel }}</span>
@@ -38,9 +104,9 @@ const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
           <dt>Streak</dt>
           <dd>{{ props.streak }}</dd>
         </div>
-        <div class="question-stage__stat">
-          <dt>Miss</dt>
-          <dd>{{ missLabel }}</dd>
+        <div class="question-stage__stat question-stage__stat--remaining">
+          <dt>Life</dt>
+          <dd>{{ props.remainingMisses }}</dd>
         </div>
       </dl>
     </div>
@@ -62,9 +128,10 @@ const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
         type="button"
         :disabled="!props.canPlayAudio"
         :class="{ 'audio-button--active': props.isSpeaking }"
+        :aria-pressed="props.isSpeaking"
         @click="emit('toggleAudio')"
       >
-        {{ audioButtonLabel }}
+        {{ audioButtonLabel() }}
       </button>
     </div>
   </article>

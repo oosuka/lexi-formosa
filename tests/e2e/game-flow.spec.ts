@@ -314,9 +314,11 @@ test('ゲームを1問進められる', async ({ page }) => {
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
   await expect(page.getByText('PLAY', { exact: true })).toBeVisible();
-  await expect(page.getByText('1文字。基礎の単語から始める。')).toBeVisible();
-  await expect(page.getByText('2文字。日常でよく見る単語。')).toBeVisible();
-  await expect(page.getByText('3文字以上。実用的な複合語。')).toBeVisible();
+  await expect(page.locator('.level-card strong').nth(0)).toHaveText(
+    '1文字。基礎の単語から始める。'
+  );
+  await expect(page.locator('.level-card strong').nth(1)).toHaveText('2文字。日常でよく見る単語。');
+  await expect(page.locator('.level-card strong').nth(2)).toHaveText('3文字以上。実用的な複合語。');
 
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
   await expect(page.locator('.choice-card')).toHaveCount(4);
@@ -406,7 +408,41 @@ test('モバイル幅では副操作のトップ復帰ボタンを短く中央�
   ).toBeLessThanOrEqual(1);
 });
 
-test('モバイル幅の TOP は選択中レベルの記録だけを短く表示する', async ({ page }) => {
+test('PC幅の開始前要約はコンパクト幅で中央寄せする', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 1280, height: 900 });
+
+  await page.goto('/');
+
+  const currentLevelLayout = await page.locator('.session-start-panel').evaluate((panel) => {
+    if (!(panel instanceof HTMLElement)) {
+      throw new Error('missing session start panel');
+    }
+
+    const summary = panel.querySelector('.session-start-current-level');
+
+    if (!(summary instanceof HTMLElement)) {
+      throw new Error('missing current level panel');
+    }
+
+    const panelRect = panel.getBoundingClientRect();
+    const summaryRect = summary.getBoundingClientRect();
+
+    return {
+      panelCenterX: panelRect.left + panelRect.width / 2,
+      panelWidth: panelRect.width,
+      summaryCenterX: summaryRect.left + summaryRect.width / 2,
+      summaryWidth: summaryRect.width,
+    };
+  });
+
+  expect(
+    Math.abs(currentLevelLayout.summaryCenterX - currentLevelLayout.panelCenterX)
+  ).toBeLessThanOrEqual(1);
+  expect(currentLevelLayout.summaryWidth).toBeLessThan(currentLevelLayout.panelWidth - 20);
+});
+
+test('モバイル幅の TOP は選択中レベル情報と記録を開始ボタン付近に表示する', async ({ page }) => {
   await page.addInitScript(() => {
     window.localStorage.setItem(
       'lexi-formosa-high-scores-v2',
@@ -422,85 +458,22 @@ test('モバイル幅の TOP は選択中レベルの記録だけを短く表示
 
   await page.goto('/');
 
-  await expect(page.locator('.hero-stats-panel .panel-kicker:visible')).toHaveText('RECORDS');
-  await expect(page.locator('.record-card--mobile-summary:visible')).toHaveCount(1);
-  await expect(page.locator('.record-card--mobile-summary:visible')).not.toContainText('Level 1');
-  await expect(page.locator('.record-card--mobile-summary:visible')).not.toContainText('選択中');
-  await expect(page.locator('.record-card--mobile-summary:visible')).toContainText('Best Score');
-  await expect(page.locator('.record-card--mobile-summary:visible')).toContainText('11');
-  await expect(page.locator('.record-card--mobile-summary:visible')).not.toContainText('22');
-
-  const compactTopMetrics = await page.evaluate(() => {
-    const heroLabel = document.querySelector('.hero-panel--start-screen .eyebrow');
-    const playLabel = document.querySelector('.session-module__header .panel-kicker');
-    const heroBrand = document.querySelector('.hero-brand--start-screen');
-
-    if (!(heroLabel instanceof HTMLElement) || !(playLabel instanceof HTMLElement)) {
-      throw new Error('missing mobile top labels');
-    }
-
-    if (!(heroBrand instanceof HTMLElement)) {
-      throw new Error('missing mobile hero brand');
-    }
-
-    const heroLabelStyle = window.getComputedStyle(heroLabel);
-    const playLabelStyle = window.getComputedStyle(playLabel);
-    const heroBrandStyle = window.getComputedStyle(heroBrand);
-
-    return {
-      heroBrandPaddingTop: Number.parseFloat(heroBrandStyle.paddingTop),
-      heroLabelMarginBottom: Number.parseFloat(heroLabelStyle.marginBottom),
-      heroLabelMarginTop: Number.parseFloat(heroLabelStyle.marginTop),
-      playLabelMarginBottom: Number.parseFloat(playLabelStyle.marginBottom),
-      playLabelMarginTop: Number.parseFloat(playLabelStyle.marginTop),
-    };
-  });
-
-  expect(compactTopMetrics.heroBrandPaddingTop).toBeLessThanOrEqual(14);
-  expect(compactTopMetrics.heroLabelMarginTop).toBe(0);
-  expect(compactTopMetrics.heroLabelMarginBottom).toBe(0);
-  expect(compactTopMetrics.playLabelMarginTop).toBe(0);
-  expect(compactTopMetrics.playLabelMarginBottom).toBe(0);
-
-  const recordMetricLayout = await page.evaluate(() => {
-    const score = document.querySelector('.record-card--mobile-summary .record-mobile-score');
-    const streak = document.querySelector('.record-card--mobile-summary .record-mobile-streak');
-    const scoreValue = score?.querySelector('strong');
-    const streakValue = streak?.querySelector('strong');
-
-    if (
-      !(score instanceof HTMLElement) ||
-      !(streak instanceof HTMLElement) ||
-      !(scoreValue instanceof HTMLElement) ||
-      !(streakValue instanceof HTMLElement)
-    ) {
-      throw new Error('missing mobile record metrics');
-    }
-
-    return {
-      scoreFontSize: window.getComputedStyle(scoreValue).fontSize,
-      scoreTextAlign: window.getComputedStyle(scoreValue).textAlign,
-      scoreWidth: score.getBoundingClientRect().width,
-      streakFontSize: window.getComputedStyle(streakValue).fontSize,
-      streakTextAlign: window.getComputedStyle(streakValue).textAlign,
-      streakWidth: streak.getBoundingClientRect().width,
-    };
-  });
-
-  expect(recordMetricLayout.scoreFontSize).toBe(recordMetricLayout.streakFontSize);
-  expect(Number.parseFloat(recordMetricLayout.scoreFontSize)).toBeGreaterThanOrEqual(34);
-  expect(recordMetricLayout.scoreTextAlign).toBe('center');
-  expect(recordMetricLayout.streakTextAlign).toBe('center');
-  expect(
-    Math.abs(recordMetricLayout.scoreWidth - recordMetricLayout.streakWidth)
-  ).toBeLessThanOrEqual(1);
+  await expect(page.locator('.hero-stats-panel:visible')).toHaveCount(0);
+  await expect(page.locator('.session-start-current-level:visible')).toContainText('Best Score');
+  await expect(page.locator('.session-start-current-level__topline:visible')).toHaveText(
+    /Level 1.*4 words/
+  );
+  await expect(page.locator('.session-start-current-level:visible')).toContainText('11');
+  await expect(page.locator('.session-start-current-level:visible')).not.toContainText('22');
 
   await page.getByRole('button', { name: /Level 2/ }).click();
 
-  await expect(page.locator('.record-card--mobile-summary:visible')).not.toContainText('Level 2');
-  await expect(page.locator('.record-card--mobile-summary:visible')).toContainText('Best Score');
-  await expect(page.locator('.record-card--mobile-summary:visible')).toContainText('22');
-  await expect(page.locator('.record-card--mobile-summary:visible')).not.toContainText('11');
+  await expect(page.locator('.session-start-current-level:visible')).toContainText('Best Score');
+  await expect(page.locator('.session-start-current-level__topline:visible')).toHaveText(
+    /Level 2.*4 words/
+  );
+  await expect(page.locator('.session-start-current-level:visible')).toContainText('22');
+  await expect(page.locator('.session-start-current-level:visible')).not.toContainText('11');
 });
 
 test('ゲーム遷移後はページ上部へ戻る', async ({ page }) => {
