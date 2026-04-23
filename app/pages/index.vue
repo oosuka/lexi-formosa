@@ -679,7 +679,7 @@ useSeoMeta({
                 次の問題
               </button>
               <button
-                class="ghost-button ghost-button--subtle"
+                class="ghost-button ghost-button--subtle secondary-action-button"
                 type="button"
                 :disabled="trainer.isLoading.value || hasFatalLoadError"
                 @click="resetSession()"

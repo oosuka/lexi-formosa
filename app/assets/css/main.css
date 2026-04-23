@@ -2082,6 +2082,16 @@ button {
     width: 100%;
   }
 
+  .game-over-actions .secondary-action-button {
+    width: auto;
+    justify-self: center;
+  }
+
+  .answer-support-actions .secondary-action-button {
+    width: auto;
+    align-self: center;
+  }
+
   .hint-block li {
     white-space: normal;
   }

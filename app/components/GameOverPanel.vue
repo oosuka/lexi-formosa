@@ -89,10 +89,14 @@ const emit = defineEmits<{
     </div>
 
     <div class="game-over-actions">
-      <button class="ghost-button ghost-button--subtle" type="button" @click="emit('reset')">
+      <button class="primary-button" type="button" @click="emit('restart')">もう一度始める</button>
+      <button
+        class="ghost-button ghost-button--subtle secondary-action-button"
+        type="button"
+        @click="emit('reset')"
+      >
         トップへ戻る
       </button>
-      <button class="primary-button" type="button" @click="emit('restart')">もう一度始める</button>
     </div>
   </section>
 </template>

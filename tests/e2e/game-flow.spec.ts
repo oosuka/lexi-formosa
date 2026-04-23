@@ -266,6 +266,34 @@ const expectNextQuestionButtonInViewport = async (page: Page) => {
   expect(buttonBounds.bottom).toBeLessThanOrEqual(buttonBounds.viewportHeight);
 };
 
+const getActionButtonLayout = async (page: Page, containerSelector: string) => {
+  return page.locator(containerSelector).evaluate((container) => {
+    if (!(container instanceof HTMLElement)) {
+      throw new Error(`missing action container: ${containerSelector}`);
+    }
+
+    const buttons = Array.from(container.querySelectorAll('button')).map((button) => {
+      if (!(button instanceof HTMLButtonElement)) {
+        throw new Error('action button is not a button element');
+      }
+
+      const rect = button.getBoundingClientRect();
+
+      return {
+        label: button.textContent?.trim() ?? '',
+        width: rect.width,
+        centerX: rect.left + rect.width / 2,
+      };
+    });
+    const containerRect = container.getBoundingClientRect();
+
+    return {
+      buttons,
+      containerCenterX: containerRect.left + containerRect.width / 2,
+    };
+  });
+};
+
 const scrollToPageBottom = async (page: Page) => {
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
 };
@@ -336,6 +364,46 @@ test('モバイル幅では回答後に不要な選択肢を隠して次の問�
   await expect(page.locator('.choice-card:visible')).toHaveCount(1);
   await expect(page.getByRole('button', { name: '次の問題' })).toBeVisible();
   await expectNextQuestionButtonInViewport(page);
+});
+
+test('モバイル幅では副操作のトップ復帰ボタンを短く中央寄せする', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+
+  await answerCorrectChoice(page);
+
+  const answerSupportLayout = await getActionButtonLayout(page, '.answer-support-actions');
+
+  expect(answerSupportLayout.buttons.map((button) => button.label)).toEqual([
+    '次の問題',
+    'トップへ戻る',
+  ]);
+  expect(answerSupportLayout.buttons[0]?.width ?? 0).toBeGreaterThan(
+    (answerSupportLayout.buttons[1]?.width ?? 0) + 40
+  );
+  expect(
+    Math.abs((answerSupportLayout.buttons[1]?.centerX ?? 0) - answerSupportLayout.containerCenterX)
+  ).toBeLessThanOrEqual(1);
+
+  await page.getByRole('button', { name: '次の問題' }).click();
+  await finishWithWrongAnswers(page);
+  await expect(page.locator('.game-over-panel')).toBeVisible();
+
+  const gameOverLayout = await getActionButtonLayout(page, '.game-over-actions');
+
+  expect(gameOverLayout.buttons.map((button) => button.label)).toEqual([
+    'もう一度始める',
+    'トップへ戻る',
+  ]);
+  expect(gameOverLayout.buttons[0]?.width ?? 0).toBeGreaterThan(
+    (gameOverLayout.buttons[1]?.width ?? 0) + 40
+  );
+  expect(
+    Math.abs((gameOverLayout.buttons[1]?.centerX ?? 0) - gameOverLayout.containerCenterX)
+  ).toBeLessThanOrEqual(1);
 });
 
 test('モバイル幅の TOP は選択中レベルの記録だけを短く表示する', async ({ page }) => {

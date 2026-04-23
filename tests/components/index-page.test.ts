@@ -281,6 +281,30 @@ describe('index page', () => {
     expect(playRecordCelebrationSoundMock).toHaveBeenCalledWith('double');
   });
 
+  it('ゲームオーバー時は再開を先に案内する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    expect(wrapper.findAll('.game-over-actions button').map((button) => button.text())).toEqual([
+      'もう一度始める',
+      'トップへ戻る',
+    ]);
+  });
+
   it('次の問題への切り替え失敗は回答済み状態のままエラー表示する', async () => {
     const trainer = createTrainerStub();
     trainer.nextQuestion.mockImplementation(() => {
