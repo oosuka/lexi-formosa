@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref, watch } from 'vue';
-
 const props = defineProps<{
   levelLabel: string;
   score: number;
@@ -11,8 +9,6 @@ const props = defineProps<{
   pinyinReading: string;
   canPlayAudio: boolean;
   isSpeaking: boolean;
-  reducedMotion: boolean;
-  lowLifeShakeSequence: number;
 }>();
 
 const emit = defineEmits<{
@@ -20,76 +16,10 @@ const emit = defineEmits<{
 }>();
 
 const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声を再生');
-const lowLifeShakeActive = ref(false);
-let lowLifeShakeTimeout: ReturnType<typeof setTimeout> | null = null;
-const LOW_LIFE_SHAKE_DURATION_MS = 420;
-
-const clearLowLifeShake = () => {
-  if (lowLifeShakeTimeout) {
-    clearTimeout(lowLifeShakeTimeout);
-    lowLifeShakeTimeout = null;
-  }
-
-  lowLifeShakeActive.value = false;
-};
-
-const triggerLowLifeShake = () => {
-  if (props.reducedMotion) {
-    clearLowLifeShake();
-    return;
-  }
-
-  clearLowLifeShake();
-  lowLifeShakeActive.value = true;
-  lowLifeShakeTimeout = setTimeout(() => {
-    lowLifeShakeActive.value = false;
-    lowLifeShakeTimeout = null;
-  }, LOW_LIFE_SHAKE_DURATION_MS);
-};
-
-watch(
-  () => props.lowLifeShakeSequence,
-  (nextLowLifeShakeSequence, previousLowLifeShakeSequence) => {
-    if (
-      nextLowLifeShakeSequence === previousLowLifeShakeSequence ||
-      nextLowLifeShakeSequence === 0 ||
-      props.remainingMisses !== 1
-    ) {
-      return;
-    }
-
-    triggerLowLifeShake();
-  },
-  {
-    immediate: true,
-  }
-);
-
-watch(
-  () => props.remainingMisses,
-  (nextRemainingMisses) => {
-    if (nextRemainingMisses !== 1) {
-      clearLowLifeShake();
-    }
-  }
-);
-
-watch(
-  () => props.reducedMotion,
-  (nextReducedMotion) => {
-    if (nextReducedMotion) {
-      clearLowLifeShake();
-    }
-  }
-);
-
-onBeforeUnmount(() => {
-  clearLowLifeShake();
-});
 </script>
 
 <template>
-  <article class="question-stage" :class="{ 'question-stage--low-life-shake': lowLifeShakeActive }">
+  <article class="question-stage">
     <div class="question-stage__hud">
       <div class="question-stage__meta">
         <span class="question-stage__level">{{ props.levelLabel }}</span>

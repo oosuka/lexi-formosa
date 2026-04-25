@@ -54,7 +54,6 @@ const formatVocabularyWordsLabel = (
 const sessionStartPending = ref(true);
 const fatalError = ref<string | null>(null);
 const uiError = ref<string | null>(null);
-const lowLifeShakeSequence = ref(0);
 const { highScores, loadHighScores, updateLevelRecord } = useHighScores();
 const vocabularyMetadata = ref<VocabularyMetadata | null>(null);
 const metadataStatus = ref<MetadataStatus>('loading');
@@ -306,12 +305,8 @@ const startSession = () => {
 
 const moveToNextQuestion = async () => {
   clearUiError();
-  const shouldTriggerLowLifeShake = remainingMisses.value === 1;
 
   try {
-    if (shouldTriggerLowLifeShake) {
-      lowLifeShakeSequence.value += 1;
-    }
     trainer.nextQuestion();
     await nextTick();
     trainerAudio.requestCurrentQuestionAudio();
@@ -601,8 +596,6 @@ useSeoMeta({
             :pinyin-reading="pinyinReading"
             :can-play-audio="canPlayAudio"
             :is-speaking="isSpeaking"
-            :reduced-motion="reducedMotion"
-            :low-life-shake-sequence="lowLifeShakeSequence"
             @toggle-audio="togglePronunciationAudio()"
           />
         </template>
