@@ -98,6 +98,9 @@ const validateVocabularyScriptPath = fileURLToPath(
 const vocabularyLevelsScriptPath = fileURLToPath(
   new URL('../../scripts/lib/vocabulary-levels.mjs', import.meta.url)
 );
+const vocabularyJaQualityScriptPath = fileURLToPath(
+  new URL('../../scripts/lib/vocabulary-ja-quality.mjs', import.meta.url)
+);
 
 const createTempRepo = () => {
   const directory = fs.mkdtempSync(path.join(workspaceRoot, '.tmp-lexi-formosa-validate-'));
@@ -136,6 +139,22 @@ describe('validate vocabulary script', () => {
         createEntry({ id: 'seed-4', trad: '魚', ja: '魚' }),
       ])
     ).toThrow('Simplified Chinese label detected');
+  });
+
+  it('辞書メタ説明のような日本語ラベルは拒否する', () => {
+    expect(() =>
+      validateVocabularyEntries([
+        createEntry({ id: 'bad-meta', trad: '墨', ja: '墨西哥の姓Mo' }),
+        ...createValidVocabularyEntries(),
+      ])
+    ).toThrow('Dictionary metadata Japanese gloss detected');
+
+    expect(() =>
+      validateVocabularyEntries([
+        createEntry({ id: 'bad-see', trad: '宏亮', ja: 'see 洪亮', level: 2, length: 2 }),
+        ...createValidVocabularyEntries(),
+      ])
+    ).toThrow('Dictionary metadata Japanese gloss detected');
   });
 
   it('レベル範囲外の文字数は原因が分かる文言で拒否する', () => {
@@ -216,6 +235,10 @@ describe('validate vocabulary script', () => {
     fs.copyFileSync(
       vocabularyLevelsScriptPath,
       path.join(scriptLibDirectory, 'vocabulary-levels.mjs')
+    );
+    fs.copyFileSync(
+      vocabularyJaQualityScriptPath,
+      path.join(scriptLibDirectory, 'vocabulary-ja-quality.mjs')
     );
     fs.writeFileSync(
       path.join(dataDirectory, 'vocabulary.json'),

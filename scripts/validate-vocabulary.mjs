@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
 
+import { isDictionaryMetadataJapaneseGloss } from './lib/vocabulary-ja-quality.mjs';
 import { levelLengthMap } from './lib/vocabulary-levels.mjs';
 
 const levelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
@@ -80,6 +81,10 @@ export const validateVocabularyEntries = (rawEntries) => {
 
     if (/[()（）]/.test(entry.ja)) {
       throw new Error(`Parenthetical Japanese gloss detected in ${entry.id}: ${entry.ja}`);
+    }
+
+    if (isDictionaryMetadataJapaneseGloss(entry.ja)) {
+      throw new Error(`Dictionary metadata Japanese gloss detected in ${entry.id}: ${entry.ja}`);
     }
 
     labelsByLevel.get(entry.level)?.add(entry.ja);

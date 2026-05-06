@@ -83,4 +83,68 @@ describe('vocabulary ja quality', () => {
       }).canonicalJa
     ).toBe('香ばしい');
   });
+
+  it('辞書の参照・略語・発音注・姓説明を日本語ラベルにしない', async () => {
+    const { pickBestJapaneseLabel } = await import('../../scripts/lib/vocabulary-ja-quality.mjs');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '墨西哥[Mo4 xi1 ge1]の姓Mo/abbr.、メキシコ',
+            means: 'surname Mo/abbr. for 墨西哥[Mo4 xi1 ge1], Mexico',
+          },
+          {
+            meansJa: '墨/中国墨/CL:塊|块[kuai4]/被害者の額に文字を彫る体罰',
+            means:
+              "ink stick/China ink/CL:塊|块[kuai4]/corporal punishment consisting of tattooing characters on the victim's forehead",
+          },
+        ],
+      }).canonicalJa
+    ).toBe('墨');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '船舶用クラシファイア／台湾 pr.[sao1]',
+            means: 'classifier for ships/Taiwan pr. [sao1]',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '先祖；祖父／SBの亡父',
+            means: 'ancestors/grandfather/deceased father of sb',
+          },
+        ],
+      }).canonicalJa
+    ).toBe('先祖');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '',
+            means: 'see 洪亮[hong2 liang4]',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: 'apex/crown of the head/top/roof/most/headwear, hat, veilsなどの分類語。',
+            means: 'classifier for headwear, hats, veils etc',
+          },
+        ],
+      }).canonicalJa
+    ).not.toBe('veilsなどの分類語');
+  });
 });
