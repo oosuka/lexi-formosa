@@ -18,12 +18,16 @@ const singleKanaGlossPattern = /^[ぁ-んァ-ヶー]$/u;
 const transliteratedSurnameGlossPattern = /^[ァ-ヶぁ-んー・]+姓$/u;
 const repeatedGlossPattern = /^(.{1,16}?)(?:[、，,]\1){1,}$/u;
 const dictionaryMetadataGlossPattern =
-  /^(?:see|see also|written|also written|variant of)\b|(?:^|\s)abbr\.?(?:\s|$)|台湾\s*pr\b|Taiwan\s*pr\b|(?:^|[^A-Za-z])SB(?:[^A-Za-z]|$)|[A-Za-z]+などの分類語|分類語|の姓|姓[A-Za-z]|のための姓|姓氏/iu;
+  /^(?:see|see also|written|also written|variant of)\b|(?:^|\s)abbr\.?(?:\s|$)|台湾\s*pr\b|Taiwan\s*pr\b|(?:^|[^A-Za-z])SB(?:[^A-Za-z]|$)|[A-Za-z]+などの分類語|分類語|の姓|姓[A-Za-z]|のための姓|姓氏|^[啊嗎吗呢吧啦喔哦呀哇嘛]$|[\p{Script=Han}\p{Script=Arabic}][^、，,／/;；。]{0,14}(?:で|に)(?:使われ|使用され)|[\p{Script=Han}][^、，,／/;；。]{0,14}の代わりに使われ|[\p{Script=Han}][^、，,／/;；。]{0,14}に似(?:た|て)|^に(?:似ている|使用される)$|終助詞で|(?:示す|尋ねる|表す).*助詞|モード助詞/iu;
+const machineTranslatedGlossPattern = /^[ァ-ヶー]{2,}な$/u;
 const explanatoryGlossPattern =
-  /に相当|を表す|の一種|の段階|仏教|旧暦|分類子|分類詞|分類器|分類語|クラシファイア|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために|参照|説明|の略|または|もしくは|あるいは|ときに|際に|場合|分類する/;
+  /に相当|を表す|を示す|の一種|の段階|仏教|旧暦|分類子|分類詞|分類器|分類語|クラシファイア|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために|参照|説明|の略|または|もしくは|あるいは|ときに|際に|場合|分類する/;
 
 export const isDictionaryMetadataJapaneseGloss = (candidate) =>
   dictionaryMetadataGlossPattern.test(candidate);
+
+export const isMachineTranslatedJapaneseGloss = (candidate) =>
+  machineTranslatedGlossPattern.test(candidate);
 
 export const classifierOnlyGlosses = new Set([
   '部',
@@ -125,6 +129,10 @@ const isRejectedGlossCandidate = (candidate) => {
     return true;
   }
 
+  if (isMachineTranslatedJapaneseGloss(candidate)) {
+    return true;
+  }
+
   if (explanatoryGlossPattern.test(candidate)) {
     return true;
   }
@@ -212,6 +220,10 @@ export const scoreJapaneseLabel = (candidate, source = 'ja') => {
   }
 
   if (isDictionaryMetadataJapaneseGloss(candidate)) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  if (isMachineTranslatedJapaneseGloss(candidate)) {
     return Number.NEGATIVE_INFINITY;
   }
 

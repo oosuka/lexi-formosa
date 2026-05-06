@@ -157,6 +157,31 @@ describe('validate vocabulary script', () => {
     ).toThrow('Dictionary metadata Japanese gloss detected');
   });
 
+  it('中国語を含む用例説明や記号だけの日本語ラベルは拒否する', () => {
+    for (const ja of ['啊の代わりに使われる', '吗啡で使われている', '自个儿で使われる']) {
+      expect(() =>
+        validateVocabularyEntries([
+          createEntry({ id: `bad-${ja}`, trad: '哪', ja }),
+          ...createValidVocabularyEntries(),
+        ])
+      ).toThrow(/Dictionary metadata Japanese gloss detected|Simplified Chinese label detected/);
+    }
+
+    expect(() =>
+      validateVocabularyEntries([
+        createEntry({ id: 'bad-symbol', trad: '星', ja: '*' }),
+        ...createValidVocabularyEntries(),
+      ])
+    ).toThrow('Invalid Japanese gloss detected');
+
+    expect(() =>
+      validateVocabularyEntries([
+        createEntry({ id: 'bad-machine-translation', trad: '細', ja: 'トリフな' }),
+        ...createValidVocabularyEntries(),
+      ])
+    ).toThrow('Machine-translated Japanese gloss detected');
+  });
+
   it('レベル範囲外の文字数は原因が分かる文言で拒否する', () => {
     expect(() =>
       validateVocabularyEntries([

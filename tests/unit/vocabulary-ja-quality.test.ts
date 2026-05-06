@@ -147,4 +147,105 @@ describe('vocabulary ja quality', () => {
       }).canonicalJa
     ).not.toBe('veilsなどの分類語');
   });
+
+  it('中国語を含む用例説明や機械翻訳風の断片を日本語ラベルにしない', async () => {
+    const { pickBestJapaneseLabel } = await import('../../scripts/lib/vocabulary-ja-quality.mjs');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: 'どのように',
+            means: 'how/which',
+          },
+          {
+            meansJa: '啊[a5]の代わりに使われる。',
+            means: '(emphatic sentence-final particle, used instead of 啊[a5])',
+          },
+          {
+            meansJa: 'どれ',
+            means: 'which?',
+          },
+        ],
+      }).canonicalJa
+    ).toBe('どれ');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '何？',
+            means: '(coll.) what?',
+          },
+          {
+            meansJa: '嗎啡|吗啡[ma3 fei1]で使われている。',
+            means: 'used in 嗎啡|吗啡[ma3 fei1]',
+          },
+          {
+            meansJa: '(「はい・いいえ」の質問の助詞)',
+            means: 'question particle for yes-no questions',
+          },
+        ],
+      }).canonicalJa
+    ).not.toBe('吗啡で使われている');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa:
+              '細いまたは華奢な／微粒子状の／細く柔らかい／繊細な／トリフな／（音の）静かな／質素な',
+            means:
+              'thin or slender/finely particulate/thin and soft/fine/delicate/trifling/(of a sound) quiet/frugal',
+          },
+        ],
+      }).canonicalJa
+    ).not.toBe('トリフな');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa:
+              '(文語)(多麼|多么[duo1 me5]に似ていて、感嘆詞の形容詞の前に使われる)いかに(幸運など); そう(たくさんなど)',
+            means:
+              '(literary) (similar to 多麼|多么[duo1 me5], used before an adjective in exclamations) how (fortunate etc); so (many etc)',
+          },
+        ],
+      }).canonicalJa
+    ).not.toBe('多么に似ていて');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '古典的な終助詞で、現代の了[le5]に似ている。',
+            means: 'classical final particle, similar to modern 了[le5]',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: 'を示すモード助詞。',
+            means: 'modal particle indicating that is all',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '場所を尋ねる助詞（"Where is ...?")／強い肯定を示す助詞。',
+            means: 'particle asking where something is/particle indicating strong affirmation',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
+  });
 });

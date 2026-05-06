@@ -2,7 +2,10 @@ import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
 
-import { isDictionaryMetadataJapaneseGloss } from './lib/vocabulary-ja-quality.mjs';
+import {
+  isDictionaryMetadataJapaneseGloss,
+  isMachineTranslatedJapaneseGloss,
+} from './lib/vocabulary-ja-quality.mjs';
 import { levelLengthMap } from './lib/vocabulary-levels.mjs';
 
 const levelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
@@ -23,7 +26,7 @@ const entrySchema = z.object({
 
 const simplifiedOnlyPattern = /汉|观|气|馆|铁|听|习|国|图|车|广|务/;
 const simplifiedChineseLabelPattern =
-  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样/u;
+  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样|吗|个|儿|么|荤|颈/u;
 const invalidJapaneseGlossPattern = /^[\p{P}\p{S}\s]+$/u;
 export const validateVocabularyEntries = (rawEntries) => {
   const entries = z.array(entrySchema).parse(rawEntries);
@@ -85,6 +88,10 @@ export const validateVocabularyEntries = (rawEntries) => {
 
     if (isDictionaryMetadataJapaneseGloss(entry.ja)) {
       throw new Error(`Dictionary metadata Japanese gloss detected in ${entry.id}: ${entry.ja}`);
+    }
+
+    if (isMachineTranslatedJapaneseGloss(entry.ja)) {
+      throw new Error(`Machine-translated Japanese gloss detected in ${entry.id}: ${entry.ja}`);
     }
 
     labelsByLevel.get(entry.level)?.add(entry.ja);
