@@ -26,6 +26,13 @@ const emit = defineEmits<{
   restart: [];
   reset: [];
 }>();
+
+const achievementByKey = computed(
+  () =>
+    Object.fromEntries(props.gameOverAchievements.map((item) => [item.key, item])) as Partial<
+      Record<GameOverAchievement['key'], GameOverAchievement>
+    >
+);
 </script>
 
 <template>
@@ -66,13 +73,33 @@ const emit = defineEmits<{
     >
       <p class="game-over-section-label">Level Best</p>
       <div class="game-over-stats">
-        <div class="game-over-stat game-over-stat--subtle">
+        <div
+          class="game-over-stat game-over-stat--subtle"
+          :class="{
+            'game-over-stat--best-new': achievementByKey.score?.tone === 'new',
+            'game-over-stat--best-tie': achievementByKey.score?.tone === 'tie',
+          }"
+        >
           <span>Score</span>
           <strong>{{ props.currentLevelHighScore.score }}</strong>
+          <span v-if="achievementByKey.score" class="game-over-best-status">
+            <span class="game-over-best-badge">{{ achievementByKey.score.badge }}</span>
+            <span class="game-over-best-note">{{ achievementByKey.score.note }}</span>
+          </span>
         </div>
-        <div class="game-over-stat game-over-stat--subtle">
+        <div
+          class="game-over-stat game-over-stat--subtle"
+          :class="{
+            'game-over-stat--best-new': achievementByKey.streak?.tone === 'new',
+            'game-over-stat--best-tie': achievementByKey.streak?.tone === 'tie',
+          }"
+        >
           <span>Streak</span>
           <strong>{{ props.currentLevelHighScore.streak }}</strong>
+          <span v-if="achievementByKey.streak" class="game-over-best-status">
+            <span class="game-over-best-badge">{{ achievementByKey.streak.badge }}</span>
+            <span class="game-over-best-note">{{ achievementByKey.streak.note }}</span>
+          </span>
         </div>
       </div>
     </div>
@@ -82,20 +109,6 @@ const emit = defineEmits<{
         <span>Score {{ props.currentLevelHighScore.score }}</span>
         <span>Streak {{ props.currentLevelHighScore.streak }}</span>
       </div>
-    </div>
-
-    <div v-if="props.gameOverAchievements.length > 0" class="game-over-achievement-grid">
-      <article
-        v-for="item in props.gameOverAchievements"
-        :key="item.key"
-        class="game-over-achievement"
-        :class="`game-over-achievement--${item.tone}`"
-      >
-        <span class="achievement-badge">{{ item.badge }}</span>
-        <span class="achievement-label">{{ item.label }}</span>
-        <strong class="achievement-value">{{ item.value }}</strong>
-        <span class="achievement-note">{{ item.note }}</span>
-      </article>
     </div>
 
     <div class="game-over-actions">

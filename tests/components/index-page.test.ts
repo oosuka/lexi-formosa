@@ -314,7 +314,12 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('Game Over');
     expect(wrapper.find('.game-over-panel').exists()).toBe(true);
     expect(wrapper.find('.game-over-panel')?.classes()).toContain('game-over-panel--celebration');
-    expect(wrapper.findAll('.game-over-achievement')).toHaveLength(2);
+    expect(wrapper.findAll('.game-over-achievement')).toHaveLength(0);
+    const levelBestPanel = wrapper
+      .findAll('.game-over-level-best')
+      .find((candidate) => candidate.text().includes('Level Best'));
+    expect(levelBestPanel?.text()).toContain('NEW BEST');
+    expect(levelBestPanel?.text()).toContain('自己ベストを更新');
     expect(wrapper.find('.answer-support-row').exists()).toBe(true);
     expect(wrapper.find('.lookup-panel').exists()).toBe(true);
     expect(wrapper.find('.answer-support-actions').exists()).toBe(false);

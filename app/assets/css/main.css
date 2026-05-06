@@ -1536,6 +1536,17 @@ button {
   background: rgba(255, 255, 255, 0.68);
 }
 
+.game-over-stat--best-new {
+  border-color: rgba(15, 118, 110, 0.24);
+  background:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 50%),
+    rgba(255, 255, 255, 0.88);
+}
+
+.game-over-stat--best-tie {
+  border-color: rgba(177, 79, 47, 0.2);
+}
+
 .game-over-stat span {
   color: var(--ink-soft);
   font-size: var(--font-label);
@@ -1548,6 +1559,43 @@ button {
   font-size: clamp(1.9rem, 2.4vw, 2.5rem);
   line-height: 1;
   font-variant-numeric: tabular-nums;
+}
+
+.game-over-best-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.game-over-stat .game-over-best-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.1);
+  color: var(--accent-strong);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.game-over-stat--best-tie .game-over-best-badge {
+  background: rgba(177, 79, 47, 0.1);
+  color: var(--incorrect);
+}
+
+.game-over-stat .game-over-best-note {
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.game-over-stat--best-tie .game-over-best-note {
+  color: var(--incorrect);
 }
 
 .game-over-level-best {
@@ -1587,92 +1635,16 @@ button {
   text-transform: uppercase;
 }
 
-.game-over-achievement-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.game-over-achievement {
-  display: grid;
-  gap: 8px;
-  padding: var(--card-padding);
-  border-radius: var(--radius-lg);
-  background: var(--card-surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-rest);
-}
-
-.game-over-achievement--new {
-  border-color: rgba(15, 118, 110, 0.22);
-  background:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 46%),
-    rgba(255, 255, 255, 0.96);
-}
-
-.game-over-panel--celebration .game-over-achievement--new {
-  animation: game-over-achievement-pop 880ms cubic-bezier(0.18, 0.84, 0.22, 1) both;
-  box-shadow:
-    0 0 0 1px rgba(15, 118, 110, 0.14),
-    0 26px 54px rgba(15, 118, 110, 0.22);
-}
-
-.game-over-panel--celebration-double .game-over-achievement--new {
-  box-shadow:
-    0 0 0 1px rgba(15, 118, 110, 0.18),
-    0 30px 62px rgba(15, 118, 110, 0.26);
-}
-
 .reduce-motion .game-over-panel--celebration,
-.reduce-motion .game-over-panel--celebration::after,
-.reduce-motion .game-over-panel--celebration .game-over-achievement--new {
+.reduce-motion .game-over-panel--celebration::after {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .game-over-panel--celebration,
-  .game-over-panel--celebration::after,
-  .game-over-panel--celebration .game-over-achievement--new {
+  .game-over-panel--celebration::after {
     animation: none;
   }
-}
-
-.achievement-badge,
-.achievement-label,
-.achievement-note {
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.achievement-badge {
-  justify-self: start;
-  display: inline-flex;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(15, 118, 110, 0.1);
-  color: var(--accent-strong);
-  font-size: 0.68rem;
-}
-
-.game-over-achievement--tie .achievement-badge {
-  background: rgba(177, 79, 47, 0.1);
-  color: var(--incorrect);
-}
-
-.achievement-label {
-  color: var(--ink-soft);
-  font-size: 0.76rem;
-}
-
-.achievement-value {
-  font-size: clamp(2rem, 5vw, 3rem);
-  line-height: 1;
-}
-
-.achievement-note {
-  color: var(--accent-strong);
-  font-size: 0.72rem;
 }
 
 .answer-support-row {
@@ -1825,10 +1797,6 @@ button {
 
   .game-over-summary-grid,
   .game-over-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .game-over-achievement-grid {
     grid-template-columns: 1fr;
   }
 
@@ -2266,23 +2234,6 @@ button {
 
   100% {
     opacity: 0.7;
-  }
-}
-
-@keyframes game-over-achievement-pop {
-  0% {
-    transform: translateY(16px) scale(0.94);
-    opacity: 0;
-  }
-
-  60% {
-    transform: translateY(-4px) scale(1.03);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
   }
 }
 
