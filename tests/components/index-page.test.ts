@@ -438,7 +438,7 @@ describe('index page', () => {
     expect(window.speechSynthesis.speak).toHaveBeenCalled();
   });
 
-  it('残りミスが少なくなっても HUD では Life を静的に表示する', async () => {
+  it('HUD の Life は数字ではなく残機バーとして表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
     await startGame(wrapper);
@@ -455,9 +455,14 @@ describe('index page', () => {
     await flushPromises();
 
     const remainingStat = wrapper.get('.question-stage__stat--remaining');
+    const lifeSlots = remainingStat.findAll('.life-meter__slot');
+    const activeLifeSlots = remainingStat.findAll('.life-meter__slot--active');
 
     expect(remainingStat.text()).toContain('Life');
-    expect(remainingStat.text()).toContain('1');
+    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe('Life 残り1');
+    expect(lifeSlots).toHaveLength(3);
+    expect(activeLifeSlots).toHaveLength(1);
+    expect(remainingStat.get('dd').text()).toBe('残り1');
     expect(remainingStat.classes()).not.toContain('question-stage__stat--alert');
   });
 

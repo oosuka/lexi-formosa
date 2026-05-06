@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { MAX_MISSES_IN_ROW } from '~/composables/useTraditionalTrainer';
+
 const props = defineProps<{
   levelLabel: string;
   score: number;
@@ -14,6 +16,13 @@ const props = defineProps<{
 const emit = defineEmits<{
   toggleAudio: [];
 }>();
+
+const lifeSlots = computed(() =>
+  Array.from({ length: MAX_MISSES_IN_ROW }, (_, index) => ({
+    id: `life-${index + 1}`,
+    active: index < props.remainingMisses,
+  }))
+);
 
 const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声を再生');
 </script>
@@ -36,7 +45,18 @@ const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声�
         </div>
         <div class="question-stage__stat question-stage__stat--remaining">
           <dt>Life</dt>
-          <dd>{{ props.remainingMisses }}</dd>
+          <dd>
+            <span class="visually-hidden">残り{{ props.remainingMisses }}</span>
+            <span class="life-meter" role="meter" :aria-label="`Life 残り${props.remainingMisses}`">
+              <span
+                v-for="slot in lifeSlots"
+                :key="slot.id"
+                class="life-meter__slot"
+                :class="{ 'life-meter__slot--active': slot.active }"
+                aria-hidden="true"
+              />
+            </span>
+          </dd>
         </div>
       </dl>
     </div>
