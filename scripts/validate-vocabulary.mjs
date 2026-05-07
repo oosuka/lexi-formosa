@@ -26,7 +26,7 @@ const entrySchema = z.object({
 
 const simplifiedOnlyPattern = /汉|观|气|馆|铁|听|习|国|图|车|广|务/;
 const simplifiedChineseLabelPattern =
-  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样|吗|个|儿|么|荤|颈/u;
+  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样|你|妳|您|妈|吗|个|儿|么|荤|葷|颈|谈|阳|视|电|货|汇|诗|经|网|络|镭|赢|份|國|鐵|將/u;
 const invalidJapaneseGlossPattern = /^[\p{P}\p{S}\s]+$/u;
 export const validateVocabularyEntries = (rawEntries) => {
   const entries = z.array(entrySchema).parse(rawEntries);

@@ -158,7 +158,22 @@ describe('validate vocabulary script', () => {
   });
 
   it('中国語を含む用例説明や記号だけの日本語ラベルは拒否する', () => {
-    for (const ja of ['啊の代わりに使われる', '吗啡で使われている', '自个儿で使われる']) {
+    for (const ja of [
+      '啊の代わりに使われる',
+      '吗啡で使われている',
+      '自个儿で使われる',
+      '丁寧な你',
+      '丁寧な您',
+      'polite form of you',
+      '谈得来のように',
+      '太阳穴のための太陽',
+      '家用电器',
+      '诗经と史書經',
+      '网络',
+      '赢家に対する敗者',
+      '月份とも書く',
+      '金銀銅鐵錫',
+    ]) {
       expect(() =>
         validateVocabularyEntries([
           createEntry({ id: `bad-${ja}`, trad: '哪', ja }),
@@ -180,6 +195,17 @@ describe('validate vocabulary script', () => {
         ...createValidVocabularyEntries(),
       ])
     ).toThrow('Machine-translated Japanese gloss detected');
+  });
+
+  it('単位や数量の定義文断片は拒否する', () => {
+    for (const ja of ['10分の1テール兩', '3分の1メートル', '中国の通貨単位', '光度の単位']) {
+      expect(() =>
+        validateVocabularyEntries([
+          createEntry({ id: `bad-unit-${ja}`, trad: '錢', ja }),
+          ...createValidVocabularyEntries(),
+        ])
+      ).toThrow(/Dictionary metadata Japanese gloss detected|Simplified Chinese label detected/);
+    }
   });
 
   it('レベル範囲外の文字数は原因が分かる文言で拒否する', () => {

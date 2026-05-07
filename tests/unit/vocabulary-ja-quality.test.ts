@@ -247,5 +247,90 @@ describe('vocabulary ja quality', () => {
         ],
       }).canonicalJa
     ).toBeNull();
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '你（非公式な你[ni3]に対して、丁寧な你[ni3]。',
+            means: 'polite form of 你[ni3], as opposed to informal 你[ni3]',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '丁寧な您',
+            means: 'polite form of you',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '谈得来のように',
+            means: 'as in 談得來|谈得来[tan2 de5 lai2]',
+          },
+          {
+            meansJa: '来る',
+            means: 'to come',
+          },
+        ],
+      }).canonicalJa
+    ).toBe('来る');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '诗经と史書經',
+            means: 'Book of Songs and history books',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
+  });
+
+  it('単位や数量の定義文断片より自然なラベルを優先する', async () => {
+    const { pickBestJapaneseLabel } = await import('../../scripts/lib/vocabulary-ja-quality.mjs');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: 'コイン/お金/CL:筆|笔[bi3]/重さの単位、10分の1テール兩|两[liang3]。',
+            means: 'coin/money/CL:筆|笔[bi3]/unit of weight, one tenth of a tael 兩|两[liang3]',
+          },
+        ],
+      }).canonicalJa
+    ).toBe('お金');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '親指の単位／3分の1メートル',
+            means: 'a unit of length, one third of a meter',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: '中国の通貨単位',
+            means: 'Chinese unit of currency',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
   });
 });
