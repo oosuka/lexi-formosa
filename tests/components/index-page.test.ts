@@ -14,6 +14,7 @@ const preferredReducedMotion = vi.hoisted(() => ({
 }));
 const unlockAudioEffectsMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playFeedbackSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
+const playCriticalLifeSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playGameOverSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playRecordCelebrationSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playLevelSelectSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
@@ -27,6 +28,7 @@ vi.mock('~/composables/useFeedbackAudio', () => ({
     audioEffectsSupported: ref(true),
     unlockAudioEffects: unlockAudioEffectsMock,
     playFeedbackSound: playFeedbackSoundMock,
+    playCriticalLifeSound: playCriticalLifeSoundMock,
     playGameOverSound: playGameOverSoundMock,
     playRecordCelebrationSound: playRecordCelebrationSoundMock,
     playLevelSelectSound: playLevelSelectSoundMock,
@@ -149,6 +151,7 @@ describe('index page', () => {
     preferredReducedMotion.value = 'no-preference';
     unlockAudioEffectsMock.mockReset();
     playFeedbackSoundMock.mockReset();
+    playCriticalLifeSoundMock.mockReset();
     playGameOverSoundMock.mockReset();
     playRecordCelebrationSoundMock.mockReset();
     playLevelSelectSoundMock.mockReset();
@@ -443,7 +446,7 @@ describe('index page', () => {
     expect(window.speechSynthesis.speak).toHaveBeenCalled();
   });
 
-  it('HUD の Life は数字ではなく残機バーとして表示する', async () => {
+  it('HUD の Life は残り1本で警告状態として表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
     await startGame(wrapper);
@@ -464,11 +467,16 @@ describe('index page', () => {
     const activeLifeSlots = remainingStat.findAll('.life-meter__slot--active');
 
     expect(remainingStat.text()).toContain('Life');
-    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe('Life 残り1');
     expect(lifeSlots).toHaveLength(3);
     expect(activeLifeSlots).toHaveLength(1);
-    expect(remainingStat.get('dd').text()).toBe('残り1');
-    expect(remainingStat.classes()).not.toContain('question-stage__stat--alert');
+    expect(remainingStat.get('dd').text()).toContain('残り1');
+    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe('Life 残り1');
+    expect(remainingStat.get('.life-meter').classes()).toContain('life-meter--critical');
+    expect(wrapper.find('.life-warning-note').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('次のミスで終了');
+    expect(remainingStat.classes()).toContain('question-stage__stat--critical');
+    expect(wrapper.get('.quiz-panel').classes()).toContain('quiz-panel--critical');
+    expect(playCriticalLifeSoundMock).toHaveBeenCalledTimes(1);
   });
 
   it('数字キーで回答し Enter で次の問題へ進める', async () => {

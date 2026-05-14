@@ -599,6 +599,12 @@ button {
     0 18px 44px rgba(177, 79, 47, 0.18);
 }
 
+.quiz-panel--critical .question-stage {
+  box-shadow:
+    0 0 0 1px rgba(177, 79, 47, 0.22),
+    0 18px 44px rgba(177, 79, 47, 0.16);
+}
+
 .question-stage,
 .word-card {
   display: grid;
@@ -663,7 +669,18 @@ button {
 .question-stage__stat--remaining dd {
   display: flex;
   align-items: center;
+  gap: 8px;
   min-height: var(--font-stat-value);
+}
+
+.question-stage__stat--critical dt {
+  color: color-mix(in srgb, var(--incorrect) 86%, var(--ink) 14%);
+  text-shadow: 0 0 12px rgba(177, 79, 47, 0.28);
+}
+
+.life-meter--critical {
+  transform: scale(1.12);
+  transform-origin: right center;
 }
 
 .life-meter {
@@ -689,6 +706,19 @@ button {
 .life-meter__slot--active {
   background: linear-gradient(180deg, var(--accent), var(--accent-strong));
   box-shadow: 0 1px 5px rgba(15, 118, 110, 0.2);
+}
+
+.life-meter--critical .life-meter__slot--active {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--incorrect) 68%, white 32%),
+    var(--incorrect)
+  );
+  box-shadow:
+    0 0 0 1px rgba(177, 79, 47, 0.26),
+    0 0 0 6px rgba(177, 79, 47, 0.08),
+    0 8px 20px rgba(177, 79, 47, 0.34);
+  animation: life-critical-pulse 920ms ease-in-out infinite;
 }
 
 .question-stage__topline,
@@ -1273,6 +1303,7 @@ button {
 .reduce-motion .choice-card--correct-impact,
 .reduce-motion .choice-card--incorrect-impact,
 .reduce-motion .choice-card--correct-reveal,
+.reduce-motion .life-meter--critical .life-meter__slot--active,
 .reduce-motion .quiz-panel--correct-impact,
 .reduce-motion .quiz-panel--incorrect-impact {
   animation: none;
@@ -1381,6 +1412,7 @@ button {
   .choice-card--correct-impact,
   .choice-card--incorrect-impact,
   .choice-card--correct-reveal,
+  .life-meter--critical .life-meter__slot--active,
   .quiz-panel--correct-impact,
   .quiz-panel--incorrect-impact,
   .result-banner--correct-impact .result-banner__copy,
@@ -2290,6 +2322,25 @@ button {
 
   80% {
     transform: translateX(5px) scale(0.998);
+  }
+}
+
+@keyframes life-critical-pulse {
+  0%,
+  100% {
+    transform: scaleX(1);
+    box-shadow:
+      0 0 0 1px rgba(177, 79, 47, 0.26),
+      0 0 0 4px rgba(177, 79, 47, 0.1),
+      0 8px 20px rgba(177, 79, 47, 0.28);
+  }
+
+  50% {
+    transform: scaleX(1.24);
+    box-shadow:
+      0 0 0 2px rgba(177, 79, 47, 0.34),
+      0 0 0 10px rgba(177, 79, 47, 0.1),
+      0 10px 26px rgba(177, 79, 47, 0.42);
   }
 }
 

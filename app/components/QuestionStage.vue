@@ -11,6 +11,7 @@ const props = defineProps<{
   pinyinReading: string;
   canPlayAudio: boolean;
   isSpeaking: boolean;
+  criticalLife: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -43,11 +44,19 @@ const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声�
           <dt>Streak</dt>
           <dd>{{ props.streak }}</dd>
         </div>
-        <div class="question-stage__stat question-stage__stat--remaining">
+        <div
+          class="question-stage__stat question-stage__stat--remaining"
+          :class="{ 'question-stage__stat--critical': props.criticalLife }"
+        >
           <dt>Life</dt>
           <dd>
             <span class="visually-hidden">残り{{ props.remainingMisses }}</span>
-            <span class="life-meter" role="meter" :aria-label="`Life 残り${props.remainingMisses}`">
+            <span
+              class="life-meter"
+              :class="{ 'life-meter--critical': props.criticalLife }"
+              role="meter"
+              :aria-label="`Life 残り${props.remainingMisses}`"
+            >
               <span
                 v-for="slot in lifeSlots"
                 :key="slot.id"

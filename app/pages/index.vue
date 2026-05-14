@@ -169,6 +169,9 @@ const selectedLevelWordCountLabel = computed(() =>
     metadataStatus.value
   )
 );
+const isCriticalLife = computed(
+  () => remainingMisses.value === 1 && !showSessionStart.value && !isGameOver.value
+);
 
 const choiceClass = (choice: QuestionChoice) => {
   if (!revealAnswer.value) {
@@ -272,7 +275,13 @@ const answer = (choiceId: string) => {
     return;
   }
 
-  void feedbackAudio.playFeedbackSound(result.correct);
+  void (async () => {
+    await feedbackAudio.playFeedbackSound(result.correct);
+
+    if (!result.correct && isCriticalLife.value) {
+      await feedbackAudio.playCriticalLifeSound();
+    }
+  })();
 };
 
 const togglePronunciationAudio = () => {
@@ -569,6 +578,7 @@ useSeoMeta({
           'quiz-panel--incorrect': feedbackTone === 'incorrect',
           'quiz-panel--incorrect-impact': feedbackTone === 'incorrect',
           'quiz-panel--game-over': isGameOver,
+          'quiz-panel--critical': isCriticalLife,
         }"
       >
         <template v-if="hasFatalLoadError">
@@ -596,6 +606,7 @@ useSeoMeta({
             :pinyin-reading="pinyinReading"
             :can-play-audio="canPlayAudio"
             :is-speaking="isSpeaking"
+            :critical-life="isCriticalLife"
             @toggle-audio="togglePronunciationAudio()"
           />
         </template>
