@@ -146,6 +146,17 @@ describe('vocabulary ja quality', () => {
         ],
       }).canonicalJa
     ).not.toBe('veilsなどの分類語');
+
+    expect(
+      pickBestJapaneseLabel({
+        rawGlosses: [
+          {
+            meansJa: 'ショーの分類記号',
+            means: 'classifier for shows',
+          },
+        ],
+      }).canonicalJa
+    ).toBeNull();
   });
 
   it('中国語を含む用例説明や機械翻訳風の断片を日本語ラベルにしない', async () => {

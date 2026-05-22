@@ -81,6 +81,31 @@ describe('vocabulary candidate pipeline', () => {
     ]);
   });
 
+  it('1文字語では姓メタ情報を日本語ラベルとして公開しない', async () => {
+    const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
+
+    const candidates = buildCandidates({
+      tocflRows: [{ trad: '朱', tocflLevel: 1, category: '基礎', source: 'tocfl' }],
+      tbclRows: [],
+      mjdicEntries: [
+        {
+          trad: '朱',
+          meansJa: '朱姓',
+          means: 'surname Zhu',
+          pronunciation: 'zhu1',
+        },
+      ],
+    });
+
+    expect(candidates).toEqual([
+      expect.objectContaining({
+        trad: '朱',
+        publishable: false,
+        rejectionReasons: expect.arrayContaining(['ja:surname-metadata']),
+      }),
+    ]);
+  });
+
   it('TOCFL 初級の false friend は教材向けラベルへ補正する', async () => {
     const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
 
