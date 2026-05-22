@@ -87,6 +87,7 @@
 - `data/vocabulary.json`
 - `data/vocabulary-metadata.json`
 - `data/vocabulary-level-*.json`
+- `data/review-batches/*.json`
 - `public/wordlists/vocabulary-level-*.json`
 - `public/wordlists/metadata.json`
 
