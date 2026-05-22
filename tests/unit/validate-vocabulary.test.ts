@@ -191,20 +191,31 @@ describe('validate vocabulary script', () => {
 
     expect(() =>
       validateVocabularyEntries([
-        createEntry({ id: 'bad-machine-translation', trad: '細', ja: 'トリフな' }),
+        createEntry({ id: 'review-machine-translation', trad: '細', ja: 'トリフな' }),
         ...createValidVocabularyEntries(),
       ])
-    ).toThrow('Machine-translated Japanese gloss detected');
+    ).not.toThrow();
   });
 
-  it('単位や数量の定義文断片は拒否する', () => {
-    for (const ja of ['10分の1テール兩', '3分の1メートル', '中国の通貨単位', '光度の単位']) {
+  it('単位や数量の定義文断片は監査対象として検証では拒否しない', () => {
+    for (const [index, ja] of [
+      '10分の1テール兩',
+      '3分の1メートル',
+      '中国の通貨単位',
+      '光度の単位',
+    ].entries()) {
       expect(() =>
         validateVocabularyEntries([
-          createEntry({ id: `bad-unit-${ja}`, trad: '錢', ja }),
+          createEntry({
+            id: `review-unit-${index}`,
+            trad: `錢幣${index}`,
+            ja,
+            level: 3,
+            length: 3,
+          }),
           ...createValidVocabularyEntries(),
         ])
-      ).toThrow(/Dictionary metadata Japanese gloss detected|Simplified Chinese label detected/);
+      ).not.toThrow();
     }
   });
 

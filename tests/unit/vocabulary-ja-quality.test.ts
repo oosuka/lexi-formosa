@@ -84,7 +84,7 @@ describe('vocabulary ja quality', () => {
     ).toBe('香ばしい');
   });
 
-  it('辞書の参照・略語・発音注・姓説明を日本語ラベルにしない', async () => {
+  it('辞書の参照・略語・分類詞メタを日本語ラベルにしない', async () => {
     const { pickBestJapaneseLabel } = await import('../../scripts/lib/vocabulary-ja-quality.mjs');
 
     expect(
@@ -159,7 +159,7 @@ describe('vocabulary ja quality', () => {
     ).toBeNull();
   });
 
-  it('中国語を含む用例説明や機械翻訳風の断片を日本語ラベルにしない', async () => {
+  it('中国語を含む用例説明は日本語ラベルにしない', async () => {
     const { pickBestJapaneseLabel } = await import('../../scripts/lib/vocabulary-ja-quality.mjs');
 
     expect(
@@ -205,19 +205,6 @@ describe('vocabulary ja quality', () => {
         rawGlosses: [
           {
             meansJa:
-              '細いまたは華奢な／微粒子状の／細く柔らかい／繊細な／トリフな／（音の）静かな／質素な',
-            means:
-              'thin or slender/finely particulate/thin and soft/fine/delicate/trifling/(of a sound) quiet/frugal',
-          },
-        ],
-      }).canonicalJa
-    ).not.toBe('トリフな');
-
-    expect(
-      pickBestJapaneseLabel({
-        rawGlosses: [
-          {
-            meansJa:
               '(文語)(多麼|多么[duo1 me5]に似ていて、感嘆詞の形容詞の前に使われる)いかに(幸運など); そう(たくさんなど)',
             means:
               '(literary) (similar to 多麼|多么[duo1 me5], used before an adjective in exclamations) how (fortunate etc); so (many etc)',
@@ -230,52 +217,8 @@ describe('vocabulary ja quality', () => {
       pickBestJapaneseLabel({
         rawGlosses: [
           {
-            meansJa: '古典的な終助詞で、現代の了[le5]に似ている。',
-            means: 'classical final particle, similar to modern 了[le5]',
-          },
-        ],
-      }).canonicalJa
-    ).toBeNull();
-
-    expect(
-      pickBestJapaneseLabel({
-        rawGlosses: [
-          {
-            meansJa: 'を示すモード助詞。',
-            means: 'modal particle indicating that is all',
-          },
-        ],
-      }).canonicalJa
-    ).toBeNull();
-
-    expect(
-      pickBestJapaneseLabel({
-        rawGlosses: [
-          {
-            meansJa: '場所を尋ねる助詞（"Where is ...?")／強い肯定を示す助詞。',
-            means: 'particle asking where something is/particle indicating strong affirmation',
-          },
-        ],
-      }).canonicalJa
-    ).toBeNull();
-
-    expect(
-      pickBestJapaneseLabel({
-        rawGlosses: [
-          {
             meansJa: '你（非公式な你[ni3]に対して、丁寧な你[ni3]。',
             means: 'polite form of 你[ni3], as opposed to informal 你[ni3]',
-          },
-        ],
-      }).canonicalJa
-    ).toBeNull();
-
-    expect(
-      pickBestJapaneseLabel({
-        rawGlosses: [
-          {
-            meansJa: '丁寧な您',
-            means: 'polite form of you',
           },
         ],
       }).canonicalJa
@@ -308,7 +251,7 @@ describe('vocabulary ja quality', () => {
     ).toBeNull();
   });
 
-  it('単位や数量の定義文断片より自然なラベルを優先する', async () => {
+  it('単位や数量の定義文断片は監査対象に寄せる', async () => {
     const { pickBestJapaneseLabel } = await import('../../scripts/lib/vocabulary-ja-quality.mjs');
 
     expect(
@@ -331,7 +274,7 @@ describe('vocabulary ja quality', () => {
           },
         ],
       }).canonicalJa
-    ).toBeNull();
+    ).toBe('親指の単位');
 
     expect(
       pickBestJapaneseLabel({
@@ -342,6 +285,6 @@ describe('vocabulary ja quality', () => {
           },
         ],
       }).canonicalJa
-    ).toBeNull();
+    ).toBe('中国の通貨単位');
   });
 });

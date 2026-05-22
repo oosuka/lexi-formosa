@@ -81,7 +81,7 @@ describe('vocabulary candidate pipeline', () => {
     ]);
   });
 
-  it('1文字語では姓メタ情報を日本語ラベルとして公開しない', async () => {
+  it('1文字語の姓メタ情報は生成時に個別拒否せず監査対象へ寄せる', async () => {
     const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
 
     const candidates = buildCandidates({
@@ -100,8 +100,9 @@ describe('vocabulary candidate pipeline', () => {
     expect(candidates).toEqual([
       expect.objectContaining({
         trad: '朱',
-        publishable: false,
-        rejectionReasons: expect.arrayContaining(['ja:surname-metadata']),
+        canonicalJa: '朱姓',
+        publishable: true,
+        rejectionReasons: [],
       }),
     ]);
   });

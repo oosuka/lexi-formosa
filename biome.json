@@ -18,6 +18,7 @@
       "!**/data/vocabulary-level-1.json",
       "!**/data/vocabulary-level-2.json",
       "!**/data/vocabulary-level-3.json",
+      "!**/data/review-batches",
       "!**/public/wordlists"
     ]
   },

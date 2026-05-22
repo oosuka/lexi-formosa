@@ -17,6 +17,7 @@
     "setup:data": "node scripts/setup-data.mjs",
     "generate:data": "node scripts/generate-vocabulary.mjs",
     "check:data": "node scripts/validate-vocabulary.mjs",
+    "audit:data": "node scripts/audit-vocabulary.mjs",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "prepare": "nuxt prepare"

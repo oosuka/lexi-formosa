@@ -2,10 +2,7 @@ import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
 
-import {
-  isDictionaryMetadataJapaneseGloss,
-  isMachineTranslatedJapaneseGloss,
-} from './lib/vocabulary-ja-quality.mjs';
+import { isDictionaryMetadataJapaneseGloss } from './lib/vocabulary-ja-quality.mjs';
 import { levelLengthMap } from './lib/vocabulary-levels.mjs';
 
 const levelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
@@ -88,10 +85,6 @@ export const validateVocabularyEntries = (rawEntries) => {
 
     if (isDictionaryMetadataJapaneseGloss(entry.ja)) {
       throw new Error(`Dictionary metadata Japanese gloss detected in ${entry.id}: ${entry.ja}`);
-    }
-
-    if (isMachineTranslatedJapaneseGloss(entry.ja)) {
-      throw new Error(`Machine-translated Japanese gloss detected in ${entry.id}: ${entry.ja}`);
     }
 
     labelsByLevel.get(entry.level)?.add(entry.ja);

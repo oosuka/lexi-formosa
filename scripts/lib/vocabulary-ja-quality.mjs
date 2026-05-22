@@ -1,33 +1,21 @@
-const rejectionPatterns = [
-  /謙譲表現/,
-  /概念/,
-  /御前方/,
-  /人妻/,
-  /長さ/,
-  /質問に対する否定的な答え/,
-  /台湾のpr\./i,
-  /^\(/,
-];
-
 const simplifiedChineseGlossPattern =
   /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样|你|妳|您|妈|吗|个|儿|么|荤|葷|颈|谈|阳|视|电|货|汇|诗|经|网|络|镭|赢|份|國|鐵|將/u;
 const untranslatedChineseGlossPattern = /什麼|甚麼|東南亞|山東|^[\p{Script=Han}々]+と同じ$/u;
 const allHanGlossPattern = /^[\p{Script=Han}々]+$/u;
 const conciseHanGlossPattern = /^[\p{Script=Han}々]{1,2}$/u;
-const singleKanaGlossPattern = /^[ぁ-んァ-ヶー]$/u;
-const transliteratedSurnameGlossPattern = /^[ァ-ヶぁ-んー・]+姓$/u;
 const repeatedGlossPattern = /^(.{1,16}?)(?:[、，,]\1){1,}$/u;
 const dictionaryMetadataGlossPattern =
-  /^(?:see|see also|written|also written|variant of)\b|^(?:polite|formal|informal)?\s*form of\b|(?:^|\s)abbr\.?(?:\s|$)|台湾\s*pr\b|Taiwan\s*pr\b|(?:^|[^A-Za-z])SB(?:[^A-Za-z]|$)|[A-Za-z]+などの分類語|分類(?:語|記号)|の姓|姓[A-Za-z]|のための姓|姓氏|^[啊嗎吗呢吧啦喔哦呀哇嘛]$|[\p{Script=Han}\p{Script=Arabic}][^、，,／/;；。]{0,14}(?:で|に)(?:使われ|使用され)|[\p{Script=Han}][^、，,／/;；。]{0,14}の代わりに使われ|[\p{Script=Han}][^、，,／/;；。]{0,14}に似(?:た|て)|^に(?:似ている|使用される)$|終助詞で|(?:示す|尋ねる|表す).*助詞|モード助詞|(?:\d+|[一二三四五六七八九十百千万萬]+)分の|の(?:通貨|重量|重さ|長さ|面積|光度|輝度|圧力|体積|密度)?単位|(?:通貨|重量|重さ|長さ|面積|光度|輝度|圧力|体積|密度)の?単位|^(?:a\s+)?unit of\b|^one\s+\w+\s+of\b/iu;
-const machineTranslatedGlossPattern = /^[ァ-ヶー]{2,}な$/u;
+  /^(?:see|see also|written|also written|variant of)\b|^(?:polite|formal|informal)?\s*form of\b|(?:^|\s)abbr\.?(?:\s|$)|台湾\s*pr\b|Taiwan\s*pr\b|(?:^|[^A-Za-z])SB(?:[^A-Za-z]|$)|(?:^|[^A-Za-z])CL:|[A-Za-z]+などの分類語|分類(?:語|記号)|クラシファイア|の略|略語|の姓[A-Za-z]|^[啊嗎吗呢吧啦喔哦呀哇嘛]$|[\p{Script=Han}\p{Script=Arabic}][^、，,／/;；。]{0,14}(?:で|に)(?:使われ|使用され)|[\p{Script=Han}][^、，,／/;；。]{0,14}の代わりに使われ/iu;
+const singleKanaGlossPattern = /^[ぁ-んァ-ヶー]$/u;
 const explanatoryGlossPattern =
   /に相当|を表す|を示す|の一種|の段階|仏教|旧暦|分類子|分類詞|分類器|分類語|クラシファイア|という|である|すること|のこと|を指す|として使|に使う|の意味|によれば|すべき|するのが|を得るため|ために|参照|説明|の略|または|もしくは|あるいは|ときに|際に|場合|分類する/;
+const softSuspiciousGlossPattern =
+  /(?:\d+|[一二三四五六七八九十百千万萬]+)分の|(?:通貨|重量|重さ|長さ|面積|光度|輝度|圧力|体積|密度)の?単位|姓$|に似(?:て|た)|助詞|終助詞|モード助詞/u;
 
 export const isDictionaryMetadataJapaneseGloss = (candidate) =>
   dictionaryMetadataGlossPattern.test(candidate);
 
-export const isMachineTranslatedJapaneseGloss = (candidate) =>
-  machineTranslatedGlossPattern.test(candidate);
+export const isMachineTranslatedJapaneseGloss = (candidate) => /^[ァ-ヶー]{2,}な$/u.test(candidate);
 
 export const classifierOnlyGlosses = new Set([
   '部',
@@ -117,23 +105,7 @@ const isRejectedGlossCandidate = (candidate) => {
     return true;
   }
 
-  if (singleKanaGlossPattern.test(candidate)) {
-    return true;
-  }
-
-  if (transliteratedSurnameGlossPattern.test(candidate)) {
-    return true;
-  }
-
   if (isDictionaryMetadataJapaneseGloss(candidate)) {
-    return true;
-  }
-
-  if (isMachineTranslatedJapaneseGloss(candidate)) {
-    return true;
-  }
-
-  if (explanatoryGlossPattern.test(candidate)) {
     return true;
   }
 
@@ -211,19 +183,7 @@ export const scoreJapaneseLabel = (candidate, source = 'ja') => {
     return Number.NEGATIVE_INFINITY;
   }
 
-  if (singleKanaGlossPattern.test(candidate)) {
-    return Number.NEGATIVE_INFINITY;
-  }
-
-  if (transliteratedSurnameGlossPattern.test(candidate)) {
-    return Number.NEGATIVE_INFINITY;
-  }
-
   if (isDictionaryMetadataJapaneseGloss(candidate)) {
-    return Number.NEGATIVE_INFINITY;
-  }
-
-  if (isMachineTranslatedJapaneseGloss(candidate)) {
     return Number.NEGATIVE_INFINITY;
   }
 
@@ -251,8 +211,12 @@ export const scoreJapaneseLabel = (candidate, source = 'ja') => {
     score -= 6;
   }
 
-  if (rejectionPatterns.some((pattern) => pattern.test(candidate))) {
+  if (softSuspiciousGlossPattern.test(candidate)) {
     score -= 8;
+  }
+
+  if (singleKanaGlossPattern.test(candidate)) {
+    score -= 4;
   }
 
   if (/[|[\]{}<>]/.test(candidate)) {

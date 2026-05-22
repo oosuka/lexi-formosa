@@ -26,9 +26,10 @@
 - UI と出題データに簡体字を混入させません。
 - Level は `1文字 / 2文字 / 3文字以上` で判定し、Level 3 は実用性の高い語に絞ります。
 - 公開デッキは TOCFL/TBCL を根拠にできる候補だけを対象にし、MJdic 単独候補は公開しません。
-- 日本語訳は単一ソースをそのまま使わず、複数候補を正規化・採点して品質ゲートを通したものだけを採用します。
+- 日本語訳は単一ソースをそのまま使わず、複数候補を正規化・採点して選びます。
 - 現行の日本語決定は完全自動ではなく、上記 preferred-label map に入っている少数語だけ静的補正を優先します。
-- 日本語候補では、姓の読み仮名、分類詞説明、`AまたはB` 型の定義文、`ときに` を含む説明節、1文字かな読み、辞書の参照・略語・発音注、中国語を含む用例説明、機械翻訳風の断片を自動で落とします。
+- 生成時の hard gate は簡体字混入、記号だけ、参照・略語・分類詞メタ、MJdic 単独根拠など誤爆しにくい条件に絞ります。
+- 英字ラベル、説明文風ラベル、姓っぽいラベル、同一訳過多などは自動除外せず、`npm run audit:data` の監査結果でレビューします。
 - `data/vocabulary-candidates.json` には publishable 判定と却下理由を残し、落選理由を追跡できるようにします。
 - 発音情報は取得できるものだけ保持し、UI ではピンインとカタカナ補助を表示します。
 - 単語音声は辞書データに同梱せず、ブラウザの `SpeechSynthesis` で再生します。
@@ -55,8 +56,11 @@ npm run generate:data
 
 ```bash
 npm run check:data
+npm run audit:data
 npm run lint
 npm run test:unit
 npx tsc --noEmit -p .nuxt/tsconfig.json
 npm run build
 ```
+
+`npm run audit:data` は公開語彙を止める検証ではなく、怪しい日本語ラベルをレビューするための補助です。結果は `data/review-batches/vocabulary-audit.json` に出力し、生成物として Git 管理対象にしません。

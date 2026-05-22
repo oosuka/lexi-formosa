@@ -216,9 +216,6 @@ const hasClassifierOnlyJapaneseGloss = (candidate) =>
       .some((part) => classifierOnlyGlosses.has(part))
   );
 
-const hasSingleCharacterSurnameMetadataLabel = (candidate) =>
-  candidate.length === 1 && /姓/.test(candidate.canonicalJa ?? '');
-
 const evaluateCandidate = (candidate) => {
   const preferredLabel = importOverrides.get(candidate.trad);
   const { canonicalJa, jaQualityScore } = pickBestJapaneseLabel({
@@ -248,10 +245,8 @@ const evaluateCandidate = (candidate) => {
     next.rejectionReasons.push('ja:missing');
   } else if (classifierOnlyGlosses.has(next.canonicalJa) || hasClassifierOnlyJapaneseGloss(next)) {
     next.rejectionReasons.push('ja:classifier-only');
-  } else if (hasSingleCharacterSurnameMetadataLabel(next)) {
-    next.rejectionReasons.push('ja:surname-metadata');
-  } else if (!Number.isFinite(next.jaQualityScore) || next.jaQualityScore < 4) {
-    next.rejectionReasons.push('ja:low-quality');
+  } else if (!Number.isFinite(next.jaQualityScore)) {
+    next.rejectionReasons.push('ja:unusable');
   }
 
   if (next.level === 3 && typeof next.tocflLevel === 'number' && next.tocflLevel > 4) {
