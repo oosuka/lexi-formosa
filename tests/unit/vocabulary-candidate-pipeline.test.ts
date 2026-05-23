@@ -81,6 +81,32 @@ describe('vocabulary candidate pipeline', () => {
     ]);
   });
 
+  it('ASCII だけの日本語ラベルは非公開にして却下理由を残す', async () => {
+    const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
+
+    const candidates = buildCandidates({
+      tocflRows: [{ trad: '箭', tocflLevel: 1, category: '基礎', source: 'tocfl' }],
+      tbclRows: [],
+      mjdicEntries: [
+        {
+          trad: '箭',
+          meansJa: 'arrow',
+          means: 'arrow',
+          pronunciation: 'jian4',
+        },
+      ],
+    });
+
+    expect(candidates).toEqual([
+      expect.objectContaining({
+        trad: '箭',
+        canonicalJa: 'arrow',
+        publishable: false,
+        rejectionReasons: expect.arrayContaining(['ja:ascii-label']),
+      }),
+    ]);
+  });
+
   it('1文字語の姓メタ情報は生成時に個別拒否せず監査対象へ寄せる', async () => {
     const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
 

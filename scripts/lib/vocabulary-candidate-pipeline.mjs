@@ -69,6 +69,7 @@ const importOverrides = new Map([
 ]);
 
 const trackedTradPattern = /^[\p{Script=Han}]+$/u;
+const asciiOnlyJapaneseLabelPattern = /^[A-Za-z0-9][A-Za-z0-9 +&./-]*$/;
 const publicSourceNames = new Set(['tocfl', 'tbcl']);
 const advancedTopicPattern =
   /chemical|chemistry|biology|physics|politics|political|administrative|juridical|academic|prefecture|province|county|district|自治區|県級市|地級市|行政|政治|化學|医学|學術|法律/i;
@@ -245,6 +246,8 @@ const evaluateCandidate = (candidate) => {
     next.rejectionReasons.push('ja:missing');
   } else if (classifierOnlyGlosses.has(next.canonicalJa) || hasClassifierOnlyJapaneseGloss(next)) {
     next.rejectionReasons.push('ja:classifier-only');
+  } else if (asciiOnlyJapaneseLabelPattern.test(next.canonicalJa)) {
+    next.rejectionReasons.push('ja:ascii-label');
   } else if (!Number.isFinite(next.jaQualityScore)) {
     next.rejectionReasons.push('ja:unusable');
   }

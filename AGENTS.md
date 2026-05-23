@@ -75,8 +75,8 @@
 - `data/manual-vocabulary.json` には `id / trad / ja / category / pronunciation?` だけを持たせ、`level / length / sources / taiwanPriority` は生成時に再計算します。
 - 自動生成で拾いにくいが教材として必ず入れたい語は `data/manual-vocabulary.json` に追加してください。
 - `scripts/lib/vocabulary-candidate-pipeline.mjs` には、ごく少数の基礎語に対する preferred-label map が残っています。`data/manual-vocabulary.json` 以外の静的語彙要素は、現状ここだけです。
-- 生成時の hard gate は簡体字混入、記号だけ、参照・略語・分類詞メタ、MJdic 単独根拠など誤爆しにくい条件に絞ってください。
-- 英字ラベル、説明文風ラベル、姓っぽいラベル、同一訳過多などは `npm run audit:data` の監査対象に寄せ、個別語の reject list を増やさないでください。
+- 生成時の hard gate は簡体字混入、記号だけ、ASCII のみ、参照・略語・分類詞メタ、MJdic 単独根拠など誤爆しにくい条件に絞ってください。
+- 説明文風ラベル、姓っぽいラベル、同一訳過多などは `npm run audit:data` の監査対象に寄せ、個別語の reject list を増やさないでください。
 - 日本語訳は、辞書としての完全性より学習ゲームとして自然で分かりやすいことを優先します。ただし誤解を招く訳は避けてください。
 - 生成物の直接手編集は避け、`npm run setup:data` または `npm run generate:data` で再生成してください。
 - 辞書や再配布に関わる変更では [NOTICE.md](NOTICE.md) と [docs/dictionary-sources.md](docs/dictionary-sources.md) を確認してください。

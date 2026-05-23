@@ -70,8 +70,8 @@ npm run audit:data
 - 自動生成で拾いにくいが教材として入れたい語は `data/manual-vocabulary.json` に追加します
 - それとは別に、ごく少数の基礎語だけ [scripts/lib/vocabulary-candidate-pipeline.mjs](scripts/lib/vocabulary-candidate-pipeline.mjs) の preferred-label map で日本語ラベルを固定しています
 - 生成時は `data/vocabulary-candidates.json` に publishable 判定と却下理由を残します
-- 生成時の hard gate は簡体字混入、記号だけ、参照・略語・分類詞メタ、MJdic 単独根拠など誤爆しにくい条件に絞ります
-- `npm run audit:data` は英字ラベル、説明文風ラベル、姓っぽいラベル、同一訳過多などの怪しい日本語ラベルを `data/review-batches/vocabulary-audit.json` に一覧化します
+- 生成時の hard gate は簡体字混入、記号だけ、ASCII のみ、参照・略語・分類詞メタ、MJdic 単独根拠など誤爆しにくい条件に絞ります
+- `npm run audit:data` は説明文風ラベル、姓っぽいラベル、同一訳過多などの怪しい日本語ラベルを `data/review-batches/vocabulary-audit.json` に一覧化します
 - 生成物と外部ソーススナップショットは Git 管理対象にしません
 
 辞書ソースと再生成手順の詳細は [docs/dictionary-sources.md](docs/dictionary-sources.md)、権利上の注意は [NOTICE.md](NOTICE.md) を参照してください。

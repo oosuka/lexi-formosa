@@ -604,7 +604,7 @@
   {
     "id": "l2-025",
     "trad": "提款機",
-    "ja": "ATM",
+    "ja": "現金自動預払機",
     "category": "money",
     "pronunciation": "ti2 kuan3 ji1"
   },
@@ -905,7 +905,7 @@
   {
     "id": "l3-022",
     "trad": "一卡通",
-    "ja": "iPASS",
+    "ja": "交通ICカード",
     "category": "transit",
     "pronunciation": "yi1 ka3 tong1"
   },

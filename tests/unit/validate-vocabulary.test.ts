@@ -157,6 +157,15 @@ describe('validate vocabulary script', () => {
     ).toThrow('Dictionary metadata Japanese gloss detected');
   });
 
+  it('ASCII だけの日本語ラベルは拒否する', () => {
+    expect(() =>
+      validateVocabularyEntries([
+        createEntry({ id: 'bad-ascii-label', trad: '提款機', ja: 'ATM', level: 3, length: 3 }),
+        ...createValidVocabularyEntries(),
+      ])
+    ).toThrow('ASCII-only Japanese gloss detected');
+  });
+
   it('中国語を含む用例説明や記号だけの日本語ラベルは拒否する', () => {
     for (const ja of [
       '啊の代わりに使われる',
@@ -179,7 +188,9 @@ describe('validate vocabulary script', () => {
           createEntry({ id: `bad-${ja}`, trad: '哪', ja }),
           ...createValidVocabularyEntries(),
         ])
-      ).toThrow(/Dictionary metadata Japanese gloss detected|Simplified Chinese label detected/);
+      ).toThrow(
+        /Dictionary metadata Japanese gloss detected|Simplified Chinese label detected|ASCII-only Japanese gloss detected/
+      );
     }
 
     expect(() =>
