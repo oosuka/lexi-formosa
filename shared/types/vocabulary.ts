@@ -1,12 +1,12 @@
 export const LEVELS = [1, 2, 3] as const;
 
+// Level 1 = 1文字, Level 2 = 2文字, Level 3 = 3文字以上
 export type Level = (typeof LEVELS)[number];
 
 export interface VocabEntry {
   id: string;
   trad: string;
   ja: string;
-  acceptedJa?: string[];
   senseTag?: string;
   distractorTags?: string[];
   level: Level;

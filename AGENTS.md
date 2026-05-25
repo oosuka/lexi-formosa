@@ -26,14 +26,13 @@
 
 ## ゲーム仕様
 
-- Level 1 は 1-2文字、Level 2 は 3-4文字、Level 3 は 5-6文字を中心にします。
-- Level 1 では 1文字語も対象に含めます。
+- Level 1 は 1文字、Level 2 は 2文字、Level 3 は 3文字以上の実用語を対象にします。
 - 正解で基本点を加算し、3連続正解以降はボーナスを加算します。
 - 3回連続で不正解になるとセッションを終了します。
 - 不正解時の結果帯は `正解は「xxx」です。残りn回で終了します。` の形にします。
 - 開始画面にはレベル選択、ゲーム開始ボタン、ルール要約、最高 `Score / Streak` を表示し、最高記録は `localStorage` に保存します。
 - PC 版の最高記録カードはクリックでレベル選択と連動させ、レベル選択時と同じ効果音を使います。
-- スマホ版の最高記録は選択中レベルの `Best Score / Best Streak` だけを省スペース表示し、レベル表記や「選択中」のような重複情報は出しません。
+- スマホ版の開始ボタン付近には、選択中レベルの `Level / words` と `Best Score / Best Streak` を省スペース表示します。
 - ゲーム終了後は `もう一度始める` と `トップへ戻る` を表示します。
 - `ゲームを始める`、`次の問題`、`もう一度始める`、`トップへ戻る` の主要遷移後はページ上部へ戻します。
 - Google 翻訳と Weblio の外部確認リンクは、回答後に別タブで開きます。
@@ -71,9 +70,13 @@
 
 ## 語彙データ
 
-- 語彙生成は `TOCFL + TBCL + MJdic + manual vocabulary + editorial override` を合成する方式です。
-- `data/manual-vocabulary.json` は seed deck と発音補完に使います。
-- `data/editorial-overrides.json` は自動候補の採否と教材用日本語ラベル補正に使います。
+- 語彙生成は `TOCFL + TBCL + manual vocabulary` を土台にし、`MJdic` は日本語候補と発音補完の補助に使います。
+- `data/manual-vocabulary.json` は必ず入れたい高品質語の seed deck と発音補完に使います。
+- `data/manual-vocabulary.json` には `id / trad / ja / category / pronunciation?` だけを持たせ、`level / length / sources / taiwanPriority` は生成時に再計算します。
+- 自動生成で拾いにくいが教材として必ず入れたい語は `data/manual-vocabulary.json` に追加してください。
+- `scripts/lib/vocabulary-candidate-pipeline.mjs` には、ごく少数の基礎語に対する preferred-label map が残っています。`data/manual-vocabulary.json` 以外の静的語彙要素は、現状ここだけです。
+- 生成時の hard gate は簡体字混入、記号だけ、ASCII のみ、参照・略語・分類詞メタ、MJdic 単独根拠など誤爆しにくい条件に絞ってください。
+- 説明文風ラベル、姓っぽいラベル、同一訳過多などは `npm run audit:data` の監査対象に寄せ、個別語の reject list を増やさないでください。
 - 日本語訳は、辞書としての完全性より学習ゲームとして自然で分かりやすいことを優先します。ただし誤解を招く訳は避けてください。
 - 生成物の直接手編集は避け、`npm run setup:data` または `npm run generate:data` で再生成してください。
 - 辞書や再配布に関わる変更では [NOTICE.md](NOTICE.md) と [docs/dictionary-sources.md](docs/dictionary-sources.md) を確認してください。
@@ -84,6 +87,7 @@
 - `data/vocabulary.json`
 - `data/vocabulary-metadata.json`
 - `data/vocabulary-level-*.json`
+- `data/review-batches/*.json`
 - `public/wordlists/vocabulary-level-*.json`
 - `public/wordlists/metadata.json`
 
@@ -107,6 +111,7 @@ npm run build
 ```bash
 npm run setup:data
 npm run check:data
+npm run audit:data
 npm run lint
 npm run test:unit
 npx tsc --noEmit -p .nuxt/tsconfig.json

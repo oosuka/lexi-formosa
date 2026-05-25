@@ -13,6 +13,7 @@ data/vocabulary-candidates.json
 data/vocabulary.json
 data/vocabulary-level-*.json
 data/vocabulary-metadata.json
+data/review-batches/*.json
 public/wordlists/*.json
 !public/wordlists/.gitkeep
 .worktrees/

@@ -1,25 +1,31 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { MAX_MISSES_IN_ROW } from '~/composables/useTraditionalTrainer';
 
 const props = defineProps<{
   levelLabel: string;
   score: number;
   streak: number;
-  missesInRow: number;
-  maxMisses: number;
+  remainingMisses: number;
   trad: string;
   katakanaReading: string;
   pinyinReading: string;
   canPlayAudio: boolean;
   isSpeaking: boolean;
+  criticalLife: boolean;
 }>();
 
 const emit = defineEmits<{
   toggleAudio: [];
 }>();
 
-const audioButtonLabel = computed(() => (props.isSpeaking ? '停止' : '読み上げ'));
-const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
+const lifeSlots = computed(() =>
+  Array.from({ length: MAX_MISSES_IN_ROW }, (_, index) => ({
+    id: `life-${index + 1}`,
+    active: index < props.remainingMisses,
+  }))
+);
+
+const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声を再生');
 </script>
 
 <template>
@@ -38,9 +44,28 @@ const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
           <dt>Streak</dt>
           <dd>{{ props.streak }}</dd>
         </div>
-        <div class="question-stage__stat">
-          <dt>Miss</dt>
-          <dd>{{ missLabel }}</dd>
+        <div
+          class="question-stage__stat question-stage__stat--remaining"
+          :class="{ 'question-stage__stat--critical': props.criticalLife }"
+        >
+          <dt>Life</dt>
+          <dd>
+            <span class="visually-hidden">残り{{ props.remainingMisses }}</span>
+            <span
+              class="life-meter"
+              :class="{ 'life-meter--critical': props.criticalLife }"
+              role="meter"
+              :aria-label="`Life 残り${props.remainingMisses}`"
+            >
+              <span
+                v-for="slot in lifeSlots"
+                :key="slot.id"
+                class="life-meter__slot"
+                :class="{ 'life-meter__slot--active': slot.active }"
+                aria-hidden="true"
+              />
+            </span>
+          </dd>
         </div>
       </dl>
     </div>
@@ -62,9 +87,10 @@ const missLabel = computed(() => `${props.missesInRow} / ${props.maxMisses}`);
         type="button"
         :disabled="!props.canPlayAudio"
         :class="{ 'audio-button--active': props.isSpeaking }"
+        :aria-pressed="props.isSpeaking"
         @click="emit('toggleAudio')"
       >
-        {{ audioButtonLabel }}
+        {{ audioButtonLabel() }}
       </button>
     </div>
   </article>

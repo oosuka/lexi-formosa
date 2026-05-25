@@ -14,6 +14,7 @@ const preferredReducedMotion = vi.hoisted(() => ({
 }));
 const unlockAudioEffectsMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playFeedbackSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
+const playCriticalLifeSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playGameOverSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playRecordCelebrationSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playLevelSelectSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
@@ -27,6 +28,7 @@ vi.mock('~/composables/useFeedbackAudio', () => ({
     audioEffectsSupported: ref(true),
     unlockAudioEffects: unlockAudioEffectsMock,
     playFeedbackSound: playFeedbackSoundMock,
+    playCriticalLifeSound: playCriticalLifeSoundMock,
     playGameOverSound: playGameOverSoundMock,
     playRecordCelebrationSound: playRecordCelebrationSoundMock,
     playLevelSelectSound: playLevelSelectSoundMock,
@@ -149,6 +151,7 @@ describe('index page', () => {
     preferredReducedMotion.value = 'no-preference';
     unlockAudioEffectsMock.mockReset();
     playFeedbackSoundMock.mockReset();
+    playCriticalLifeSoundMock.mockReset();
     playGameOverSoundMock.mockReset();
     playRecordCelebrationSoundMock.mockReset();
     playLevelSelectSoundMock.mockReset();
@@ -182,6 +185,49 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('你好');
     expect(wrapper.text()).toContain('ニ ハオ');
     expect(wrapper.text()).toContain('nǐ hǎo');
+    expect(wrapper.get('button.audio-button').text()).toContain('音声を再生');
+  });
+
+  it('開始前パネルに選択中レベルの要約と記録をまとめて表示し、レベル変更で追従する', async () => {
+    window.localStorage.setItem(
+      HIGH_SCORE_STORAGE_KEY,
+      JSON.stringify({
+        1: { score: 11, streak: 1 },
+        2: { score: 22, streak: 2 },
+        3: { score: 33, streak: 3 },
+      })
+    );
+
+    const trainer = createTrainerStub();
+    trainer.setLevel.mockImplementation(async (level: 1 | 2 | 3) => {
+      trainer.game.value = {
+        ...trainer.game.value,
+        level,
+      };
+    });
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    await flushPromises();
+
+    const currentLevelPanel = () => wrapper.get('.session-start-current-level');
+
+    expect(currentLevelPanel().text()).toContain('Level 1');
+    expect(currentLevelPanel().text()).toContain('45 words');
+    expect(currentLevelPanel().text()).toContain('11');
+    expect(currentLevelPanel().text()).not.toContain('22');
+
+    const levelButton = wrapper
+      .findAll('.level-card')
+      .find((candidate) => candidate.text().includes('Level 2'));
+
+    await levelButton?.trigger('click');
+    await flushPromises();
+
+    expect(currentLevelPanel().text()).toContain('Level 2');
+    expect(currentLevelPanel().text()).toContain('38 words');
+    expect(currentLevelPanel().text()).toContain('22');
+    expect(currentLevelPanel().text()).not.toContain('11');
   });
 
   it('TOP の補助情報には繁体字のみを表示しない', async () => {
@@ -271,7 +317,12 @@ describe('index page', () => {
     expect(wrapper.text()).toContain('Game Over');
     expect(wrapper.find('.game-over-panel').exists()).toBe(true);
     expect(wrapper.find('.game-over-panel')?.classes()).toContain('game-over-panel--celebration');
-    expect(wrapper.findAll('.game-over-achievement')).toHaveLength(2);
+    expect(wrapper.findAll('.game-over-achievement')).toHaveLength(0);
+    const levelBestPanel = wrapper
+      .findAll('.game-over-level-best')
+      .find((candidate) => candidate.text().includes('Level Best'));
+    expect(levelBestPanel?.text()).toContain('NEW BEST');
+    expect(levelBestPanel?.text()).toContain('自己ベストを更新');
     expect(wrapper.find('.answer-support-row').exists()).toBe(true);
     expect(wrapper.find('.lookup-panel').exists()).toBe(true);
     expect(wrapper.find('.answer-support-actions').exists()).toBe(false);
@@ -279,6 +330,30 @@ describe('index page', () => {
     expect(playFeedbackSoundMock).toHaveBeenCalledTimes(3);
     expect(playGameOverSoundMock).toHaveBeenCalledTimes(1);
     expect(playRecordCelebrationSoundMock).toHaveBeenCalledWith('double');
+  });
+
+  it('ゲームオーバー時は再開を先に案内する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    expect(wrapper.findAll('.game-over-actions button').map((button) => button.text())).toEqual([
+      'もう一度始める',
+      'トップへ戻る',
+    ]);
   });
 
   it('次の問題への切り替え失敗は回答済み状態のままエラー表示する', async () => {
@@ -369,6 +444,39 @@ describe('index page', () => {
 
     expect(wrapper.text()).toContain('謝謝');
     expect(window.speechSynthesis.speak).toHaveBeenCalled();
+  });
+
+  it('HUD の Life は残り1本で警告状態として表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const wrongChoice = () =>
+      wrapper.findAll('.choice-card').find((candidate) => candidate.text().includes('牛乳'));
+
+    await wrongChoice()?.trigger('click');
+    await flushPromises();
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    await wrongChoice()?.trigger('click');
+    await flushPromises();
+
+    const remainingStat = wrapper.get('.question-stage__stat--remaining');
+    const lifeSlots = remainingStat.findAll('.life-meter__slot');
+    const activeLifeSlots = remainingStat.findAll('.life-meter__slot--active');
+
+    expect(remainingStat.text()).toContain('Life');
+    expect(lifeSlots).toHaveLength(3);
+    expect(activeLifeSlots).toHaveLength(1);
+    expect(remainingStat.get('dd').text()).toContain('残り1');
+    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe('Life 残り1');
+    expect(remainingStat.get('.life-meter').classes()).toContain('life-meter--critical');
+    expect(wrapper.find('.life-warning-note').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('次のミスで終了');
+    expect(remainingStat.classes()).toContain('question-stage__stat--critical');
+    expect(wrapper.get('.quiz-panel').classes()).toContain('quiz-panel--critical');
+    expect(playCriticalLifeSoundMock).toHaveBeenCalledTimes(1);
   });
 
   it('数字キーで回答し Enter で次の問題へ進める', async () => {
@@ -555,6 +663,39 @@ describe('index page', () => {
     expect(trainer.resetSession).toHaveBeenCalled();
     expect(wrapper.text()).toContain('restart failed');
     expect(wrapper.text()).toContain('Game Over');
+  });
+
+  it('記録更新がないゲームオーバーでは自己ベストを簡潔表示する', async () => {
+    window.localStorage.setItem(
+      HIGH_SCORE_STORAGE_KEY,
+      JSON.stringify({
+        1: { score: 100, streak: 8 },
+        2: { score: 0, streak: 0 },
+        3: { score: 0, streak: 0 },
+      })
+    );
+
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    expect(wrapper.find('.game-over-level-best--compact').exists()).toBe(true);
+    expect(wrapper.find('.game-over-stats').exists()).toBe(false);
+    expect(wrapper.text()).toContain('100');
+    expect(wrapper.text()).toContain('8');
   });
 
   it('回答時は進行中の読み上げを停止する', async () => {

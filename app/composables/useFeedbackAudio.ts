@@ -38,6 +38,11 @@ const LEVEL_SELECT_TONES: ToneStep[] = [
   { frequency: 659, duration: 0.08, gain: 0.18, type: 'triangle' },
 ];
 
+const CRITICAL_LIFE_TONES: ToneStep[] = [
+  { frequency: 196, duration: 0.12, gain: 0.18, type: 'triangle' },
+  { frequency: 147, duration: 0.18, gain: 0.16, type: 'sine' },
+];
+
 const GAME_OVER_TONES: ToneStep[] = [
   { frequency: 392, duration: 0.16, gain: 0.24, type: 'triangle' },
   { frequency: 294, duration: 0.2, gain: 0.2, type: 'triangle' },
@@ -209,6 +214,14 @@ export const useFeedbackAudio = () => {
     await playToneSequence(LEVEL_SELECT_TONES, getMobileGainScale(MOBILE_LEVEL_SELECT_GAIN_SCALE));
   };
 
+  const playCriticalLifeSound = async () => {
+    if (!audioEffectsSupported.value) {
+      return;
+    }
+
+    await playToneSequence(CRITICAL_LIFE_TONES);
+  };
+
   const playGameOverSound = async () => {
     if (!audioEffectsSupported.value) {
       return;
@@ -242,6 +255,7 @@ export const useFeedbackAudio = () => {
     unlockAudioEffects,
     playFeedbackSound,
     playLevelSelectSound,
+    playCriticalLifeSound,
     playGameOverSound,
     playRecordCelebrationSound,
     setup,

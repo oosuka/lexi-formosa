@@ -123,6 +123,26 @@ describe('useFeedbackAudio', () => {
     expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(2);
   });
 
+  it('残り1ミスの警告音を低い2音で鳴らす', async () => {
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(globalThis, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    await feedbackAudio.playCriticalLifeSound();
+
+    const context = TestAudioContext.instances[0];
+    expect(context?.createOscillator).toHaveBeenCalledTimes(2);
+    expect(context?.gainNodes[0]?.gain.exponentialRampToValueAtTime.mock.calls[0]?.[0]).toBe(0.18);
+  });
+
   it('スマホ環境では正誤とレベル選択の効果音ゲインを上げる', async () => {
     Object.defineProperty(window, 'AudioContext', {
       configurable: true,

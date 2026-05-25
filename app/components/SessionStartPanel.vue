@@ -3,6 +3,10 @@ const props = defineProps<{
   summaryItems: string[];
   canStartSession: boolean;
   loadError: string | null;
+  selectedLevelLabel: string;
+  selectedLevelCountLabel: string;
+  selectedLevelScore: number;
+  selectedLevelStreak: number;
 }>();
 
 const emit = defineEmits<{
@@ -13,6 +17,23 @@ const emit = defineEmits<{
 <template>
   <section class="session-start-panel" aria-labelledby="session-start-title">
     <h2 id="session-start-title" class="visually-hidden">セッション開始</h2>
+
+    <article class="session-start-current-level" aria-live="polite">
+      <div class="session-start-current-level__topline">
+        <span class="session-start-current-level__level">{{ props.selectedLevelLabel }}</span>
+        <span class="session-start-current-level__count">{{ props.selectedLevelCountLabel }}</span>
+      </div>
+      <div class="session-start-current-level__stats">
+        <div class="session-start-current-level__stat">
+          <span class="record-stat-label">Best Score</span>
+          <strong>{{ props.selectedLevelScore }}</strong>
+        </div>
+        <div class="session-start-current-level__stat">
+          <span class="record-stat-label">Best Streak</span>
+          <strong>{{ props.selectedLevelStreak }}</strong>
+        </div>
+      </div>
+    </article>
 
     <div class="session-start-panel__actions">
       <button

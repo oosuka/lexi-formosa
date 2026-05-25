@@ -4,21 +4,52 @@ import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 type ManualVocabularyEntry = {
+  id: string;
   trad: string;
   ja: string;
-  level: number;
+  category: string;
+  pronunciation?: string;
 };
 
 const manualVocabulary = JSON.parse(
   fs.readFileSync(new URL('../../data/manual-vocabulary.json', import.meta.url), 'utf8')
 ) as ManualVocabularyEntry[];
 
+const determineLevel = (trad: string) => {
+  const length = [...trad].length;
+
+  if (length <= 1) {
+    return 1;
+  }
+
+  if (length === 2) {
+    return 2;
+  }
+
+  return 3;
+};
+
 describe('manual vocabulary', () => {
+  it('seed 専用の手入力項目だけを持つ', () => {
+    const allowedKeys = new Set(['id', 'trad', 'ja', 'category', 'pronunciation']);
+    const legacyFields = [];
+
+    for (const entry of manualVocabulary) {
+      for (const key of Object.keys(entry)) {
+        if (!allowedKeys.has(key)) {
+          legacyFields.push(`${entry.id}:${key}`);
+        }
+      }
+    }
+
+    expect(legacyFields).toEqual([]);
+  });
+
   it('同じ level で日本語訳が衝突しない', () => {
     const translationsByLevel = new Map<string, string[]>();
 
     for (const entry of manualVocabulary) {
-      const key = `${entry.level}:${entry.ja}`;
+      const key = `${determineLevel(entry.trad)}:${entry.ja}`;
 
       if (!translationsByLevel.has(key)) {
         translationsByLevel.set(key, []);
@@ -30,5 +61,11 @@ describe('manual vocabulary', () => {
     const collisions = [...translationsByLevel.entries()].filter(([, trads]) => trads.length > 1);
 
     expect(collisions).toEqual([]);
+  });
+
+  it('Level 3 の手動 seed を約300語到達に必要な件数まで持つ', () => {
+    const levelThreeEntries = manualVocabulary.filter((entry) => determineLevel(entry.trad) === 3);
+
+    expect(levelThreeEntries.length).toBeGreaterThanOrEqual(196);
   });
 });

@@ -2,6 +2,9 @@ import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
 
+import { isDictionaryMetadataJapaneseGloss } from './lib/vocabulary-ja-quality.mjs';
+import { levelLengthMap } from './lib/vocabulary-levels.mjs';
+
 const levelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
 
 const entrySchema = z.object({
@@ -18,16 +21,11 @@ const entrySchema = z.object({
   notes: z.string().optional(),
 });
 
-const levelLengthMap = {
-  1: [1, 2],
-  2: [3, 4],
-  3: [5, 6],
-};
-
 const simplifiedOnlyPattern = /汉|观|气|馆|铁|听|习|国|图|车|广|务/;
 const simplifiedChineseLabelPattern =
-  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样/u;
+  /丝|东|亚|联|门|龙|云|广|务|听|汉|观|馆|铁|习|赔|语|图|气|车|动|词|类|这|样|你|妳|您|妈|吗|个|儿|么|荤|葷|颈|谈|阳|视|电|货|汇|诗|经|网|络|镭|赢|份|國|鐵|將/u;
 const invalidJapaneseGlossPattern = /^[\p{P}\p{S}\s]+$/u;
+const asciiOnlyJapaneseGlossPattern = /^[A-Za-z0-9][A-Za-z0-9 +&./-]*$/;
 export const validateVocabularyEntries = (rawEntries) => {
   const entries = z.array(entrySchema).parse(rawEntries);
   const ids = new Set();
@@ -74,6 +72,10 @@ export const validateVocabularyEntries = (rawEntries) => {
       throw new Error(`Invalid Japanese gloss detected in ${entry.id}: ${entry.ja}`);
     }
 
+    if (asciiOnlyJapaneseGlossPattern.test(entry.ja)) {
+      throw new Error(`ASCII-only Japanese gloss detected in ${entry.id}: ${entry.ja}`);
+    }
+
     if (simplifiedChineseLabelPattern.test(entry.ja)) {
       throw new Error(`Simplified Chinese label detected in ${entry.id}: ${entry.ja}`);
     }
@@ -84,6 +86,10 @@ export const validateVocabularyEntries = (rawEntries) => {
 
     if (/[()（）]/.test(entry.ja)) {
       throw new Error(`Parenthetical Japanese gloss detected in ${entry.id}: ${entry.ja}`);
+    }
+
+    if (isDictionaryMetadataJapaneseGloss(entry.ja)) {
+      throw new Error(`Dictionary metadata Japanese gloss detected in ${entry.id}: ${entry.ja}`);
     }
 
     labelsByLevel.get(entry.level)?.add(entry.ja);

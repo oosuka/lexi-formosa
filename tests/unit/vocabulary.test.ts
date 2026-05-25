@@ -6,11 +6,11 @@ const fetchMock = vi.fn();
 
 const createEntry = (overrides: Partial<Record<string, unknown>> = {}) => ({
   id: 'seed-1',
-  trad: '你好',
-  ja: 'こんにちは',
+  trad: '茶',
+  ja: 'お茶',
   level: 1,
-  length: 2,
-  category: 'greeting',
+  length: 1,
+  category: 'food',
   taiwanPriority: true,
   sources: ['seed'],
   ...overrides,
@@ -50,7 +50,7 @@ describe('vocabulary utilities', () => {
     expect(second).toBe(first);
   });
 
-  it('出題用タグを読み込み時に保持する', async () => {
+  it('出題用タグを読み込み時に保持し、acceptedJa は公開データとして扱わない', async () => {
     fetchMock.mockResolvedValue([
       createEntry({
         acceptedJa: ['やあ'],
@@ -64,10 +64,10 @@ describe('vocabulary utilities', () => {
     const entries = await loadVocabularyLevel(1);
 
     expect(entries[0]).toMatchObject({
-      acceptedJa: ['やあ'],
       senseTag: 'greeting.basic',
       distractorTags: ['greeting', 'basic'],
     });
+    expect(entries[0]).not.toHaveProperty('acceptedJa');
   });
 
   it('レベル語彙の取得失敗時はセットアップ案内付きで失敗する', async () => {
@@ -79,7 +79,9 @@ describe('vocabulary utilities', () => {
   });
 
   it('レベル不整合の語彙データを拒否する', async () => {
-    fetchMock.mockResolvedValue([createEntry({ level: 2, length: 3, trad: '便利商店' })]);
+    fetchMock.mockResolvedValue([
+      createEntry({ level: 2, length: 2, trad: '你好', ja: 'こんにちは' }),
+    ]);
 
     const { loadVocabularyLevel } = await import('~/utils/vocabulary');
 
@@ -87,15 +89,17 @@ describe('vocabulary utilities', () => {
   });
 
   it('文字数が実データと合わない語彙データを拒否する', async () => {
-    fetchMock.mockResolvedValue([createEntry({ trad: '早安', length: 3 })]);
+    fetchMock.mockResolvedValue([createEntry({ trad: '書', length: 2, ja: '本' })]);
 
     const { loadVocabularyLevel } = await import('~/utils/vocabulary');
 
-    await expect(loadVocabularyLevel(1)).rejects.toThrow('expected 3, got 2');
+    await expect(loadVocabularyLevel(1)).rejects.toThrow('expected 2, got 1');
   });
 
   it('レベルの長さ範囲に合わない語彙データを拒否する', async () => {
-    fetchMock.mockResolvedValue([createEntry({ trad: '國際電話卡', level: 2, length: 5 })]);
+    fetchMock.mockResolvedValue([
+      createEntry({ trad: '便利商店', ja: 'コンビニ', level: 2, length: 4, category: 'place' }),
+    ]);
 
     const { loadVocabularyLevel } = await import('~/utils/vocabulary');
 

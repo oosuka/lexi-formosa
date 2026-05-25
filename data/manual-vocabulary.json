@@ -3,1386 +3,1813 @@
     "id": "l1-001",
     "trad": "你好",
     "ja": "こんにちは",
-    "level": 1,
-    "length": 2,
     "category": "greeting",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ni3 hao3"
   },
   {
     "id": "l1-002",
     "trad": "早餐",
     "ja": "朝食",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "zao3 can1"
   },
   {
     "id": "l1-003",
     "trad": "便當",
     "ja": "弁当",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "bian4 dang1"
   },
   {
     "id": "l1-004",
     "trad": "捷運",
     "ja": "地下鉄",
-    "level": 1,
-    "length": 2,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "jie2 yun4"
   },
   {
     "id": "l1-005",
     "trad": "夜市",
     "ja": "夜市",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ye4 shi4"
   },
   {
     "id": "l1-006",
     "trad": "飲料",
     "ja": "飲み物",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "yin3 liao4"
   },
   {
     "id": "l1-007",
     "trad": "學生",
     "ja": "学生",
-    "level": 1,
-    "length": 2,
     "category": "people",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "xue2 sheng1"
   },
   {
     "id": "l1-008",
     "trad": "老師",
     "ja": "先生",
-    "level": 1,
-    "length": 2,
     "category": "people",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "lao3 shi1"
   },
   {
     "id": "l1-009",
     "trad": "醫院",
     "ja": "病院",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "yi1 yuan4"
   },
   {
     "id": "l1-010",
     "trad": "地圖",
     "ja": "地図",
-    "level": 1,
-    "length": 2,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "di4 tu2"
   },
   {
     "id": "l1-011",
     "trad": "機車",
     "ja": "スクーター",
-    "level": 1,
-    "length": 2,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ji1 che1"
   },
   {
     "id": "l1-012",
     "trad": "颱風",
     "ja": "台風",
-    "level": 1,
-    "length": 2,
     "category": "weather",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tai2 feng1"
   },
   {
     "id": "l1-013",
     "trad": "水果",
     "ja": "果物",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "shui3 guo3"
   },
   {
     "id": "l1-014",
     "trad": "牛奶",
     "ja": "牛乳",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "niu2 nai3"
   },
   {
     "id": "l1-015",
     "trad": "電影",
     "ja": "映画",
-    "level": 1,
-    "length": 2,
     "category": "entertainment",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "dian4 ying3"
   },
   {
     "id": "l1-016",
     "trad": "書店",
     "ja": "書店",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "shu1 dian4"
   },
   {
     "id": "l1-017",
     "trad": "門票",
     "ja": "入場券",
-    "level": 1,
-    "length": 2,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "men2 piao4"
   },
   {
     "id": "l1-018",
     "trad": "餐廳",
     "ja": "レストラン",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "can1 ting1"
   },
   {
     "id": "l1-019",
     "trad": "班機",
     "ja": "フライト",
-    "level": 1,
-    "length": 2,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ban1 ji1"
   },
   {
     "id": "l1-020",
     "trad": "茶葉",
     "ja": "茶葉",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "cha2 ye4"
   },
   {
     "id": "l2-001",
     "trad": "圖書館",
     "ja": "図書館",
-    "level": 2,
-    "length": 3,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tu2 shu1 guan3"
   },
   {
     "id": "l2-002",
     "trad": "洗手間",
     "ja": "お手洗い",
-    "level": 2,
-    "length": 3,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "xi3 shou3 jian1"
   },
   {
     "id": "l2-003",
     "trad": "火車站",
     "ja": "鉄道駅",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "huo3 che1 zhan4"
   },
   {
     "id": "l2-004",
     "trad": "悠遊卡",
     "ja": "交通系ICカード",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "you1 you2 ka3"
   },
   {
     "id": "l2-005",
     "trad": "早餐店",
     "ja": "朝食屋",
-    "level": 2,
-    "length": 3,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "zao3 can1 dian4"
   },
   {
     "id": "l2-006",
     "trad": "珍珠奶茶",
     "ja": "タピオカミルクティー",
-    "level": 2,
-    "length": 4,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "zhen1 zhu1 nai3 cha2"
   },
   {
     "id": "l2-007",
     "trad": "便利商店",
     "ja": "コンビニ",
-    "level": 2,
-    "length": 4,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "bian4 li4 shang1 dian4"
   },
   {
     "id": "l2-008",
     "trad": "百貨公司",
     "ja": "デパート",
-    "level": 2,
-    "length": 4,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "bai3 huo4 gong1 si1"
   },
   {
     "id": "l2-009",
     "trad": "手機號碼",
     "ja": "携帯番号",
-    "level": 2,
-    "length": 4,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "shou3 ji1 hao4 ma3"
   },
   {
     "id": "l2-010",
     "trad": "天氣預報",
     "ja": "天気予報",
-    "level": 2,
-    "length": 4,
     "category": "weather",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tian1 qi4 yu4 bao4"
   },
   {
     "id": "l2-011",
     "trad": "文化中心",
     "ja": "文化センター",
-    "level": 2,
-    "length": 4,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "wen2 hua4 zhong1 xin1"
   },
   {
     "id": "l2-012",
     "trad": "海鮮料理",
     "ja": "海鮮料理",
-    "level": 2,
-    "length": 4,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "hai3 xian1 liao4 li3"
   },
   {
     "id": "l2-013",
     "trad": "觀光景點",
     "ja": "観光名所",
-    "level": 2,
-    "length": 4,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "guan1 guang1 jing3 dian3"
   },
   {
     "id": "l2-014",
     "trad": "生活用品",
     "ja": "日用品",
-    "level": 2,
-    "length": 4,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "sheng1 huo2 yong4 pin3"
   },
   {
     "id": "l2-015",
     "trad": "民宿老闆",
     "ja": "民宿の店主",
-    "level": 2,
-    "length": 4,
     "category": "people",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "min2 su4 lao3 ban3"
   },
   {
     "id": "l2-016",
     "trad": "漢字練習",
     "ja": "漢字練習",
-    "level": 2,
-    "length": 4,
     "category": "study",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "han4 zi4 lian4 xi2"
   },
   {
     "id": "l2-017",
     "trad": "臺灣鐵路",
     "ja": "台湾鉄道",
-    "level": 2,
-    "length": 4,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tai2 wan1 tie3 lu4"
   },
   {
     "id": "l2-018",
     "trad": "公車站牌",
     "ja": "バス停の標識",
-    "level": 2,
-    "length": 4,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "gong1 che1 zhan4 pai2"
   },
   {
     "id": "l2-019",
     "trad": "郵局窗口",
     "ja": "郵便局窓口",
-    "level": 2,
-    "length": 4,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "you2 ju2 chuang1 kou3"
   },
   {
     "id": "l2-020",
     "trad": "在地小吃",
     "ja": "ご当地グルメ",
-    "level": 2,
-    "length": 4,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "zai4 di4 xiao3 chi1"
   },
   {
     "id": "l3-001",
     "trad": "故宮博物院",
     "ja": "故宮博物院",
-    "level": 3,
-    "length": 5,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "gu4 gong1 bo2 wu4 yuan4"
   },
   {
     "id": "l3-002",
     "trad": "臺北捷運車站",
     "ja": "台北メトロ駅",
-    "level": 3,
-    "length": 6,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tai2 bei3 jie2 yun4 che1 zhan4"
   },
   {
     "id": "l3-003",
     "trad": "手機充電器",
     "ja": "携帯充電器",
-    "level": 3,
-    "length": 5,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "shou3 ji1 chong1 dian4 qi4"
   },
   {
     "id": "l3-004",
     "trad": "傳統市場小吃",
     "ja": "市場の軽食",
-    "level": 3,
-    "length": 6,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "chuan2 tong3 shi4 chang3 xiao3 chi1"
   },
   {
     "id": "l3-005",
     "trad": "觀光夜市美食",
     "ja": "夜市グルメ",
-    "level": 3,
-    "length": 6,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "guan1 guang1 ye4 shi4 mei3 shi2"
   },
   {
     "id": "l3-006",
     "trad": "便利商店咖啡",
     "ja": "コンビニコーヒー",
-    "level": 3,
-    "length": 6,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "bian4 li4 shang1 dian4 ka1 fei1"
   },
   {
     "id": "l3-007",
     "trad": "高鐵自由座票",
     "ja": "高鉄自由席券",
-    "level": 3,
-    "length": 6,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "gao1 tie3 zi4 you2 zuo4 piao4"
   },
   {
     "id": "l3-008",
     "trad": "颱風停班停課",
     "ja": "台風で休校・休業",
-    "level": 3,
-    "length": 6,
     "category": "weather",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tai2 feng1 ting2 ban1 ting2 ke4"
   },
   {
     "id": "l3-009",
     "trad": "國語流行歌曲",
     "ja": "中国語ポップス",
-    "level": 3,
-    "length": 6,
     "category": "entertainment",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "guo2 yu3 liu2 xing2 ge1 qu3"
   },
   {
     "id": "l3-010",
     "trad": "臺灣在地文化",
     "ja": "台湾ならではの文化",
-    "level": 3,
-    "length": 6,
     "category": "culture",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tai2 wan1 zai4 di4 wen2 hua4"
   },
   {
     "id": "l3-011",
     "trad": "中文聽力練習",
     "ja": "中国語リスニング練習",
-    "level": 3,
-    "length": 6,
     "category": "study",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "zhong1 wen2 ting1 li4 lian4 xi2"
   },
   {
     "id": "l3-012",
     "trad": "觀光客服中心",
     "ja": "観光案内所",
-    "level": 3,
-    "length": 6,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "guan1 guang1 ke4 fu2 zhong1 xin1"
   },
   {
     "id": "l3-013",
     "trad": "餐廳訂位電話",
     "ja": "レストラン予約電話",
-    "level": 3,
-    "length": 6,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "can1 ting1 ding4 wei4 dian4 hua4"
   },
   {
     "id": "l3-014",
     "trad": "機場接送服務",
     "ja": "空港送迎サービス",
-    "level": 3,
-    "length": 6,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ji1 chang3 jie1 song4 fu2 wu4"
   },
   {
     "id": "l3-015",
     "trad": "夜市排隊名店",
     "ja": "行列のできる夜市店",
-    "level": 3,
-    "length": 6,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ye4 shi4 pai2 dui4 ming2 dian4"
   },
   {
     "id": "l3-016",
     "trad": "臺灣特色早餐",
     "ja": "台湾名物朝食",
-    "level": 3,
-    "length": 6,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tai2 wan1 te4 se4 zao3 can1"
   },
   {
     "id": "l3-017",
     "trad": "公車動態資訊",
     "ja": "バス運行情報",
-    "level": 3,
-    "length": 6,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "gong1 che1 dong4 tai4 zi1 xun4"
   },
   {
     "id": "l3-018",
     "trad": "繁體漢字學習",
     "ja": "繁体漢字学習",
-    "level": 3,
-    "length": 6,
     "category": "study",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "fan2 ti3 han4 zi4 xue2 xi2"
   },
   {
     "id": "l1-021",
     "trad": "公車",
     "ja": "バス",
-    "level": 1,
-    "length": 2,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "gong1 che1"
   },
   {
     "id": "l1-022",
     "trad": "超商",
     "ja": "コンビニ",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "chao1 shang1"
   },
   {
     "id": "l1-023",
     "trad": "超市",
     "ja": "スーパー",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "chao1 shi4"
   },
   {
     "id": "l1-024",
     "trad": "發票",
     "ja": "レシート",
-    "level": 1,
-    "length": 2,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "fa1 piao4"
   },
   {
     "id": "l1-025",
     "trad": "櫃檯",
     "ja": "カウンター",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "gui4 tai2"
   },
   {
     "id": "l1-026",
     "trad": "月台",
     "ja": "ホーム",
-    "level": 1,
-    "length": 2,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "yue4 tai2"
   },
   {
     "id": "l1-027",
     "trad": "車站",
     "ja": "駅",
-    "level": 1,
-    "length": 2,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "che1 zhan4"
   },
   {
     "id": "l1-028",
     "trad": "出口",
     "ja": "出口",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "chu1 kou3"
   },
   {
     "id": "l1-029",
     "trad": "廁所",
     "ja": "トイレ",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ce4 suo3"
   },
   {
     "id": "l1-030",
     "trad": "門口",
     "ja": "入口",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "men2 kou3"
   },
   {
     "id": "l1-031",
     "trad": "路口",
     "ja": "交差点",
-    "level": 1,
-    "length": 2,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "lu4 kou3"
   },
   {
     "id": "l1-032",
     "trad": "找錢",
     "ja": "お釣り",
-    "level": 1,
-    "length": 2,
     "category": "money",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "zhao3 qian2"
   },
   {
     "id": "l1-033",
     "trad": "點餐",
     "ja": "注文する",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "dian3 can1"
   },
   {
     "id": "l1-034",
     "trad": "外帶",
     "ja": "持ち帰り",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "wai4 dai4"
   },
   {
     "id": "l1-035",
     "trad": "內用",
     "ja": "店内利用",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "nei4 yong4"
   },
   {
     "id": "l1-036",
     "trad": "去冰",
     "ja": "氷抜き",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "qu4 bing1"
   },
   {
     "id": "l1-037",
     "trad": "少冰",
     "ja": "氷少なめ",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "shao3 bing1"
   },
   {
     "id": "l1-038",
     "trad": "微糖",
     "ja": "甘さ控えめ",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "wei1 tang2"
   },
   {
     "id": "l1-039",
     "trad": "無糖",
     "ja": "無糖",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "wu2 tang2"
   },
   {
     "id": "l1-040",
     "trad": "蛋餅",
     "ja": "台湾式卵クレープ",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "dan4 bing3"
   },
   {
     "id": "l1-041",
     "trad": "飯糰",
     "ja": "おにぎり",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "fan4 tuan2"
   },
   {
     "id": "l1-042",
     "trad": "旅館",
     "ja": "旅館",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "lv3 guan3"
   },
   {
     "id": "l1-043",
     "trad": "掛號",
     "ja": "受付",
-    "level": 1,
-    "length": 2,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "gua4 hao4"
   },
   {
     "id": "l1-044",
     "trad": "月票",
     "ja": "定期券",
-    "level": 1,
-    "length": 2,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "yue4 piao4"
   },
   {
     "id": "l2-021",
     "trad": "公車站",
     "ja": "バス停",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "gong1 che1 zhan4"
   },
   {
     "id": "l2-022",
     "trad": "捷運站",
     "ja": "地下鉄駅",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "jie2 yun4 zhan4"
   },
   {
     "id": "l2-023",
     "trad": "紅綠燈",
     "ja": "信号",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "hong2 lv4 deng1"
   },
   {
     "id": "l2-024",
     "trad": "斑馬線",
     "ja": "横断歩道",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ban1 ma3 xian4"
   },
   {
     "id": "l2-025",
     "trad": "提款機",
-    "ja": "ATM",
-    "level": 2,
-    "length": 3,
+    "ja": "現金自動預払機",
     "category": "money",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ti2 kuan3 ji1"
   },
   {
     "id": "l2-026",
     "trad": "急診室",
     "ja": "救急外来",
-    "level": 2,
-    "length": 3,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ji2 zhen3 shi4"
   },
   {
     "id": "l2-027",
     "trad": "登機門",
     "ja": "搭乗口",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "deng1 ji1 men2"
   },
   {
     "id": "l2-028",
     "trad": "行李箱",
     "ja": "スーツケース",
-    "level": 2,
-    "length": 3,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "xing2 li3 xiang1"
   },
   {
     "id": "l2-029",
     "trad": "登機證",
     "ja": "搭乗券",
-    "level": 2,
-    "length": 3,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "deng1 ji1 zheng4"
   },
   {
     "id": "l2-030",
     "trad": "回收桶",
     "ja": "リサイクル箱",
-    "level": 2,
-    "length": 3,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "hui2 shou1 tong3"
   },
   {
     "id": "l2-031",
     "trad": "停車場",
     "ja": "駐車場",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ting2 che1 chang3"
   },
   {
     "id": "l2-032",
     "trad": "服務台",
     "ja": "案内カウンター",
-    "level": 2,
-    "length": 3,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "fu2 wu4 tai2"
   },
   {
     "id": "l1-045",
     "trad": "結帳",
     "ja": "会計する",
-    "level": 1,
-    "length": 2,
     "category": "money",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "jie2 zhang4"
   },
   {
     "id": "l1-046",
     "trad": "刷卡",
     "ja": "カードで払う",
-    "level": 1,
-    "length": 2,
     "category": "money",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "shua1 ka3"
   },
   {
     "id": "l1-047",
     "trad": "預約",
     "ja": "予約する",
-    "level": 1,
-    "length": 2,
     "category": "service",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "yu4 yue1"
   },
   {
     "id": "l1-048",
     "trad": "退稅",
     "ja": "税金還付",
-    "level": 1,
-    "length": 2,
     "category": "money",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tui4 shui4"
   },
   {
     "id": "l1-049",
     "trad": "航廈",
     "ja": "ターミナル",
-    "level": 1,
-    "length": 2,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "hang2 xia4"
   },
   {
     "id": "l1-050",
     "trad": "外送",
     "ja": "配達",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "wai4 song4"
   },
   {
     "id": "l1-051",
     "trad": "熱飲",
     "ja": "温かい飲み物",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "re4 yin3"
   },
   {
     "id": "l1-052",
     "trad": "冷飲",
     "ja": "冷たい飲み物",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "leng3 yin3"
   },
   {
     "id": "l1-053",
     "trad": "去糖",
     "ja": "砂糖抜き",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "qu4 tang2"
   },
   {
     "id": "l1-054",
     "trad": "半糖",
     "ja": "甘さ半分",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "ban4 tang2"
   },
   {
     "id": "l1-055",
     "trad": "全糖",
     "ja": "甘さ標準",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "quan2 tang2"
   },
   {
     "id": "l1-056",
     "trad": "加冰",
     "ja": "氷追加",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "jia1 bing1"
   },
   {
     "id": "l1-057",
     "trad": "單點",
     "ja": "単品注文",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "dan1 dian3"
   },
   {
     "id": "l1-058",
     "trad": "套餐",
     "ja": "セットメニュー",
-    "level": 1,
-    "length": 2,
     "category": "food",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tao4 can1"
   },
   {
     "id": "l1-059",
     "trad": "候診",
     "ja": "診察待ち",
-    "level": 1,
-    "length": 2,
     "category": "service",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "hou4 zhen3"
   },
   {
     "id": "l1-060",
     "trad": "看診",
     "ja": "診察を受ける",
-    "level": 1,
-    "length": 2,
     "category": "service",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "kan4 zhen3"
   },
   {
     "id": "l1-061",
     "trad": "付款",
     "ja": "支払う",
-    "level": 1,
-    "length": 2,
     "category": "money",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "fu4 kuan3"
   },
   {
     "id": "l1-062",
     "trad": "找零",
     "ja": "お釣りを返す",
-    "level": 1,
-    "length": 2,
     "category": "money",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "zhao3 ling2"
   },
   {
     "id": "l1-063",
     "trad": "藥單",
     "ja": "薬の処方票",
-    "level": 1,
-    "length": 2,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "yao4 dan1"
   },
   {
     "id": "l2-033",
     "trad": "處方箋",
     "ja": "処方箋",
-    "level": 2,
-    "length": 3,
     "category": "object",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "chu3 fang1 jian1"
   },
   {
     "id": "l2-034",
     "trad": "收銀台",
     "ja": "レジカウンター",
-    "level": 2,
-    "length": 3,
     "category": "money",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "shou1 yin2 tai2"
   },
   {
     "id": "l2-035",
     "trad": "售票機",
     "ja": "券売機",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "shou4 piao4 ji1"
   },
   {
     "id": "l2-036",
     "trad": "候機室",
     "ja": "待合室",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "hou4 ji1 shi4"
   },
   {
     "id": "l2-037",
     "trad": "免稅店",
     "ja": "免税店",
-    "level": 2,
-    "length": 3,
     "category": "place",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "mian3 shui4 dian4"
   },
   {
     "id": "l2-038",
     "trad": "行李轉盤",
     "ja": "手荷物受取台",
-    "level": 2,
-    "length": 4,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "xing2 li3 zhuan3 pan2"
   },
   {
     "id": "l2-039",
     "trad": "託運行李",
     "ja": "預け荷物",
-    "level": 2,
-    "length": 4,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "tuo1 yun4 xing2 li3"
   },
   {
     "id": "l2-040",
     "trad": "隨身行李",
     "ja": "機内持込荷物",
-    "level": 2,
-    "length": 4,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "sui2 shen1 xing2 li3"
   },
   {
     "id": "l2-041",
     "trad": "報到櫃檯",
     "ja": "チェックインカウンター",
-    "level": 2,
-    "length": 4,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "bao4 dao4 gui4 tai2"
   },
   {
     "id": "l2-042",
     "trad": "掛號費",
     "ja": "受付料",
-    "level": 2,
-    "length": 3,
     "category": "money",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "gua4 hao4 fei4"
   },
   {
     "id": "l2-043",
     "trad": "安檢口",
     "ja": "保安検査場",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "an1 jian3 kou3"
   },
   {
     "id": "l2-044",
     "trad": "登機時間",
     "ja": "搭乗時間",
-    "level": 2,
-    "length": 4,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "deng1 ji1 shi2 jian1"
   },
   {
     "id": "l2-045",
     "trad": "摩托車",
     "ja": "オートバイ",
-    "level": 2,
-    "length": 3,
     "category": "transit",
-    "taiwanPriority": true,
-    "sources": ["seed"],
     "pronunciation": "mo2 tuo1 che1"
+  },
+  {
+    "id": "l3-019",
+    "trad": "計程車",
+    "ja": "タクシー",
+    "category": "transit",
+    "pronunciation": "ji4 cheng2 che1"
+  },
+  {
+    "id": "l3-020",
+    "trad": "高鐵站",
+    "ja": "高鉄駅",
+    "category": "transit",
+    "pronunciation": "gao1 tie3 zhan4"
+  },
+  {
+    "id": "l3-021",
+    "trad": "交通卡",
+    "ja": "交通カード",
+    "category": "transit",
+    "pronunciation": "jiao1 tong1 ka3"
+  },
+  {
+    "id": "l3-022",
+    "trad": "一卡通",
+    "ja": "交通ICカード",
+    "category": "transit",
+    "pronunciation": "yi1 ka3 tong1"
+  },
+  {
+    "id": "l3-023",
+    "trad": "火車票",
+    "ja": "乗車券",
+    "category": "transit",
+    "pronunciation": "huo3 che1 piao4"
+  },
+  {
+    "id": "l3-024",
+    "trad": "公車路線",
+    "ja": "バス路線",
+    "category": "transit",
+    "pronunciation": "gong1 che1 lu4 xian4"
+  },
+  {
+    "id": "l3-025",
+    "trad": "公車時刻表",
+    "ja": "バス時刻表",
+    "category": "transit",
+    "pronunciation": "gong1 che1 shi2 ke4 biao3"
+  },
+  {
+    "id": "l3-026",
+    "trad": "末班車",
+    "ja": "最終便",
+    "category": "transit",
+    "pronunciation": "mo4 ban1 che1"
+  },
+  {
+    "id": "l3-027",
+    "trad": "首班車",
+    "ja": "始発便",
+    "category": "transit",
+    "pronunciation": "shou3 ban1 che1"
+  },
+  {
+    "id": "l3-028",
+    "trad": "轉乘站",
+    "ja": "乗り換え駅",
+    "category": "transit",
+    "pronunciation": "zhuan3 cheng2 zhan4"
+  },
+  {
+    "id": "l3-029",
+    "trad": "轉運站",
+    "ja": "バスターミナル",
+    "category": "transit",
+    "pronunciation": "zhuan3 yun4 zhan4"
+  },
+  {
+    "id": "l3-030",
+    "trad": "自行車道",
+    "ja": "自転車道",
+    "category": "transit",
+    "pronunciation": "zi4 xing2 che1 dao4"
+  },
+  {
+    "id": "l3-031",
+    "trad": "停車格",
+    "ja": "駐車枠",
+    "category": "transit",
+    "pronunciation": "ting2 che1 ge2"
+  },
+  {
+    "id": "l3-032",
+    "trad": "手扶梯",
+    "ja": "エスカレーター",
+    "category": "transit",
+    "pronunciation": "shou3 fu2 ti1"
+  },
+  {
+    "id": "l3-033",
+    "trad": "地下道",
+    "ja": "地下道",
+    "category": "transit",
+    "pronunciation": "di4 xia4 dao4"
+  },
+  {
+    "id": "l3-034",
+    "trad": "人行天橋",
+    "ja": "歩道橋",
+    "category": "transit",
+    "pronunciation": "ren2 xing2 tian1 qiao2"
+  },
+  {
+    "id": "l3-035",
+    "trad": "候車亭",
+    "ja": "バス待合所",
+    "category": "transit",
+    "pronunciation": "hou4 che1 ting2"
+  },
+  {
+    "id": "l3-036",
+    "trad": "車站大廳",
+    "ja": "駅コンコース",
+    "category": "transit",
+    "pronunciation": "che1 zhan4 da4 ting1"
+  },
+  {
+    "id": "l3-037",
+    "trad": "捷運出口",
+    "ja": "地下鉄出口",
+    "category": "transit",
+    "pronunciation": "jie2 yun4 chu1 kou3"
+  },
+  {
+    "id": "l3-038",
+    "trad": "自動售票機",
+    "ja": "自動券売機",
+    "category": "transit",
+    "pronunciation": "zi4 dong4 shou4 piao4 ji1"
+  },
+  {
+    "id": "l3-039",
+    "trad": "高鐵月台",
+    "ja": "高鉄ホーム",
+    "category": "transit",
+    "pronunciation": "gao1 tie3 yue4 tai2"
+  },
+  {
+    "id": "l3-040",
+    "trad": "自由座車廂",
+    "ja": "自由席車両",
+    "category": "transit",
+    "pronunciation": "zi4 you2 zuo4 che1 xiang1"
+  },
+  {
+    "id": "l3-041",
+    "trad": "對號座",
+    "ja": "指定席",
+    "category": "transit",
+    "pronunciation": "dui4 hao4 zuo4"
+  },
+  {
+    "id": "l3-042",
+    "trad": "區間車",
+    "ja": "普通列車",
+    "category": "transit",
+    "pronunciation": "qu1 jian1 che1"
+  },
+  {
+    "id": "l3-043",
+    "trad": "加油站",
+    "ja": "ガソリンスタンド",
+    "category": "transit",
+    "pronunciation": "jia1 you2 zhan4"
+  },
+  {
+    "id": "l3-044",
+    "trad": "交通罰單",
+    "ja": "交通違反切符",
+    "category": "transit",
+    "pronunciation": "jiao1 tong1 fa2 dan1"
+  },
+  {
+    "id": "l3-045",
+    "trad": "租車公司",
+    "ja": "レンタカー会社",
+    "category": "transit",
+    "pronunciation": "zu1 che1 gong1 si1"
+  },
+  {
+    "id": "l3-046",
+    "trad": "蔥油餅",
+    "ja": "ネギ餅",
+    "category": "food",
+    "pronunciation": "cong1 you2 bing3"
+  },
+  {
+    "id": "l3-047",
+    "trad": "鹹豆漿",
+    "ja": "塩味豆乳",
+    "category": "food",
+    "pronunciation": "xian2 dou4 jiang1"
+  },
+  {
+    "id": "l3-048",
+    "trad": "豆漿店",
+    "ja": "豆乳店",
+    "category": "food",
+    "pronunciation": "dou4 jiang1 dian4"
+  },
+  {
+    "id": "l3-049",
+    "trad": "蘿蔔糕",
+    "ja": "大根餅",
+    "category": "food",
+    "pronunciation": "luo2 bo5 gao1"
+  },
+  {
+    "id": "l3-050",
+    "trad": "滷肉飯",
+    "ja": "ルーロー飯",
+    "category": "food",
+    "pronunciation": "lu3 rou4 fan4"
+  },
+  {
+    "id": "l3-051",
+    "trad": "雞肉飯",
+    "ja": "鶏肉飯",
+    "category": "food",
+    "pronunciation": "ji1 rou4 fan4"
+  },
+  {
+    "id": "l3-052",
+    "trad": "牛肉麵",
+    "ja": "牛肉麺",
+    "category": "food",
+    "pronunciation": "niu2 rou4 mian4"
+  },
+  {
+    "id": "l3-053",
+    "trad": "小籠包",
+    "ja": "小籠包",
+    "category": "food",
+    "pronunciation": "xiao3 long2 bao1"
+  },
+  {
+    "id": "l3-054",
+    "trad": "蚵仔煎",
+    "ja": "カキオムレツ",
+    "category": "food",
+    "pronunciation": "e2 zi3 jian1"
+  },
+  {
+    "id": "l3-055",
+    "trad": "臭豆腐",
+    "ja": "臭豆腐",
+    "category": "food",
+    "pronunciation": "chou4 dou4 fu5"
+  },
+  {
+    "id": "l3-056",
+    "trad": "鹽酥雞",
+    "ja": "台湾唐揚げ",
+    "category": "food",
+    "pronunciation": "yan2 su1 ji1"
+  },
+  {
+    "id": "l3-057",
+    "trad": "雞排店",
+    "ja": "チキンカツ店",
+    "category": "food",
+    "pronunciation": "ji1 pai2 dian4"
+  },
+  {
+    "id": "l3-058",
+    "trad": "珍珠紅茶",
+    "ja": "タピオカ紅茶",
+    "category": "food",
+    "pronunciation": "zhen1 zhu1 hong2 cha2"
+  },
+  {
+    "id": "l3-059",
+    "trad": "芒果冰",
+    "ja": "マンゴーかき氷",
+    "category": "food",
+    "pronunciation": "mang2 guo3 bing1"
+  },
+  {
+    "id": "l3-060",
+    "trad": "刨冰店",
+    "ja": "かき氷店",
+    "category": "food",
+    "pronunciation": "bao4 bing1 dian4"
+  },
+  {
+    "id": "l3-061",
+    "trad": "甜不辣",
+    "ja": "台湾おでん",
+    "category": "food",
+    "pronunciation": "tian2 bu4 la4"
+  },
+  {
+    "id": "l3-062",
+    "trad": "豬血糕",
+    "ja": "豚血もち",
+    "category": "food",
+    "pronunciation": "zhu1 xie3 gao1"
+  },
+  {
+    "id": "l3-063",
+    "trad": "米粉湯",
+    "ja": "ビーフン汁",
+    "category": "food",
+    "pronunciation": "mi3 fen3 tang1"
+  },
+  {
+    "id": "l3-064",
+    "trad": "擔仔麵",
+    "ja": "タンツー麺",
+    "category": "food",
+    "pronunciation": "dan4 zai3 mian4"
+  },
+  {
+    "id": "l3-065",
+    "trad": "自助餐",
+    "ja": "セルフ食堂",
+    "category": "food",
+    "pronunciation": "zi4 zhu4 can1"
+  },
+  {
+    "id": "l3-066",
+    "trad": "便當店",
+    "ja": "弁当店",
+    "category": "food",
+    "pronunciation": "bian4 dang1 dian4"
+  },
+  {
+    "id": "l3-067",
+    "trad": "飲料店",
+    "ja": "ドリンク店",
+    "category": "food",
+    "pronunciation": "yin3 liao4 dian4"
+  },
+  {
+    "id": "l3-068",
+    "trad": "菜市場",
+    "ja": "食品市場",
+    "category": "food",
+    "pronunciation": "cai4 shi4 chang3"
+  },
+  {
+    "id": "l3-069",
+    "trad": "傳統市場",
+    "ja": "伝統市場",
+    "category": "food",
+    "pronunciation": "chuan2 tong3 shi4 chang3"
+  },
+  {
+    "id": "l3-070",
+    "trad": "夜市攤位",
+    "ja": "夜市屋台",
+    "category": "food",
+    "pronunciation": "ye4 shi4 tan1 wei4"
+  },
+  {
+    "id": "l3-071",
+    "trad": "美食街",
+    "ja": "フードコート",
+    "category": "food",
+    "pronunciation": "mei3 shi2 jie1"
+  },
+  {
+    "id": "l3-072",
+    "trad": "點餐機",
+    "ja": "注文端末",
+    "category": "food",
+    "pronunciation": "dian3 can1 ji1"
+  },
+  {
+    "id": "l3-073",
+    "trad": "取餐號碼",
+    "ja": "受取番号",
+    "category": "food",
+    "pronunciation": "qu3 can1 hao4 ma3"
+  },
+  {
+    "id": "l3-074",
+    "trad": "內用區",
+    "ja": "店内席",
+    "category": "food",
+    "pronunciation": "nei4 yong4 qu1"
+  },
+  {
+    "id": "l3-075",
+    "trad": "外帶袋",
+    "ja": "持ち帰り袋",
+    "category": "food",
+    "pronunciation": "wai4 dai4 dai4"
+  },
+  {
+    "id": "l3-076",
+    "trad": "環保杯",
+    "ja": "エコカップ",
+    "category": "food",
+    "pronunciation": "huan2 bao3 bei1"
+  },
+  {
+    "id": "l3-077",
+    "trad": "塑膠袋",
+    "ja": "ビニール袋",
+    "category": "food",
+    "pronunciation": "su4 jiao1 dai4"
+  },
+  {
+    "id": "l3-078",
+    "trad": "紙吸管",
+    "ja": "紙ストロー",
+    "category": "food",
+    "pronunciation": "zhi3 xi1 guan3"
+  },
+  {
+    "id": "l3-079",
+    "trad": "電子發票",
+    "ja": "電子レシート",
+    "category": "money",
+    "pronunciation": "dian4 zi3 fa1 piao4"
+  },
+  {
+    "id": "l3-080",
+    "trad": "統一發票",
+    "ja": "統一レシート",
+    "category": "money",
+    "pronunciation": "tong3 yi1 fa1 piao4"
+  },
+  {
+    "id": "l3-081",
+    "trad": "發票載具",
+    "ja": "レシート用バーコード",
+    "category": "money",
+    "pronunciation": "fa1 piao4 zai4 ju4"
+  },
+  {
+    "id": "l3-082",
+    "trad": "會員卡",
+    "ja": "会員カード",
+    "category": "money",
+    "pronunciation": "hui4 yuan2 ka3"
+  },
+  {
+    "id": "l3-083",
+    "trad": "金融卡",
+    "ja": "キャッシュカード",
+    "category": "money",
+    "pronunciation": "jin1 rong2 ka3"
+  },
+  {
+    "id": "l3-084",
+    "trad": "行動支付",
+    "ja": "モバイル決済",
+    "category": "money",
+    "pronunciation": "xing2 dong4 zhi1 fu4"
+  },
+  {
+    "id": "l3-085",
+    "trad": "現金支付",
+    "ja": "現金払い",
+    "category": "money",
+    "pronunciation": "xian4 jin1 zhi1 fu4"
+  },
+  {
+    "id": "l3-086",
+    "trad": "刷卡機",
+    "ja": "カード端末",
+    "category": "money",
+    "pronunciation": "shua1 ka3 ji1"
+  },
+  {
+    "id": "l3-087",
+    "trad": "自助結帳",
+    "ja": "セルフレジ",
+    "category": "money",
+    "pronunciation": "zi4 zhu4 jie2 zhang4"
+  },
+  {
+    "id": "l3-088",
+    "trad": "退貨單",
+    "ja": "返品票",
+    "category": "money",
+    "pronunciation": "tui4 huo4 dan1"
+  },
+  {
+    "id": "l3-089",
+    "trad": "保固書",
+    "ja": "保証書",
+    "category": "money",
+    "pronunciation": "bao3 gu4 shu1"
+  },
+  {
+    "id": "l3-090",
+    "trad": "折價券",
+    "ja": "割引券",
+    "category": "money",
+    "pronunciation": "zhe2 jia4 quan4"
+  },
+  {
+    "id": "l3-091",
+    "trad": "優惠券",
+    "ja": "クーポン",
+    "category": "money",
+    "pronunciation": "you1 hui4 quan4"
+  },
+  {
+    "id": "l3-092",
+    "trad": "點數卡",
+    "ja": "ポイントカード",
+    "category": "money",
+    "pronunciation": "dian3 shu4 ka3"
+  },
+  {
+    "id": "l3-093",
+    "trad": "儲值卡",
+    "ja": "チャージカード",
+    "category": "money",
+    "pronunciation": "chu3 zhi2 ka3"
+  },
+  {
+    "id": "l3-094",
+    "trad": "購物袋",
+    "ja": "買い物袋",
+    "category": "money",
+    "pronunciation": "gou4 wu4 dai4"
+  },
+  {
+    "id": "l3-095",
+    "trad": "試衣間",
+    "ja": "試着室",
+    "category": "place",
+    "pronunciation": "shi4 yi1 jian1"
+  },
+  {
+    "id": "l3-096",
+    "trad": "尺寸表",
+    "ja": "サイズ表",
+    "category": "object",
+    "pronunciation": "chi3 cun4 biao3"
+  },
+  {
+    "id": "l3-097",
+    "trad": "商品架",
+    "ja": "商品棚",
+    "category": "object",
+    "pronunciation": "shang1 pin3 jia4"
+  },
+  {
+    "id": "l3-098",
+    "trad": "購物車",
+    "ja": "ショッピングカート",
+    "category": "object",
+    "pronunciation": "gou4 wu4 che1"
+  },
+  {
+    "id": "l3-099",
+    "trad": "停車費",
+    "ja": "駐車料金",
+    "category": "money",
+    "pronunciation": "ting2 che1 fei4"
+  },
+  {
+    "id": "l3-100",
+    "trad": "提款卡",
+    "ja": "ATMカード",
+    "category": "money",
+    "pronunciation": "ti2 kuan3 ka3"
+  },
+  {
+    "id": "l3-101",
+    "trad": "提款密碼",
+    "ja": "暗証番号",
+    "category": "money",
+    "pronunciation": "ti2 kuan3 mi4 ma3"
+  },
+  {
+    "id": "l3-102",
+    "trad": "換匯所",
+    "ja": "両替所",
+    "category": "money",
+    "pronunciation": "huan4 hui4 suo3"
+  },
+  {
+    "id": "l3-103",
+    "trad": "匯率表",
+    "ja": "為替レート",
+    "category": "money",
+    "pronunciation": "hui4 lv4 biao3"
+  },
+  {
+    "id": "l3-104",
+    "trad": "健保卡",
+    "ja": "健保カード",
+    "category": "service",
+    "pronunciation": "jian4 bao3 ka3"
+  },
+  {
+    "id": "l3-105",
+    "trad": "身分證",
+    "ja": "身分証",
+    "category": "service",
+    "pronunciation": "shen1 fen4 zheng4"
+  },
+  {
+    "id": "l3-106",
+    "trad": "護照號碼",
+    "ja": "パスポート番号",
+    "category": "service",
+    "pronunciation": "hu4 zhao4 hao4 ma3"
+  },
+  {
+    "id": "l3-107",
+    "trad": "掛號櫃檯",
+    "ja": "診療受付",
+    "category": "service",
+    "pronunciation": "gua4 hao4 gui4 tai2"
+  },
+  {
+    "id": "l3-108",
+    "trad": "批價櫃檯",
+    "ja": "会計窓口",
+    "category": "service",
+    "pronunciation": "pi1 jia4 gui4 tai2"
+  },
+  {
+    "id": "l3-109",
+    "trad": "領藥號碼",
+    "ja": "薬受取番号",
+    "category": "service",
+    "pronunciation": "ling3 yao4 hao4 ma3"
+  },
+  {
+    "id": "l3-110",
+    "trad": "領藥處",
+    "ja": "薬受取窓口",
+    "category": "service",
+    "pronunciation": "ling3 yao4 chu4"
+  },
+  {
+    "id": "l3-111",
+    "trad": "門診部",
+    "ja": "外来部門",
+    "category": "service",
+    "pronunciation": "men2 zhen3 bu4"
+  },
+  {
+    "id": "l3-112",
+    "trad": "診療室",
+    "ja": "診察室",
+    "category": "service",
+    "pronunciation": "zhen3 liao2 shi4"
+  },
+  {
+    "id": "l3-113",
+    "trad": "等候區",
+    "ja": "待機エリア",
+    "category": "service",
+    "pronunciation": "deng3 hou4 qu1"
+  },
+  {
+    "id": "l3-114",
+    "trad": "叫號機",
+    "ja": "番号呼出機",
+    "category": "service",
+    "pronunciation": "jiao4 hao4 ji1"
+  },
+  {
+    "id": "l3-115",
+    "trad": "血壓計",
+    "ja": "血圧計",
+    "category": "service",
+    "pronunciation": "xue4 ya1 ji4"
+  },
+  {
+    "id": "l3-116",
+    "trad": "體溫計",
+    "ja": "体温計",
+    "category": "service",
+    "pronunciation": "ti3 wen1 ji4"
+  },
+  {
+    "id": "l3-117",
+    "trad": "消毒液",
+    "ja": "消毒液",
+    "category": "service",
+    "pronunciation": "xiao1 du2 ye4"
+  },
+  {
+    "id": "l3-118",
+    "trad": "防蚊液",
+    "ja": "虫よけ液",
+    "category": "service",
+    "pronunciation": "fang2 wen2 ye4"
+  },
+  {
+    "id": "l3-119",
+    "trad": "暈車藥",
+    "ja": "酔い止め薬",
+    "category": "service",
+    "pronunciation": "yun1 che1 yao4"
+  },
+  {
+    "id": "l3-120",
+    "trad": "止痛藥",
+    "ja": "痛み止め",
+    "category": "service",
+    "pronunciation": "zhi3 tong4 yao4"
+  },
+  {
+    "id": "l3-121",
+    "trad": "牙線棒",
+    "ja": "フロスピック",
+    "category": "service",
+    "pronunciation": "ya2 xian4 bang4"
+  },
+  {
+    "id": "l3-122",
+    "trad": "護理站",
+    "ja": "ナースステーション",
+    "category": "service",
+    "pronunciation": "hu4 li3 zhan4"
+  },
+  {
+    "id": "l3-123",
+    "trad": "急診入口",
+    "ja": "救急入口",
+    "category": "service",
+    "pronunciation": "ji2 zhen3 ru4 kou3"
+  },
+  {
+    "id": "l3-124",
+    "trad": "住院病房",
+    "ja": "入院病棟",
+    "category": "service",
+    "pronunciation": "zhu4 yuan4 bing4 fang2"
+  },
+  {
+    "id": "l3-125",
+    "trad": "派出所",
+    "ja": "交番",
+    "category": "service",
+    "pronunciation": "pai4 chu1 suo3"
+  },
+  {
+    "id": "l3-126",
+    "trad": "警察局",
+    "ja": "警察署",
+    "category": "service",
+    "pronunciation": "jing3 cha2 ju2"
+  },
+  {
+    "id": "l3-127",
+    "trad": "消防隊",
+    "ja": "消防署",
+    "category": "service",
+    "pronunciation": "xiao1 fang2 dui4"
+  },
+  {
+    "id": "l3-128",
+    "trad": "市政府",
+    "ja": "市役所",
+    "category": "service",
+    "pronunciation": "shi4 zheng4 fu3"
+  },
+  {
+    "id": "l3-129",
+    "trad": "區公所",
+    "ja": "区役所",
+    "category": "service",
+    "pronunciation": "qu1 gong1 suo3"
+  },
+  {
+    "id": "l3-130",
+    "trad": "戶政事務所",
+    "ja": "戸政事務所",
+    "category": "service",
+    "pronunciation": "hu4 zheng4 shi4 wu4 suo3"
+  },
+  {
+    "id": "l3-131",
+    "trad": "移民署",
+    "ja": "移民署",
+    "category": "service",
+    "pronunciation": "yi2 min2 shu3"
+  },
+  {
+    "id": "l3-132",
+    "trad": "便民服務",
+    "ja": "行政サービス",
+    "category": "service",
+    "pronunciation": "bian4 min2 fu2 wu4"
+  },
+  {
+    "id": "l3-133",
+    "trad": "報案電話",
+    "ja": "通報電話",
+    "category": "service",
+    "pronunciation": "bao4 an4 dian4 hua4"
+  },
+  {
+    "id": "l3-134",
+    "trad": "遊客中心",
+    "ja": "ビジターセンター",
+    "category": "place",
+    "pronunciation": "you2 ke4 zhong1 xin1"
+  },
+  {
+    "id": "l3-135",
+    "trad": "資訊中心",
+    "ja": "情報センター",
+    "category": "place",
+    "pronunciation": "zi1 xun4 zhong1 xin1"
+  },
+  {
+    "id": "l3-136",
+    "trad": "售票窗口",
+    "ja": "チケット窓口",
+    "category": "place",
+    "pronunciation": "shou4 piao4 chuang1 kou3"
+  },
+  {
+    "id": "l3-137",
+    "trad": "景點入口",
+    "ja": "観光地入口",
+    "category": "place",
+    "pronunciation": "jing3 dian3 ru4 kou3"
+  },
+  {
+    "id": "l3-138",
+    "trad": "洗衣店",
+    "ja": "クリーニング店",
+    "category": "place",
+    "pronunciation": "xi3 yi1 dian4"
+  },
+  {
+    "id": "l3-139",
+    "trad": "自助洗衣店",
+    "ja": "コインランドリー",
+    "category": "place",
+    "pronunciation": "zi4 zhu4 xi3 yi1 dian4"
+  },
+  {
+    "id": "l3-140",
+    "trad": "訂房網站",
+    "ja": "宿泊予約サイト",
+    "category": "place",
+    "pronunciation": "ding4 fang2 wang3 zhan4"
+  },
+  {
+    "id": "l3-141",
+    "trad": "入住時間",
+    "ja": "チェックイン時間",
+    "category": "place",
+    "pronunciation": "ru4 zhu4 shi2 jian1"
+  },
+  {
+    "id": "l3-142",
+    "trad": "退房時間",
+    "ja": "チェックアウト時間",
+    "category": "place",
+    "pronunciation": "tui4 fang2 shi2 jian1"
+  },
+  {
+    "id": "l3-143",
+    "trad": "房間鑰匙",
+    "ja": "部屋の鍵",
+    "category": "place",
+    "pronunciation": "fang2 jian1 yao4 shi5"
+  },
+  {
+    "id": "l3-144",
+    "trad": "櫃檯人員",
+    "ja": "フロントスタッフ",
+    "category": "place",
+    "pronunciation": "gui4 tai2 ren2 yuan2"
+  },
+  {
+    "id": "l3-145",
+    "trad": "行李寄放",
+    "ja": "荷物預かり",
+    "category": "place",
+    "pronunciation": "xing2 li3 ji4 fang4"
+  },
+  {
+    "id": "l3-146",
+    "trad": "住宿費",
+    "ja": "宿泊費",
+    "category": "money",
+    "pronunciation": "zhu4 su4 fei4"
+  },
+  {
+    "id": "l3-147",
+    "trad": "雙人房",
+    "ja": "ツインルーム",
+    "category": "place",
+    "pronunciation": "shuang1 ren2 fang2"
+  },
+  {
+    "id": "l3-148",
+    "trad": "單人房",
+    "ja": "シングルルーム",
+    "category": "place",
+    "pronunciation": "dan1 ren2 fang2"
+  },
+  {
+    "id": "l3-149",
+    "trad": "禁菸房",
+    "ja": "禁煙室",
+    "category": "place",
+    "pronunciation": "jin4 yan1 fang2"
+  },
+  {
+    "id": "l3-150",
+    "trad": "熱水器",
+    "ja": "給湯器",
+    "category": "object",
+    "pronunciation": "re4 shui3 qi4"
+  },
+  {
+    "id": "l3-151",
+    "trad": "吹風機",
+    "ja": "ドライヤー",
+    "category": "object",
+    "pronunciation": "chui1 feng1 ji1"
   }
 ]

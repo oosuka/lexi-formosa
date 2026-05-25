@@ -1,6 +1,6 @@
 {
   "name": "lexi-formosa",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -17,25 +17,26 @@
     "setup:data": "node scripts/setup-data.mjs",
     "generate:data": "node scripts/generate-vocabulary.mjs",
     "check:data": "node scripts/validate-vocabulary.mjs",
+    "audit:data": "node scripts/audit-vocabulary.mjs",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "prepare": "nuxt prepare"
   },
   "dependencies": {
-    "@vueuse/core": "^14.2.1",
-    "nuxt": "^4.4.2",
-    "vue": "^3.5.32",
-    "zod": "^4.3.6"
+    "@vueuse/core": "^14.3.0",
+    "nuxt": "^4.4.6",
+    "vue": "^3.5.34",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.12",
-    "@nuxt/test-utils": "^4.0.2",
-    "@playwright/test": "^1.59.1",
-    "@vitest/coverage-v8": "^4.1.4",
-    "@vue/test-utils": "^2.4.6",
+    "@biomejs/biome": "^2.4.15",
+    "@nuxt/test-utils": "^4.0.3",
+    "@playwright/test": "^1.60.0",
+    "@vitest/coverage-v8": "^4.1.7",
+    "@vue/test-utils": "^2.4.10",
     "happy-dom": "^20.9.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.7"
   },
   "volta": {
     "node": "24.15.0",
