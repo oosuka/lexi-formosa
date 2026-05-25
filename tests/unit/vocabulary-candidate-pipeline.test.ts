@@ -81,6 +81,32 @@ describe('vocabulary candidate pipeline', () => {
     ]);
   });
 
+  it('分類詞併記があっても有効な日本語ラベルは公開候補に残す', async () => {
+    const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
+
+    const candidates = buildCandidates({
+      tocflRows: [{ trad: '公車', tocflLevel: 1, category: '交通', source: 'tocfl' }],
+      tbclRows: [],
+      mjdicEntries: [
+        {
+          trad: '公車',
+          meansJa: 'バス,台',
+          means: 'bus',
+          pronunciation: 'gong1 che1',
+        },
+      ],
+    });
+
+    expect(candidates).toEqual([
+      expect.objectContaining({
+        trad: '公車',
+        canonicalJa: 'バス',
+        publishable: true,
+        rejectionReasons: [],
+      }),
+    ]);
+  });
+
   it('ASCII だけの日本語ラベルは非公開にして却下理由を残す', async () => {
     const { buildCandidates } = await import('../../scripts/lib/vocabulary-candidate-pipeline.mjs');
 

@@ -209,13 +209,16 @@ const deriveDistractorTags = (candidate) => {
   return [...tags];
 };
 
-const hasClassifierOnlyJapaneseGloss = (candidate) =>
-  candidate.rawGlosses.some((gloss) =>
+const hasOnlyClassifierJapaneseGlosses = (candidate) => {
+  const parts = candidate.rawGlosses.flatMap((gloss) =>
     String(gloss.meansJa ?? '')
       .split(/[／/、，,;；]/)
       .map((part) => part.trim())
-      .some((part) => classifierOnlyGlosses.has(part))
+      .filter(Boolean)
   );
+
+  return parts.length > 0 && parts.every((part) => classifierOnlyGlosses.has(part));
+};
 
 const evaluateCandidate = (candidate) => {
   const preferredLabel = importOverrides.get(candidate.trad);
@@ -244,7 +247,10 @@ const evaluateCandidate = (candidate) => {
 
   if (!next.canonicalJa) {
     next.rejectionReasons.push('ja:missing');
-  } else if (classifierOnlyGlosses.has(next.canonicalJa) || hasClassifierOnlyJapaneseGloss(next)) {
+  } else if (
+    classifierOnlyGlosses.has(next.canonicalJa) ||
+    hasOnlyClassifierJapaneseGlosses(next)
+  ) {
     next.rejectionReasons.push('ja:classifier-only');
   } else if (asciiOnlyJapaneseLabelPattern.test(next.canonicalJa)) {
     next.rejectionReasons.push('ja:ascii-label');
