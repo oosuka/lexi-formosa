@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { usePreferredReducedMotion } from '@vueuse/core';
-
 import { useFeedbackAudio } from '~/composables/useFeedbackAudio';
 import { type LevelHighScore, useHighScores } from '~/composables/useHighScores';
 import { useTraditionalTrainer } from '~/composables/useTraditionalTrainer';
@@ -18,7 +16,6 @@ import {
 
 const trainer = useTraditionalTrainer();
 const appVersion = useRuntimeConfig().public.appVersion;
-const reducedMotionPreference = usePreferredReducedMotion();
 type MetadataStatus = 'loading' | 'ready' | 'failed';
 
 const formatVocabularyCountLabel = (
@@ -63,7 +60,6 @@ const sessionRecordBaseline = ref<Record<Level, LevelHighScore>>({
   3: { score: 0, streak: 0 },
 });
 
-const reducedMotion = computed(() => reducedMotionPreference.value === 'reduce');
 const currentQuestion = computed(() => trainer.game.value.currentQuestion);
 const currentQuestionTrad = computed(() => currentQuestion.value?.trad ?? null);
 const pageLoading = computed(
@@ -462,7 +458,7 @@ useSeoMeta({
 <template>
   <main
     class="page-shell"
-    :class="{ 'page-shell--play': !showSessionStart, 'reduce-motion': reducedMotion }"
+    :class="{ 'page-shell--play': !showSessionStart }"
   >
     <section v-if="showSessionStart" class="hero-panel hero-panel--start-screen">
       <div

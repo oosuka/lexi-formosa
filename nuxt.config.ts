@@ -5,6 +5,14 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true,
   },
+  sourcemap: false,
+  vite: {
+    build: {
+      modulePreload: {
+        polyfill: false,
+      },
+    },
+  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {

@@ -9,19 +9,12 @@ import type { GameState } from '~~/shared/types/vocabulary';
 
 import { questionOne, questionTwo } from '../fixtures/vocabulary';
 
-const preferredReducedMotion = vi.hoisted(() => ({
-  value: 'no-preference' as 'no-preference' | 'reduce',
-}));
 const unlockAudioEffectsMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playFeedbackSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playCriticalLifeSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playGameOverSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playRecordCelebrationSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
 const playLevelSelectSoundMock = vi.hoisted(() => vi.fn(async () => undefined));
-
-vi.mock('@vueuse/core', () => ({
-  usePreferredReducedMotion: () => preferredReducedMotion,
-}));
 
 vi.mock('~/composables/useFeedbackAudio', () => ({
   useFeedbackAudio: () => ({
@@ -148,7 +141,6 @@ describe('index page', () => {
 
   beforeEach(() => {
     window.localStorage.clear();
-    preferredReducedMotion.value = 'no-preference';
     unlockAudioEffectsMock.mockReset();
     playFeedbackSoundMock.mockReset();
     playCriticalLifeSoundMock.mockReset();

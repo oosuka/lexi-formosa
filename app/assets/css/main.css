@@ -1136,28 +1136,6 @@ button {
   outline-offset: 3px;
 }
 
-.reduce-motion .hero-panel,
-.reduce-motion .workspace-grid,
-.reduce-motion .surface-card,
-.reduce-motion .question-stage,
-.reduce-motion .word-card,
-.reduce-motion .level-card,
-.reduce-motion .choice-card,
-.reduce-motion .choice-card--correct,
-.reduce-motion .choice-card--incorrect,
-.reduce-motion .choice-card--correct-impact,
-.reduce-motion .choice-card--incorrect-impact,
-.reduce-motion .choice-card--correct-reveal,
-.reduce-motion .life-meter--critical .life-meter__slot--active,
-.reduce-motion .quiz-panel--correct-impact,
-.reduce-motion .quiz-panel--incorrect-impact,
-.reduce-motion .result-banner--correct-impact .result-banner__copy,
-.reduce-motion .result-banner--incorrect-impact .result-banner__copy,
-.reduce-motion .game-over-panel--celebration {
-  animation: none;
-  transform: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-panel,
   .workspace-grid,
