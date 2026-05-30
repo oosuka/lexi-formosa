@@ -353,6 +353,16 @@ test('モバイル幅でも主要状態で横にはみ出さない', async ({ pa
   await expectNoHorizontalOverflow(page);
 });
 
+test('狭いスマホ幅の開始画面でも横にはみ出さない', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 320, height: 844 });
+
+  await page.goto('/');
+
+  await expect(page.getByRole('heading', { name: 'LexiFormosa' })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
 test('モバイル幅では回答後に不要な選択肢を隠して次の問題を画面内に収める', async ({ page }) => {
   await installMockWordlists(page);
   await page.setViewportSize({ width: 390, height: 844 });

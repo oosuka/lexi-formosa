@@ -1224,7 +1224,7 @@ button {
   }
 
   .hero-brand h1 {
-    font-size: 3.4rem;
+    font-size: clamp(2.55rem, 13.5vw, 3.4rem);
   }
 
   .hero-text {
