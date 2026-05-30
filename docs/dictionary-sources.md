@@ -6,13 +6,17 @@
 
 - TOCFL word list
   - URL: `https://raw.githubusercontent.com/PSeitz/tocfl/main/tocfl_words.json`
+  - Upstream: `https://github.com/PSeitz/tocfl`
   - 用途: 台湾華語寄りの出題候補を確保
+  - 注意: upstream は公式 TOCFL / COCT / NAER サイト由来のデータセットと説明していますが、リポジトリ単体の license file は確認できません。生成物の再配布前に元データの利用条件を確認してください。
 - TBCL
   - 指定: `TBCL_SOURCE_PATH` / `TBCL_SOURCE_URL`
   - 用途: 台湾華語能力基準による補助レベル判定
+  - 注意: 公式サイトには国立教育研究院の copyright 表示があります。TBCL 由来データを含む生成物の再配布可否は、このリポジトリでは保証しません。
 - MJdic / CC-CEDICT Japanese translation
   - URL: `https://raw.githubusercontent.com/code4fukui/MJdic/main/cedict_ts.csv`
   - 用途: 日本語訳候補と発音の補助
+  - 注意: MJdic の project license は MIT ですが、README は辞書データが CC-CEDICT 由来で CC BY-SA と説明しています。CC-CEDICT wiki は CC BY-SA 3.0 と表示しています。生成物の再配布では帰属表示と ShareAlike 条件を確認してください。
 - `data/manual-vocabulary.json`
   - 用途: 必ず入れたい高品質 seed、発音補完
   - 形式: `id / trad / ja / category / pronunciation?` のみを保持し、`level / length / sources / taiwanPriority` は生成時に再計算
@@ -24,6 +28,7 @@
 ## Policy
 
 - UI と出題データに簡体字を混入させません。
+- 2026-05-30 のUIフルリニューアルでは語彙生成・辞書ソース・再配布方針は変更していません。
 - Level は `1文字 / 2文字 / 3文字以上` で判定し、Level 3 は実用性の高い語に絞ります。
 - 公開デッキは TOCFL/TBCL を根拠にできる候補だけを対象にし、MJdic 単独候補は公開しません。
 - 日本語訳は単一ソースをそのまま使わず、複数候補を正規化・採点して選びます。
@@ -33,7 +38,7 @@
 - `data/vocabulary-candidates.json` には publishable 判定と却下理由を残し、落選理由を追跡できるようにします。
 - 発音情報は取得できるものだけ保持し、UI ではピンインとカタカナ補助を表示します。
 - 単語音声は辞書データに同梱せず、ブラウザの `SpeechSynthesis` で再生します。
-- データ再配布の扱いは [NOTICE.md](../NOTICE.md) を確認してください。
+- データ再配布の扱いは [NOTICE.md](../NOTICE.md) を確認してください。生成済み語彙、外部ソーススナップショット、レビュー補助 JSON は MIT License の対象外です。
 
 ## Rebuild
 
@@ -64,3 +69,7 @@ npm run build
 ```
 
 `npm run audit:data` は公開語彙を止める検証ではなく、怪しい日本語ラベルをレビューするための補助です。結果は `data/review-batches/vocabulary-audit.json` に出力し、生成物として Git 管理対象にしません。
+
+## Redistribution
+
+生成済みの `data/vocabulary*.json`、`public/wordlists/*.json`、`data/review-batches/*.json`、`data/source-snapshots/*` は Public リポジトリへ同梱しません。配布したい場合は、TOCFL / TBCL / MJdic / CC-CEDICT それぞれの最新の一次情報を確認し、必要な帰属表示、ライセンス表示、変更表示、ShareAlike 条件を配布物側に明記してください。

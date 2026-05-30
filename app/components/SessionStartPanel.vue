@@ -25,11 +25,11 @@ const emit = defineEmits<{
       </div>
       <div class="session-start-current-level__stats">
         <div class="session-start-current-level__stat">
-          <span class="record-stat-label">Best Score</span>
+          <span class="record-stat-label">最高スコア</span>
           <strong>{{ props.selectedLevelScore }}</strong>
         </div>
         <div class="session-start-current-level__stat">
-          <span class="record-stat-label">Best Streak</span>
+          <span class="record-stat-label">最高連続数</span>
           <strong>{{ props.selectedLevelStreak }}</strong>
         </div>
       </div>

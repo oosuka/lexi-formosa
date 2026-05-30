@@ -54,7 +54,7 @@ describe('useTrainerSessionUi', () => {
     expect(sessionUi.showSessionStart.value).toBe(true);
     expect(sessionUi.showLevelPanel.value).toBe(true);
     expect(sessionUi.canStartSession.value).toBe(true);
-    expect(sessionUi.feedbackBadge.value).toBe('Start');
+    expect(sessionUi.feedbackBadge.value).toBe('開始');
   });
 
   it('回答後は正誤に応じたメッセージと badge を返す', () => {
@@ -98,7 +98,7 @@ describe('useTrainerSessionUi', () => {
     expect(sessionUi.answered.value).toBe(true);
     expect(sessionUi.feedbackTone.value).toBe('correct');
     expect(sessionUi.answerMessage.value).toBe('正解。+10点を獲得しました。');
-    expect(sessionUi.feedbackBadge.value).toBe('Correct');
+    expect(sessionUi.feedbackBadge.value).toBe('正解');
 
     game.value = {
       ...game.value,
@@ -111,11 +111,11 @@ describe('useTrainerSessionUi', () => {
     expect(sessionUi.answerMessage.value).toContain(
       '不正解。正解は「こんにちは」です。残り2回で終了します。'
     );
-    expect(sessionUi.feedbackBadge.value).toBe('Miss');
+    expect(sessionUi.feedbackBadge.value).toBe('不正解');
     expect(sessionUi.feedbackView.value).toEqual({
       variant: 'banner',
       tone: 'incorrect',
-      badge: 'Miss',
+      badge: '不正解',
       message: '不正解。正解は「こんにちは」です。残り2回で終了します。',
       uiError: null,
     });
@@ -151,13 +151,11 @@ describe('useTrainerSessionUi', () => {
     });
 
     expect(sessionUi.feedbackTone.value).toBe('idle');
-    expect(sessionUi.feedbackBadge.value).toBe('Ready');
-    expect(sessionUi.answerMessage.value).toBe(
-      '4つの選択肢から、意味に合うものを1つ選んでください。'
-    );
+    expect(sessionUi.feedbackBadge.value).toBe('回答待ち');
+    expect(sessionUi.answerMessage.value).toBe('意味に合う日本語を4択から1つ選択してください。');
     expect(sessionUi.feedbackView.value).toEqual({
       variant: 'inline',
-      message: '4つの選択肢から、意味に合うものを1つ選んでください。',
+      message: '意味に合う日本語を4択から1つ選択してください。',
       uiError: null,
     });
   });
@@ -193,11 +191,11 @@ describe('useTrainerSessionUi', () => {
 
     expect(sessionUi.showLevelPanel.value).toBe(true);
     expect(sessionUi.feedbackTone.value).toBe('loading');
-    expect(sessionUi.feedbackBadge.value).toBe('Loading');
+    expect(sessionUi.feedbackBadge.value).toBe('読み込み中');
     expect(sessionUi.feedbackView.value).toEqual({
       variant: 'banner',
       tone: 'loading',
-      badge: 'Loading',
+      badge: '読み込み中',
       message: '問題データを読み込んでいます。',
       uiError: null,
     });
@@ -287,7 +285,7 @@ describe('useTrainerSessionUi', () => {
     expect(sessionUi.gameOverCelebrationTone.value).toBe('double');
     expect(sessionUi.gameOverTitle.value).toBe('新記録達成');
     expect(sessionUi.gameOverSummary.value).toBe('今回のプレイで自己ベストを更新しました。');
-    expect(sessionUi.feedbackBadge.value).toBe('Game Over');
+    expect(sessionUi.feedbackBadge.value).toBe('ゲーム終了');
   });
 
   it('ゲームオーバー時に新記録がなければ汎用の終了要約だけを返す', () => {
@@ -375,16 +373,16 @@ describe('useTrainerSessionUi', () => {
     expect(sessionUi.gameOverAchievements.value).toEqual([
       {
         key: 'score',
-        badge: 'RECORD TIED',
-        label: 'Score',
+        badge: '同記録',
+        label: 'スコア',
         value: 45,
         note: '自己ベストと同記録',
         tone: 'tie',
       },
       {
         key: 'streak',
-        badge: 'RECORD TIED',
-        label: 'Streak',
+        badge: '同記録',
+        label: '連続数',
         value: 4,
         note: '自己ベストと同記録',
         tone: 'tie',
@@ -394,6 +392,6 @@ describe('useTrainerSessionUi', () => {
     expect(sessionUi.gameOverTitle.value).toBe('自己ベストタイ');
     expect(sessionUi.gameOverSummary.value).toBe('今回のプレイで自己ベストに並びました。');
     expect(sessionUi.answerMessage.value).toBe('3回続けて不正解でした。');
-    expect(sessionUi.feedbackBadge.value).toBe('Game Over');
+    expect(sessionUi.feedbackBadge.value).toBe('ゲーム終了');
   });
 });

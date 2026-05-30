@@ -141,7 +141,7 @@ export const useFeedbackAudio = () => {
 
     const context = await getAudioContext();
 
-    if (!context || context.state !== 'running') {
+    if (context?.state !== 'running') {
       return;
     }
 

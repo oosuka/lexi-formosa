@@ -45,7 +45,7 @@ const achievementByKey = computed(
   >
     <div class="game-over-copy">
       <p v-if="props.celebrationTone !== 'none'" class="game-over-celebration-badge">
-        {{ props.celebrationTone === 'double' ? 'Double Record' : 'New Record' }}
+        {{ props.celebrationTone === 'double' ? '2項目更新' : '新記録' }}
       </p>
       <p v-if="props.gameOverTitle" class="game-over-kicker">{{ props.gameOverTitle }}</p>
       <strong class="game-over-title">{{ props.feedbackBadge }}</strong>
@@ -54,14 +54,14 @@ const achievementByKey = computed(
     </div>
 
     <div class="game-over-level-best">
-      <p class="game-over-section-label">This Session</p>
+      <p class="game-over-section-label">今回の結果</p>
       <div class="game-over-summary-grid">
         <article class="game-over-stat game-over-stat--primary">
-          <span>Score</span>
+          <span>スコア</span>
           <strong>{{ props.score }}</strong>
         </article>
         <article class="game-over-stat game-over-stat--primary">
-          <span>Streak</span>
+          <span>連続数</span>
           <strong>{{ props.bestRunStreak }}</strong>
         </article>
       </div>
@@ -71,7 +71,7 @@ const achievementByKey = computed(
       v-if="props.gameOverAchievements.length > 0"
       class="game-over-level-best"
     >
-      <p class="game-over-section-label">Level Best</p>
+      <p class="game-over-section-label">レベル最高記録</p>
       <div class="game-over-stats">
         <div
           class="game-over-stat game-over-stat--subtle"
@@ -80,7 +80,7 @@ const achievementByKey = computed(
             'game-over-stat--best-tie': achievementByKey.score?.tone === 'tie',
           }"
         >
-          <span>Score</span>
+          <span>スコア</span>
           <strong>{{ props.currentLevelHighScore.score }}</strong>
           <span v-if="achievementByKey.score" class="game-over-best-status">
             <span class="game-over-best-badge">{{ achievementByKey.score.badge }}</span>
@@ -94,7 +94,7 @@ const achievementByKey = computed(
             'game-over-stat--best-tie': achievementByKey.streak?.tone === 'tie',
           }"
         >
-          <span>Streak</span>
+          <span>連続数</span>
           <strong>{{ props.currentLevelHighScore.streak }}</strong>
           <span v-if="achievementByKey.streak" class="game-over-best-status">
             <span class="game-over-best-badge">{{ achievementByKey.streak.badge }}</span>
@@ -104,10 +104,10 @@ const achievementByKey = computed(
       </div>
     </div>
     <div v-else class="game-over-level-best game-over-level-best--compact">
-      <p class="game-over-section-label">Level Best</p>
+      <p class="game-over-section-label">レベル最高記録</p>
       <div class="game-over-compact-best">
-        <span>Score {{ props.currentLevelHighScore.score }}</span>
-        <span>Streak {{ props.currentLevelHighScore.streak }}</span>
+        <span>スコア {{ props.currentLevelHighScore.score }}</span>
+        <span>連続数 {{ props.currentLevelHighScore.streak }}</span>
       </div>
     </div>
 

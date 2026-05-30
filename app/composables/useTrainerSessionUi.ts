@@ -52,7 +52,7 @@ const appendGameOverAchievement = (
   if (value > baselineValue) {
     achievements.push({
       key,
-      badge: 'NEW BEST',
+      badge: '新記録',
       label,
       value,
       note: '自己ベストを更新',
@@ -64,7 +64,7 @@ const appendGameOverAchievement = (
   if (value > 0 && value === baselineValue) {
     achievements.push({
       key,
-      badge: 'RECORD TIED',
+      badge: '同記録',
       label,
       value,
       note: '自己ベストと同記録',
@@ -113,13 +113,13 @@ export const useTrainerSessionUi = ({
   const sessionMetricCards = computed(() => [
     {
       id: 'score',
-      label: 'Score',
+      label: 'スコア',
       value: score.value,
       help: '現在の合計',
     },
     {
       id: 'streak',
-      label: 'Streak',
+      label: '連続数',
       value: streak.value,
       help: '現在の連続数',
     },
@@ -148,11 +148,11 @@ export const useTrainerSessionUi = ({
     const baseline = sessionRecordBaseline.value[currentLevel.value];
     const achievements: GameOverAchievement[] = [];
 
-    appendGameOverAchievement(achievements, 'score', 'Score', score.value, baseline.score);
+    appendGameOverAchievement(achievements, 'score', 'スコア', score.value, baseline.score);
     appendGameOverAchievement(
       achievements,
       'streak',
-      'Streak',
+      '連続数',
       bestRunStreak.value,
       baseline.streak
     );
@@ -212,7 +212,7 @@ export const useTrainerSessionUi = ({
       return {
         variant: 'banner',
         tone: 'loading',
-        badge: 'Loading',
+        badge: '読み込み中',
         message: '問題データを読み込んでいます。',
         uiError: null,
       };
@@ -222,7 +222,7 @@ export const useTrainerSessionUi = ({
       return {
         variant: 'banner',
         tone: 'correct',
-        badge: 'Correct',
+        badge: '正解',
         message: `正解。+${getScoreForCorrectAnswer(streak.value)}点を獲得しました。`,
         uiError: uiError.value,
       };
@@ -232,7 +232,7 @@ export const useTrainerSessionUi = ({
       return {
         variant: 'banner',
         tone: 'incorrect',
-        badge: 'Miss',
+        badge: '不正解',
         message: `不正解。正解は「${correctChoiceLabel.value ?? '不明'}」です。残り${remainingMisses.value}回で終了します。`,
         uiError: uiError.value,
       };
@@ -240,7 +240,7 @@ export const useTrainerSessionUi = ({
 
     return {
       variant: 'inline',
-      message: '4つの選択肢から、意味に合うものを1つ選んでください。',
+      message: '意味に合う日本語を4択から1つ選択してください。',
       uiError: uiError.value,
     };
   });
@@ -261,14 +261,14 @@ export const useTrainerSessionUi = ({
     }
 
     if (showSessionStart.value) {
-      return 'Start';
+      return '開始';
     }
 
     if (isGameOver.value) {
-      return 'Game Over';
+      return 'ゲーム終了';
     }
 
-    return 'Ready';
+    return '回答待ち';
   });
 
   return {
