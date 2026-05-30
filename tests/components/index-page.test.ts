@@ -446,6 +446,45 @@ describe('index page', () => {
     expect(window.speechSynthesis.speak).toHaveBeenCalled();
   });
 
+  it('正解後は選択肢カードだけに CORRECT ラベルを表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.findAll('.choice-state').map((item) => item.text())).toEqual(['CORRECT']);
+    expect(wrapper.find('.result-banner .feedback-pill').exists()).toBe(false);
+    expect(wrapper.get('.result-banner__message').text()).toBe('正解。+10点を獲得しました。');
+  });
+
+  it('不正解後も結果帯の MISS ラベルは表示しない', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('牛乳'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.findAll('.choice-state').map((item) => item.text())).toEqual([
+      'CORRECT',
+      'YOUR PICK',
+    ]);
+    expect(wrapper.find('.result-banner .feedback-pill').exists()).toBe(false);
+    expect(wrapper.get('.result-banner__message').text()).toBe(
+      '不正解。正解は「こんにちは」です。残り2回で終了します。'
+    );
+  });
+
   it('HUD の Life は残り1本で警告状態として表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 

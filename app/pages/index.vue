@@ -670,6 +670,7 @@ useSeoMeta({
               v-if="feedbackView.variant === 'banner'"
               :tone="feedbackView.tone"
               :badge="feedbackView.badge"
+              :show-badge="feedbackView.tone === 'loading'"
               :message="feedbackView.message"
               :ui-error="feedbackView.uiError"
             />

@@ -6,9 +6,11 @@ const props = defineProps<{
   badge: string;
   message: string;
   uiError?: string | null;
+  showBadge?: boolean;
 }>();
 
 const toneClass = computed(() => `result-banner--${props.tone}`);
+const shouldShowBadge = computed(() => props.showBadge ?? true);
 const impactClass = computed(() => {
   if (props.tone === 'correct') {
     return 'result-banner--correct-impact';
@@ -28,8 +30,12 @@ const impactClass = computed(() => {
     :class="[toneClass, impactClass]"
     aria-live="polite"
   >
-    <div class="result-banner__copy">
-      <span class="feedback-pill result-banner__badge" :class="`feedback-pill--${props.tone}`">
+    <div class="result-banner__copy" :class="{ 'result-banner__copy--without-badge': !shouldShowBadge }">
+      <span
+        v-if="shouldShowBadge"
+        class="feedback-pill result-banner__badge"
+        :class="`feedback-pill--${props.tone}`"
+      >
         {{ props.badge }}
       </span>
       <p class="result-banner__message">{{ props.message }}</p>
