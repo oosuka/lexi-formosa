@@ -55,6 +55,7 @@
 - 無関係なリファクタ、命名変更、広範な整形を混ぜないでください。
 - GitHub の公開リポジトリ名と npm package 名は `lexi-formosa` を前提にしてください。
 - Public リポジトリとして公開しやすい構成を維持してください。
+- コード、設定、ドキュメント、テストは MIT License 対象ですが、外部ソーススナップショットと生成済み語彙 JSON は MIT License 対象外として扱ってください。
 - このリポジトリのコミットメッセージは、要点が分かる日本語1行で記述してください。
 - 語彙ロードは、可能な限り必要なレベルだけ読む形を維持してください。
 - レベル切替や初期化の非同期処理では、古いリクエストが新しい state を上書きしないようにしてください。
@@ -72,6 +73,7 @@
 ## 語彙データ
 
 - 語彙生成は `TOCFL + TBCL + manual vocabulary` を土台にし、`MJdic` は日本語候補と発音補完の補助に使います。
+- 外部ソーススナップショットは `data/source-snapshots/` にローカル保存されますが、Public リポジトリへ同梱しないでください。
 - `data/manual-vocabulary.json` は必ず入れたい高品質語の seed deck と発音補完に使います。
 - `data/manual-vocabulary.json` には `id / trad / ja / category / pronunciation?` だけを持たせ、`level / length / sources / taiwanPriority` は生成時に再計算します。
 - 自動生成で拾いにくいが教材として必ず入れたい語は `data/manual-vocabulary.json` に追加してください。
@@ -89,6 +91,7 @@
 - `data/vocabulary-metadata.json`
 - `data/vocabulary-level-*.json`
 - `data/review-batches/*.json`
+- `data/source-snapshots/*`
 - `public/wordlists/vocabulary-level-*.json`
 - `public/wordlists/metadata.json`
 

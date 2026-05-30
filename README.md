@@ -77,6 +77,12 @@ npm run audit:data
 
 辞書ソースと再生成手順の詳細は [docs/dictionary-sources.md](docs/dictionary-sources.md)、権利上の注意は [NOTICE.md](NOTICE.md) を参照してください。
 
+## License And Data Notice
+
+このリポジトリのコード、設定、ドキュメント、テストは [MIT License](LICENSE) で提供します。npm 依存パッケージはそれぞれのライセンスに従います。
+
+生成済み辞書データ、外部ソーススナップショット、生成済み語彙 JSON は MIT License の対象外です。fork / clone してローカルで遊ぶ用途では `npm run setup:data` で各自の環境に生成してください。生成された `data/vocabulary*.json`、`public/wordlists/*.json`、`data/review-batches/*.json`、`data/source-snapshots/*` を再配布する場合は、TOCFL / TBCL / MJdic / CC-CEDICT など各データソースの利用条件、帰属表示、ShareAlike 条件を確認してください。
+
 ## Test Policy
 
 テストは、出題ロジック、状態遷移、語彙検証、非同期失敗時の継続、主要なゲーム導線を優先します。CSS の細部や重複した表示構造だけを固定するテストは避けます。現在のデザイン方針として、`tests/unit/design-system.test.ts` でグラデーション背景とフルピル形状の再導入を防いでいます。
