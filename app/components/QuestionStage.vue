@@ -37,25 +37,25 @@ const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声�
 
       <dl class="question-stage__stats">
         <div class="question-stage__stat">
-          <dt>Score</dt>
+          <dt>スコア</dt>
           <dd>{{ props.score }}</dd>
         </div>
         <div class="question-stage__stat">
-          <dt>Streak</dt>
+          <dt>連続数</dt>
           <dd>{{ props.streak }}</dd>
         </div>
         <div
           class="question-stage__stat question-stage__stat--remaining"
           :class="{ 'question-stage__stat--critical': props.criticalLife }"
         >
-          <dt>Life</dt>
+          <dt>残り</dt>
           <dd>
             <span class="visually-hidden">残り{{ props.remainingMisses }}</span>
             <span
               class="life-meter"
               :class="{ 'life-meter--critical': props.criticalLife }"
               role="meter"
-              :aria-label="`Life 残り${props.remainingMisses}`"
+              :aria-label="`残り${props.remainingMisses}回`"
             >
               <span
                 v-for="slot in lifeSlots"

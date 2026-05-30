@@ -326,7 +326,7 @@ test('ゲームを1問進められる', async ({ page }) => {
   const wordBefore = await page.locator('.trad-word').first().textContent();
 
   await answerCorrectChoice(page);
-  await expect(page.locator('.choice-state')).toHaveText('CORRECT');
+  await expect(page.locator('.choice-state')).toHaveText('正解');
   await expect(page.locator('.result-banner__message')).toContainText('正解。');
   await expect(page.getByRole('button', { name: '次の問題' })).toBeEnabled();
   await expect(page.locator('.choice-card:visible')).toHaveCount(4);
@@ -491,18 +491,18 @@ test('モバイル幅の TOP は選択中レベル情報と記録を開始ボタ
   await page.goto('/');
 
   await expect(page.locator('.hero-stats-panel:visible')).toHaveCount(0);
-  await expect(page.locator('.session-start-current-level:visible')).toContainText('Best Score');
+  await expect(page.locator('.session-start-current-level:visible')).toContainText('最高スコア');
   await expect(page.locator('.session-start-current-level__topline:visible')).toHaveText(
-    /Level 1.*4 words/
+    /Level 1.*4語/
   );
   await expect(page.locator('.session-start-current-level:visible')).toContainText('11');
   await expect(page.locator('.session-start-current-level:visible')).not.toContainText('22');
 
   await page.getByRole('button', { name: /Level 2/ }).click();
 
-  await expect(page.locator('.session-start-current-level:visible')).toContainText('Best Score');
+  await expect(page.locator('.session-start-current-level:visible')).toContainText('最高スコア');
   await expect(page.locator('.session-start-current-level__topline:visible')).toHaveText(
-    /Level 2.*4 words/
+    /Level 2.*4語/
   );
   await expect(page.locator('.session-start-current-level:visible')).toContainText('22');
   await expect(page.locator('.session-start-current-level:visible')).not.toContainText('11');

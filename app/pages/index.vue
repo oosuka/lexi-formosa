@@ -41,14 +41,14 @@ const formatVocabularyWordsLabel = (
   status: MetadataStatus
 ): string => {
   if (status === 'failed') {
-    return 'Words unavailable';
+    return '語数未取得';
   }
 
   if (count === null || count === undefined) {
-    return 'Loading words';
+    return '読み込み中';
   }
 
-  return `${count.toLocaleString()} words`;
+  return `${count.toLocaleString()}語`;
 };
 
 const sessionStartPending = ref(true);
@@ -84,10 +84,10 @@ const canPlayAudio = computed(
   () => trainerAudio.speechSupported.value && Boolean(currentQuestionTrad.value)
 );
 const sessionStartSummaryItems = computed(() => [
-  '4択から1つ選ぶ',
-  '正解で10点',
+  '4択から1つ選択',
+  '正解で10点獲得',
   '3連続正解からボーナス',
-  '3回連続ミスで終了',
+  '3回連続不正解で終了',
 ]);
 const sessionUi = useTrainerSessionUi({
   game: trainer.game,
@@ -197,11 +197,11 @@ const choiceStateLabel = (choice: QuestionChoice) => {
   }
 
   if (choice.correct) {
-    return 'CORRECT';
+    return '正解';
   }
 
   if (choice.id === selectedChoiceId.value) {
-    return 'YOUR PICK';
+    return '選択';
   }
 
   return '';
@@ -474,7 +474,7 @@ useSeoMeta({
         </div>
         <h1>LexiFormosa</h1>
         <p class="hero-text">
-          台湾で使われる繁体字の意味を、日本語4択でテンポよく見抜いていく単語ゲーム。
+          台湾華語の繁体字単語を、日本語4択で練習。
         </p>
         <div class="hero-meta">
           <span>{{ vocabularyMetadata?.total?.toLocaleString() ?? '...' }}語収録</span>
@@ -502,11 +502,11 @@ useSeoMeta({
             </div>
             <div class="record-stats record-stats--start-screen">
               <div class="record-stat">
-                <span class="record-stat-label">Best Score</span>
+                <span class="record-stat-label">最高スコア</span>
                 <strong>{{ item.score }}</strong>
               </div>
               <div class="record-stat">
-                <span class="record-stat-label">Best Streak</span>
+                <span class="record-stat-label">最高連続数</span>
                 <strong>{{ item.streak }}</strong>
               </div>
             </div>
@@ -514,11 +514,11 @@ useSeoMeta({
         </div>
         <article v-if="activeHighScoreCard" class="record-card record-card--mobile-summary" aria-live="polite">
           <div class="record-mobile-score">
-            <span class="record-stat-label">Best Score</span>
+            <span class="record-stat-label">最高スコア</span>
             <strong>{{ activeHighScoreCard.score }}</strong>
           </div>
           <div class="record-mobile-streak">
-            <span class="record-stat-label">Best Streak</span>
+            <span class="record-stat-label">最高連続数</span>
             <strong>{{ activeHighScoreCard.streak }}</strong>
           </div>
         </article>

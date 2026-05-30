@@ -175,7 +175,7 @@ describe('index page', () => {
 
     expect(wrapper.find('.hero-panel').exists()).toBe(false);
     expect(wrapper.text()).toContain('Level 1');
-    expect(wrapper.text()).toContain('Score');
+    expect(wrapper.text()).toContain('スコア');
     expect(wrapper.find('.level-panel').exists()).toBe(false);
     expect(wrapper.find('.result-banner').exists()).toBe(false);
     expect(wrapper.find('.feedback-row').exists()).toBe(false);
@@ -213,7 +213,7 @@ describe('index page', () => {
     const currentLevelPanel = () => wrapper.get('.session-start-current-level');
 
     expect(currentLevelPanel().text()).toContain('Level 1');
-    expect(currentLevelPanel().text()).toContain('45 words');
+    expect(currentLevelPanel().text()).toContain('45語');
     expect(currentLevelPanel().text()).toContain('11');
     expect(currentLevelPanel().text()).not.toContain('22');
 
@@ -225,7 +225,7 @@ describe('index page', () => {
     await flushPromises();
 
     expect(currentLevelPanel().text()).toContain('Level 2');
-    expect(currentLevelPanel().text()).toContain('38 words');
+    expect(currentLevelPanel().text()).toContain('38語');
     expect(currentLevelPanel().text()).toContain('22');
     expect(currentLevelPanel().text()).not.toContain('11');
   });
@@ -314,14 +314,14 @@ describe('index page', () => {
       }
     }
 
-    expect(wrapper.text()).toContain('Game Over');
+    expect(wrapper.text()).toContain('ゲーム終了');
     expect(wrapper.find('.game-over-panel').exists()).toBe(true);
     expect(wrapper.find('.game-over-panel')?.classes()).toContain('game-over-panel--celebration');
     expect(wrapper.findAll('.game-over-achievement')).toHaveLength(0);
     const levelBestPanel = wrapper
       .findAll('.game-over-level-best')
-      .find((candidate) => candidate.text().includes('Level Best'));
-    expect(levelBestPanel?.text()).toContain('NEW BEST');
+      .find((candidate) => candidate.text().includes('レベル最高記録'));
+    expect(levelBestPanel?.text()).toContain('新記録');
     expect(levelBestPanel?.text()).toContain('自己ベストを更新');
     expect(wrapper.find('.answer-support-row').exists()).toBe(true);
     expect(wrapper.find('.lookup-panel').exists()).toBe(true);
@@ -446,7 +446,7 @@ describe('index page', () => {
     expect(window.speechSynthesis.speak).toHaveBeenCalled();
   });
 
-  it('正解後は選択肢カードだけに CORRECT ラベルを表示する', async () => {
+  it('正解後は選択肢カードだけに正解ラベルを表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
     await startGame(wrapper);
@@ -458,12 +458,12 @@ describe('index page', () => {
     await answerButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.findAll('.choice-state').map((item) => item.text())).toEqual(['CORRECT']);
+    expect(wrapper.findAll('.choice-state').map((item) => item.text())).toEqual(['正解']);
     expect(wrapper.find('.result-banner .feedback-pill').exists()).toBe(false);
     expect(wrapper.get('.result-banner__message').text()).toBe('正解。+10点を獲得しました。');
   });
 
-  it('不正解後も結果帯の MISS ラベルは表示しない', async () => {
+  it('不正解後も結果帯の不正解ラベルは表示しない', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
     await startGame(wrapper);
@@ -475,17 +475,14 @@ describe('index page', () => {
     await answerButton?.trigger('click');
     await flushPromises();
 
-    expect(wrapper.findAll('.choice-state').map((item) => item.text())).toEqual([
-      'CORRECT',
-      'YOUR PICK',
-    ]);
+    expect(wrapper.findAll('.choice-state').map((item) => item.text())).toEqual(['正解', '選択']);
     expect(wrapper.find('.result-banner .feedback-pill').exists()).toBe(false);
     expect(wrapper.get('.result-banner__message').text()).toBe(
       '不正解。正解は「こんにちは」です。残り2回で終了します。'
     );
   });
 
-  it('HUD の Life は残り1本で警告状態として表示する', async () => {
+  it('HUD の残り回数は残り1本で警告状態として表示する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
     await startGame(wrapper);
@@ -505,11 +502,11 @@ describe('index page', () => {
     const lifeSlots = remainingStat.findAll('.life-meter__slot');
     const activeLifeSlots = remainingStat.findAll('.life-meter__slot--active');
 
-    expect(remainingStat.text()).toContain('Life');
+    expect(remainingStat.text()).toContain('残り');
     expect(lifeSlots).toHaveLength(3);
     expect(activeLifeSlots).toHaveLength(1);
     expect(remainingStat.get('dd').text()).toContain('残り1');
-    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe('Life 残り1');
+    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe('残り1回');
     expect(remainingStat.get('.life-meter').classes()).toContain('life-meter--critical');
     expect(wrapper.find('.life-warning-note').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('次のミスで終了');
@@ -542,9 +539,9 @@ describe('index page', () => {
 
     expect(wrapper.text()).toContain('ゲームを始める');
     expect(wrapper.findAll('.level-count').map((candidate) => candidate.text())).toEqual([
-      'Words unavailable',
-      'Words unavailable',
-      'Words unavailable',
+      '語数未取得',
+      '語数未取得',
+      '語数未取得',
     ]);
     expect(wrapper.find('.session-start-panel').exists()).toBe(true);
     expect(wrapper.find('.audio-start-notice').exists()).toBe(false);
@@ -701,7 +698,7 @@ describe('index page', () => {
 
     expect(trainer.resetSession).toHaveBeenCalled();
     expect(wrapper.text()).toContain('restart failed');
-    expect(wrapper.text()).toContain('Game Over');
+    expect(wrapper.text()).toContain('ゲーム終了');
   });
 
   it('記録更新がないゲームオーバーでは自己ベストを簡潔表示する', async () => {
