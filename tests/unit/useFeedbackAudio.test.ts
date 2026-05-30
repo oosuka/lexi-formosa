@@ -123,6 +123,23 @@ describe('useFeedbackAudio', () => {
     expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(2);
   });
 
+  it('標準 AudioContext がなくても webkitAudioContext で効果音を鳴らす', async () => {
+    Reflect.deleteProperty(window as unknown as Record<string, unknown>, 'AudioContext');
+    Object.defineProperty(window, 'webkitAudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    await feedbackAudio.playLevelSelectSound();
+
+    expect(feedbackAudio.audioEffectsSupported.value).toBe(true);
+    expect(TestAudioContext.instances).toHaveLength(1);
+    expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(2);
+  });
+
   it('残り1ミスの警告音を低い2音で鳴らす', async () => {
     Object.defineProperty(window, 'AudioContext', {
       configurable: true,
@@ -237,6 +254,26 @@ describe('useFeedbackAudio', () => {
         .calls[0]?.[0];
 
     expect(gameOverFirstGain).toBeCloseTo(1.25);
+  });
+
+  it('記録更新の祝福音は single と double で音数を変える', async () => {
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+    Object.defineProperty(globalThis, 'AudioContext', {
+      configurable: true,
+      value: TestAudioContext,
+    });
+
+    const feedbackAudio = useFeedbackAudio();
+    feedbackAudio.setup();
+
+    await feedbackAudio.playRecordCelebrationSound('single');
+    expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(3);
+
+    await feedbackAudio.playRecordCelebrationSound('double');
+    expect(TestAudioContext.instances[0]?.createOscillator).toHaveBeenCalledTimes(7);
   });
 
   it('resume 失敗時も例外を外へ漏らさない', async () => {

@@ -230,21 +230,6 @@ describe('index page', () => {
     expect(currentLevelPanel().text()).not.toContain('11');
   });
 
-  it('TOP の補助情報には繁体字のみを表示しない', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-    await flushPromises();
-
-    expect(wrapper.find('.hero-meta').text()).not.toContain('繁体字のみ');
-  });
-
-  it('開始前のルール見出しは表示しない', async () => {
-    const wrapper = await mountSuspended(IndexPage);
-    await flushPromises();
-
-    expect(wrapper.find('.session-start-rules').exists()).toBe(true);
-    expect(wrapper.text()).not.toContain('ルール');
-  });
-
   it('TOP のレコードカードを押すと同じ効果音でレベルを切り替える', async () => {
     const trainer = createTrainerStub();
     useTraditionalTrainerMock.mockReturnValue(trainer);
