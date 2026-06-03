@@ -630,7 +630,10 @@ useSeoMeta({
               :aria-keyshortcuts="String(index + 1)"
               @click="answer(choice.id)"
             >
-              <span class="choice-label">{{ choice.label }}</span>
+              <span class="choice-card__main">
+                <span class="choice-index" aria-hidden="true">{{ index + 1 }}</span>
+                <span class="choice-label">{{ choice.label }}</span>
+              </span>
               <span v-if="choiceStateLabel(choice)" class="choice-state">
                 {{ choiceStateLabel(choice) }}
               </span>
@@ -675,8 +678,16 @@ useSeoMeta({
               <p v-if="feedbackView.uiError" class="feedback-error">{{ feedbackView.uiError }}</p>
             </div>
           </div>
-          <div v-if="revealAnswer" class="answer-support-row">
-            <div v-if="externalLookupLinks.length > 0" class="lookup-panel">
+          <div
+            v-if="revealAnswer"
+            class="answer-support-row"
+            :class="{ 'answer-support-row--game-over': isGameOver }"
+          >
+            <div
+              v-if="externalLookupLinks.length > 0"
+              class="lookup-panel"
+              :class="{ 'lookup-panel--secondary': isGameOver }"
+            >
               <p class="lookup-panel-label">外部辞書で確認</p>
               <div class="lookup-links">
                 <a

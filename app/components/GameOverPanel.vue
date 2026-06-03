@@ -42,6 +42,9 @@ const achievementByKey = computed(
       'game-over-panel--celebration': props.celebrationTone !== 'none',
       'game-over-panel--celebration-double': props.celebrationTone === 'double',
     }"
+    aria-live="polite"
+    aria-atomic="true"
+    role="status"
   >
     <div class="game-over-copy">
       <p v-if="props.celebrationTone !== 'none'" class="game-over-celebration-badge">

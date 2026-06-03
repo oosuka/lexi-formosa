@@ -238,6 +238,18 @@ describe('index page', () => {
     expect(playLevelSelectSoundMock).toHaveBeenCalledTimes(1);
   });
 
+  it('TOP のレコードカードには選択用の補助文言を表示しない', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    const recordButtons = wrapper.findAll('button.record-card');
+
+    expect(recordButtons).toHaveLength(3);
+    for (const button of recordButtons) {
+      expect(button.find('.record-card-affordance').exists()).toBe(false);
+      expect(button.find('.record-card-status').exists()).toBe(false);
+    }
+  });
+
   it('正解時にそのレベルの最高記録を保存する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
@@ -331,6 +343,8 @@ describe('index page', () => {
       'もう一度始める',
       'トップへ戻る',
     ]);
+    expect(wrapper.get('.answer-support-row').classes()).toContain('answer-support-row--game-over');
+    expect(wrapper.get('.lookup-panel').classes()).toContain('lookup-panel--secondary');
   });
 
   it('次の問題への切り替え失敗は回答済み状態のままエラー表示する', async () => {
@@ -399,6 +413,56 @@ describe('index page', () => {
       expect(link.attributes('target')).toBe('_blank');
       expect(link.attributes('rel')).toBe('noopener noreferrer');
     }
+  });
+
+  it('選択肢には数字キーと対応する番号を表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    expect(wrapper.findAll('.choice-index').map((item) => item.text())).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+    ]);
+    expect(
+      wrapper.findAll('.choice-card').map((item) => item.attributes('aria-keyshortcuts'))
+    ).toEqual(['1', '2', '3', '4']);
+  });
+
+  it('回答結果とゲーム終了は状態更新として通知できる', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get('.result-banner').attributes('role')).toBe('status');
+
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    expect(wrapper.get('.game-over-panel').attributes('role')).toBe('status');
   });
 
   it('回答後に正誤表示を更新し、次の問題で音声を自動再生する', async () => {

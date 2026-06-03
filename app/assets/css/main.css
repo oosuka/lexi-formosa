@@ -736,8 +736,32 @@ button {
   cursor: pointer;
 }
 
+.choice-card__main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.choice-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--surface-strong);
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
 .choice-label {
   display: block;
+  min-width: 0;
 }
 
 .choice-state {
@@ -770,9 +794,24 @@ button {
 }
 
 .choice-card--muted {
-  opacity: 0.4;
+  opacity: 0.56;
   background: var(--surface-muted);
   color: var(--ink-muted);
+}
+
+.choice-card--correct .choice-index,
+.choice-card--correct-impact .choice-index,
+.choice-card--correct-reveal .choice-index {
+  border-color: #a8d9ba;
+  background: var(--surface);
+  color: var(--correct);
+}
+
+.choice-card--incorrect .choice-index,
+.choice-card--incorrect-impact .choice-index {
+  border-color: #e8b7ae;
+  background: var(--surface);
+  color: var(--incorrect);
 }
 
 .feedback-row {
@@ -893,6 +932,11 @@ button {
   justify-content: space-between;
 }
 
+.answer-support-row--game-over {
+  grid-template-columns: minmax(0, 420px);
+  justify-content: start;
+}
+
 .answer-support-actions {
   display: flex;
   flex-direction: column;
@@ -923,6 +967,24 @@ button {
   align-items: center;
   justify-content: center;
   text-decoration: none;
+}
+
+.lookup-panel--secondary {
+  gap: 10px;
+  padding: 14px;
+  background: var(--surface-strong);
+  box-shadow: none;
+}
+
+.lookup-panel--secondary .lookup-panel-label {
+  color: var(--ink-muted);
+}
+
+.lookup-panel--secondary .lookup-link {
+  min-height: 48px;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  box-shadow: none;
 }
 
 .primary-button,
@@ -1359,6 +1421,15 @@ button {
     gap: 8px;
     padding: 14px 16px;
     font-size: 1rem;
+  }
+
+  .choice-card__main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .choice-index {
+    display: none;
   }
 
   .choice-state {

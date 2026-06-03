@@ -371,6 +371,8 @@ test('モバイル幅では回答後に不要な選択肢を隠して次の問�
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
   await page.evaluate(() => window.scrollTo(0, 0));
 
+  await expect(page.locator('.choice-index:visible')).toHaveCount(0);
+
   await answerCorrectChoiceWithShortcut(page);
 
   await expect(page.locator('.choice-card')).toHaveCount(4);
