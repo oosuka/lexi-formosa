@@ -1,21 +1,31 @@
 <script setup lang="ts">
+import { PhSpeakerHigh } from '@phosphor-icons/vue';
+
 import { MAX_MISSES_IN_ROW } from '~/composables/useTraditionalTrainer';
+
+const SpeakerIcon = PhSpeakerHigh;
 
 const props = defineProps<{
   levelLabel: string;
   score: number;
   streak: number;
   remainingMisses: number;
+  routePosition: number;
+  routeLength: number;
+  routeNumber: number;
+  answeredRounds: number;
   trad: string;
   katakanaReading: string;
   pinyinReading: string;
   canPlayAudio: boolean;
   isSpeaking: boolean;
   criticalLife: boolean;
+  isReviewWord: boolean;
 }>();
 
 const emit = defineEmits<{
   toggleAudio: [];
+  exit: [];
 }>();
 
 const lifeSlots = computed(() =>
@@ -25,23 +35,49 @@ const lifeSlots = computed(() =>
   }))
 );
 
-const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声を再生');
+const routeSlots = computed(() =>
+  Array.from({ length: props.routeLength }, (_, index) => ({
+    id: `route-${index + 1}`,
+    completed: index < props.answeredRounds,
+    current: index === props.routePosition - 1 && index >= props.answeredRounds,
+  }))
+);
+
+const audioButtonLabel = computed(() => (props.isSpeaking ? '音声を停止' : '音声を再生'));
 </script>
 
 <template>
   <article class="question-stage">
-    <div class="question-stage__hud">
-      <div class="question-stage__meta">
-        <span class="question-stage__level">{{ props.levelLabel }}</span>
-      </div>
+    <header class="route-topbar">
+      <p class="route-topbar__title">ルート{{ props.routeNumber }}の10語</p>
+      <p class="route-topbar__position" aria-live="polite">
+        <strong>{{ props.routePosition }}</strong> / {{ props.routeLength }}
+      </p>
+      <button class="route-exit-button" type="button" @click="emit('exit')">終了</button>
+    </header>
 
+    <ol class="route-track" :aria-label="`${props.routeLength}問中${props.routePosition}問目`">
+      <li
+        v-for="slot in routeSlots"
+        :key="slot.id"
+        class="route-track__slot"
+        :class="{
+          'route-track__slot--completed': slot.completed,
+          'route-track__slot--current': slot.current,
+        }"
+        aria-hidden="true"
+      />
+    </ol>
+
+    <div class="question-stage__hud">
+      <p class="question-stage__level">{{ props.levelLabel }}</p>
       <dl class="question-stage__stats">
         <div class="question-stage__stat">
           <dt>スコア</dt>
           <dd>{{ props.score }}</dd>
         </div>
-        <div class="question-stage__stat">
-          <dt>連続数</dt>
+        <div class="question-stage__stat question-stage__stat--streak">
+          <dt>連続</dt>
           <dd>{{ props.streak }}</dd>
         </div>
         <div
@@ -50,12 +86,15 @@ const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声�
         >
           <dt>残り</dt>
           <dd>
-            <span class="visually-hidden">残り{{ props.remainingMisses }}</span>
+            <span class="visually-hidden">残り{{ props.remainingMisses }}回</span>
             <span
               class="life-meter"
               :class="{ 'life-meter--critical': props.criticalLife }"
               role="meter"
               :aria-label="`残り${props.remainingMisses}回`"
+              :aria-valuenow="props.remainingMisses"
+              :aria-valuemin="0"
+              :aria-valuemax="MAX_MISSES_IN_ROW"
             >
               <span
                 v-for="slot in lifeSlots"
@@ -70,9 +109,10 @@ const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声�
       </dl>
     </div>
 
-    <strong class="question-stage__trad trad-word">{{ props.trad }}</strong>
+    <div class="question-stage__word-focus">
+      <span v-if="props.isReviewWord" class="review-word-label">復習語</span>
+      <strong class="question-stage__trad trad-word">{{ props.trad }}</strong>
 
-    <div class="question-stage__readings-bar">
       <div v-if="props.katakanaReading || props.pinyinReading" class="question-stage__readings">
         <p v-if="props.katakanaReading" class="question-stage__reading question-stage__reading--kana">
           {{ props.katakanaReading }}
@@ -90,7 +130,8 @@ const audioButtonLabel = () => (props.isSpeaking ? '音声を停止' : '音声�
         :aria-pressed="props.isSpeaking"
         @click="emit('toggleAudio')"
       >
-        {{ audioButtonLabel() }}
+        <component :is="SpeakerIcon" :size="22" weight="fill" aria-hidden="true" />
+        <span>{{ audioButtonLabel }}</span>
       </button>
     </div>
   </article>

@@ -13,6 +13,12 @@ const createGameState = (overrides: Partial<GameState> = {}): GameState => ({
   bestStreak: 0,
   missesInRow: 0,
   rounds: 0,
+  correctAnswers: 0,
+  routeLength: 10,
+  routeIndex: 0,
+  routeQuestionIds: [],
+  reviewQuestionIds: [],
+  finishReason: null,
   status: 'ready',
   currentQuestion: questionOne,
   selectedChoiceId: null,
@@ -393,5 +399,44 @@ describe('useTrainerSessionUi', () => {
     expect(sessionUi.gameOverSummary.value).toBe('今回のプレイで自己ベストに並びました。');
     expect(sessionUi.answerMessage.value).toBe('3回続けて不正解でした。');
     expect(sessionUi.feedbackBadge.value).toBe('ゲーム終了');
+  });
+
+  it('10問完走時はルート完了として位置と結果を返す', () => {
+    const game = ref(
+      createGameState({
+        score: 120,
+        correctAnswers: 8,
+        bestStreak: 5,
+        rounds: 10,
+        finishReason: 'route-complete',
+        status: 'finished',
+      })
+    );
+    const sessionUi = useTrainerSessionUi({
+      game,
+      sessionStartPending: ref(false),
+      fatalError: ref(null),
+      uiError: ref(null),
+      isLoading: ref(false),
+      highScores: ref({
+        1: { score: 120, streak: 5 },
+        2: { score: 0, streak: 0 },
+        3: { score: 0, streak: 0 },
+      }),
+      sessionRecordBaseline: ref({
+        1: { score: 120, streak: 5 },
+        2: { score: 0, streak: 0 },
+        3: { score: 0, streak: 0 },
+      }),
+      correctChoiceLabel: computed(() => 'こんにちは'),
+    });
+
+    expect(sessionUi.routePosition.value).toBe(10);
+    expect(sessionUi.correctAnswers.value).toBe(8);
+    expect(sessionUi.feedbackBadge.value).toBe('ルート完了');
+    expect(sessionUi.answerMessage.value).toBe('10問のルートを完走しました。');
+    expect(sessionUi.gameOverSummary.value).toBe(
+      '10問のルートを完走しました。次は別の10語に進みます。自己ベストにも並びました。'
+    );
   });
 });

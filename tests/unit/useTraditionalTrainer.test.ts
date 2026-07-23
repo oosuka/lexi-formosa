@@ -74,6 +74,12 @@ const resetTrainerState = () => {
     bestStreak: 0,
     missesInRow: 0,
     rounds: 0,
+    correctAnswers: 0,
+    routeLength: 10,
+    routeIndex: 0,
+    routeQuestionIds: [],
+    reviewQuestionIds: [],
+    finishReason: null,
     status: 'ready',
     currentQuestion: null,
     selectedChoiceId: null,
@@ -231,6 +237,7 @@ describe('useTraditionalTrainer', () => {
     expect(trainer.game.value.status).toBe('finished');
     expect(trainer.game.value.missesInRow).toBe(3);
     expect(trainer.game.value.score).toBe(0);
+    expect(trainer.game.value.finishReason).toBe('misses');
 
     const finishedQuestionId = trainer.game.value.currentQuestion?.questionId;
     trainer.nextQuestion();
@@ -246,6 +253,53 @@ describe('useTraditionalTrainer', () => {
     expect(getScoreForCorrectAnswer(6)).toBe(20);
     expect(getScoreForCorrectAnswer(7)).toBe(25);
     expect(getScoreForCorrectAnswer(10)).toBe(25);
+  });
+
+  it('10問に回答すると今日のルートを完走する', async () => {
+    let trainer!: ReturnType<typeof useTraditionalTrainer>;
+
+    const Harness = defineComponent({
+      setup() {
+        trainer = useTraditionalTrainer();
+        return () => h('div');
+      },
+    });
+
+    await mountSuspended(Harness);
+    resetTrainerState();
+    await trainer.initialize(1, { dateKey: '2026-07-13' });
+
+    for (let round = 0; round < 10; round += 1) {
+      trainer.submitAnswer(trainer.correctChoice.value?.id as string);
+
+      if (round < 9) {
+        trainer.nextQuestion();
+      }
+    }
+
+    expect(trainer.game.value.status).toBe('finished');
+    expect(trainer.game.value.finishReason).toBe('route-complete');
+    expect(trainer.game.value.rounds).toBe(10);
+    expect(trainer.game.value.correctAnswers).toBe(10);
+  });
+
+  it('ルート番号を指定して次の10問を初期化できる', async () => {
+    let trainer!: ReturnType<typeof useTraditionalTrainer>;
+
+    const Harness = defineComponent({
+      setup() {
+        trainer = useTraditionalTrainer();
+        return () => h('div');
+      },
+    });
+
+    await mountSuspended(Harness);
+    resetTrainerState();
+
+    await trainer.initialize(1, { dateKey: '2026-07-13', routeIndex: 2 });
+
+    expect(trainer.game.value.routeIndex).toBe(2);
+    expect(trainer.game.value.routeQuestionIds).toHaveLength(10);
   });
 
   it('未初期化のまま回答しようとすると失敗する', async () => {

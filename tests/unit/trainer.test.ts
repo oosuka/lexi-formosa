@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildQuestion, getCorrectChoice, LEVEL_COPY } from '~/utils/trainer';
+import {
+  buildDailyRouteQuestionIds,
+  buildQuestion,
+  getCorrectChoice,
+  LEVEL_COPY,
+} from '~/utils/trainer';
 
 import { createEntry, level1Vocabulary } from '../fixtures/vocabulary';
 
@@ -45,6 +50,28 @@ describe('trainer utilities', () => {
     const question = buildQuestion(level1Vocabulary, 1, ['l1-1']);
 
     expect(question.questionId).toBe('l1-2');
+  });
+
+  it('日付とレベルから10問ルートを再現し、復習語を先頭側へ入れる', () => {
+    const route = buildDailyRouteQuestionIds(level1Vocabulary, 1, '2026-07-13', ['l1-4']);
+    const repeatedRoute = buildDailyRouteQuestionIds(level1Vocabulary, 1, '2026-07-13', ['l1-4']);
+
+    expect(route).toHaveLength(10);
+    expect(route).toEqual(repeatedRoute);
+    expect(route.slice(0, 4)).toContain('l1-4');
+    expect(route.every((id) => level1Vocabulary.some((entry) => entry.id === id))).toBe(true);
+  });
+
+  it('完走後の次ルートでは未出題の10語へ進む', () => {
+    const routeVocabulary = Array.from({ length: 24 }, (_, index) =>
+      createEntry(`route-${index}`, String.fromCodePoint(0x4e00 + index), `訳${index}`, 1, 'daily')
+    );
+    const firstRoute = buildDailyRouteQuestionIds(routeVocabulary, 1, '2026-07-13', [], 10, 0);
+    const nextRoute = buildDailyRouteQuestionIds(routeVocabulary, 1, '2026-07-13', [], 10, 1);
+
+    expect(firstRoute).toHaveLength(10);
+    expect(nextRoute).toHaveLength(10);
+    expect(nextRoute.filter((id) => firstRoute.includes(id))).toEqual([]);
   });
 
   it('直近出題ですべて埋まっていてもプール全体から出題できる', () => {

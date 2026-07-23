@@ -52,6 +52,12 @@ const createGameState = (): GameState => ({
   bestStreak: 0,
   missesInRow: 0,
   rounds: 0,
+  correctAnswers: 0,
+  routeLength: 10,
+  routeIndex: 0,
+  routeQuestionIds: [questionOne.questionId, questionTwo.questionId],
+  reviewQuestionIds: [],
+  finishReason: null,
   status: 'ready',
   currentQuestion: questionOne,
   selectedChoiceId: null,
@@ -74,18 +80,27 @@ const createTrainerStub = () => {
       const correct = choiceId === questionOne.questionId;
       const nextStreak = correct ? game.value.streak + 1 : 0;
       const nextMissesInRow = correct ? 0 : game.value.missesInRow + 1;
-      const nextStatus = nextMissesInRow >= 3 ? 'finished' : 'answered';
+      const nextRounds = game.value.rounds + 1;
+      const finishReason =
+        nextMissesInRow >= 3
+          ? 'misses'
+          : nextRounds >= game.value.routeLength
+            ? 'route-complete'
+            : null;
+      const nextStatus = finishReason ? 'finished' : 'answered';
       const scoreGain = correct ? getScoreForCorrectAnswer(nextStreak) : 0;
       game.value = {
         ...game.value,
         status: nextStatus,
         selectedChoiceId: choiceId,
         lastCorrect: correct,
-        rounds: game.value.rounds + 1,
+        rounds: nextRounds,
+        correctAnswers: game.value.correctAnswers + (correct ? 1 : 0),
         score: game.value.score + scoreGain,
         streak: nextStreak,
         bestStreak: Math.max(game.value.bestStreak, nextStreak),
         missesInRow: nextMissesInRow,
+        finishReason,
       };
 
       return {
@@ -234,7 +249,10 @@ describe('index page', () => {
     await recordButton?.trigger('click');
     await flushPromises();
 
-    expect(trainer.setLevel).toHaveBeenCalledWith(2);
+    expect(trainer.setLevel).toHaveBeenCalledWith(
+      2,
+      expect.objectContaining({ reviewQuestionIds: [] })
+    );
     expect(playLevelSelectSoundMock).toHaveBeenCalledTimes(1);
   });
 
@@ -340,11 +358,46 @@ describe('index page', () => {
     }
 
     expect(wrapper.findAll('.game-over-actions button').map((button) => button.text())).toEqual([
-      'もう一度始める',
+      'この10語に再挑戦',
       'トップへ戻る',
     ]);
     expect(wrapper.get('.answer-support-row').classes()).toContain('answer-support-row--game-over');
     expect(wrapper.get('.lookup-panel').classes()).toContain('lookup-panel--secondary');
+  });
+
+  it('10問完走後は次の10語へ進む操作を表示する', async () => {
+    const trainer = createTrainerStub();
+    trainer.game.value = {
+      ...trainer.game.value,
+      rounds: 9,
+      correctAnswers: 9,
+      score: 165,
+      streak: 9,
+      bestStreak: 9,
+    };
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+    const correctChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await correctChoice?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.findAll('.game-over-actions button').map((button) => button.text())).toEqual([
+      '次の10語へ',
+      'トップへ戻る',
+    ]);
+
+    await wrapper.get('.game-over-actions .primary-button').trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({ routeIndex: 1 })
+    );
   });
 
   it('次の問題への切り替え失敗は回答済み状態のままエラー表示する', async () => {
@@ -620,7 +673,10 @@ describe('index page', () => {
     await levelButton?.trigger('click');
     await flushPromises();
 
-    expect(trainer.setLevel).toHaveBeenCalledWith(2);
+    expect(trainer.setLevel).toHaveBeenCalledWith(
+      2,
+      expect.objectContaining({ reviewQuestionIds: [] })
+    );
     expect(wrapper.text()).toContain('level 2 missing');
     expect(wrapper.text()).toContain('ゲームを始める');
     expect(wrapper.find('.session-start-panel').exists()).toBe(true);
@@ -769,8 +825,8 @@ describe('index page', () => {
       }
     }
 
-    expect(wrapper.find('.game-over-level-best--compact').exists()).toBe(true);
-    expect(wrapper.find('.game-over-stats').exists()).toBe(false);
+    expect(wrapper.find('.game-over-level-best').exists()).toBe(true);
+    expect(wrapper.find('.game-over-stats').exists()).toBe(true);
     expect(wrapper.text()).toContain('100');
     expect(wrapper.text()).toContain('8');
   });

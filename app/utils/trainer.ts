@@ -1,6 +1,7 @@
 import type { Level, QuestionChoice, QuestionRound, VocabEntry } from '~~/shared/types/vocabulary';
 
 export const RECENT_WINDOW_SIZE = 5;
+export const DAILY_ROUTE_LENGTH = 10;
 
 export const LEVEL_COPY: Record<Level, { label: string; summary: string }> = {
   1: {
@@ -35,6 +36,100 @@ const getEntryWeight = (entry: VocabEntry): number => {
   }
 
   return 1;
+};
+
+const hashText = (value: string): number => {
+  let hash = 2166136261;
+
+  for (const character of value) {
+    hash ^= character.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return hash >>> 0;
+};
+
+export const getLocalDateKey = (date = new Date()): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};
+
+const takeCircularSlice = <T>(items: T[], startIndex: number, count: number): T[] => {
+  if (items.length === 0 || count <= 0) {
+    return [];
+  }
+
+  return Array.from(
+    { length: Math.min(count, items.length) },
+    (_, index) => items[(startIndex + index) % items.length] as T
+  );
+};
+
+export const buildDailyRouteQuestionIds = (
+  pool: VocabEntry[],
+  level: Level,
+  dateKey: string,
+  reviewQuestionIds: string[] = [],
+  routeLength = DAILY_ROUTE_LENGTH,
+  routeIndex = 0
+): string[] => {
+  if (pool.length === 0 || routeLength <= 0) {
+    return [];
+  }
+
+  const entriesById = new Map(pool.map((entry) => [entry.id, entry]));
+  const safeRouteIndex = Math.max(0, Math.floor(routeIndex));
+  const reviewCandidates = [...new Set(reviewQuestionIds)]
+    .map((id) => entriesById.get(id))
+    .filter((entry): entry is VocabEntry => Boolean(entry))
+    .sort(
+      (left, right) =>
+        hashText(`${dateKey}:${level}:review:${left.id}`) -
+        hashText(`${dateKey}:${level}:review:${right.id}`)
+    );
+  const reviewEntries = takeCircularSlice(
+    reviewCandidates,
+    safeRouteIndex * 4,
+    Math.min(4, routeLength)
+  );
+  const reviewIds = new Set(reviewCandidates.map((entry) => entry.id));
+  const freshEntries = pool
+    .filter((entry) => !reviewIds.has(entry.id))
+    .map((entry) => ({
+      entry,
+      rank:
+        (hashText(`${dateKey}:${level}:fresh:${entry.id}`) + 1) /
+        (getEntryWeight(entry) * 4_294_967_296),
+    }))
+    .sort((left, right) => left.rank - right.rank)
+    .map(({ entry }) => entry);
+  const freshRouteEntries = takeCircularSlice(
+    freshEntries,
+    safeRouteIndex * routeLength,
+    routeLength - reviewEntries.length
+  );
+  const orderedEntries = [...reviewEntries, ...freshRouteEntries];
+
+  if (orderedEntries.length === 0) {
+    return [];
+  }
+
+  const routeIds: string[] = [];
+
+  while (routeIds.length < routeLength) {
+    const entry = orderedEntries[routeIds.length % orderedEntries.length];
+
+    if (!entry) {
+      break;
+    }
+
+    routeIds.push(entry.id);
+  }
+
+  return routeIds;
 };
 
 const shuffle = <T>(items: T[]): T[] => {
@@ -121,7 +216,8 @@ const getDistractorPriority = (correctEntry: VocabEntry, entry: VocabEntry): num
 export const buildQuestion = (
   pool: VocabEntry[],
   level: Level,
-  recentQuestionIds: string[]
+  recentQuestionIds: string[],
+  preferredQuestionId?: string
 ): QuestionRound => {
   if (pool.length < 4) {
     throw new Error(`Level ${level} requires at least 4 entries.`);
@@ -129,7 +225,11 @@ export const buildQuestion = (
 
   const recentQuestionIdSet = new Set(recentQuestionIds);
   const availablePool = pool.filter((entry) => !recentQuestionIdSet.has(entry.id));
-  const correctEntry = pickWeightedEntry(availablePool.length > 0 ? availablePool : pool);
+  const preferredEntry = preferredQuestionId
+    ? pool.find((entry) => entry.id === preferredQuestionId)
+    : undefined;
+  const correctEntry =
+    preferredEntry ?? pickWeightedEntry(availablePool.length > 0 ? availablePool : pool);
 
   const allDistractors = pool.filter(
     (entry) => entry.id !== correctEntry.id && entry.ja !== correctEntry.ja
