@@ -334,6 +334,11 @@ describe('index page', () => {
     expect(wrapper.find('.lookup-panel').exists()).toBe(true);
     expect(wrapper.find('.answer-support-actions').exists()).toBe(false);
     expect(wrapper.find('.game-over-actions').exists()).toBe(true);
+    expect(wrapper.find('.question-stage').exists()).toBe(false);
+    expect(wrapper.find('.choice-grid').exists()).toBe(false);
+    expect(wrapper.get('.game-over-last-answer').text()).toContain('謝謝');
+    expect(wrapper.get('.game-over-last-answer').text()).toContain('ありがとう');
+    expect(wrapper.get('.game-over-last-answer').text()).toContain('牛乳');
     expect(playFeedbackSoundMock).toHaveBeenCalledTimes(3);
     expect(playGameOverSoundMock).toHaveBeenCalledTimes(1);
     expect(playRecordCelebrationSoundMock).toHaveBeenCalledWith('double');
@@ -515,7 +520,8 @@ describe('index page', () => {
       }
     }
 
-    expect(wrapper.get('.game-over-panel').attributes('role')).toBe('status');
+    expect(wrapper.get('.game-over-copy').attributes('role')).toBe('status');
+    expect(wrapper.get('.game-over-panel').attributes('aria-labelledby')).toBe('game-over-heading');
   });
 
   it('回答後に正誤表示を更新し、次の問題で音声を自動再生する', async () => {
@@ -574,9 +580,10 @@ describe('index page', () => {
     expect(wrapper.get('.result-banner__message').text()).toBe(
       '不正解。正解は「こんにちは」です。残り2回で終了します。'
     );
+    expect(wrapper.find('.combo-ticket').exists()).toBe(false);
   });
 
-  it('HUD の残り回数は残り1本で警告状態として表示する', async () => {
+  it('HUD は連続不正解で終了までの回数を示し、残り1本で警告する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
     await startGame(wrapper);
@@ -596,17 +603,43 @@ describe('index page', () => {
     const lifeSlots = remainingStat.findAll('.life-meter__slot');
     const activeLifeSlots = remainingStat.findAll('.life-meter__slot--active');
 
-    expect(remainingStat.text()).toContain('残り');
+    expect(remainingStat.text()).toContain('終了まで');
     expect(lifeSlots).toHaveLength(3);
     expect(activeLifeSlots).toHaveLength(1);
-    expect(remainingStat.get('dd').text()).toContain('残り1');
-    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe('残り1回');
+    expect(remainingStat.get('dd').text()).toContain('連続不正解で終了まであと1回');
+    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe(
+      '連続不正解で終了まであと1回'
+    );
     expect(remainingStat.get('.life-meter').classes()).toContain('life-meter--critical');
     expect(wrapper.find('.life-warning-note').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('次のミスで終了');
     expect(remainingStat.classes()).toContain('question-stage__stat--critical');
     expect(wrapper.get('.quiz-panel').classes()).toContain('quiz-panel--critical');
     expect(playCriticalLifeSoundMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('ルート中断は確認を挟み、続行と中断を選べる', async () => {
+    const trainer = createTrainerStub();
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+    await wrapper.get('button.route-exit-button').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get('.route-exit-confirmation').attributes('role')).toBe('alertdialog');
+    expect(trainer.resetSession).not.toHaveBeenCalled();
+
+    await wrapper.get('.route-exit-confirmation button.ghost-button').trigger('click');
+    await flushPromises();
+    expect(wrapper.find('.route-exit-confirmation').exists()).toBe(false);
+
+    await wrapper.get('button.route-exit-button').trigger('click');
+    await wrapper.get('button.danger-button').trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalledTimes(1);
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
   });
 
   it('数字キーで回答し Enter で次の問題へ進める', async () => {

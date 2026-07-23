@@ -261,8 +261,8 @@ const expectNoHorizontalOverflow = async (page: Page) => {
   expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
 };
 
-const expectNextQuestionButtonInViewport = async (page: Page) => {
-  const buttonBounds = await page.getByRole('button', { name: '次の問題' }).evaluate((button) => {
+const expectButtonInViewport = async (page: Page, name: string) => {
+  const buttonBounds = await page.getByRole('button', { name }).evaluate((button) => {
     const rect = button.getBoundingClientRect();
 
     return {
@@ -352,6 +352,7 @@ test('モバイル幅でも主要状態で横にはみ出さない', async ({ pa
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
   await expectNoHorizontalOverflow(page);
+  await expectButtonInViewport(page, '今日の10語でゲームを始める');
 
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
   await answerCorrectChoice(page);
@@ -361,6 +362,7 @@ test('モバイル幅でも主要状態で横にはみ出さない', async ({ pa
   await finishWithWrongAnswers(page);
   await expect(page.locator('.game-over-panel')).toBeVisible();
   await expectNoHorizontalOverflow(page);
+  await expectButtonInViewport(page, 'この10語に再挑戦');
 });
 
 test('狭いスマホ幅の開始画面でも横にはみ出さない', async ({ page }) => {
@@ -388,7 +390,7 @@ test('モバイル幅では回答後に不要な選択肢を隠して次の問�
   await expect(page.locator('.choice-card')).toHaveCount(4);
   await expect(page.locator('.choice-card:visible')).toHaveCount(1);
   await expect(page.getByRole('button', { name: '次の問題' })).toBeVisible();
-  await expectNextQuestionButtonInViewport(page);
+  await expectButtonInViewport(page, '次の問題');
 });
 
 test('回答後の外部辞書パネルは1カラム幅で中央に揃える', async ({ page }) => {
@@ -638,7 +640,9 @@ test('10問完走後は次の10語へ進み、トップでも次ルートを案�
   await expect(page.getByText('ルート2の10語', { exact: true })).toBeVisible();
   await expect(page.locator('.trad-word').first()).not.toHaveText(firstWord ?? '');
 
-  await page.getByRole('button', { name: '終了' }).click();
+  await page.getByRole('button', { name: '中断' }).click();
+  await expect(page.getByRole('alertdialog')).toContainText('このルートを中断しますか？');
+  await page.getByRole('button', { name: '中断する' }).click();
   await expect(page.getByRole('button', { name: '次の10語を始める' })).toBeVisible();
   await expect(page.getByText('今日のルート 2', { exact: true })).toBeVisible();
 });

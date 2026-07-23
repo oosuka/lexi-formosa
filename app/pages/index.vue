@@ -82,6 +82,11 @@ const currentQuestionTrad = computed(() => currentQuestion.value?.trad ?? null);
 const currentQuestionId = computed(() => currentQuestion.value?.questionId ?? null);
 const currentRouteNumber = computed(() => trainer.game.value.routeIndex + 1);
 const selectedChoiceId = computed(() => trainer.game.value.selectedChoiceId);
+const selectedChoiceLabel = computed(
+  () =>
+    currentQuestion.value?.choices.find((choice) => choice.id === selectedChoiceId.value)?.label ??
+    null
+);
 const pageLoading = computed(
   () => !fatalError.value && (trainer.isLoading.value || !currentQuestion.value)
 );
@@ -188,6 +193,9 @@ const selectedMasteredCount = computed(
 );
 const isCriticalLife = computed(
   () => remainingMisses.value === 1 && !showSessionStart.value && !isGameOver.value
+);
+const showComboTicket = computed(
+  () => !isGameOver.value && (!answered.value || trainer.game.value.lastCorrect === true)
 );
 const comboTicketLabel = computed(() => {
   if (streak.value >= 7) {
@@ -331,6 +339,7 @@ const answer = (choiceId: string) => {
       bestStreak: trainer.game.value.bestStreak,
       completed: trainer.game.value.finishReason === 'route-complete',
     });
+    void nextTick(scrollPageToTop);
 
     void (async () => {
       await feedbackAudio.playGameOverSound();
@@ -588,6 +597,7 @@ useSeoMeta({
               >
                 <span class="level-badge">{{ item.label }}</span>
                 <span class="level-count">{{ item.countLabel }}</span>
+                <span class="level-short-summary">{{ item.shortSummary }}</span>
                 <strong>{{ item.summary }}</strong>
                 <span v-if="item.reviewCount > 0" class="level-review-count">復習 {{ item.reviewCount }}語</span>
               </button>
@@ -636,6 +646,7 @@ useSeoMeta({
 
         <template v-else-if="currentQuestion">
           <QuestionStage
+            v-if="!isGameOver"
             :level-label="LEVEL_COPY[currentQuestion.level].label"
             :score="score"
             :streak="streak"
@@ -655,7 +666,7 @@ useSeoMeta({
             @exit="resetSession()"
           />
 
-          <div class="choice-grid">
+          <div v-if="!isGameOver" class="choice-grid">
             <button
               v-for="(choice, index) in currentQuestion.choices"
               :key="choice.id"
@@ -677,7 +688,7 @@ useSeoMeta({
             </button>
           </div>
 
-          <div v-if="!isGameOver" class="combo-ticket" aria-live="polite">
+          <div v-if="showComboTicket" class="combo-ticket" aria-live="polite">
             <component :is="StarIcon" :size="22" weight="fill" aria-hidden="true" />
             <span class="combo-ticket__label">COMBO</span>
             <span class="combo-ticket__copy">{{ comboTicketLabel }}</span>
@@ -699,6 +710,9 @@ useSeoMeta({
             :review-count="selectedReviewCount"
             :current-level-high-score="currentLevelHighScore"
             :game-over-achievements="gameOverAchievements"
+            :last-trad="currentQuestion.trad"
+            :last-correct-label="trainer.correctChoice.value?.label ?? '不明'"
+            :last-selected-label="selectedChoiceLabel"
             @restart="restartSession()"
             @reset="resetSession()"
           />

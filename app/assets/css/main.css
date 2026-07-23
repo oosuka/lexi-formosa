@@ -126,8 +126,8 @@ summary:focus-visible {
 
 .hero-brand {
   display: grid;
-  gap: 24px;
-  min-height: 264px;
+  gap: 20px;
+  min-height: 240px;
   align-content: space-between;
   background: var(--accent);
   border-color: var(--accent);
@@ -302,9 +302,40 @@ summary:focus-visible {
   display: none;
 }
 
+.level-short-summary {
+  align-self: end;
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
 .session-start-panel {
   display: grid;
   gap: 16px;
+}
+
+.session-start-heading {
+  order: 1;
+}
+
+.route-track--preview {
+  order: 2;
+}
+
+.session-start-panel__actions {
+  order: 3;
+}
+
+.session-start-current-level {
+  order: 4;
+}
+
+.session-start-list {
+  order: 5;
+}
+
+.session-start-error {
+  order: 6;
 }
 
 .session-start-heading h2 {
@@ -381,7 +412,7 @@ summary:focus-visible {
 
 .session-start-current-level__stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
   padding-top: 12px;
   border-top: 1px solid var(--line-soft);
@@ -399,7 +430,7 @@ summary:focus-visible {
 }
 
 .session-start-current-level__stat .record-stat-label {
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   line-height: 1.35;
 }
 
@@ -433,6 +464,7 @@ summary:focus-visible {
 
 .primary-button,
 .ghost-button,
+.danger-button,
 .audio-button,
 .route-exit-button {
   min-height: 48px;
@@ -468,6 +500,14 @@ summary:focus-visible {
   border: 1px solid var(--line-mid);
   background: var(--surface);
   color: var(--ink-soft);
+}
+
+.danger-button {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1px solid var(--incorrect);
+  background: var(--incorrect-soft);
+  color: var(--incorrect);
 }
 
 .session-start-list {
@@ -568,6 +608,36 @@ summary:focus-visible {
   background: transparent;
   color: var(--ink-soft);
   font-size: 0.82rem;
+}
+
+.route-exit-confirmation {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #dcaaa3;
+  border-radius: var(--radius-md);
+  background: var(--incorrect-soft);
+}
+
+.route-exit-confirmation strong {
+  font-size: 0.9rem;
+}
+
+.route-exit-confirmation p {
+  margin: 4px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.route-exit-confirmation__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.route-exit-confirmation__actions button {
+  min-height: 44px;
 }
 
 .question-stage__hud {
@@ -976,6 +1046,52 @@ summary:focus-visible {
   line-height: 1.6;
 }
 
+.game-over-last-answer {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+}
+
+.game-over-last-answer__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  gap: 10px;
+}
+
+.game-over-last-answer__grid > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.game-over-last-answer__grid span {
+  color: var(--ink-muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.game-over-last-answer__grid strong {
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+}
+
+.game-over-last-answer__grid > div:first-child strong {
+  color: var(--accent-strong);
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  line-height: 1.1;
+}
+
+.game-over-last-answer__selected {
+  margin: 0;
+  color: var(--incorrect);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
 .route-medal {
   display: flex;
   align-items: center;
@@ -1108,6 +1224,7 @@ summary:focus-visible {
 @media (hover: hover) and (pointer: fine) {
   .primary-button:hover:enabled,
   .ghost-button:hover:enabled,
+  .danger-button:hover:enabled,
   .audio-button:hover:enabled,
   .level-card:hover:enabled,
   .record-card:hover:enabled,
@@ -1195,6 +1312,10 @@ summary:focus-visible {
     display: block;
   }
 
+  .level-short-summary {
+    display: none;
+  }
+
   .level-card strong {
     margin-top: 7px;
     font-size: 0.82rem;
@@ -1212,6 +1333,19 @@ summary:focus-visible {
     padding-left: 26px;
     padding-right: 26px;
     border-left: 1px solid var(--line-soft);
+  }
+
+  .session-start-heading,
+  .route-track--preview,
+  .session-start-panel__actions,
+  .session-start-current-level,
+  .session-start-list,
+  .session-start-error {
+    order: initial;
+  }
+
+  .session-start-current-level__stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .quiz-panel {

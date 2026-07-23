@@ -44,6 +44,33 @@ const routeSlots = computed(() =>
 );
 
 const audioButtonLabel = computed(() => (props.isSpeaking ? '音声を停止' : '音声を再生'));
+const exitConfirmationOpen = ref(false);
+const exitButton = ref<HTMLButtonElement | null>(null);
+const continueButton = ref<HTMLButtonElement | null>(null);
+
+const requestExit = async () => {
+  exitConfirmationOpen.value = true;
+  await nextTick();
+  continueButton.value?.focus();
+};
+
+const cancelExit = async () => {
+  exitConfirmationOpen.value = false;
+  await nextTick();
+  exitButton.value?.focus();
+};
+
+const confirmExit = () => {
+  exitConfirmationOpen.value = false;
+  emit('exit');
+};
+
+watch(
+  () => props.routePosition,
+  () => {
+    exitConfirmationOpen.value = false;
+  }
+);
 </script>
 
 <template>
@@ -53,8 +80,40 @@ const audioButtonLabel = computed(() => (props.isSpeaking ? '音声を停止' : 
       <p class="route-topbar__position" aria-live="polite">
         <strong>{{ props.routePosition }}</strong> / {{ props.routeLength }}
       </p>
-      <button class="route-exit-button" type="button" @click="emit('exit')">終了</button>
+      <button
+        ref="exitButton"
+        class="route-exit-button"
+        type="button"
+        aria-controls="route-exit-confirmation"
+        :aria-expanded="exitConfirmationOpen"
+        @click="requestExit()"
+      >
+        中断
+      </button>
     </header>
+
+    <section
+      v-if="exitConfirmationOpen"
+      id="route-exit-confirmation"
+      class="route-exit-confirmation"
+      role="alertdialog"
+      aria-labelledby="route-exit-confirmation-title"
+      aria-describedby="route-exit-confirmation-description"
+      @keydown.esc="cancelExit()"
+    >
+      <div>
+        <strong id="route-exit-confirmation-title">このルートを中断しますか？</strong>
+        <p id="route-exit-confirmation-description">
+          今回の途中記録は保存せず、トップへ戻ります。
+        </p>
+      </div>
+      <div class="route-exit-confirmation__actions">
+        <button ref="continueButton" class="ghost-button" type="button" @click="cancelExit()">
+          続ける
+        </button>
+        <button class="danger-button" type="button" @click="confirmExit()">中断する</button>
+      </div>
+    </section>
 
     <ol class="route-track" :aria-label="`${props.routeLength}問中${props.routePosition}問目`">
       <li
@@ -84,14 +143,16 @@ const audioButtonLabel = computed(() => (props.isSpeaking ? '音声を停止' : 
           class="question-stage__stat question-stage__stat--remaining"
           :class="{ 'question-stage__stat--critical': props.criticalLife }"
         >
-          <dt>残り</dt>
+          <dt>終了まで</dt>
           <dd>
-            <span class="visually-hidden">残り{{ props.remainingMisses }}回</span>
+            <span class="visually-hidden">
+              連続不正解で終了まであと{{ props.remainingMisses }}回
+            </span>
             <span
               class="life-meter"
               :class="{ 'life-meter--critical': props.criticalLife }"
               role="meter"
-              :aria-label="`残り${props.remainingMisses}回`"
+              :aria-label="`連続不正解で終了まであと${props.remainingMisses}回`"
               :aria-valuenow="props.remainingMisses"
               :aria-valuemin="0"
               :aria-valuemax="MAX_MISSES_IN_ROW"

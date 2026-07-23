@@ -30,6 +30,9 @@ const props = defineProps<{
   reviewCount: number;
   currentLevelHighScore: LevelHighScore;
   gameOverAchievements: GameOverAchievement[];
+  lastTrad: string;
+  lastCorrectLabel: string;
+  lastSelectedLabel: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -46,6 +49,7 @@ const achievementByKey = computed(
 const restartLabel = computed(() =>
   props.finishReason === 'route-complete' ? '次の10語へ' : 'この10語に再挑戦'
 );
+const lastAnswerWasCorrect = computed(() => props.lastSelectedLabel === props.lastCorrectLabel);
 </script>
 
 <template>
@@ -55,13 +59,11 @@ const restartLabel = computed(() =>
       'game-over-panel--complete': props.finishReason === 'route-complete',
       'game-over-panel--celebration': props.celebrationTone !== 'none',
     }"
-    aria-live="polite"
-    aria-atomic="true"
-    role="status"
+    aria-labelledby="game-over-heading"
   >
-    <div class="game-over-copy">
+    <div class="game-over-copy" aria-live="polite" aria-atomic="true" role="status">
       <p v-if="props.gameOverTitle" class="game-over-kicker">{{ props.gameOverTitle }}</p>
-      <strong class="game-over-title">{{ props.feedbackBadge }}</strong>
+      <strong id="game-over-heading" class="game-over-title">{{ props.feedbackBadge }}</strong>
       <p class="game-over-summary">{{ props.gameOverSummary }}</p>
       <p v-if="props.loadError" class="game-over-error">{{ props.loadError }}</p>
     </div>
@@ -70,6 +72,26 @@ const restartLabel = computed(() =>
       <component :is="StarIcon" :size="24" weight="fill" aria-hidden="true" />
       <span>{{ props.medalLabel }}</span>
     </div>
+
+    <section class="game-over-last-answer" aria-labelledby="game-over-last-answer-title">
+      <p id="game-over-last-answer-title" class="game-over-section-label">最後の単語</p>
+      <div class="game-over-last-answer__grid">
+        <div>
+          <span>繁体字</span>
+          <strong lang="zh-Hant-TW">{{ props.lastTrad }}</strong>
+        </div>
+        <div>
+          <span>正解</span>
+          <strong>{{ props.lastCorrectLabel }}</strong>
+        </div>
+      </div>
+      <p
+        v-if="props.lastSelectedLabel && !lastAnswerWasCorrect"
+        class="game-over-last-answer__selected"
+      >
+        選んだ答え：{{ props.lastSelectedLabel }}
+      </p>
+    </section>
 
     <div class="game-over-summary-grid">
       <article class="game-over-stat game-over-stat--primary">

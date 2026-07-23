@@ -18,14 +18,17 @@ describe('trainer utilities', () => {
     expect(LEVEL_COPY).toEqual({
       1: {
         label: 'Level 1',
+        shortSummary: '基礎',
         summary: '1文字。基礎の単語から始める。',
       },
       2: {
         label: 'Level 2',
+        shortSummary: '日常',
         summary: '2文字。日常でよく見る単語。',
       },
       3: {
         label: 'Level 3',
+        shortSummary: '実用',
         summary: '3文字以上。実用的な複合語。',
       },
     });

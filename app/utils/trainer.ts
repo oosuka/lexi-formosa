@@ -3,17 +3,20 @@ import type { Level, QuestionChoice, QuestionRound, VocabEntry } from '~~/shared
 export const RECENT_WINDOW_SIZE = 5;
 export const DAILY_ROUTE_LENGTH = 10;
 
-export const LEVEL_COPY: Record<Level, { label: string; summary: string }> = {
+export const LEVEL_COPY: Record<Level, { label: string; shortSummary: string; summary: string }> = {
   1: {
     label: 'Level 1',
+    shortSummary: '基礎',
     summary: '1文字。基礎の単語から始める。',
   },
   2: {
     label: 'Level 2',
+    shortSummary: '日常',
     summary: '2文字。日常でよく見る単語。',
   },
   3: {
     label: 'Level 3',
+    shortSummary: '実用',
     summary: '3文字以上。実用的な複合語。',
   },
 };
