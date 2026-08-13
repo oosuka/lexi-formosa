@@ -655,6 +655,9 @@ describe('index page', () => {
     await flushPromises();
 
     expect(wrapper.get('.route-exit-confirmation').attributes('role')).toBe('alertdialog');
+    expect(wrapper.get('.route-exit-confirmation').text()).toContain(
+      '回答済みの学習履歴と最高記録は保存されます。ルート完走数は加算せず、トップへ戻ります。'
+    );
     expect(trainer.resetSession).not.toHaveBeenCalled();
 
     await wrapper.get('.route-exit-confirmation button.ghost-button').trigger('click');
@@ -666,6 +669,33 @@ describe('index page', () => {
     await flushPromises();
 
     expect(trainer.resetSession).toHaveBeenCalledTimes(1);
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
+  });
+
+  it('回答後のトップ復帰も中断確認を挟む', async () => {
+    const trainer = createTrainerStub();
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+    const correctChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await correctChoice?.trigger('click');
+    await flushPromises();
+
+    const resetCallCount = trainer.resetSession.mock.calls.length;
+    await wrapper.get('.answer-support-actions .secondary-action-button').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('.route-exit-confirmation').exists()).toBe(true);
+    expect(trainer.resetSession).toHaveBeenCalledTimes(resetCallCount);
+
+    await wrapper.get('.route-exit-confirmation .danger-button').trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalledTimes(resetCallCount + 1);
     expect(wrapper.find('.session-start-panel').exists()).toBe(true);
   });
 
@@ -823,6 +853,8 @@ describe('index page', () => {
 
     await resetButton?.trigger('click');
     await flushPromises();
+    await wrapper.get('.route-exit-confirmation .danger-button').trigger('click');
+    await flushPromises();
 
     expect(trainer.resetSession).toHaveBeenCalled();
     expect(wrapper.text()).toContain('session reset failed');
@@ -962,6 +994,8 @@ describe('index page', () => {
       .find((candidate) => candidate.text().includes('トップへ戻る'));
 
     await resetButton?.trigger('click');
+    await flushPromises();
+    await wrapper.get('.route-exit-confirmation .danger-button').trigger('click');
     await flushPromises();
 
     expect(wrapper.find('.session-start-panel').exists()).toBe(true);

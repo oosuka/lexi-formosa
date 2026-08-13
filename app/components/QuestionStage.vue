@@ -65,6 +65,8 @@ const confirmExit = () => {
   emit('exit');
 };
 
+defineExpose({ requestExit });
+
 watch(
   () => props.routePosition,
   () => {
@@ -104,7 +106,7 @@ watch(
       <div>
         <strong id="route-exit-confirmation-title">このルートを中断しますか？</strong>
         <p id="route-exit-confirmation-description">
-          今回の途中記録は保存せず、トップへ戻ります。
+          回答済みの学習履歴と最高記録は保存されます。ルート完走数は加算せず、トップへ戻ります。
         </p>
       </div>
       <div class="route-exit-confirmation__actions">

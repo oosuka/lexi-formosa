@@ -24,6 +24,9 @@ import {
 const StarIcon = PhStar;
 
 type MetadataStatus = 'loading' | 'ready' | 'failed';
+type QuestionStageExpose = {
+  requestExit: () => Promise<void>;
+};
 
 const trainer = useTraditionalTrainer();
 const learningProgress = useLearningProgress();
@@ -40,6 +43,7 @@ const sessionRecordBaseline = ref<Record<Level, LevelHighScore>>({
   2: { score: 0, streak: 0 },
   3: { score: 0, streak: 0 },
 });
+const questionStageRef = ref<QuestionStageExpose | null>(null);
 
 const formatVocabularyWordsLabel = (
   count: number | null | undefined,
@@ -327,6 +331,10 @@ const scrollPageToTop = () => {
   if (typeof window !== 'undefined') {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }
+};
+
+const requestSessionExit = () => {
+  void questionStageRef.value?.requestExit();
 };
 
 const selectLevel = async (level: Level) => {
@@ -697,6 +705,7 @@ useSeoMeta({
         <template v-else-if="currentQuestion">
           <QuestionStage
             v-if="!isGameOver"
+            ref="questionStageRef"
             :level-label="LEVEL_COPY[currentQuestion.level].label"
             :score="score"
             :streak="streak"
@@ -803,7 +812,7 @@ useSeoMeta({
                   <button
                     class="ghost-button secondary-action-button"
                     type="button"
-                    @click="resetSession()"
+                    @click="requestSessionExit()"
                   >
                     トップへ戻る
                   </button>

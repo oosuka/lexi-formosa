@@ -623,6 +623,10 @@ test('ゲーム遷移後はページ上部へ戻る', async ({ page }) => {
     .toBeGreaterThan(0);
 
   await page.getByRole('button', { name: 'トップへ戻る' }).click();
+  await expect(page.getByRole('alertdialog')).toContainText(
+    '回答済みの学習履歴と最高記録は保存されます。ルート完走数は加算せず、トップへ戻ります。'
+  );
+  await page.getByRole('button', { name: '中断する' }).click();
 
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
   await expect
