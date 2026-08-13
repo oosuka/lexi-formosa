@@ -717,61 +717,57 @@ useSeoMeta({
             @reset="resetSession()"
           />
 
-          <div
-            v-else-if="answered || isLoading || feedbackView.uiError"
-            class="feedback-row"
-            :class="`feedback-row--${feedbackTone}`"
-          >
-            <ResultBanner
-              v-if="feedbackView.variant === 'banner'"
-              :tone="feedbackView.tone"
-              :badge="feedbackView.badge"
-              :show-badge="feedbackView.tone === 'loading'"
-              :message="feedbackView.message"
-              :ui-error="feedbackView.uiError"
-            />
-            <p v-if="learningNote" class="learning-note">{{ learningNote }}</p>
-          </div>
-
-          <div
-            v-if="revealAnswer"
-            class="answer-support-row"
-            :class="{ 'answer-support-row--game-over': isGameOver }"
-          >
-            <div v-if="!isGameOver" class="answer-support-actions">
-              <button
-                class="primary-button"
-                type="button"
-                :disabled="!answered || isLoading"
-                aria-keyshortcuts="Enter"
-                @click="moveToNextQuestion()"
-              >
-                次の問題
-              </button>
-              <button class="ghost-button secondary-action-button" type="button" @click="resetSession()">
-                トップへ戻る
-              </button>
-            </div>
-
-            <details
-              v-if="externalLookupLinks.length > 0"
-              class="lookup-panel"
-              :class="{ 'lookup-panel--secondary': isGameOver }"
+          <template v-if="!isGameOver">
+            <div
+              v-if="answered || isLoading || feedbackView.uiError || revealAnswer"
+              class="response-panel"
+              :class="{ 'response-panel--answer': revealAnswer }"
             >
-              <summary>外部辞書で確認</summary>
-              <div class="lookup-links">
-                <a
-                  v-for="link in externalLookupLinks"
-                  :key="link.id"
-                  class="lookup-link"
-                  :href="link.href"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ link.label }}
-                </a>
+              <div
+                v-if="answered || isLoading || feedbackView.uiError"
+                class="feedback-row"
+                :class="`feedback-row--${feedbackTone}`"
+              >
+                <ResultBanner
+                  v-if="feedbackView.variant === 'banner'"
+                  :tone="feedbackView.tone"
+                  :badge="feedbackView.badge"
+                  :show-badge="feedbackView.tone === 'loading'"
+                  :message="feedbackView.message"
+                  :ui-error="feedbackView.uiError"
+                />
+                <p v-if="learningNote" class="learning-note">{{ learningNote }}</p>
               </div>
-            </details>
+
+              <div v-if="revealAnswer" class="answer-support-row">
+                <div class="answer-support-actions">
+                  <button
+                    class="primary-button"
+                    type="button"
+                    :disabled="!answered || isLoading"
+                    aria-keyshortcuts="Enter"
+                    @click="moveToNextQuestion()"
+                  >
+                    次の問題
+                  </button>
+                  <button
+                    class="ghost-button secondary-action-button"
+                    type="button"
+                    @click="resetSession()"
+                  >
+                    トップへ戻る
+                  </button>
+                </div>
+                <LookupPanel :links="externalLookupLinks" />
+              </div>
+            </div>
+          </template>
+
+          <div
+            v-if="isGameOver && revealAnswer"
+            class="answer-support-row answer-support-row--game-over"
+          >
+            <LookupPanel :links="externalLookupLinks" secondary />
           </div>
         </template>
 

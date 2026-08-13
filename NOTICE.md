@@ -2,7 +2,7 @@
 
 この文書は、`lexi-formosa` を fork / clone してローカルで遊ぶ人が、コードと辞書データの扱いを混同しないための注意書きです。法的助言ではありません。
 
-外部ソースの記載内容と公開状態の最終確認日: 2026-07-24
+外部ソースの記載内容と公開状態の最終確認日: 2026-08-13
 
 ## License Scope
 
@@ -26,7 +26,7 @@
   - 既定の取得先: `https://raw.githubusercontent.com/PSeitz/tocfl/main/tocfl_words.json`
   - upstream: [PSeitz/tocfl](https://github.com/PSeitz/tocfl)
   - upstream の README は、公式 TOCFL サイトからリンクされたファイルを基にしたデータセットであると説明しています。
-  - 2026-07-24 時点で upstream リポジトリ直下にライセンスファイルは確認できません。生成物を公開する前に、参照元を含む適用条件を別途確認してください。
+  - 2026-08-13 時点で upstream リポジトリ直下にライセンスファイルは確認できません。生成物を公開する前に、参照元を含む適用条件を別途確認してください。
 - TBCL
   - 任意入力: `TBCL_SOURCE_PATH` / `TBCL_SOURCE_URL`
   - 公式サイト: [臺灣華語文能力基準 TBCL](https://bcoct.naer.edu.tw/TBCL/)

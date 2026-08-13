@@ -345,6 +345,18 @@ test('ゲームを1問進められる', async ({ page }) => {
   await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
 });
 
+test('PC幅の回答後は結果と次の問題を同じ視野に収める', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 1280, height: 720 });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  await answerCorrectChoice(page);
+
+  await expect(page.locator('.feedback-row')).toBeVisible();
+  await expectButtonInViewport(page, '次の問題');
+});
+
 test('モバイル幅でも主要状態で横にはみ出さない', async ({ page }) => {
   await installMockWordlists(page);
   await page.setViewportSize({ width: 390, height: 844 });

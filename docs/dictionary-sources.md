@@ -1,6 +1,6 @@
 # Dictionary Sources
 
-最終確認日: 2026-07-24
+最終確認日: 2026-08-13
 
 大量語彙は第三者データをローカルで加工して生成します。生成済みの `data/vocabulary*.json`、`public/wordlists/*.json`、レビュー補助 JSON、外部ソーススナップショットは Git 管理対象にしません。権利上の注意は [NOTICE.md](../NOTICE.md) を確認してください。
 
@@ -13,7 +13,7 @@
 - upstream: [PSeitz/tocfl](https://github.com/PSeitz/tocfl)
 - 用途: 台湾華語寄りの自動生成候補とレベル情報
 - 指定方法: `TOCFL_SOURCE_PATH` または `TOCFL_SOURCE_URL`
-- 注意: upstream は公式 TOCFL サイトからリンクされたファイルに基づくと説明していますが、2026-07-24 時点でリポジトリ直下にライセンスファイルは確認できません。
+- 注意: upstream は公式 TOCFL サイトからリンクされたファイルに基づくと説明していますが、2026-08-13 時点でリポジトリ直下にライセンスファイルは確認できません。
 
 ### MJdic / CC-CEDICT
 

@@ -414,6 +414,7 @@ summary:focus-visible {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
+  margin: 0;
   padding-top: 12px;
   border-top: 1px solid var(--line-soft);
 }
@@ -424,7 +425,8 @@ summary:focus-visible {
   text-align: center;
 }
 
-.session-start-current-level__stat strong {
+.session-start-current-level__stat dd {
+  margin: 0;
   font-size: 1.18rem;
   font-variant-numeric: tabular-nums;
 }
@@ -967,6 +969,11 @@ summary:focus-visible {
   gap: 9px;
 }
 
+.response-panel {
+  display: grid;
+  gap: 9px;
+}
+
 .answer-support-actions {
   display: grid;
   gap: 7px;
@@ -1255,7 +1262,12 @@ summary:focus-visible {
   }
 
   .hero-brand {
-    min-height: 312px;
+    min-height: 270px;
+  }
+
+  .hero-stats-panel {
+    gap: 10px;
+    padding: 22px;
   }
 
   .hero-stats-panel {
@@ -1275,8 +1287,8 @@ summary:focus-visible {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 6px 12px;
-    min-height: 76px;
-    padding: 12px 14px;
+    min-height: 68px;
+    padding: 10px 12px;
     text-align: left;
     cursor: pointer;
   }
@@ -1335,13 +1347,28 @@ summary:focus-visible {
     border-left: 1px solid var(--line-soft);
   }
 
-  .session-start-heading,
-  .route-track--preview,
-  .session-start-panel__actions,
-  .session-start-current-level,
-  .session-start-list,
+  .session-start-heading {
+    order: 1;
+  }
+
+  .route-track--preview {
+    order: 2;
+  }
+
+  .session-start-panel__actions {
+    order: 3;
+  }
+
+  .session-start-current-level {
+    order: 4;
+  }
+
+  .session-start-list {
+    order: 5;
+  }
+
   .session-start-error {
-    order: initial;
+    order: 6;
   }
 
   .session-start-current-level__stats {
@@ -1372,6 +1399,25 @@ summary:focus-visible {
   .choice-card--muted {
     display: flex;
     opacity: 0.45;
+  }
+
+  .response-panel--answer {
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 0.42fr);
+    align-items: stretch;
+  }
+
+  .response-panel--answer > .feedback-row {
+    grid-column: 1;
+  }
+
+  .response-panel--answer > .answer-support-row {
+    grid-column: 2;
+    grid-row: 1;
+    align-content: start;
+  }
+
+  .response-panel--answer .answer-support-actions {
+    grid-template-columns: 1fr;
   }
 
   .answer-support-actions,

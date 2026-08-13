@@ -172,7 +172,7 @@ watch(
 
     <div class="question-stage__word-focus">
       <span v-if="props.isReviewWord" class="review-word-label">復習語</span>
-      <strong class="question-stage__trad trad-word">{{ props.trad }}</strong>
+      <strong class="question-stage__trad trad-word" lang="zh-Hant-TW">{{ props.trad }}</strong>
 
       <div v-if="props.katakanaReading || props.pinyinReading" class="question-stage__readings">
         <p v-if="props.katakanaReading" class="question-stage__reading question-stage__reading--kana">

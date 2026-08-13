@@ -25,6 +25,12 @@ const routeHeading = computed(() =>
 const startButtonLabel = computed(() =>
   props.completedRoutes > 0 ? '次の10語を始める' : '今日の10語でゲームを始める'
 );
+const currentLevelStats = computed(() => [
+  { label: '最高スコア', value: props.selectedLevelScore },
+  { label: '最高連続数', value: props.selectedLevelStreak },
+  { label: '復習待ち', value: props.reviewCount },
+  { label: '定着した語', value: props.masteredCount },
+]);
 </script>
 
 <template>
@@ -44,24 +50,12 @@ const startButtonLabel = computed(() =>
         <span class="session-start-current-level__level">{{ props.selectedLevelLabel }}</span>
         <span class="session-start-current-level__count">{{ props.selectedLevelCountLabel }}</span>
       </div>
-      <div class="session-start-current-level__stats">
-        <div class="session-start-current-level__stat">
-          <span class="record-stat-label">最高スコア</span>
-          <strong>{{ props.selectedLevelScore }}</strong>
+      <dl class="session-start-current-level__stats">
+        <div v-for="stat in currentLevelStats" :key="stat.label" class="session-start-current-level__stat">
+          <dt class="record-stat-label">{{ stat.label }}</dt>
+          <dd>{{ stat.value }}</dd>
         </div>
-        <div class="session-start-current-level__stat">
-          <span class="record-stat-label">最高連続数</span>
-          <strong>{{ props.selectedLevelStreak }}</strong>
-        </div>
-        <div class="session-start-current-level__stat">
-          <span class="record-stat-label">復習待ち</span>
-          <strong>{{ props.reviewCount }}</strong>
-        </div>
-        <div class="session-start-current-level__stat">
-          <span class="record-stat-label">定着した語</span>
-          <strong>{{ props.masteredCount }}</strong>
-        </div>
-      </div>
+      </dl>
       <p v-if="props.todayCorrect > 0 || props.completedRoutes > 0" class="today-route-result">
         <span>本日 {{ props.completedRoutes }}ルート完走</span>
         <span>ベスト {{ props.todayCorrect }} / 10</span>
