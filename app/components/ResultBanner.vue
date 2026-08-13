@@ -29,6 +29,8 @@ const impactClass = computed(() => {
     class="result-banner result-banner--embedded"
     :class="[toneClass, impactClass]"
     aria-live="polite"
+    aria-atomic="true"
+    role="status"
   >
     <div class="result-banner__copy" :class="{ 'result-banner__copy--without-badge': !shouldShowBadge }">
       <span

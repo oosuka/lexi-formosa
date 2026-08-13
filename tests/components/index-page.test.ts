@@ -52,6 +52,12 @@ const createGameState = (): GameState => ({
   bestStreak: 0,
   missesInRow: 0,
   rounds: 0,
+  correctAnswers: 0,
+  routeLength: 10,
+  routeIndex: 0,
+  routeQuestionIds: [questionOne.questionId, questionTwo.questionId],
+  reviewQuestionIds: [],
+  finishReason: null,
   status: 'ready',
   currentQuestion: questionOne,
   selectedChoiceId: null,
@@ -74,18 +80,27 @@ const createTrainerStub = () => {
       const correct = choiceId === questionOne.questionId;
       const nextStreak = correct ? game.value.streak + 1 : 0;
       const nextMissesInRow = correct ? 0 : game.value.missesInRow + 1;
-      const nextStatus = nextMissesInRow >= 3 ? 'finished' : 'answered';
+      const nextRounds = game.value.rounds + 1;
+      const finishReason =
+        nextMissesInRow >= 3
+          ? 'misses'
+          : nextRounds >= game.value.routeLength
+            ? 'route-complete'
+            : null;
+      const nextStatus = finishReason ? 'finished' : 'answered';
       const scoreGain = correct ? getScoreForCorrectAnswer(nextStreak) : 0;
       game.value = {
         ...game.value,
         status: nextStatus,
         selectedChoiceId: choiceId,
         lastCorrect: correct,
-        rounds: game.value.rounds + 1,
+        rounds: nextRounds,
+        correctAnswers: game.value.correctAnswers + (correct ? 1 : 0),
         score: game.value.score + scoreGain,
         streak: nextStreak,
         bestStreak: Math.max(game.value.bestStreak, nextStreak),
         missesInRow: nextMissesInRow,
+        finishReason,
       };
 
       return {
@@ -180,6 +195,33 @@ describe('index page', () => {
     expect(wrapper.get('button.audio-button').text()).toContain('音声を再生');
   });
 
+  it('日付をまたぐと開始前のルートを新しい日付で再初期化する', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 6, 13, 23, 59));
+    const trainer = createTrainerStub();
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    await flushPromises();
+    trainer.resetSession.mockClear();
+
+    vi.setSystemTime(new Date(2026, 6, 14, 0, 1));
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({ dateKey: '2026-07-14', routeIndex: 0 })
+    );
+    trainer.resetSession.mockClear();
+
+    await wrapper.get('button.session-start-button').trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).not.toHaveBeenCalled();
+    expect(wrapper.find('.session-start-panel').exists()).toBe(false);
+  });
+
   it('開始前パネルに選択中レベルの要約と記録をまとめて表示し、レベル変更で追従する', async () => {
     window.localStorage.setItem(
       HIGH_SCORE_STORAGE_KEY,
@@ -234,8 +276,23 @@ describe('index page', () => {
     await recordButton?.trigger('click');
     await flushPromises();
 
-    expect(trainer.setLevel).toHaveBeenCalledWith(2);
+    expect(trainer.setLevel).toHaveBeenCalledWith(
+      2,
+      expect.objectContaining({ reviewQuestionIds: [] })
+    );
     expect(playLevelSelectSoundMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('TOP のレコードカードには選択用の補助文言を表示しない', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    const recordButtons = wrapper.findAll('button.record-card');
+
+    expect(recordButtons).toHaveLength(3);
+    for (const button of recordButtons) {
+      expect(button.find('.record-card-affordance').exists()).toBe(false);
+      expect(button.find('.record-card-status').exists()).toBe(false);
+    }
   });
 
   it('正解時にそのレベルの最高記録を保存する', async () => {
@@ -304,6 +361,11 @@ describe('index page', () => {
     expect(wrapper.find('.lookup-panel').exists()).toBe(true);
     expect(wrapper.find('.answer-support-actions').exists()).toBe(false);
     expect(wrapper.find('.game-over-actions').exists()).toBe(true);
+    expect(wrapper.find('.question-stage').exists()).toBe(false);
+    expect(wrapper.find('.choice-grid').exists()).toBe(false);
+    expect(wrapper.get('.game-over-last-answer').text()).toContain('謝謝');
+    expect(wrapper.get('.game-over-last-answer').text()).toContain('ありがとう');
+    expect(wrapper.get('.game-over-last-answer').text()).toContain('牛乳');
     expect(playFeedbackSoundMock).toHaveBeenCalledTimes(3);
     expect(playGameOverSoundMock).toHaveBeenCalledTimes(1);
     expect(playRecordCelebrationSoundMock).toHaveBeenCalledWith('double');
@@ -328,9 +390,46 @@ describe('index page', () => {
     }
 
     expect(wrapper.findAll('.game-over-actions button').map((button) => button.text())).toEqual([
-      'もう一度始める',
+      'この10語に再挑戦',
       'トップへ戻る',
     ]);
+    expect(wrapper.get('.answer-support-row').classes()).toContain('answer-support-row--game-over');
+    expect(wrapper.get('.lookup-panel').classes()).toContain('lookup-panel--secondary');
+  });
+
+  it('10問完走後は次の10語へ進む操作を表示する', async () => {
+    const trainer = createTrainerStub();
+    trainer.game.value = {
+      ...trainer.game.value,
+      rounds: 9,
+      correctAnswers: 9,
+      score: 165,
+      streak: 9,
+      bestStreak: 9,
+    };
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    await startGame(wrapper);
+    const correctChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await correctChoice?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.findAll('.game-over-actions button').map((button) => button.text())).toEqual([
+      '次の10語へ',
+      'トップへ戻る',
+    ]);
+
+    await wrapper.get('.game-over-actions .primary-button').trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({ routeIndex: 1 })
+    );
   });
 
   it('次の問題への切り替え失敗は回答済み状態のままエラー表示する', async () => {
@@ -401,6 +500,57 @@ describe('index page', () => {
     }
   });
 
+  it('選択肢には数字キーと対応する番号を表示する', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    expect(wrapper.findAll('.choice-index').map((item) => item.text())).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+    ]);
+    expect(
+      wrapper.findAll('.choice-card').map((item) => item.attributes('aria-keyshortcuts'))
+    ).toEqual(['1', '2', '3', '4']);
+  });
+
+  it('回答結果とゲーム終了は状態更新として通知できる', async () => {
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+
+    const answerButton = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await answerButton?.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get('.result-banner').attributes('role')).toBe('status');
+
+    await wrapper.get('button.primary-button').trigger('click');
+    await flushPromises();
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const wrongChoice = wrapper
+        .findAll('.choice-card')
+        .find((candidate) => candidate.text().includes('牛乳'));
+
+      await wrongChoice?.trigger('click');
+      await flushPromises();
+
+      if (attempt < 2) {
+        await wrapper.get('button.primary-button').trigger('click');
+        await flushPromises();
+      }
+    }
+
+    expect(wrapper.get('.game-over-copy').attributes('role')).toBe('status');
+    expect(wrapper.get('.game-over-panel').attributes('aria-labelledby')).toBe('game-over-heading');
+  });
+
   it('回答後に正誤表示を更新し、次の問題で音声を自動再生する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
@@ -457,9 +607,10 @@ describe('index page', () => {
     expect(wrapper.get('.result-banner__message').text()).toBe(
       '不正解。正解は「こんにちは」です。残り2回で終了します。'
     );
+    expect(wrapper.find('.combo-ticket').exists()).toBe(false);
   });
 
-  it('HUD の残り回数は残り1本で警告状態として表示する', async () => {
+  it('HUD は連続不正解で終了までの回数を示し、残り1本で警告する', async () => {
     const wrapper = await mountSuspended(IndexPage);
 
     await startGame(wrapper);
@@ -479,17 +630,73 @@ describe('index page', () => {
     const lifeSlots = remainingStat.findAll('.life-meter__slot');
     const activeLifeSlots = remainingStat.findAll('.life-meter__slot--active');
 
-    expect(remainingStat.text()).toContain('残り');
+    expect(remainingStat.text()).toContain('終了まで');
     expect(lifeSlots).toHaveLength(3);
     expect(activeLifeSlots).toHaveLength(1);
-    expect(remainingStat.get('dd').text()).toContain('残り1');
-    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe('残り1回');
+    expect(remainingStat.get('dd').text()).toContain('連続不正解で終了まであと1回');
+    expect(remainingStat.find('.life-meter').attributes('aria-label')).toBe(
+      '連続不正解で終了まであと1回'
+    );
     expect(remainingStat.get('.life-meter').classes()).toContain('life-meter--critical');
     expect(wrapper.find('.life-warning-note').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('次のミスで終了');
     expect(remainingStat.classes()).toContain('question-stage__stat--critical');
     expect(wrapper.get('.quiz-panel').classes()).toContain('quiz-panel--critical');
     expect(playCriticalLifeSoundMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('ルート中断は確認を挟み、続行と中断を選べる', async () => {
+    const trainer = createTrainerStub();
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+    await wrapper.get('button.route-exit-button').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get('.route-exit-confirmation').attributes('role')).toBe('alertdialog');
+    expect(wrapper.get('.route-exit-confirmation').text()).toContain(
+      '回答済みの学習履歴と最高記録は保存されます。ルート完走数は加算せず、トップへ戻ります。'
+    );
+    expect(trainer.resetSession).not.toHaveBeenCalled();
+
+    await wrapper.get('.route-exit-confirmation button.ghost-button').trigger('click');
+    await flushPromises();
+    expect(wrapper.find('.route-exit-confirmation').exists()).toBe(false);
+
+    await wrapper.get('button.route-exit-button').trigger('click');
+    await wrapper.get('button.danger-button').trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalledTimes(1);
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
+  });
+
+  it('回答後のトップ復帰も中断確認を挟む', async () => {
+    const trainer = createTrainerStub();
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+    const wrapper = await mountSuspended(IndexPage);
+
+    await startGame(wrapper);
+    const correctChoice = wrapper
+      .findAll('.choice-card')
+      .find((candidate) => candidate.text().includes('こんにちは'));
+
+    await correctChoice?.trigger('click');
+    await flushPromises();
+
+    const resetCallCount = trainer.resetSession.mock.calls.length;
+    await wrapper.get('.answer-support-actions .secondary-action-button').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('.route-exit-confirmation').exists()).toBe(true);
+    expect(trainer.resetSession).toHaveBeenCalledTimes(resetCallCount);
+
+    await wrapper.get('.route-exit-confirmation .danger-button').trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalledTimes(resetCallCount + 1);
+    expect(wrapper.find('.session-start-panel').exists()).toBe(true);
   });
 
   it('数字キーで回答し Enter で次の問題へ進める', async () => {
@@ -556,7 +763,10 @@ describe('index page', () => {
     await levelButton?.trigger('click');
     await flushPromises();
 
-    expect(trainer.setLevel).toHaveBeenCalledWith(2);
+    expect(trainer.setLevel).toHaveBeenCalledWith(
+      2,
+      expect.objectContaining({ reviewQuestionIds: [] })
+    );
     expect(wrapper.text()).toContain('level 2 missing');
     expect(wrapper.text()).toContain('ゲームを始める');
     expect(wrapper.find('.session-start-panel').exists()).toBe(true);
@@ -643,6 +853,8 @@ describe('index page', () => {
 
     await resetButton?.trigger('click');
     await flushPromises();
+    await wrapper.get('.route-exit-confirmation .danger-button').trigger('click');
+    await flushPromises();
 
     expect(trainer.resetSession).toHaveBeenCalled();
     expect(wrapper.text()).toContain('session reset failed');
@@ -705,8 +917,8 @@ describe('index page', () => {
       }
     }
 
-    expect(wrapper.find('.game-over-level-best--compact').exists()).toBe(true);
-    expect(wrapper.find('.game-over-stats').exists()).toBe(false);
+    expect(wrapper.find('.game-over-level-best').exists()).toBe(true);
+    expect(wrapper.find('.game-over-stats').exists()).toBe(true);
     expect(wrapper.text()).toContain('100');
     expect(wrapper.text()).toContain('8');
   });
@@ -782,6 +994,8 @@ describe('index page', () => {
       .find((candidate) => candidate.text().includes('トップへ戻る'));
 
     await resetButton?.trigger('click');
+    await flushPromises();
+    await wrapper.get('.route-exit-confirmation .danger-button').trigger('click');
     await flushPromises();
 
     expect(wrapper.find('.session-start-panel').exists()).toBe(true);

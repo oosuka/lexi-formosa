@@ -242,6 +242,16 @@ const finishWithWrongAnswers = async (page: Page) => {
   }
 };
 
+const completeRoute = async (page: Page) => {
+  for (let round = 0; round < 10; round += 1) {
+    await answerCorrectChoice(page);
+
+    if (round < 9) {
+      await page.getByRole('button', { name: '次の問題' }).click();
+    }
+  }
+};
+
 const expectNoHorizontalOverflow = async (page: Page) => {
   const overflow = await page.evaluate(() => ({
     clientWidth: document.documentElement.clientWidth,
@@ -251,8 +261,8 @@ const expectNoHorizontalOverflow = async (page: Page) => {
   expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
 };
 
-const expectNextQuestionButtonInViewport = async (page: Page) => {
-  const buttonBounds = await page.getByRole('button', { name: '次の問題' }).evaluate((button) => {
+const expectButtonInViewport = async (page: Page, name: string) => {
+  const buttonBounds = await page.getByRole('button', { name }).evaluate((button) => {
     const rect = button.getBoundingClientRect();
 
     return {
@@ -313,7 +323,7 @@ test('ゲームを1問進められる', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
-  await expect(page.getByText('PLAY', { exact: true })).toBeVisible();
+  await expect(page.getByText('レベルを選ぶ', { exact: true })).toBeVisible();
   await expect(page.locator('.level-card strong').nth(0)).toHaveText(
     '1文字。基礎の単語から始める。'
   );
@@ -335,6 +345,18 @@ test('ゲームを1問進められる', async ({ page }) => {
   await expect(page.locator('.trad-word').first()).not.toHaveText(wordBefore ?? '');
 });
 
+test('PC幅の回答後は結果と次の問題を同じ視野に収める', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 1280, height: 720 });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  await answerCorrectChoice(page);
+
+  await expect(page.locator('.feedback-row')).toBeVisible();
+  await expectButtonInViewport(page, '次の問題');
+});
+
 test('モバイル幅でも主要状態で横にはみ出さない', async ({ page }) => {
   await installMockWordlists(page);
   await page.setViewportSize({ width: 390, height: 844 });
@@ -342,6 +364,7 @@ test('モバイル幅でも主要状態で横にはみ出さない', async ({ pa
   await page.goto('/');
   await expect(page).toHaveURL(/\/lexi-formosa\/$/);
   await expectNoHorizontalOverflow(page);
+  await expectButtonInViewport(page, '今日の10語でゲームを始める');
 
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
   await answerCorrectChoice(page);
@@ -351,6 +374,7 @@ test('モバイル幅でも主要状態で横にはみ出さない', async ({ pa
   await finishWithWrongAnswers(page);
   await expect(page.locator('.game-over-panel')).toBeVisible();
   await expectNoHorizontalOverflow(page);
+  await expectButtonInViewport(page, 'この10語に再挑戦');
 });
 
 test('狭いスマホ幅の開始画面でも横にはみ出さない', async ({ page }) => {
@@ -359,7 +383,19 @@ test('狭いスマホ幅の開始画面でも横にはみ出さない', async ({
 
   await page.goto('/');
 
-  await expect(page.getByRole('heading', { name: 'LexiFormosa' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '今日の10語' })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
+test('Level 3の長い単語でも狭いスマホ幅から横にはみ出さない', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 320, height: 844 });
+
+  await page.goto('/');
+  await page.locator('.level-card').filter({ hasText: 'Level 3' }).click();
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+
+  await expect(page.locator('.trad-word')).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
 
@@ -371,12 +407,14 @@ test('モバイル幅では回答後に不要な選択肢を隠して次の問�
   await page.getByRole('button', { name: 'ゲームを始める' }).click();
   await page.evaluate(() => window.scrollTo(0, 0));
 
+  await expect(page.locator('.choice-index:visible')).toHaveCount(0);
+
   await answerCorrectChoiceWithShortcut(page);
 
   await expect(page.locator('.choice-card')).toHaveCount(4);
   await expect(page.locator('.choice-card:visible')).toHaveCount(1);
   await expect(page.getByRole('button', { name: '次の問題' })).toBeVisible();
-  await expectNextQuestionButtonInViewport(page);
+  await expectButtonInViewport(page, '次の問題');
 });
 
 test('回答後の外部辞書パネルは1カラム幅で中央に揃える', async ({ page }) => {
@@ -410,7 +448,7 @@ test('回答後の外部辞書パネルは1カラム幅で中央に揃える', a
   );
 });
 
-test('モバイル幅では副操作のトップ復帰ボタンを短く中央寄せする', async ({ page }) => {
+test('モバイル幅では主要操作とトップ復帰を同じ幅で積む', async ({ page }) => {
   await installMockWordlists(page);
   await page.setViewportSize({ width: 390, height: 844 });
 
@@ -425,9 +463,14 @@ test('モバイル幅では副操作のトップ復帰ボタンを短く中央�
     '次の問題',
     'トップへ戻る',
   ]);
-  expect(answerSupportLayout.buttons[0]?.width ?? 0).toBeGreaterThan(
-    (answerSupportLayout.buttons[1]?.width ?? 0) + 40
-  );
+  expect(
+    Math.abs(
+      (answerSupportLayout.buttons[0]?.width ?? 0) - (answerSupportLayout.buttons[1]?.width ?? 0)
+    )
+  ).toBeLessThanOrEqual(1);
+  expect(
+    Math.abs((answerSupportLayout.buttons[0]?.centerX ?? 0) - answerSupportLayout.containerCenterX)
+  ).toBeLessThanOrEqual(1);
   expect(
     Math.abs((answerSupportLayout.buttons[1]?.centerX ?? 0) - answerSupportLayout.containerCenterX)
   ).toBeLessThanOrEqual(1);
@@ -439,12 +482,15 @@ test('モバイル幅では副操作のトップ復帰ボタンを短く中央�
   const gameOverLayout = await getActionButtonLayout(page, '.game-over-actions');
 
   expect(gameOverLayout.buttons.map((button) => button.label)).toEqual([
-    'もう一度始める',
+    'この10語に再挑戦',
     'トップへ戻る',
   ]);
-  expect(gameOverLayout.buttons[0]?.width ?? 0).toBeGreaterThan(
-    (gameOverLayout.buttons[1]?.width ?? 0) + 40
-  );
+  expect(
+    Math.abs((gameOverLayout.buttons[0]?.width ?? 0) - (gameOverLayout.buttons[1]?.width ?? 0))
+  ).toBeLessThanOrEqual(1);
+  expect(
+    Math.abs((gameOverLayout.buttons[0]?.centerX ?? 0) - gameOverLayout.containerCenterX)
+  ).toBeLessThanOrEqual(1);
   expect(
     Math.abs((gameOverLayout.buttons[1]?.centerX ?? 0) - gameOverLayout.containerCenterX)
   ).toBeLessThanOrEqual(1);
@@ -560,7 +606,7 @@ test('ゲーム遷移後はページ上部へ戻る', async ({ page }) => {
     })
     .toBeGreaterThan(0);
 
-  await page.getByRole('button', { name: 'もう一度始める' }).click();
+  await page.getByRole('button', { name: 'この10語に再挑戦' }).click();
 
   await expect(page.locator('.trad-word').first()).toBeVisible();
   await expect(page.locator('.choice-card')).toHaveCount(4);
@@ -577,6 +623,10 @@ test('ゲーム遷移後はページ上部へ戻る', async ({ page }) => {
     .toBeGreaterThan(0);
 
   await page.getByRole('button', { name: 'トップへ戻る' }).click();
+  await expect(page.getByRole('alertdialog')).toContainText(
+    '回答済みの学習履歴と最高記録は保存されます。ルート完走数は加算せず、トップへ戻ります。'
+  );
+  await page.getByRole('button', { name: '中断する' }).click();
 
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
   await expect
@@ -594,11 +644,33 @@ test('ゲームオーバー後に再開とトップ復帰ができる', async ({
   await finishWithWrongAnswers(page);
   await expect(page.locator('.game-over-panel')).toBeVisible();
 
-  await page.getByRole('button', { name: 'もう一度始める' }).click();
+  await page.getByRole('button', { name: 'この10語に再挑戦' }).click();
   await expect(page.locator('.choice-card')).toHaveCount(4);
   await expect(page.getByText('ゲームを始める')).toHaveCount(0);
 
   await finishWithWrongAnswers(page);
   await page.getByRole('button', { name: 'トップへ戻る' }).click();
   await expect(page.getByRole('button', { name: 'ゲームを始める' })).toBeVisible();
+});
+
+test('10問完走後は次の10語へ進み、トップでも次ルートを案内する', async ({ page }) => {
+  await installMockWordlists(page);
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+  const firstWord = (await page.locator('.trad-word').first().textContent())?.trim();
+
+  await completeRoute(page);
+
+  await expect(page.getByRole('button', { name: '次の10語へ' })).toBeVisible();
+  await page.getByRole('button', { name: '次の10語へ' }).click();
+
+  await expect(page.getByText('ルート2の10語', { exact: true })).toBeVisible();
+  await expect(page.locator('.trad-word').first()).not.toHaveText(firstWord ?? '');
+
+  await page.getByRole('button', { name: '中断' }).click();
+  await expect(page.getByRole('alertdialog')).toContainText('このルートを中断しますか？');
+  await page.getByRole('button', { name: '中断する' }).click();
+  await expect(page.getByRole('button', { name: '次の10語を始める' })).toBeVisible();
+  await expect(page.getByText('今日のルート 2', { exact: true })).toBeVisible();
 });

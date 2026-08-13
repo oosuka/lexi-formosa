@@ -14,8 +14,12 @@
 ## 実装メモ
 
 - フレームワーク: Nuxt 4 / Vue 3
-- ランタイム: Node.js 24 LTS / npm
-- ツール: Volta / Biome 2 / TypeScript 5 / Zod / Vitest / Playwright
+- Nuxt 5 互換モード: `future.compatibilityVersion: 5`
+- Nuxt 設定: `nuxt.config.ts`
+- ランタイム: Node.js 24 LTS / npm（Volta は Node.js 24.19.0 / npm 11.19.0 を指定）
+- ツール: Volta / Biome 2 / TypeScript 7 / Golar / Zod / Vitest / Playwright
+- 型検査設定: `golar.config.ts`
+- Vitest の Nuxt 環境では `@nuxt/test-utils` 由来の `NUXT_B7021` を避けるため、`vitest.config.ts` でテスト時だけ `experimental.viteEnvironmentApi` を無効にします。アプリ本体の互換モードは変更しません。
 - 主要画面: `app/pages/index.vue`
 - ゲーム状態: `app/composables/useTraditionalTrainer.ts`
 - UI 派生状態: `app/composables/useTrainerSessionUi.ts`
@@ -27,17 +31,28 @@
 ## ゲーム仕様
 
 - Level 1 は 1文字、Level 2 は 2文字、Level 3 は 3文字以上の実用語を対象にします。
-- 正解で基本点を加算し、3連続正解以降はボーナスを加算します。
+- 正解は通常10点、3連続正解から15点、5連続正解から20点、7連続正解から25点を加算します。
 - 3回連続で不正解になるとセッションを終了します。
 - 不正解時の結果帯は `正解は「xxx」です。残りn回で終了します。` の形にします。
-- 開始画面にはレベル選択、ゲーム開始ボタン、ルール要約、最高スコアと最高連続数を表示し、最高記録は `localStorage` に保存します。
+- 開始画面にはレベル選択、ゲーム開始ボタン、ルール要約、最高記録、復習待ち、定着語数、当日の結果、次のルート番号を表示します。
+- スマホ版のレベルカードには `基礎 / 日常 / 実用` の短い説明を表示し、ゲーム開始ボタンを記録詳細より先に案内します。
 - PC 版の最高記録カードはクリックでレベル選択と連動させ、レベル選択時と同じ効果音を使います。
-- スマホ版の開始ボタン付近には、選択中レベルの `Level / 語数` と `最高スコア / 最高連続数` を省スペース表示します。
-- ゲーム終了後は `もう一度始める` と `トップへ戻る` を表示します。
-- `ゲームを始める`、`次の問題`、`もう一度始める`、`トップへ戻る` の主要遷移後はページ上部へ戻します。
+- スマホ版の開始ボタン付近には、選択中レベルの `Level / 語数` と `最高スコア / 最高連続数 / 復習待ち / 定着した語` を省スペース表示します。
+- PC 版の選択肢カードには数字キーと対応する番号を表示します。スマホ版では番号を表示しません。
+- PC 版の回答後は結果帯と `次の問題` を同じ視野に置き、スマホ版は回答後の操作を縦積みで案内します。
+- PC 版では数字キーで回答し、開始前または回答後は Enter キーで主要遷移を実行できます。
+- HUD の3本のメーターは総ライフではなく、連続不正解で終了するまでの残り回数です。表示名は `終了まで` とします。
+- 不正解後はコンボ案内を隠して正解と残り回数を優先し、正解後は次のボーナス条件を表示します。
+- 同じ日・同じレベルでは、完走するたびに未出題中心の次の10語へ進み、完走ルート数を `localStorage` に保存します。日付をまたいだ後の新しいルート開始時は当日の記録とルート番号へ切り替え、進行中のルートはそのまま保持します。
+- 1ルートには復習候補を最大4語まで含めます。単語別の定着度は正解で1上げ、不正解で1下げ、3で定着扱いにします。間違えたことがあり定着度2未満の語を復習候補にします。
+- ことば切符はセッション終了時の正解数に応じて、6問以上で銅、8問以上で銀、10問正解で金とします。
+- 進行中の `中断` は確認を挟みます。中断までに記録済みの単語別学習履歴と最高記録は保持し、ルート完走数は加算しません。
+- ゲーム終了時は問題カードを畳み、最後の繁体字、正解、誤答時に選んだ答えを結果カード内へ表示します。
+- ゲーム終了後は、完走時に `次の10語へ`、3連続不正解時に `この10語に再挑戦` と `トップへ戻る` を表示します。
+- `ゲームを始める`、`次の問題`、`次の10語へ`、`この10語に再挑戦`、`トップへ戻る` の主要遷移後はページ上部へ戻します。
 - Google 翻訳と Weblio の外部確認リンクは、回答後に別タブで開きます。
 - スマホ版では回答後に選択肢のうち選択したものと正解以外を非表示にして縦幅を節約します。PC 版は4択カードを表示したままにします。
-- 単語音声はブラウザの `SpeechSynthesis`、効果音は `Web Audio API` を使います。外部 TTS は前提にしません。
+- 単語音声はブラウザの `SpeechSynthesis`、効果音は `Web Audio API` を使います。問題開始時は音声を自動再生し、外部 TTS は前提にしません。
 
 ## UI 方針
 
@@ -45,9 +60,11 @@
 - なんでも楕円で囲む表現、`999px` のフルピル形状、装飾目的のグラデーション多用は再導入しないでください。
 - 色、タイポグラフィ、余白、角丸、影、ボタンの役割を既存画面と揃えてください。
 - `focus-visible`、十分なコントラスト、44px 以上の操作領域、`prefers-reduced-motion` を前提にしてください。
+- 回答結果やゲーム終了などの状態更新は、支援技術にも伝わるように通知可能な構造を保ってください。
 - 正誤フィードバックは通常状態より強くしてよいですが、通常時の文法を壊さない範囲に留めてください。
 - UI 変更では Apple Human Interface Guidelines と Apple Design の考え方を参照してください。
 - `public/apple-touch-icon*.png` はスマホブラウザが自動取得するため、欠落させないでください。
+- Level 3 の長い語はスマホ幅で折り返しを許容し、横スクロールを発生させないでください。
 
 ## 開発ルール
 
@@ -72,7 +89,8 @@
 
 ## 語彙データ
 
-- 語彙生成は `TOCFL + TBCL + manual vocabulary` を土台にし、`MJdic` は日本語候補と発音補完の補助に使います。
+- 語彙生成は TOCFL 入力と `data/manual-vocabulary.json` を必須の土台にし、TBCL は任意入力として補助レベル判定に使います。MJdic は日本語候補と発音補完に必要ですが、単独採用根拠にはしません。
+- `npm run setup:data` は TOCFL と MJdic を既定 URL から取得し、TBCL は `TBCL_SOURCE_PATH` または `TBCL_SOURCE_URL` がある場合だけ取得・コピーします。`npm run generate:data` はローカルのスナップショットまたは `*_SOURCE_PATH` だけを読み、ダウンロードしません。
 - 外部ソーススナップショットは `data/source-snapshots/` にローカル保存されますが、Public リポジトリへ同梱しないでください。
 - `data/manual-vocabulary.json` は必ず入れたい高品質語の seed deck と発音補完に使います。
 - `data/manual-vocabulary.json` には `id / trad / ja / category / pronunciation?` だけを持たせ、`level / length / sources / taiwanPriority` は生成時に再計算します。
@@ -101,35 +119,39 @@
 - CSS クラス、細かな配置、重複した表示構造だけを固定するテストは避けてください。
 - UI の主要導線を変えた場合は Playwright で最小 E2E を確認してください。
 - フラットデザイン方針を変える場合は `tests/unit/design-system.test.ts` も更新し、意図した制約変更であることを説明してください。
+- `npm run typecheck` は Golar / `@golar/vue` で実行してください。`golar.config.ts` と型チェッカーの依存関係を維持してください。
 
 通常のコード変更:
 
 ```bash
+npm run prepare
 npm run lint
 npm run test:unit
-npx tsc --noEmit -p .nuxt/tsconfig.json
+npm run typecheck
 npm run build
 ```
 
 語彙や生成スクリプトを変更した場合:
 
 ```bash
+npm run prepare
 npm run setup:data
 npm run check:data
 npm run audit:data
 npm run lint
 npm run test:unit
-npx tsc --noEmit -p .nuxt/tsconfig.json
+npm run typecheck
 npm run build
 ```
 
 UI の主要導線や E2E を変更した場合:
 
 ```bash
+npm run prepare
 npm run lint
 npm run test:unit
 npm run test:e2e
-npx tsc --noEmit -p .nuxt/tsconfig.json
+npm run typecheck
 npm run build
 ```
 
@@ -139,6 +161,7 @@ npm run build
 
 - 使い方や挙動が変わる場合: `README.md`
 - 作業ルールや検証手順が変わる場合: `AGENTS.md`
+- 画面構成、主要導線、レスポンシブ仕様、アクセシビリティ確認が変わる場合: `design-qa.md`
 - 辞書、生成、データソースが変わる場合: `docs/dictionary-sources.md`
 - 権利や再配布注意が変わる場合: `NOTICE.md`
 

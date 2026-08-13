@@ -1,8 +1,20 @@
-import { buildQuestion, getCorrectChoice, RECENT_WINDOW_SIZE } from '~/utils/trainer';
+import {
+  buildDailyRouteQuestionIds,
+  buildQuestion,
+  DAILY_ROUTE_LENGTH,
+  getCorrectChoice,
+  getLocalDateKey,
+  RECENT_WINDOW_SIZE,
+} from '~/utils/trainer';
 import { loadVocabularyLevel } from '~/utils/vocabulary';
 import type { AnswerResult, GameState, Level } from '~~/shared/types/vocabulary';
 
 export const MAX_MISSES_IN_ROW = 3;
+export type TrainerRouteOptions = {
+  dateKey?: string;
+  reviewQuestionIds?: string[];
+  routeIndex?: number;
+};
 export const getScoreForCorrectAnswer = (nextStreak: number) => {
   if (nextStreak >= 7) {
     return 25;
@@ -19,13 +31,24 @@ export const getScoreForCorrectAnswer = (nextStreak: number) => {
   return 10;
 };
 
-const createGameState = (level: Level): GameState => ({
+const createGameState = (
+  level: Level,
+  routeIndex = 0,
+  routeQuestionIds: string[] = [],
+  reviewQuestionIds: string[] = []
+): GameState => ({
   level,
   score: 0,
   streak: 0,
   bestStreak: 0,
   missesInRow: 0,
   rounds: 0,
+  correctAnswers: 0,
+  routeLength: DAILY_ROUTE_LENGTH,
+  routeIndex,
+  routeQuestionIds,
+  reviewQuestionIds,
+  finishReason: null,
   status: 'ready',
   currentQuestion: null,
   selectedChoiceId: null,
@@ -56,7 +79,7 @@ export const useTraditionalTrainer = () => {
     return loadedLevels.value[level] ?? [];
   };
 
-  const initialize = async (level = game.value.level) => {
+  const initialize = async (level = game.value.level, options: TrainerRouteOptions = {}) => {
     const requestId = latestInitializeRequestId.value + 1;
     latestInitializeRequestId.value = requestId;
     isLoading.value = true;
@@ -68,9 +91,22 @@ export const useTraditionalTrainer = () => {
         return;
       }
 
+      const dateKey = options.dateKey ?? getLocalDateKey();
+      const reviewQuestionIds = options.reviewQuestionIds ?? [];
+      const routeIndex = Math.max(0, Math.floor(options.routeIndex ?? 0));
+      const routeQuestionIds = buildDailyRouteQuestionIds(
+        pool,
+        level,
+        dateKey,
+        reviewQuestionIds,
+        DAILY_ROUTE_LENGTH,
+        routeIndex
+      );
+      const firstQuestionId = routeQuestionIds[0];
+
       game.value = {
-        ...createGameState(level),
-        currentQuestion: buildQuestion(pool, level, []),
+        ...createGameState(level, routeIndex, routeQuestionIds, reviewQuestionIds),
+        currentQuestion: buildQuestion(pool, level, [], firstQuestionId),
       };
     } catch (error) {
       if (latestInitializeRequestId.value !== requestId) {
@@ -100,16 +136,25 @@ export const useTraditionalTrainer = () => {
     const correct = choiceId === correctChoice.value.id;
     const nextStreak = correct ? game.value.streak + 1 : 0;
     const nextMissesInRow = correct ? 0 : game.value.missesInRow + 1;
-    const nextStatus = nextMissesInRow >= MAX_MISSES_IN_ROW ? 'finished' : 'answered';
+    const nextRounds = game.value.rounds + 1;
+    const finishReason =
+      nextMissesInRow >= MAX_MISSES_IN_ROW
+        ? 'misses'
+        : nextRounds >= game.value.routeLength
+          ? 'route-complete'
+          : null;
+    const nextStatus = finishReason ? 'finished' : 'answered';
     const scoreGain = correct ? getScoreForCorrectAnswer(nextStreak) : 0;
 
     game.value.selectedChoiceId = choiceId;
     game.value.lastCorrect = correct;
     game.value.status = nextStatus;
-    game.value.rounds += 1;
+    game.value.rounds = nextRounds;
+    game.value.correctAnswers += correct ? 1 : 0;
     game.value.streak = nextStreak;
     game.value.bestStreak = Math.max(game.value.bestStreak, nextStreak);
     game.value.missesInRow = nextMissesInRow;
+    game.value.finishReason = finishReason;
     game.value.score += scoreGain;
     game.value.recentQuestionIds = [
       ...game.value.recentQuestionIds,
@@ -128,22 +173,25 @@ export const useTraditionalTrainer = () => {
     }
 
     const pool = loadedLevels.value[game.value.level] ?? [];
+    const nextQuestionId = game.value.routeQuestionIds[game.value.rounds];
+
     game.value.currentQuestion = buildQuestion(
       pool,
       game.value.level,
-      game.value.recentQuestionIds
+      game.value.recentQuestionIds,
+      nextQuestionId
     );
     game.value.selectedChoiceId = null;
     game.value.lastCorrect = null;
     game.value.status = 'ready';
   };
 
-  const resetSession = async (level = game.value.level) => {
-    await initialize(level);
+  const resetSession = async (level = game.value.level, options: TrainerRouteOptions = {}) => {
+    await initialize(level, options);
   };
 
-  const setLevel = async (level: Level) => {
-    await resetSession(level);
+  const setLevel = async (level: Level, options: TrainerRouteOptions = {}) => {
+    await resetSession(level, options);
   };
 
   return {

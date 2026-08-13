@@ -3,6 +3,17 @@ import { defineVitestConfig } from '@nuxt/test-utils/config';
 export default defineVitestConfig({
   test: {
     environment: 'nuxt',
+    environmentOptions: {
+      nuxt: {
+        overrides: {
+          // @nuxt/test-utils のテスト用ビルドで発生する NUXT_B7021 を避ける。
+          // アプリ本体の Nuxt 5 互換モードは nuxt.config.ts で維持する。
+          experimental: {
+            viteEnvironmentApi: false,
+          },
+        },
+      },
+    },
     globals: true,
     include: ['tests/**/*.test.ts'],
     exclude: ['tests/e2e/**'],

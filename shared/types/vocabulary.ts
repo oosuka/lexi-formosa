@@ -38,6 +38,8 @@ export interface AnswerResult {
   correctChoiceId: string;
 }
 
+export type GameFinishReason = 'route-complete' | 'misses';
+
 export interface GameState {
   level: Level;
   score: number;
@@ -45,6 +47,12 @@ export interface GameState {
   bestStreak: number;
   missesInRow: number;
   rounds: number;
+  correctAnswers: number;
+  routeLength: number;
+  routeIndex: number;
+  routeQuestionIds: string[];
+  reviewQuestionIds: string[];
+  finishReason: GameFinishReason | null;
   status: 'ready' | 'answered' | 'finished';
   currentQuestion: QuestionRound | null;
   selectedChoiceId: string | null;

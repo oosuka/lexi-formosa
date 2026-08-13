@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import { PhStar } from '@phosphor-icons/vue';
+
 import type { LevelHighScore } from '~/composables/useHighScores';
+import type { GameFinishReason } from '~~/shared/types/vocabulary';
+
+const StarIcon = PhStar;
 
 type GameOverAchievement = {
   key: 'score' | 'streak';
@@ -17,9 +22,17 @@ const props = defineProps<{
   celebrationTone: 'none' | 'single' | 'double';
   loadError: string | null;
   score: number;
+  correctAnswers: number;
+  routeLength: number;
   bestRunStreak: number;
+  finishReason: GameFinishReason | null;
+  medalLabel: string;
+  reviewCount: number;
   currentLevelHighScore: LevelHighScore;
   gameOverAchievements: GameOverAchievement[];
+  lastTrad: string;
+  lastCorrectLabel: string;
+  lastSelectedLabel: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -33,44 +46,75 @@ const achievementByKey = computed(
       Record<GameOverAchievement['key'], GameOverAchievement>
     >
 );
+const restartLabel = computed(() =>
+  props.finishReason === 'route-complete' ? '次の10語へ' : 'この10語に再挑戦'
+);
+const lastAnswerWasCorrect = computed(() => props.lastSelectedLabel === props.lastCorrectLabel);
 </script>
 
 <template>
   <section
     class="game-over-panel"
     :class="{
+      'game-over-panel--complete': props.finishReason === 'route-complete',
       'game-over-panel--celebration': props.celebrationTone !== 'none',
-      'game-over-panel--celebration-double': props.celebrationTone === 'double',
     }"
+    aria-labelledby="game-over-heading"
   >
-    <div class="game-over-copy">
-      <p v-if="props.celebrationTone !== 'none'" class="game-over-celebration-badge">
-        {{ props.celebrationTone === 'double' ? '2項目更新' : '新記録' }}
-      </p>
+    <div class="game-over-copy" aria-live="polite" aria-atomic="true" role="status">
       <p v-if="props.gameOverTitle" class="game-over-kicker">{{ props.gameOverTitle }}</p>
-      <strong class="game-over-title">{{ props.feedbackBadge }}</strong>
+      <strong id="game-over-heading" class="game-over-title">{{ props.feedbackBadge }}</strong>
       <p class="game-over-summary">{{ props.gameOverSummary }}</p>
       <p v-if="props.loadError" class="game-over-error">{{ props.loadError }}</p>
     </div>
 
-    <div class="game-over-level-best">
-      <p class="game-over-section-label">今回の結果</p>
-      <div class="game-over-summary-grid">
-        <article class="game-over-stat game-over-stat--primary">
-          <span>スコア</span>
-          <strong>{{ props.score }}</strong>
-        </article>
-        <article class="game-over-stat game-over-stat--primary">
-          <span>連続数</span>
-          <strong>{{ props.bestRunStreak }}</strong>
-        </article>
-      </div>
+    <div v-if="props.medalLabel" class="route-medal">
+      <component :is="StarIcon" :size="24" weight="fill" aria-hidden="true" />
+      <span>{{ props.medalLabel }}</span>
     </div>
 
-    <div
-      v-if="props.gameOverAchievements.length > 0"
-      class="game-over-level-best"
-    >
+    <section class="game-over-last-answer" aria-labelledby="game-over-last-answer-title">
+      <p id="game-over-last-answer-title" class="game-over-section-label">最後の単語</p>
+      <div class="game-over-last-answer__grid">
+        <div>
+          <span>繁体字</span>
+          <strong lang="zh-Hant-TW">{{ props.lastTrad }}</strong>
+        </div>
+        <div>
+          <span>正解</span>
+          <strong>{{ props.lastCorrectLabel }}</strong>
+        </div>
+      </div>
+      <p
+        v-if="props.lastSelectedLabel && !lastAnswerWasCorrect"
+        class="game-over-last-answer__selected"
+      >
+        選んだ答え：{{ props.lastSelectedLabel }}
+      </p>
+    </section>
+
+    <div class="game-over-summary-grid">
+      <article class="game-over-stat game-over-stat--primary">
+        <span>正解</span>
+        <strong>{{ props.correctAnswers }} / {{ props.routeLength }}</strong>
+      </article>
+      <article class="game-over-stat game-over-stat--primary">
+        <span>スコア</span>
+        <strong>{{ props.score }}</strong>
+      </article>
+      <article class="game-over-stat game-over-stat--primary">
+        <span>最高連続</span>
+        <strong>{{ props.bestRunStreak }}</strong>
+      </article>
+    </div>
+
+    <div class="game-over-learning-note">
+      <span>復習待ち</span>
+      <strong>{{ props.reviewCount }}語</strong>
+      <p>次のルートに優先して出題します。</p>
+    </div>
+
+    <div class="game-over-level-best">
       <p class="game-over-section-label">レベル最高記録</p>
       <div class="game-over-stats">
         <div
@@ -103,21 +147,12 @@ const achievementByKey = computed(
         </div>
       </div>
     </div>
-    <div v-else class="game-over-level-best game-over-level-best--compact">
-      <p class="game-over-section-label">レベル最高記録</p>
-      <div class="game-over-compact-best">
-        <span>スコア {{ props.currentLevelHighScore.score }}</span>
-        <span>連続数 {{ props.currentLevelHighScore.streak }}</span>
-      </div>
-    </div>
 
     <div class="game-over-actions">
-      <button class="primary-button" type="button" @click="emit('restart')">もう一度始める</button>
-      <button
-        class="ghost-button ghost-button--subtle secondary-action-button"
-        type="button"
-        @click="emit('reset')"
-      >
+      <button class="primary-button" type="button" @click="emit('restart')">
+        {{ restartLabel }}
+      </button>
+      <button class="ghost-button secondary-action-button" type="button" @click="emit('reset')">
         トップへ戻る
       </button>
     </div>

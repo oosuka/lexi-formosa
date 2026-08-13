@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { PhStar } from '@phosphor-icons/vue';
+
 import { useFeedbackAudio } from '~/composables/useFeedbackAudio';
 import { type LevelHighScore, useHighScores } from '~/composables/useHighScores';
+import {
+  getRouteMedal,
+  type RouteMedal,
+  useLearningProgress,
+} from '~/composables/useLearningProgress';
 import { useTraditionalTrainer } from '~/composables/useTraditionalTrainer';
 import { useTrainerAudio } from '~/composables/useTrainerAudio';
 import { useTrainerSessionUi } from '~/composables/useTrainerSessionUi';
 import { formatKatakanaReading, formatPinyinReading } from '~/utils/pronunciation';
-import { LEVEL_COPY } from '~/utils/trainer';
+import { getLocalDateKey, LEVEL_COPY } from '~/utils/trainer';
 import { loadVocabularyMetadata } from '~/utils/vocabulary';
 import {
   LEVELS,
@@ -14,24 +21,29 @@ import {
   type VocabularyMetadata,
 } from '~~/shared/types/vocabulary';
 
-const trainer = useTraditionalTrainer();
-const appVersion = useRuntimeConfig().public.appVersion;
+const StarIcon = PhStar;
+
 type MetadataStatus = 'loading' | 'ready' | 'failed';
-
-const formatVocabularyCountLabel = (
-  count: number | null | undefined,
-  status: MetadataStatus
-): string => {
-  if (status === 'failed') {
-    return '語数未取得';
-  }
-
-  if (count === null || count === undefined) {
-    return '読み込み中';
-  }
-
-  return `${count.toLocaleString()}語`;
+type QuestionStageExpose = {
+  requestExit: () => Promise<void>;
 };
+
+const trainer = useTraditionalTrainer();
+const learningProgress = useLearningProgress();
+const appVersion = useRuntimeConfig().public.appVersion;
+const sessionStartPending = ref(true);
+const initializedRouteDateKey = ref<string | null>(null);
+const fatalError = ref<string | null>(null);
+const uiError = ref<string | null>(null);
+const { highScores, loadHighScores, updateLevelRecord } = useHighScores();
+const vocabularyMetadata = ref<VocabularyMetadata | null>(null);
+const metadataStatus = ref<MetadataStatus>('loading');
+const sessionRecordBaseline = ref<Record<Level, LevelHighScore>>({
+  1: { score: 0, streak: 0 },
+  2: { score: 0, streak: 0 },
+  3: { score: 0, streak: 0 },
+});
+const questionStageRef = ref<QuestionStageExpose | null>(null);
 
 const formatVocabularyWordsLabel = (
   count: number | null | undefined,
@@ -48,27 +60,70 @@ const formatVocabularyWordsLabel = (
   return `${count.toLocaleString()}語`;
 };
 
-const sessionStartPending = ref(true);
-const fatalError = ref<string | null>(null);
-const uiError = ref<string | null>(null);
-const { highScores, loadHighScores, updateLevelRecord } = useHighScores();
-const vocabularyMetadata = ref<VocabularyMetadata | null>(null);
-const metadataStatus = ref<MetadataStatus>('loading');
-const sessionRecordBaseline = ref<Record<Level, LevelHighScore>>({
-  1: { score: 0, streak: 0 },
-  2: { score: 0, streak: 0 },
-  3: { score: 0, streak: 0 },
+const formatMedalLabel = (medal: RouteMedal): string => {
+  if (medal === 'gold') {
+    return '金のことば切符';
+  }
+
+  if (medal === 'silver') {
+    return '銀のことば切符';
+  }
+
+  if (medal === 'bronze') {
+    return '銅のことば切符';
+  }
+
+  return '';
+};
+
+const routeOptions = (level: Level) => ({
+  dateKey: learningProgress.dateKey.value,
+  reviewQuestionIds: learningProgress.getReviewQuestionIds(level),
+  routeIndex: learningProgress.completedRouteCounts.value[level],
 });
+
+const syncLearningProgressDate = () => {
+  const nextDateKey = getLocalDateKey();
+
+  if (learningProgress.dateKey.value !== nextDateKey) {
+    learningProgress.loadLearningProgress(nextDateKey);
+  }
+
+  return nextDateKey;
+};
+
+const ensureCurrentRoute = async () => {
+  const nextDateKey = syncLearningProgressDate();
+
+  if (initializedRouteDateKey.value === nextDateKey) {
+    return;
+  }
+
+  const level = trainer.game.value.level;
+  await trainer.resetSession(level, routeOptions(level));
+  initializedRouteDateKey.value = nextDateKey;
+};
 
 const currentQuestion = computed(() => trainer.game.value.currentQuestion);
 const currentQuestionTrad = computed(() => currentQuestion.value?.trad ?? null);
+const currentQuestionId = computed(() => currentQuestion.value?.questionId ?? null);
+const currentRouteNumber = computed(() => trainer.game.value.routeIndex + 1);
+const selectedChoiceId = computed(() => trainer.game.value.selectedChoiceId);
+const selectedChoiceLabel = computed(
+  () =>
+    currentQuestion.value?.choices.find((choice) => choice.id === selectedChoiceId.value)?.label ??
+    null
+);
 const pageLoading = computed(
   () => !fatalError.value && (trainer.isLoading.value || !currentQuestion.value)
 );
-const selectedChoiceId = computed(() => trainer.game.value.selectedChoiceId);
-const currentQuestionId = computed(() => currentQuestion.value?.questionId ?? null);
 const pinyinReading = computed(() => formatPinyinReading(currentQuestion.value?.pronunciation));
 const katakanaReading = computed(() => formatKatakanaReading(currentQuestion.value?.pronunciation));
+const currentQuestionIsReview = computed(() =>
+  currentQuestionId.value
+    ? trainer.game.value.reviewQuestionIds.includes(currentQuestionId.value)
+    : false
+);
 const trainerAudio = useTrainerAudio({
   getQuestionId: () => currentQuestionId.value,
   getQuestionText: () => currentQuestionTrad.value,
@@ -80,8 +135,8 @@ const canPlayAudio = computed(
   () => trainerAudio.speechSupported.value && Boolean(currentQuestionTrad.value)
 );
 const sessionStartSummaryItems = computed(() => [
-  '4択から1つ選択',
-  '正解で10点獲得',
+  '1ルート10問・完走後は次の10語',
+  '間違えた語は自動で復習',
   '3連続正解からボーナス',
   '3回連続不正解で終了',
 ]);
@@ -103,7 +158,12 @@ const {
   score,
   streak,
   bestRunStreak,
+  correctAnswers,
   remainingMisses,
+  rounds,
+  routeLength,
+  routePosition,
+  finishReason,
   answered,
   revealAnswer,
   canStartSession,
@@ -117,6 +177,83 @@ const {
   feedbackView,
   feedbackBadge,
 } = sessionUi;
+
+const levelCards = computed(() =>
+  LEVELS.map((level) => ({
+    level,
+    ...LEVEL_COPY[level],
+    count: vocabularyMetadata.value?.counts[level] ?? null,
+    countLabel: formatVocabularyWordsLabel(
+      vocabularyMetadata.value?.counts[level],
+      metadataStatus.value
+    ),
+    reviewCount: learningProgress.reviewCounts.value[level],
+  }))
+);
+const activeHighScoreCard = computed(
+  () => highScoreCards.value.find((item) => item.active) ?? highScoreCards.value[0] ?? null
+);
+const selectedLevelCard = computed(
+  () => levelCards.value.find((item) => item.level === trainer.game.value.level) ?? null
+);
+const selectedLevelWordCountLabel = computed(() =>
+  formatVocabularyWordsLabel(
+    vocabularyMetadata.value?.counts[trainer.game.value.level],
+    metadataStatus.value
+  )
+);
+const selectedTodayResult = computed(
+  () => learningProgress.todayResults.value[trainer.game.value.level] ?? null
+);
+const selectedCompletedRoutes = computed(
+  () => learningProgress.completedRouteCounts.value[trainer.game.value.level]
+);
+const selectedTodayMedalLabel = computed(() =>
+  formatMedalLabel(selectedTodayResult.value?.medal ?? 'none')
+);
+const gameOverMedalLabel = computed(() => formatMedalLabel(getRouteMedal(correctAnswers.value)));
+const selectedReviewCount = computed(
+  () => learningProgress.reviewCounts.value[trainer.game.value.level]
+);
+const selectedMasteredCount = computed(
+  () => learningProgress.masteredCounts.value[trainer.game.value.level]
+);
+const isCriticalLife = computed(
+  () => remainingMisses.value === 1 && !showSessionStart.value && !isGameOver.value
+);
+const showComboTicket = computed(
+  () => !isGameOver.value && (!answered.value || trainer.game.value.lastCorrect === true)
+);
+const comboTicketLabel = computed(() => {
+  if (streak.value >= 7) {
+    return '連続正解中・次も +25点';
+  }
+
+  if (streak.value >= 5) {
+    return `あと${7 - streak.value}問で +25点`;
+  }
+
+  if (streak.value >= 3) {
+    return `あと${5 - streak.value}問で +20点`;
+  }
+
+  return `あと${3 - streak.value}問で +15点`;
+});
+const learningNote = computed(() => {
+  if (!revealAnswer.value || isGameOver.value) {
+    return '';
+  }
+
+  if (trainer.game.value.lastCorrect && currentQuestionIsReview.value) {
+    return '復習語の定着度が上がりました。';
+  }
+
+  if (!trainer.game.value.lastCorrect) {
+    return 'この単語を端末内の復習リストに追加しました。';
+  }
+
+  return '';
+});
 const externalLookupLinks = computed(() => {
   const trad = currentQuestion.value?.trad;
 
@@ -139,35 +276,6 @@ const externalLookupLinks = computed(() => {
     },
   ];
 });
-const levelCards = computed(() =>
-  LEVELS.map((level) => ({
-    level,
-    ...LEVEL_COPY[level],
-    count: vocabularyMetadata.value?.counts[level] ?? null,
-    countLabel: formatVocabularyCountLabel(
-      vocabularyMetadata.value?.counts[level],
-      metadataStatus.value
-    ),
-  }))
-);
-const activeHighScoreCard = computed(
-  () => highScoreCards.value.find((item) => item.active) ?? highScoreCards.value[0] ?? null
-);
-const selectedLevelCard = computed(
-  () =>
-    levelCards.value.find((item) => item.level === trainer.game.value.level) ??
-    levelCards.value[0] ??
-    null
-);
-const selectedLevelWordCountLabel = computed(() =>
-  formatVocabularyWordsLabel(
-    vocabularyMetadata.value?.counts[trainer.game.value.level],
-    metadataStatus.value
-  )
-);
-const isCriticalLife = computed(
-  () => remainingMisses.value === 1 && !showSessionStart.value && !isGameOver.value
-);
 
 const choiceClass = (choice: QuestionChoice) => {
   if (!revealAnswer.value) {
@@ -196,46 +304,37 @@ const choiceStateLabel = (choice: QuestionChoice) => {
     return '正解';
   }
 
-  if (choice.id === selectedChoiceId.value) {
-    return '選択';
-  }
-
-  return '';
+  return choice.id === selectedChoiceId.value ? '選択' : '';
 };
 
 const syncSessionRecordBaseline = () => {
   sessionRecordBaseline.value = {
     ...sessionRecordBaseline.value,
-    [trainer.game.value.level]: {
-      ...highScores.value[trainer.game.value.level],
-    },
+    [trainer.game.value.level]: { ...highScores.value[trainer.game.value.level] },
   };
 };
-
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
-
 const clearUiError = () => {
   uiError.value = null;
 };
-
 const applyFatalError = (error: unknown, fallback: string) => {
   fatalError.value = getErrorMessage(error, fallback);
   uiError.value = null;
   trainerAudio.clearPendingQuestionAudio();
 };
-
 const applyUiError = (error: unknown, fallback: string) => {
   uiError.value = getErrorMessage(error, fallback);
   trainerAudio.clearPendingQuestionAudio();
 };
-
 const scrollPageToTop = () => {
-  if (typeof window === 'undefined') {
-    return;
+  if (typeof window !== 'undefined') {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }
+};
 
-  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+const requestSessionExit = () => {
+  void questionStageRef.value?.requestExit();
 };
 
 const selectLevel = async (level: Level) => {
@@ -244,23 +343,37 @@ const selectLevel = async (level: Level) => {
   void feedbackAudio.playLevelSelectSound();
 
   try {
-    await trainer.setLevel(level);
+    const dateKey = syncLearningProgressDate();
+    await trainer.setLevel(level, routeOptions(level));
+    initializedRouteDateKey.value = dateKey;
     await nextTick();
     trainerAudio.clearPendingQuestionAudio();
-    if (!sessionStartPending.value) {
-      trainerAudio.requestCurrentQuestionAudio();
-    }
   } catch (error) {
     applyUiError(error, 'レベルの切り替えに失敗しました。');
   }
 };
 
 const answer = (choiceId: string) => {
+  const questionId = currentQuestionId.value;
+  const level = trainer.game.value.level;
+
   clearUiError();
   trainerAudio.clearPendingQuestionAudio();
   const result = trainer.submitAnswer(choiceId);
 
+  if (questionId) {
+    learningProgress.recordAnswer(questionId, level, result.correct);
+  }
+
   if (trainer.game.value.status === 'finished') {
+    learningProgress.recordRouteResult(level, {
+      score: trainer.game.value.score,
+      correctAnswers: trainer.game.value.correctAnswers,
+      bestStreak: trainer.game.value.bestStreak,
+      completed: trainer.game.value.finishReason === 'route-complete',
+    });
+    void nextTick(scrollPageToTop);
+
     void (async () => {
       await feedbackAudio.playGameOverSound();
 
@@ -290,17 +403,24 @@ const togglePronunciationAudio = () => {
     return;
   }
 
-  sessionStartPending.value = false;
   trainerAudio.requestCurrentQuestionAudio();
 };
 
-const startSession = () => {
+const startSession = async () => {
   if (!canStartSession.value) {
     return;
   }
 
   fatalError.value = null;
   clearUiError();
+
+  try {
+    await ensureCurrentRoute();
+  } catch (error) {
+    applyUiError(error, 'ゲームの開始に失敗しました。');
+    return;
+  }
+
   syncSessionRecordBaseline();
   sessionStartPending.value = false;
   void feedbackAudio.unlockAudioEffects();
@@ -321,6 +441,54 @@ const moveToNextQuestion = async () => {
   }
 };
 
+const resetSession = async () => {
+  fatalError.value = null;
+  clearUiError();
+  const previousSessionStartPending = sessionStartPending.value;
+  sessionStartPending.value = true;
+  trainerAudio.clearPendingQuestionAudio();
+
+  try {
+    const level = trainer.game.value.level;
+    const dateKey = syncLearningProgressDate();
+    await trainer.resetSession(level, routeOptions(level));
+    initializedRouteDateKey.value = dateKey;
+    await nextTick();
+    scrollPageToTop();
+  } catch (error) {
+    sessionStartPending.value = previousSessionStartPending;
+    applyUiError(error, 'トップへ戻れませんでした。');
+  }
+};
+
+const restartSession = async () => {
+  fatalError.value = null;
+  clearUiError();
+
+  try {
+    const level = trainer.game.value.level;
+    const completed = trainer.game.value.finishReason === 'route-complete';
+    const dateKey = completed ? syncLearningProgressDate() : learningProgress.dateKey.value;
+    await trainer.resetSession(level, {
+      dateKey,
+      reviewQuestionIds: completed
+        ? learningProgress.getReviewQuestionIds(level)
+        : trainer.game.value.reviewQuestionIds,
+      routeIndex: completed
+        ? learningProgress.completedRouteCounts.value[level]
+        : trainer.game.value.routeIndex,
+    });
+    initializedRouteDateKey.value = dateKey;
+    await nextTick();
+    syncSessionRecordBaseline();
+    sessionStartPending.value = false;
+    trainerAudio.requestCurrentQuestionAudio();
+    scrollPageToTop();
+  } catch (error) {
+    applyUiError(error, 'ゲームの再開に失敗しました。');
+  }
+};
+
 const isInteractiveShortcutTarget = (target: EventTarget | null) =>
   target instanceof HTMLElement &&
   (target.isContentEditable ||
@@ -338,15 +506,11 @@ const handleGlobalKeydown = (event: KeyboardEvent) => {
   if (event.key === 'Enter') {
     if (showSessionStart.value && canStartSession.value) {
       event.preventDefault();
-      startSession();
-      return;
-    }
-
-    if (answered.value && !isLoading.value && !hasFatalLoadError.value) {
+      void startSession();
+    } else if (answered.value && !isLoading.value && !hasFatalLoadError.value) {
       event.preventDefault();
       void moveToNextQuestion();
     }
-
     return;
   }
 
@@ -355,65 +519,34 @@ const handleGlobalKeydown = (event: KeyboardEvent) => {
   }
 
   const shortcutIndex = Number.parseInt(event.key, 10) - 1;
+  const choice = Number.isInteger(shortcutIndex)
+    ? currentQuestion.value?.choices[shortcutIndex]
+    : undefined;
 
-  if (!Number.isInteger(shortcutIndex) || shortcutIndex < 0) {
+  if (choice) {
+    event.preventDefault();
+    answer(choice.id);
+  }
+};
+
+const handleVisibilityChange = () => {
+  if (document.visibilityState !== 'visible' || !sessionStartPending.value) {
     return;
   }
 
-  const choice = currentQuestion.value?.choices[shortcutIndex];
-
-  if (!choice) {
-    return;
-  }
-
-  event.preventDefault();
-  answer(choice.id);
-};
-
-const resetSession = async () => {
-  fatalError.value = null;
-  clearUiError();
-  const previousSessionStartPending = sessionStartPending.value;
-  sessionStartPending.value = true;
-  trainerAudio.clearPendingQuestionAudio();
-
-  try {
-    await trainer.resetSession();
-    await nextTick();
-    scrollPageToTop();
-  } catch (error) {
-    sessionStartPending.value = previousSessionStartPending;
-    applyUiError(error, '最初からのやり直しに失敗しました。');
-  }
-};
-
-const restartSession = async () => {
-  fatalError.value = null;
-  clearUiError();
-
-  try {
-    await trainer.resetSession();
-    await nextTick();
-    syncSessionRecordBaseline();
-    sessionStartPending.value = false;
-    trainerAudio.requestCurrentQuestionAudio();
-    scrollPageToTop();
-  } catch (error) {
-    applyUiError(error, 'ゲームの再開に失敗しました。');
-  }
-};
-
-const handleSpeechVoicesChanged = () => {
-  trainerAudio.handleVoicesChanged();
+  void ensureCurrentRoute().catch((error) => {
+    applyUiError(error, '日付の更新に失敗しました。');
+  });
 };
 
 onMounted(async () => {
   loadHighScores();
-
+  learningProgress.loadLearningProgress();
   trainerAudio.setup();
   feedbackAudio.setup();
   window.addEventListener('keydown', handleGlobalKeydown);
-  window.speechSynthesis?.addEventListener?.('voiceschanged', handleSpeechVoicesChanged);
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  window.speechSynthesis?.addEventListener?.('voiceschanged', trainerAudio.handleVoicesChanged);
 
   void loadVocabularyMetadata()
     .then((metadata) => {
@@ -425,13 +558,12 @@ onMounted(async () => {
     });
 
   try {
-    await trainer.initialize();
+    const level = trainer.game.value.level;
+    await trainer.initialize(level, routeOptions(level));
+    initializedRouteDateKey.value = learningProgress.dateKey.value;
   } catch (error) {
     applyFatalError(error, '語彙データの初期化に失敗しました。');
-    return;
   }
-
-  sessionStartPending.value = true;
 });
 
 watch(
@@ -444,183 +576,158 @@ watch(
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleGlobalKeydown);
-  window.speechSynthesis?.removeEventListener?.('voiceschanged', handleSpeechVoicesChanged);
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+  window.speechSynthesis?.removeEventListener?.('voiceschanged', trainerAudio.handleVoicesChanged);
   trainerAudio.dispose();
   feedbackAudio.cleanup();
 });
 
 useSeoMeta({
-  title: 'LexiFormosa',
-  description: '台湾で使われる繁体字の単語を、日本語4択で学べるローカル向けゲーム。',
+  title: 'LexiFormosa｜今日の10語',
+  description: '台湾で使われる繁体字の単語を、1日10問の日本語4択で学べるローカルゲーム。',
 });
 </script>
 
 <template>
-  <main
-    class="page-shell"
-    :class="{ 'page-shell--play': !showSessionStart }"
-  >
-    <section v-if="showSessionStart" class="hero-panel hero-panel--start-screen">
-      <div
-        class="hero-brand surface-card hero-brand--start-screen"
-      >
-        <div class="hero-topline">
-          <p class="eyebrow">Taiwanese Trainer</p>
-          <span class="app-version">v{{ appVersion }}</span>
-        </div>
-        <h1>LexiFormosa</h1>
-        <p class="hero-text">
-          台湾華語の繁体字単語を、日本語4択で練習。
-        </p>
-        <div class="hero-meta">
-          <span>{{ vocabularyMetadata?.total?.toLocaleString() ?? '...' }}語収録</span>
-          <span>ローカル動作</span>
-        </div>
-      </div>
-
-      <div class="hero-stats-panel surface-card hero-stats-panel--start-screen">
-        <div class="panel-heading">
-          <p class="panel-kicker">RECORDS</p>
-        </div>
-        <div class="record-grid record-grid--start-screen">
-          <button
-            v-for="item in highScoreCards"
-            :key="item.level"
-            class="record-card record-card--desktop"
-            :class="{ 'record-card--active': item.active }"
-            type="button"
-            :aria-pressed="item.active"
-            :disabled="trainer.isLoading.value"
-            @click="selectLevel(item.level)"
-          >
-            <div class="record-card-topline">
-              <span class="record-level">{{ item.label }}</span>
-            </div>
-            <div class="record-stats record-stats--start-screen">
-              <div class="record-stat">
-                <span class="record-stat-label">最高スコア</span>
-                <strong>{{ item.score }}</strong>
-              </div>
-              <div class="record-stat">
-                <span class="record-stat-label">最高連続数</span>
-                <strong>{{ item.streak }}</strong>
-              </div>
-            </div>
-          </button>
-        </div>
-        <article v-if="activeHighScoreCard" class="record-card record-card--mobile-summary" aria-live="polite">
-          <div class="record-mobile-score">
-            <span class="record-stat-label">最高スコア</span>
-            <strong>{{ activeHighScoreCard.score }}</strong>
+  <main class="page-shell" :class="{ 'page-shell--play': !showSessionStart }">
+    <template v-if="showSessionStart">
+      <section class="hero-panel hero-panel--start-screen">
+        <div class="hero-brand surface-card">
+          <div class="hero-topline">
+            <p class="eyebrow">LexiFormosa</p>
+            <span class="app-version">v{{ appVersion }}</span>
           </div>
-          <div class="record-mobile-streak">
-            <span class="record-stat-label">最高連続数</span>
-            <strong>{{ activeHighScoreCard.streak }}</strong>
+          <div>
+            <p class="hero-overline">台湾華語を、短く深く。</p>
+            <h1>今日の10語</h1>
+            <p class="hero-text">1ルート10問。完走するたび、次の10語へ進みます。</p>
           </div>
-        </article>
-      </div>
-    </section>
+          <div class="hero-meta">
+            <span>{{ vocabularyMetadata?.total?.toLocaleString() ?? '...' }}語収録</span>
+            <span>端末内で記録</span>
+          </div>
+        </div>
 
-    <section v-if="showSessionStart" class="session-module surface-card">
-      <div class="session-module__header">
-        <p class="panel-kicker">PLAY</p>
-      </div>
-
-      <div class="session-module__grid">
-        <aside class="session-module__levels">
-          <div class="level-list">
+        <div class="hero-stats-panel surface-card">
+          <div class="panel-heading">
+            <p class="panel-kicker">レベル最高記録</p>
+            <p>カードからレベルを選べます</p>
+          </div>
+          <div class="record-grid record-grid--start-screen">
             <button
-              v-for="item in levelCards"
+              v-for="item in highScoreCards"
               :key="item.level"
-              class="level-card"
-              :class="{ 'level-card--active': trainer.game.value.level === item.level }"
+              class="record-card record-card--desktop"
+              :class="{ 'record-card--active': item.active }"
               type="button"
+              :aria-pressed="item.active"
               :disabled="trainer.isLoading.value"
               @click="selectLevel(item.level)"
             >
-              <div class="level-card-topline">
-                <span class="level-badge">{{ item.label }}</span>
-                <span class="level-count">
-                  {{ formatVocabularyWordsLabel(item.count, metadataStatus) }}
-                </span>
-              </div>
-              <strong>{{ item.summary }}</strong>
+              <span class="record-level">{{ item.label }}</span>
+              <span class="record-card__value">{{ item.score }}点</span>
+              <span class="record-card__streak">最高 {{ item.streak }}連続</span>
             </button>
           </div>
-        </aside>
+          <article v-if="activeHighScoreCard" class="record-card record-card--mobile-summary" aria-live="polite">
+            <span class="record-level">{{ LEVEL_COPY[trainer.game.value.level].label }}</span>
+            <strong>{{ activeHighScoreCard.score }}点</strong>
+            <span>最高 {{ activeHighScoreCard.streak }}連続</span>
+          </article>
+        </div>
+      </section>
 
-        <SessionStartPanel
-          :summary-items="sessionStartSummaryItems"
-          :can-start-session="canStartSession"
-          :load-error="uiError"
-          :selected-level-label="
-            selectedLevelCard?.label ?? LEVEL_COPY[trainer.game.value.level].label
-          "
-          :selected-level-count-label="selectedLevelWordCountLabel"
-          :selected-level-score="currentLevelHighScore.score"
-          :selected-level-streak="currentLevelHighScore.streak"
-          @start="startSession()"
-        />
-      </div>
-    </section>
+      <section class="session-module surface-card">
+        <div class="session-module__header">
+          <p class="panel-kicker">レベルを選ぶ</p>
+        </div>
+        <div class="session-module__grid">
+          <aside class="session-module__levels">
+            <div class="level-list">
+              <button
+                v-for="item in levelCards"
+                :key="item.level"
+                class="level-card"
+                :class="{ 'level-card--active': trainer.game.value.level === item.level }"
+                type="button"
+                :disabled="trainer.isLoading.value"
+                @click="selectLevel(item.level)"
+              >
+                <span class="level-badge">{{ item.label }}</span>
+                <span class="level-count">{{ item.countLabel }}</span>
+                <span class="level-short-summary">{{ item.shortSummary }}</span>
+                <strong>{{ item.summary }}</strong>
+                <span v-if="item.reviewCount > 0" class="level-review-count">復習 {{ item.reviewCount }}語</span>
+              </button>
+            </div>
+          </aside>
+
+          <SessionStartPanel
+            :summary-items="sessionStartSummaryItems"
+            :can-start-session="canStartSession"
+            :load-error="uiError"
+            :selected-level-label="selectedLevelCard?.label ?? LEVEL_COPY[trainer.game.value.level].label"
+            :selected-level-count-label="selectedLevelWordCountLabel"
+            :selected-level-score="currentLevelHighScore.score"
+            :selected-level-streak="currentLevelHighScore.streak"
+            :review-count="selectedReviewCount"
+            :mastered-count="selectedMasteredCount"
+            :today-correct="selectedTodayResult?.correctAnswers ?? 0"
+            :today-medal-label="selectedTodayMedalLabel"
+            :completed-routes="selectedCompletedRoutes"
+            :route-number="currentRouteNumber"
+            @start="startSession()"
+          />
+        </div>
+      </section>
+    </template>
 
     <section v-else class="workspace-grid workspace-grid--play">
       <section
         class="quiz-panel surface-card"
         :class="{
-          'quiz-panel--lobby': showSessionStart,
           'quiz-panel--correct': feedbackTone === 'correct',
-          'quiz-panel--correct-impact': feedbackTone === 'correct',
           'quiz-panel--incorrect': feedbackTone === 'incorrect',
-          'quiz-panel--incorrect-impact': feedbackTone === 'incorrect',
           'quiz-panel--game-over': isGameOver,
           'quiz-panel--critical': isCriticalLife,
         }"
       >
         <template v-if="hasFatalLoadError">
-          <article class="question-stage">
-            <div class="question-stage__topline">
-              <span class="word-chip">初期設定</span>
-              <button class="audio-button" type="button" disabled>読み上げ</button>
-            </div>
-            <strong class="question-stage__trad question-stage__trad--loading">辞書データがありません</strong>
-            <p class="question-stage__help">{{ fatalError }}</p>
-            <div class="audio-start-notice">
-              <p>初回は辞書データを同梱していません。</p>
-              <code>npm run setup:data</code>
-            </div>
+          <article class="fatal-state">
+            <p class="panel-kicker">初期設定</p>
+            <h1>辞書データがありません</h1>
+            <p>{{ fatalError }}</p>
+            <code>npm run setup:data</code>
+            <button class="ghost-button" type="button" @click="resetSession()">トップへ戻る</button>
           </article>
         </template>
+
         <template v-else-if="currentQuestion">
           <QuestionStage
+            v-if="!isGameOver"
+            ref="questionStageRef"
             :level-label="LEVEL_COPY[currentQuestion.level].label"
             :score="score"
             :streak="streak"
             :remaining-misses="remainingMisses"
+            :route-position="routePosition"
+            :route-length="routeLength"
+            :route-number="currentRouteNumber"
+            :answered-rounds="rounds"
             :trad="currentQuestion.trad"
             :katakana-reading="katakanaReading"
             :pinyin-reading="pinyinReading"
             :can-play-audio="canPlayAudio"
             :is-speaking="isSpeaking"
             :critical-life="isCriticalLife"
+            :is-review-word="currentQuestionIsReview"
             @toggle-audio="togglePronunciationAudio()"
+            @exit="resetSession()"
           />
-        </template>
-        <template v-else>
-          <article class="question-stage">
-            <div class="question-stage__topline">
-              <span class="word-chip">読み込み中</span>
-              <button class="audio-button" type="button" disabled>読み上げ</button>
-            </div>
-            <strong class="question-stage__trad question-stage__trad--loading">問題を準備しています</strong>
-            <p class="question-stage__help">選択したレベルの単語を読み込んでいます。</p>
-          </article>
-        </template>
 
-        <template v-if="currentQuestion && !showSessionStart && !hasFatalLoadError">
-          <div class="choice-grid">
+          <div v-if="!isGameOver" class="choice-grid">
             <button
-              v-for="(choice, index) in currentQuestion?.choices ?? []"
+              v-for="(choice, index) in currentQuestion.choices"
               :key="choice.id"
               class="choice-card"
               :class="choiceClass(choice)"
@@ -630,11 +737,20 @@ useSeoMeta({
               :aria-keyshortcuts="String(index + 1)"
               @click="answer(choice.id)"
             >
-              <span class="choice-label">{{ choice.label }}</span>
+              <span class="choice-card__main">
+                <span class="choice-index" aria-hidden="true">{{ index + 1 }}</span>
+                <span class="choice-label">{{ choice.label }}</span>
+              </span>
               <span v-if="choiceStateLabel(choice)" class="choice-state">
                 {{ choiceStateLabel(choice) }}
               </span>
             </button>
+          </div>
+
+          <div v-if="showComboTicket" class="combo-ticket" aria-live="polite">
+            <component :is="StarIcon" :size="22" weight="fill" aria-hidden="true" />
+            <span class="combo-ticket__label">COMBO</span>
+            <span class="combo-ticket__copy">{{ comboTicketLabel }}</span>
           </div>
 
           <GameOverPanel
@@ -645,73 +761,79 @@ useSeoMeta({
             :celebration-tone="gameOverCelebrationTone"
             :load-error="uiError"
             :score="score"
+            :correct-answers="correctAnswers"
+            :route-length="routeLength"
             :best-run-streak="bestRunStreak"
+            :finish-reason="finishReason"
+            :medal-label="gameOverMedalLabel"
+            :review-count="selectedReviewCount"
             :current-level-high-score="currentLevelHighScore"
             :game-over-achievements="gameOverAchievements"
+            :last-trad="currentQuestion.trad"
+            :last-correct-label="trainer.correctChoice.value?.label ?? '不明'"
+            :last-selected-label="selectedChoiceLabel"
             @restart="restartSession()"
             @reset="resetSession()"
           />
-          <div
-            v-else-if="answered || isLoading || feedbackView.uiError"
-            class="feedback-row"
-            :class="{
-              'feedback-row--embedded': true,
-              'feedback-row--stacked': true,
-              'feedback-row--correct': feedbackTone === 'correct',
-              'feedback-row--incorrect': feedbackTone === 'incorrect',
-              'feedback-row--loading': feedbackTone === 'loading',
-            }"
-          >
-            <ResultBanner
-              v-if="feedbackView.variant === 'banner'"
-              :tone="feedbackView.tone"
-              :badge="feedbackView.badge"
-              :show-badge="feedbackView.tone === 'loading'"
-              :message="feedbackView.message"
-              :ui-error="feedbackView.uiError"
-            />
-            <div v-else class="feedback-copy feedback-copy--idle feedback-copy--embedded" aria-live="polite">
-              <p class="feedback-copy__message">{{ feedbackView.message }}</p>
-              <p v-if="feedbackView.uiError" class="feedback-error">{{ feedbackView.uiError }}</p>
-            </div>
-          </div>
-          <div v-if="revealAnswer" class="answer-support-row">
-            <div v-if="externalLookupLinks.length > 0" class="lookup-panel">
-              <p class="lookup-panel-label">外部辞書で確認</p>
-              <div class="lookup-links">
-                <a
-                  v-for="link in externalLookupLinks"
-                  :key="link.id"
-                  class="ghost-button lookup-link"
-                  :href="link.href"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ link.label }}
-                </a>
+
+          <template v-if="!isGameOver">
+            <div
+              v-if="answered || isLoading || feedbackView.uiError || revealAnswer"
+              class="response-panel"
+              :class="{ 'response-panel--answer': revealAnswer }"
+            >
+              <div
+                v-if="answered || isLoading || feedbackView.uiError"
+                class="feedback-row"
+                :class="`feedback-row--${feedbackTone}`"
+              >
+                <ResultBanner
+                  v-if="feedbackView.variant === 'banner'"
+                  :tone="feedbackView.tone"
+                  :badge="feedbackView.badge"
+                  :show-badge="feedbackView.tone === 'loading'"
+                  :message="feedbackView.message"
+                  :ui-error="feedbackView.uiError"
+                />
+                <p v-if="learningNote" class="learning-note">{{ learningNote }}</p>
+              </div>
+
+              <div v-if="revealAnswer" class="answer-support-row">
+                <div class="answer-support-actions">
+                  <button
+                    class="primary-button"
+                    type="button"
+                    :disabled="!answered || isLoading"
+                    aria-keyshortcuts="Enter"
+                    @click="moveToNextQuestion()"
+                  >
+                    次の問題
+                  </button>
+                  <button
+                    class="ghost-button secondary-action-button"
+                    type="button"
+                    @click="requestSessionExit()"
+                  >
+                    トップへ戻る
+                  </button>
+                </div>
+                <LookupPanel :links="externalLookupLinks" />
               </div>
             </div>
-            <div v-if="!isGameOver" class="answer-support-actions">
-              <button
-                class="primary-button"
-                type="button"
-                :disabled="!answered || isLoading"
-                aria-keyshortcuts="Enter"
-                @click="moveToNextQuestion()"
-              >
-                次の問題
-              </button>
-              <button
-                class="ghost-button ghost-button--subtle secondary-action-button"
-                type="button"
-                :disabled="trainer.isLoading.value || hasFatalLoadError"
-                @click="resetSession()"
-              >
-                トップへ戻る
-              </button>
-            </div>
+          </template>
+
+          <div
+            v-if="isGameOver && revealAnswer"
+            class="answer-support-row answer-support-row--game-over"
+          >
+            <LookupPanel :links="externalLookupLinks" secondary />
           </div>
         </template>
+
+        <article v-else class="loading-state" aria-live="polite">
+          <p class="panel-kicker">読み込み中</p>
+          <strong>問題を準備しています</strong>
+        </article>
       </section>
     </section>
   </main>

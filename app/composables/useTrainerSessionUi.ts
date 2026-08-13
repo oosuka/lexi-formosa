@@ -95,9 +95,18 @@ export const useTrainerSessionUi = ({
   const score = computed(() => game.value.score);
   const streak = computed(() => game.value.streak);
   const bestRunStreak = computed(() => game.value.bestStreak);
+  const correctAnswers = computed(() => game.value.correctAnswers);
   const missesInRow = computed(() => game.value.missesInRow);
   const remainingMisses = computed(() => Math.max(0, MAX_MISSES_IN_ROW - missesInRow.value));
   const rounds = computed(() => game.value.rounds);
+  const routeLength = computed(() => game.value.routeLength);
+  const routePosition = computed(() =>
+    Math.min(
+      routeLength.value,
+      game.value.status === 'ready' ? rounds.value + 1 : Math.max(1, rounds.value)
+    )
+  );
+  const finishReason = computed(() => game.value.finishReason);
   const answered = computed(() => game.value.status === 'answered');
   const revealAnswer = computed(
     () => game.value.status === 'answered' || game.value.status === 'finished'
@@ -168,7 +177,7 @@ export const useTrainerSessionUi = ({
       return '自己ベストタイ';
     }
 
-    return '';
+    return finishReason.value === 'route-complete' ? 'ルート完走' : '';
   });
   const gameOverCelebrationTone = computed<GameOverCelebrationTone>(() => {
     const newRecordCount = gameOverAchievements.value.filter(
@@ -186,6 +195,18 @@ export const useTrainerSessionUi = ({
     return 'none';
   });
   const gameOverSummary = computed(() => {
+    if (finishReason.value === 'route-complete') {
+      const recordNote = gameOverAchievements.value.some(
+        (achievement) => achievement.tone === 'new'
+      )
+        ? '自己ベストも更新しました。'
+        : gameOverAchievements.value.some((achievement) => achievement.tone === 'tie')
+          ? '自己ベストにも並びました。'
+          : '間違えた単語は端末内の復習リストに残ります。';
+
+      return `${routeLength.value}問のルートを完走しました。次は別の10語に進みます。${recordNote}`;
+    }
+
     if (gameOverAchievements.value.some((achievement) => achievement.tone === 'new')) {
       return '今回のプレイで自己ベストを更新しました。';
     }
@@ -246,7 +267,9 @@ export const useTrainerSessionUi = ({
   });
   const answerMessage = computed(() => {
     if (isGameOver.value) {
-      return '3回続けて不正解でした。';
+      return finishReason.value === 'route-complete'
+        ? `${routeLength.value}問のルートを完走しました。`
+        : '3回続けて不正解でした。';
     }
 
     if (feedbackView.value.variant === 'inline') {
@@ -265,7 +288,7 @@ export const useTrainerSessionUi = ({
     }
 
     if (isGameOver.value) {
-      return 'ゲーム終了';
+      return finishReason.value === 'route-complete' ? 'ルート完了' : 'ゲーム終了';
     }
 
     return '回答待ち';
@@ -280,8 +303,12 @@ export const useTrainerSessionUi = ({
     score,
     streak,
     bestRunStreak,
+    correctAnswers,
     remainingMisses,
     rounds,
+    routeLength,
+    routePosition,
+    finishReason,
     answered,
     revealAnswer,
     canStartSession,

@@ -2,6 +2,8 @@
 
 この文書は、`lexi-formosa` を fork / clone してローカルで遊ぶ人が、コードと辞書データの扱いを混同しないための注意書きです。法的助言ではありません。
 
+外部ソースの記載内容と公開状態の最終確認日: 2026-08-13
+
 ## License Scope
 
 - このリポジトリのソースコード、設定、ドキュメント、テストは、特記がない限り [LICENSE](LICENSE) に記載した MIT License で提供します。
@@ -20,23 +22,23 @@
 
 ## Referenced Sources
 
-- TOCFL / TBCL related vocabulary source
-  - Default URL: `https://raw.githubusercontent.com/PSeitz/tocfl/main/tocfl_words.json`
-  - Upstream repository: `https://github.com/PSeitz/tocfl`
-  - The upstream repository describes the dataset as based on files linked from the official TOCFL / COCT / NAER site. No repository-level license file was found when this notice was last checked.
-  - Treat this source as third-party reference data with redistribution terms that must be checked separately before publishing generated outputs.
+- TOCFL 関連語彙ソース
+  - 既定の取得先: `https://raw.githubusercontent.com/PSeitz/tocfl/main/tocfl_words.json`
+  - upstream: [PSeitz/tocfl](https://github.com/PSeitz/tocfl)
+  - upstream の README は、公式 TOCFL サイトからリンクされたファイルを基にしたデータセットであると説明しています。
+  - 2026-08-13 時点で upstream リポジトリ直下にライセンスファイルは確認できません。生成物を公開する前に、参照元を含む適用条件を別途確認してください。
 - TBCL
-  - Optional input: `TBCL_SOURCE_PATH` / `TBCL_SOURCE_URL`
-  - Official site: `https://bcoct.naer.edu.tw/TBCL/`
-  - The official TBCL page states that the system includes word lists and displays a National Academy for Educational Research copyright notice. Do not assume generated TBCL-derived data is freely redistributable without confirming the applicable terms or permission.
+  - 任意入力: `TBCL_SOURCE_PATH` / `TBCL_SOURCE_URL`
+  - 公式サイト: [臺灣華語文能力基準 TBCL](https://bcoct.naer.edu.tw/TBCL/)
+  - 公式ページは7等級の語彙リストを案内し、國家教育研究院の copyright 表示を掲載しています。TBCL 由来データを含む生成物を、条件確認なしで自由に再配布できるとは扱わないでください。
 - MJdic
-  - Default URL: `https://raw.githubusercontent.com/code4fukui/MJdic/main/cedict_ts.csv`
-  - Upstream repository: `https://github.com/code4fukui/MJdic`
-  - The repository license file is MIT for the MJdic project code, but the README states that dictionary data is from CC-CEDICT and that Japanese translations were added using DeepLAPI.
+  - 既定の取得先: `https://raw.githubusercontent.com/code4fukui/MJdic/main/cedict_ts.csv`
+  - upstream: [code4fukui/MJdic](https://github.com/code4fukui/MJdic)
+  - MJdic プロジェクトのライセンスファイルは MIT ですが、README は辞書データを CC-CEDICT 由来、日本語訳を DeepLAPI で追加したものと説明しています。
 - CC-CEDICT
-  - Official wiki: `https://cc-cedict.org/wiki/`
-  - The CC-CEDICT wiki states that CC-CEDICT is licensed under Creative Commons Attribution-ShareAlike 3.0.
-  - If generated outputs include CC-CEDICT-derived content, redistribution may require attribution, license notice, change indication where applicable, and ShareAlike-compatible distribution terms.
+  - 公式 wiki: [CC-CEDICT](https://cc-cedict.org/wiki/)
+  - 公式 wiki は CC-CEDICT を Creative Commons Attribution-ShareAlike 3.0 と明記しています。
+  - 生成物に CC-CEDICT 由来の内容が含まれる場合、再配布には帰属表示、ライセンス表示、適用される変更表示、ShareAlike と両立する配布条件が必要になる可能性があります。
 
 ## Redistribution Caution
 
