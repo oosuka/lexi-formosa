@@ -1,6 +1,6 @@
 # LexiFormosa
 
-`LexiFormosa` は、台湾で使われる繁体字の単語を日本語4択で学ぶローカル向け Nuxt 4 ゲームです。公開リポジトリ名と npm package 名は `lexi-formosa` で、アプリバージョンは [package.json](package.json) を正とします。
+`LexiFormosa` は、台湾で使われる繁体字の単語を日本語4択で学ぶローカル向け Nuxt 4（Nuxt 5 互換モード）ゲームです。公開リポジトリ名と npm package 名は `lexi-formosa` で、アプリバージョンは [package.json](package.json) を正とします。
 
 簡体字は表示せず、1問につき繁体字の単語を1つだけ出題します。ピンイン、カタカナ補助、ブラウザ音声による読み上げを使いながら、Level 1 から Level 3 までを1ルート10問で練習できます。
 
@@ -35,11 +35,13 @@
 
 ## Stack
 
-- Nuxt 4 / Vue 3
+- Nuxt 4 / Nuxt 5 互換モード / Vue 3
 - Node.js 24 LTS / npm / Volta
-- TypeScript 7 / Zod
+- TypeScript 7 / Golar / Zod
 - Biome 2
 - Vitest / Playwright
+
+Nuxt 4.5 系の `future.compatibilityVersion: 5` を有効にし、Nuxt 5 の既定値を Nuxt 4 上で先行適用しています。設定は [nuxt.config.ts](nuxt.config.ts) を確認してください。
 
 ## Setup
 
@@ -50,6 +52,8 @@ npm run dev
 ```
 
 `npm run setup:data` は TOCFL と MJdic の既定ソースを取得し、ローカルで語彙データを生成して検証します。既定 URL を使う初回実行にはインターネット接続が必要です。TBCL は任意入力で、`TBCL_SOURCE_PATH` または `TBCL_SOURCE_URL` を指定した場合だけ新たに取得・コピーします。既存の `data/source-snapshots/tbcl_words.json` があれば、指定の有無にかかわらず生成時に併用します。各ソースは `*_SOURCE_PATH` でローカルファイルを指定でき、TOCFL と MJdic は `*_SOURCE_URL` で取得先も上書きできます。詳細は [辞書ソースと再生成手順](docs/dictionary-sources.md) を参照してください。
+
+`npm install` 後に型検査を実行する場合は、Nuxt が生成する `.nuxt` の設定と [golar.config.ts](golar.config.ts) を使って `npm run typecheck` を実行します。Golar は `package.json` の開発依存に含まれているため、別途 `vue-tsc` を追加する必要はありません。
 
 ゲームの進行と学習記録にはブラウザの `localStorage` だけを使います。サーバー DB、アカウント、外部同期サービスは必要ありません。ブラウザのサイトデータを削除すると、最高記録・復習リスト・定着度・当日の結果・完走ルート数も削除されます。
 
@@ -65,9 +69,9 @@ npx playwright install chromium
 | --- | --- |
 | `npm run dev` | Nuxt 開発サーバーを起動 |
 | `npm run build` | 本番用ビルドを生成 |
-| `npm run preview` | 本番用ビルドをローカル確認 |
-| `npm run typecheck` | Nuxt / TypeScript の型検査（`vue-tsc` または Golar の導入が必要） |
-| `npm test` | Unit と E2E を順に実行 |
+| `npm run preview` | `npm run build` 後の本番用ビルドをローカル確認 |
+| `npm run typecheck` | Golar による Nuxt / TypeScript の型検査 |
+| `npm test` | Unit と E2E を順に実行（Chromium の導入が必要） |
 | `npm run test:unit` | Vitest を1回実行 |
 | `npm run test:unit:coverage` | Unit テストのカバレッジを生成 |
 | `npm run test:watch` | Vitest を watch モードで起動 |
@@ -110,12 +114,21 @@ npx playwright install chromium
 通常の確認:
 
 ```bash
+npm run prepare
 npm run lint
 npm run test:unit
 npm run typecheck
 npm run build
 ```
 
-`npm run typecheck` は、Nuxt が検出する `vue-tsc` または Golar が環境に導入されている場合に実行できます。依存関係を最小構成に保つため、現行の `package.json` には型チェッカーを含めていません。
+UI の主要導線を変更した場合は、上記に加えて次を実行します。
 
-主要導線を変えた場合は `npm run test:e2e` も実行してください。現在の画面・レスポンシブ・アクセシビリティ確認基準は [design-qa.md](design-qa.md) にまとめています。
+```bash
+npm run test:e2e
+```
+
+`npm run test:e2e` は Playwright の Chromium を使用します。初回だけ `npx playwright install chromium` が必要です。
+
+`npm run typecheck` は `golar` と `@golar/vue` を使います。設定は [golar.config.ts](golar.config.ts) に置き、`npm install` 後に追加の型チェッカーを手動導入せず実行できます。`vitest.config.ts` では、`@nuxt/test-utils` のテスト用ビルドが出す `NUXT_B7021` を避けるため、テスト時だけ `experimental.viteEnvironmentApi` を無効にしています。アプリ本体と production build は Nuxt 5 互換モードのままです。
+
+開発時は `npm run dev`、本番相当の確認は `npm run build` 後に `npm run preview` を使います。現在の画面・レスポンシブ・アクセシビリティ確認基準は [design-qa.md](design-qa.md) にまとめています。

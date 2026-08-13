@@ -2,6 +2,9 @@ import packageJson from './package.json' with { type: 'json' };
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-03-20',
+  future: {
+    compatibilityVersion: 5,
+  },
   devtools: {
     enabled: true,
   },

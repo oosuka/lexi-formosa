@@ -14,8 +14,12 @@
 ## 実装メモ
 
 - フレームワーク: Nuxt 4 / Vue 3
+- Nuxt 5 互換モード: `future.compatibilityVersion: 5`
+- Nuxt 設定: `nuxt.config.ts`
 - ランタイム: Node.js 24 LTS / npm（Volta は Node.js 24.19.0 / npm 11.19.0 を指定）
-- ツール: Volta / Biome 2 / TypeScript 7 / Zod / Vitest / Playwright
+- ツール: Volta / Biome 2 / TypeScript 7 / Golar / Zod / Vitest / Playwright
+- 型検査設定: `golar.config.ts`
+- Vitest の Nuxt 環境では `@nuxt/test-utils` 由来の `NUXT_B7021` を避けるため、`vitest.config.ts` でテスト時だけ `experimental.viteEnvironmentApi` を無効にします。アプリ本体の互換モードは変更しません。
 - 主要画面: `app/pages/index.vue`
 - ゲーム状態: `app/composables/useTraditionalTrainer.ts`
 - UI 派生状態: `app/composables/useTrainerSessionUi.ts`
@@ -114,11 +118,12 @@
 - CSS クラス、細かな配置、重複した表示構造だけを固定するテストは避けてください。
 - UI の主要導線を変えた場合は Playwright で最小 E2E を確認してください。
 - フラットデザイン方針を変える場合は `tests/unit/design-system.test.ts` も更新し、意図した制約変更であることを説明してください。
-- `npm run typecheck` は Nuxt が検出する `vue-tsc` または Golar が導入済みの環境で実行してください。現行の最小依存構成には型チェッカーを含めません。
+- `npm run typecheck` は Golar / `@golar/vue` で実行してください。`golar.config.ts` と型チェッカーの依存関係を維持してください。
 
 通常のコード変更:
 
 ```bash
+npm run prepare
 npm run lint
 npm run test:unit
 npm run typecheck
@@ -128,6 +133,7 @@ npm run build
 語彙や生成スクリプトを変更した場合:
 
 ```bash
+npm run prepare
 npm run setup:data
 npm run check:data
 npm run audit:data
@@ -140,6 +146,7 @@ npm run build
 UI の主要導線や E2E を変更した場合:
 
 ```bash
+npm run prepare
 npm run lint
 npm run test:unit
 npm run test:e2e

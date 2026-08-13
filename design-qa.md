@@ -45,6 +45,7 @@
 ## 検証手順
 
 ```bash
+npm run prepare
 npm run lint
 npm run test:unit
 npm run test:e2e
@@ -53,6 +54,8 @@ npm run build
 ```
 
 Playwright は開始、回答、正誤表示、中断、完走、途中終了、再挑戦、トップ復帰、レスポンシブ表示を確認します。ブラウザで目視確認する場合は、上記の画面状態と幅に加え、コンソールの error / warning も確認します。
+
+起動確認では `npm run dev` で開発サーバーを起動し、開始画面が表示されることを確認します。本番相当の確認では `npm run build` 後に `npm run preview` を起動し、同じ画面と静的アセットが表示されることを確認します。
 
 ## 判定
 
