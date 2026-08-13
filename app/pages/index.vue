@@ -12,7 +12,7 @@ import { useTraditionalTrainer } from '~/composables/useTraditionalTrainer';
 import { useTrainerAudio } from '~/composables/useTrainerAudio';
 import { useTrainerSessionUi } from '~/composables/useTrainerSessionUi';
 import { formatKatakanaReading, formatPinyinReading } from '~/utils/pronunciation';
-import { LEVEL_COPY } from '~/utils/trainer';
+import { getLocalDateKey, LEVEL_COPY } from '~/utils/trainer';
 import { loadVocabularyMetadata } from '~/utils/vocabulary';
 import {
   LEVELS,
@@ -29,6 +29,7 @@ const trainer = useTraditionalTrainer();
 const learningProgress = useLearningProgress();
 const appVersion = useRuntimeConfig().public.appVersion;
 const sessionStartPending = ref(true);
+const initializedRouteDateKey = ref<string | null>(null);
 const fatalError = ref<string | null>(null);
 const uiError = ref<string | null>(null);
 const { highScores, loadHighScores, updateLevelRecord } = useHighScores();
@@ -76,6 +77,28 @@ const routeOptions = (level: Level) => ({
   reviewQuestionIds: learningProgress.getReviewQuestionIds(level),
   routeIndex: learningProgress.completedRouteCounts.value[level],
 });
+
+const syncLearningProgressDate = () => {
+  const nextDateKey = getLocalDateKey();
+
+  if (learningProgress.dateKey.value !== nextDateKey) {
+    learningProgress.loadLearningProgress(nextDateKey);
+  }
+
+  return nextDateKey;
+};
+
+const ensureCurrentRoute = async () => {
+  const nextDateKey = syncLearningProgressDate();
+
+  if (initializedRouteDateKey.value === nextDateKey) {
+    return;
+  }
+
+  const level = trainer.game.value.level;
+  await trainer.resetSession(level, routeOptions(level));
+  initializedRouteDateKey.value = nextDateKey;
+};
 
 const currentQuestion = computed(() => trainer.game.value.currentQuestion);
 const currentQuestionTrad = computed(() => currentQuestion.value?.trad ?? null);
@@ -312,7 +335,9 @@ const selectLevel = async (level: Level) => {
   void feedbackAudio.playLevelSelectSound();
 
   try {
+    const dateKey = syncLearningProgressDate();
     await trainer.setLevel(level, routeOptions(level));
+    initializedRouteDateKey.value = dateKey;
     await nextTick();
     trainerAudio.clearPendingQuestionAudio();
   } catch (error) {
@@ -373,13 +398,21 @@ const togglePronunciationAudio = () => {
   trainerAudio.requestCurrentQuestionAudio();
 };
 
-const startSession = () => {
+const startSession = async () => {
   if (!canStartSession.value) {
     return;
   }
 
   fatalError.value = null;
   clearUiError();
+
+  try {
+    await ensureCurrentRoute();
+  } catch (error) {
+    applyUiError(error, 'ゲームの開始に失敗しました。');
+    return;
+  }
+
   syncSessionRecordBaseline();
   sessionStartPending.value = false;
   void feedbackAudio.unlockAudioEffects();
@@ -409,7 +442,9 @@ const resetSession = async () => {
 
   try {
     const level = trainer.game.value.level;
+    const dateKey = syncLearningProgressDate();
     await trainer.resetSession(level, routeOptions(level));
+    initializedRouteDateKey.value = dateKey;
     await nextTick();
     scrollPageToTop();
   } catch (error) {
@@ -425,8 +460,9 @@ const restartSession = async () => {
   try {
     const level = trainer.game.value.level;
     const completed = trainer.game.value.finishReason === 'route-complete';
+    const dateKey = completed ? syncLearningProgressDate() : learningProgress.dateKey.value;
     await trainer.resetSession(level, {
-      dateKey: learningProgress.dateKey.value,
+      dateKey,
       reviewQuestionIds: completed
         ? learningProgress.getReviewQuestionIds(level)
         : trainer.game.value.reviewQuestionIds,
@@ -434,6 +470,7 @@ const restartSession = async () => {
         ? learningProgress.completedRouteCounts.value[level]
         : trainer.game.value.routeIndex,
     });
+    initializedRouteDateKey.value = dateKey;
     await nextTick();
     syncSessionRecordBaseline();
     sessionStartPending.value = false;
@@ -461,7 +498,7 @@ const handleGlobalKeydown = (event: KeyboardEvent) => {
   if (event.key === 'Enter') {
     if (showSessionStart.value && canStartSession.value) {
       event.preventDefault();
-      startSession();
+      void startSession();
     } else if (answered.value && !isLoading.value && !hasFatalLoadError.value) {
       event.preventDefault();
       void moveToNextQuestion();
@@ -484,12 +521,23 @@ const handleGlobalKeydown = (event: KeyboardEvent) => {
   }
 };
 
+const handleVisibilityChange = () => {
+  if (document.visibilityState !== 'visible' || !sessionStartPending.value) {
+    return;
+  }
+
+  void ensureCurrentRoute().catch((error) => {
+    applyUiError(error, '日付の更新に失敗しました。');
+  });
+};
+
 onMounted(async () => {
   loadHighScores();
   learningProgress.loadLearningProgress();
   trainerAudio.setup();
   feedbackAudio.setup();
   window.addEventListener('keydown', handleGlobalKeydown);
+  document.addEventListener('visibilitychange', handleVisibilityChange);
   window.speechSynthesis?.addEventListener?.('voiceschanged', trainerAudio.handleVoicesChanged);
 
   void loadVocabularyMetadata()
@@ -504,6 +552,7 @@ onMounted(async () => {
   try {
     const level = trainer.game.value.level;
     await trainer.initialize(level, routeOptions(level));
+    initializedRouteDateKey.value = learningProgress.dateKey.value;
   } catch (error) {
     applyFatalError(error, '語彙データの初期化に失敗しました。');
   }
@@ -519,6 +568,7 @@ watch(
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleGlobalKeydown);
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
   window.speechSynthesis?.removeEventListener?.('voiceschanged', trainerAudio.handleVoicesChanged);
   trainerAudio.dispose();
   feedbackAudio.cleanup();

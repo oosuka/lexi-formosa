@@ -753,12 +753,13 @@ summary:focus-visible {
   max-width: 100%;
   color: var(--ink);
   font-family: var(--font-display);
-  font-size: clamp(4.2rem, 23vw, 6.4rem);
+  font-size: clamp(2.75rem, 16vw, 6.4rem);
   font-weight: 850;
   line-height: 0.98;
   letter-spacing: 0.02em;
   text-align: center;
-  word-break: keep-all;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .question-stage__readings {

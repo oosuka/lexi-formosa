@@ -387,6 +387,18 @@ test('狭いスマホ幅の開始画面でも横にはみ出さない', async ({
   await expectNoHorizontalOverflow(page);
 });
 
+test('Level 3の長い単語でも狭いスマホ幅から横にはみ出さない', async ({ page }) => {
+  await installMockWordlists(page);
+  await page.setViewportSize({ width: 320, height: 844 });
+
+  await page.goto('/');
+  await page.locator('.level-card').filter({ hasText: 'Level 3' }).click();
+  await page.getByRole('button', { name: 'ゲームを始める' }).click();
+
+  await expect(page.locator('.trad-word')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
 test('モバイル幅では回答後に不要な選択肢を隠して次の問題を画面内に収める', async ({ page }) => {
   await installMockWordlists(page);
   await page.setViewportSize({ width: 390, height: 844 });

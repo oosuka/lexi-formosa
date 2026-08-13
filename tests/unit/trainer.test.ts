@@ -77,6 +77,41 @@ describe('trainer utilities', () => {
     expect(nextRoute.filter((id) => firstRoute.includes(id))).toEqual([]);
   });
 
+  it('復習語を含む次ルートでも未出題枠を飛ばさない', () => {
+    const routeVocabulary = Array.from({ length: 28 }, (_, index) =>
+      createEntry(`route-${index}`, String.fromCodePoint(0x4e00 + index), `訳${index}`, 1, 'daily')
+    );
+    const reviewQuestionIds = ['route-0', 'route-1', 'route-2', 'route-3'];
+    const firstRoute = buildDailyRouteQuestionIds(
+      routeVocabulary,
+      1,
+      '2026-07-13',
+      reviewQuestionIds,
+      10,
+      0
+    );
+    const nextRoute = buildDailyRouteQuestionIds(
+      routeVocabulary,
+      1,
+      '2026-07-13',
+      reviewQuestionIds,
+      10,
+      1
+    );
+    const freshOnlyRoute = buildDailyRouteQuestionIds(
+      routeVocabulary.filter((entry) => !reviewQuestionIds.includes(entry.id)),
+      1,
+      '2026-07-13',
+      [],
+      12,
+      0
+    );
+    const freshRouteIds = (route: string[]) =>
+      route.filter((questionId) => !reviewQuestionIds.includes(questionId));
+
+    expect([...freshRouteIds(firstRoute), ...freshRouteIds(nextRoute)]).toEqual(freshOnlyRoute);
+  });
+
   it('直近出題ですべて埋まっていてもプール全体から出題できる', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0);
 

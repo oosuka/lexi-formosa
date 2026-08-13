@@ -111,7 +111,7 @@ export const buildDailyRouteQuestionIds = (
     .map(({ entry }) => entry);
   const freshRouteEntries = takeCircularSlice(
     freshEntries,
-    safeRouteIndex * routeLength,
+    safeRouteIndex * Math.max(0, routeLength - reviewEntries.length),
     routeLength - reviewEntries.length
   );
   const orderedEntries = [...reviewEntries, ...freshRouteEntries];

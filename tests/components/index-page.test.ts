@@ -195,6 +195,33 @@ describe('index page', () => {
     expect(wrapper.get('button.audio-button').text()).toContain('音声を再生');
   });
 
+  it('日付をまたぐと開始前のルートを新しい日付で再初期化する', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 6, 13, 23, 59));
+    const trainer = createTrainerStub();
+    useTraditionalTrainerMock.mockReturnValue(trainer);
+
+    const wrapper = await mountSuspended(IndexPage);
+    await flushPromises();
+    trainer.resetSession.mockClear();
+
+    vi.setSystemTime(new Date(2026, 6, 14, 0, 1));
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flushPromises();
+
+    expect(trainer.resetSession).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({ dateKey: '2026-07-14', routeIndex: 0 })
+    );
+    trainer.resetSession.mockClear();
+
+    await wrapper.get('button.session-start-button').trigger('click');
+    await flushPromises();
+
+    expect(trainer.resetSession).not.toHaveBeenCalled();
+    expect(wrapper.find('.session-start-panel').exists()).toBe(false);
+  });
+
   it('開始前パネルに選択中レベルの要約と記録をまとめて表示し、レベル変更で追従する', async () => {
     window.localStorage.setItem(
       HIGH_SCORE_STORAGE_KEY,
