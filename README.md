@@ -37,7 +37,7 @@
 
 - Nuxt 4 / Vue 3
 - Node.js 24 LTS / npm / Volta
-- TypeScript 5 / Zod
+- TypeScript 7 / Zod
 - Biome 2
 - Vitest / Playwright
 
@@ -66,7 +66,7 @@ npx playwright install chromium
 | `npm run dev` | Nuxt 開発サーバーを起動 |
 | `npm run build` | 本番用ビルドを生成 |
 | `npm run preview` | 本番用ビルドをローカル確認 |
-| `npm run typecheck` | Nuxt / TypeScript の型検査 |
+| `npm run typecheck` | Nuxt / TypeScript の型検査（`vue-tsc` または Golar の導入が必要） |
 | `npm test` | Unit と E2E を順に実行 |
 | `npm run test:unit` | Vitest を1回実行 |
 | `npm run test:unit:coverage` | Unit テストのカバレッジを生成 |
@@ -115,5 +115,7 @@ npm run test:unit
 npm run typecheck
 npm run build
 ```
+
+`npm run typecheck` は、Nuxt が検出する `vue-tsc` または Golar が環境に導入されている場合に実行できます。依存関係を最小構成に保つため、現行の `package.json` には型チェッカーを含めていません。
 
 主要導線を変えた場合は `npm run test:e2e` も実行してください。現在の画面・レスポンシブ・アクセシビリティ確認基準は [design-qa.md](design-qa.md) にまとめています。

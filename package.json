@@ -24,22 +24,22 @@
   },
   "dependencies": {
     "@phosphor-icons/vue": "^2.2.1",
-    "nuxt": "^4.4.6",
-    "vue": "^3.5.35",
+    "nuxt": "^4.5.2",
+    "vue": "^3.5.41",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.16",
-    "@nuxt/test-utils": "^4.0.3",
-    "@playwright/test": "^1.60.0",
-    "@vitest/coverage-v8": "^4.1.7",
-    "@vue/test-utils": "^2.4.10",
-    "happy-dom": "^20.9.0",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.7"
+    "@biomejs/biome": "^2.5.8",
+    "@nuxt/test-utils": "^4.1.0",
+    "@playwright/test": "^1.62.1",
+    "@vitest/coverage-v8": "^4.1.10",
+    "@vue/test-utils": "^2.4.11",
+    "happy-dom": "^20.11.2",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   },
   "volta": {
-    "node": "24.16.0",
-    "npm": "11.16.0"
+    "node": "24.19.0",
+    "npm": "11.19.0"
   }
 }

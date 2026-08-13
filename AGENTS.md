@@ -14,8 +14,8 @@
 ## 実装メモ
 
 - フレームワーク: Nuxt 4 / Vue 3
-- ランタイム: Node.js 24 LTS / npm（Volta は Node.js 24.16.0 / npm 11.16.0 を指定）
-- ツール: Volta / Biome 2 / TypeScript 5 / Zod / Vitest / Playwright
+- ランタイム: Node.js 24 LTS / npm（Volta は Node.js 24.19.0 / npm 11.19.0 を指定）
+- ツール: Volta / Biome 2 / TypeScript 7 / Zod / Vitest / Playwright
 - 主要画面: `app/pages/index.vue`
 - ゲーム状態: `app/composables/useTraditionalTrainer.ts`
 - UI 派生状態: `app/composables/useTrainerSessionUi.ts`
@@ -114,6 +114,7 @@
 - CSS クラス、細かな配置、重複した表示構造だけを固定するテストは避けてください。
 - UI の主要導線を変えた場合は Playwright で最小 E2E を確認してください。
 - フラットデザイン方針を変える場合は `tests/unit/design-system.test.ts` も更新し、意図した制約変更であることを説明してください。
+- `npm run typecheck` は Nuxt が検出する `vue-tsc` または Golar が導入済みの環境で実行してください。現行の最小依存構成には型チェッカーを含めません。
 
 通常のコード変更:
 
